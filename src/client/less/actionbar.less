@@ -1,0 +1,93 @@
+.action-bar {
+             height: 47px;
+         margin-top: 15px;
+      margin-bottom: 15px;
+  background-repeat: repeat-x;
+       border-color: @clrNavBarAccent;
+      border-radius: 4px;
+
+  .linear-gradient(top, bottom, @clrNavBarAccent, @clrNavBarAccent, 0, @clrNavBarAccentGradient, 100%);
+}
+
+.action-bar > .navbar-nav > li > a {
+  // override selector (.navbar-nav>li>a) 
+  // that sets padding-bottom to 15px
+  padding-bottom: 12px;
+
+        color: #000;
+  font-weight: bold;
+}
+
+.action-bar>.nav>li>a:hover, .action-bar>.nav>li>a:focus, .action-bar>.nav>li.active>a {
+  text-decoration: none;
+            color: #e2ff63;
+
+  .linear-gradient(top, bottom, #000, #000, 0, #333, 100%);
+}
+
+.action-bar h1 {
+      padding: 0;
+       margin: 0;
+        color: white;
+  font-weight: bold;
+}
+
+.actionbar-toggle {
+  background-color: hsl(207.8, 27.8%, 53%);
+      border-color: #2a547e;
+          position: relative;
+             float: right;
+           padding: 9px 10px;
+       margin-left: 5px;
+  background-image: none;
+            border: 1px solid transparent;
+     border-radius: 4px;
+}
+
+.actionbar-toggle:hover {
+  background-color: #2a547e;
+}
+
+.actionbar-toggle .icon-bar {
+  background-color: #fff;
+           display: block;
+             width: 22px;
+            height: 2px;
+     border-radius: 1px;
+}
+
+.actionbar-toggle .icon-bar + .icon-bar {
+  margin-top: 4px;
+}
+
+.actions-container {
+  background-color: rgba(0,0,0,0.2);
+  border: 2px solid rgba(0,0,0,0.3);
+  border-radius: 4px;
+}
+
+#moreActions {
+  position: absolute;
+  right: 10px;
+  width: 300px;
+  margin-top: 50px;
+  z-index: 100;
+  border: 2px solid #2a547e;
+  background-color: hsl(207.8, 27.8%, 53%);
+  border-radius: 4px;
+}
+
+#moreActions h3 {
+   color: white;
+  margin: 5px;
+}
+
+#moreActions li {
+  list-style: none;
+}
+
+#moreActions li > a {
+        color: #ffc600;
+  text-shadow: 0 -1px 0 #2a547e;
+  font-family: Verdana,Geneva,Tahoma,sans-serif;
+}

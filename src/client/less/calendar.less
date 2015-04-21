@@ -1,0 +1,87 @@
+.calendar-date {
+    float: right;
+}
+
+.calendar-box.calendar-today {
+    box-shadow: #e2ff63 0 0 100px inset;
+}
+
+.calender-future {
+}
+
+.calendar-past {
+    background-color: @clrBsLight3;
+}
+
+.calendar-past > .calendar-box-header {
+}
+
+.calendar-box {
+    /*display: inline-flex;*/
+    display: inline-block;
+    border-radius: 0;
+    margin: 0;
+    width: 14.286%;
+    height: 100%;
+    min-height: 100px;
+    border: 1px solid @clrNavBarAccentGradient;
+    border-width: 1px 0 1px 1px;
+}
+
+.calendar-box.calendar-past, .calendar-box.calendar-other-month {
+    /*display: inline-flex;*/
+    display: inline-block;
+    border-radius: 0;
+    margin: 0;
+    width: 14.286%;
+    height: 100%;
+    min-height: 100px;
+    border: 1px solid @clrNotImportantGradient;
+    border-width: 1px 0 1px 1px;
+}
+
+.calendar-box:first-child {
+    border-radius: 4px 0 0 4px;
+}
+
+.calendar-box:last-child {
+    border-radius: 0 4px 4px 0;
+    border-width: 1px 1px 1px 1px;
+}
+
+.calendar-box > .calendar-box-header {
+    font-weight: bold;
+    font-variant: small-caps;
+    text-shadow: 0 0 3px #000;
+    font-size: 17px;
+    color: white;
+    border: 1px solid @clrNavBarAccentGradient;
+    border-width: 1px 0 1px 1px;
+    padding: 0 5px 0 5px;
+    .linear-gradient(top,bottom,@clrNavBarAccent,@clrNavBarAccent, 0, @clrNavBarAccentGradient, 100%);
+}
+
+.calendar-box.calendar-past > .calendar-box-header, .calendar-box.calendar-other-month > .calendar-box-header {
+    font-weight: bold;
+    font-variant: small-caps;
+    text-shadow: 0 0 3px #000;
+    font-size: 17px;
+    color: white;
+    border: 1px solid @clrNotImportantGradient;
+    border-width: 1px 0 1px 1px;
+    padding: 0 5px 0 5px;
+    .linear-gradient(top,bottom,@clrNotImportant,@clrNotImportant, 0, @clrNotImportantGradient, 100%);
+}
+
+.calendar-box:first-child > .calendar-box-header {
+    border-radius: 4px 0 0 0;
+}
+
+.calendar-box:last-child > .calendar-box-header {
+    border-radius: 0 4px 0 0;
+    border-width: 1px 1px 1px 1px;
+}
+
+calendar-box > .weather-icon {
+    padding: 5px;
+}

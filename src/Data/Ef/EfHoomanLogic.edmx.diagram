@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="e79e75d1944c4eb4bbec6f486dcad67d" Name="Diagram1" ZoomLevel="99" >
+        <EntityTypeShape EntityType="hoomanlogicModel.Action" Width="1.5" PointX="1.375" PointY="4.125" />
+        <EntityTypeShape EntityType="hoomanlogicModel.AspNetUser" Width="1.5" PointX="3.625" PointY="0.5" />
+        <AssociationConnector Association="hoomanlogicModel.FK_Action_User" />
+        <EntityTypeShape EntityType="hoomanlogicModel.LogEntry" Width="1.5" PointX="3.625" PointY="9.625" />
+        <EntityTypeShape EntityType="hoomanlogicModel.RecurrenceRule" Width="1.5" PointX="3.625" PointY="7.75" />
+        <EntityTypeShape EntityType="hoomanlogicModel.Achievement" Width="1.5" PointX="5.875" PointY="10.125" />
+        <AssociationConnector Association="hoomanlogicModel.FK_Achievements_Users" />
+        <AssociationConnector Association="hoomanlogicModel.FK_RecurrenceRules_Actions" />
+        <EntityTypeShape EntityType="hoomanlogicModel.Notification" Width="1.5" PointX="9.75" PointY="10.125" />
+        <AssociationConnector Association="hoomanlogicModel.FK_Notifications_Users" />
+        <EntityTypeShape EntityType="hoomanlogicModel.Persona" Width="1.5" PointX="8.375" PointY="0.75" />
+        <AssociationConnector Association="hoomanlogicModel.FK_Personas_Users" />
+        <EntityTypeShape EntityType="hoomanlogicModel.Message" Width="1.5" PointX="5.875" PointY="0.75" />
+        <AssociationConnector Association="hoomanlogicModel.FK_UserMessages_Users_From" />
+        <AssociationConnector Association="hoomanlogicModel.FK_UserMessages_Users_To" />
+        <EntityTypeShape EntityType="hoomanlogicModel.ConnectionRequest" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="hoomanlogicModel.Connection" Width="1.5" PointX="11" PointY="3.25" />
+        <AssociationConnector Association="hoomanlogicModel.FK_Connections_Users_User1" />
+        <AssociationConnector Association="hoomanlogicModel.FK_Connections_Users_User2" />
+        <AssociationConnector Association="hoomanlogicModel.FK_Connections_Personas1" />
+        <AssociationConnector Association="hoomanlogicModel.FK_Connections_Personas2" />
+        <EntityTypeShape EntityType="hoomanlogicModel.ActionPathway" Width="1.5" PointX="3.625" PointY="13.25" />
+        <AssociationConnector Association="hoomanlogicModel.FK_ActionPathways_Child" />
+        <AssociationConnector Association="hoomanlogicModel.FK_ActionPathways_Parent" />
+        <AssociationConnector Association="hoomanlogicModel.FK_ActionPathways_Root" />
+        <EntityTypeShape EntityType="hoomanlogicModel.Tag" Width="1.5" PointX="5.875" PointY="5.125" />
+        <AssociationConnector Association="hoomanlogicModel.FK_Tags_Users" />
+        <AssociationConnector Association="hoomanlogicModel.ActionsTags" />
+        <EntityTypeShape EntityType="hoomanlogicModel.Target" Width="1.5" PointX="8.125" PointY="4.625" />
+        <AssociationConnector Association="hoomanlogicModel.FK_Targets_Users" />
+        <AssociationConnector Association="hoomanlogicModel.FK_Targets_Tags" />
+        <EntityTypeShape EntityType="hoomanlogicModel.Focus" Width="1.5" PointX="5.875" PointY="13.25" />
+        <AssociationConnector Association="hoomanlogicModel.FK_Focuses_User" />
+        <EntityTypeShape EntityType="hoomanlogicModel.Preference" Width="1.5" PointX="5.875" PointY="17.375" />
+        <AssociationConnector Association="hoomanlogicModel.FK_Preferences_User" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

@@ -1,0 +1,96 @@
+.nav li {
+    font-size: 20px;
+}
+
+.navbar-hl-theme .navbar-brand {
+    color: @clrNavBrandText;
+    font-size: 32px;
+    font-weight: 800;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.navbar-hl-theme .navbar-brand:hover,
+.navbar-hl-theme .navbar-brand:focus {
+    color: @clrNavActiveText;
+    background-color: transparent;
+}
+
+.navbar-hl-theme {
+    background-repeat: repeat-x;
+    border-color: @clrNavBarAccent;
+    .linear-gradient(top,bottom,@clrNavBar,@clrNavBar,0,@clrNavBarGradient,80%);
+}
+
+.navbar-hl-theme .navbar-nav > .active > a {
+    background-repeat: repeat-x;
+}
+
+.navbar-hl-theme .navbar-nav > li > a {
+    text-shadow: 0 -1px 0 @clrNavBarGradient;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: @clrNavBarAccent;
+}
+
+.navbar-hl-theme.navbar-fixed-top {
+    border-width: 0 0 5px;
+    border-color: @clrBrandGreenGradient;
+}
+
+.navbar-hl-theme .navbar-text {
+    color: @clrNavBarAccent;
+}
+
+.navbar-hl-theme .navbar-nav > li > a:hover,
+.navbar-hl-theme .navbar-nav > li > a:focus {
+    .linear-gradient(top,bottom,transparent,@brighten40Percent,10%,@brighten10Percent,90%);
+}
+
+.navbar-hl-theme .navbar-nav > .active > a,
+.navbar-hl-theme .navbar-nav > .active > a:hover,
+.navbar-hl-theme .navbar-nav > .active > a:focus {
+    color: @clrNavActiveText;
+    font-weight: bolder;
+    text-shadow: 0 -1px 0 @clrNavBarAccentGradient;
+    .linear-gradient(bottom,top,@clrNavBarAccent,@clrNavBarAccent,0,@clrNavBarAccentGradient,80%);
+}
+
+.navbar-hl-theme .navbar-nav > .disabled > a,
+.navbar-hl-theme .navbar-nav > .disabled > a:hover,
+.navbar-hl-theme .navbar-nav > .disabled > a:focus {
+    color: @clrNavDisabled;
+    background-color: transparent;
+}
+
+.navbar-hl-theme .navbar-toggle {
+    border-color: @clrNavBarGradient;
+}
+
+.navbar-hl-theme .navbar-toggle:hover,
+.navbar-hl-theme .navbar-toggle:focus {
+    background-color: @clrNavBarGradient;
+}
+
+.navbar-hl-theme .navbar-toggle .icon-bar {
+    background-color: @clrNavToggleForeground;
+}
+
+.navbar-hl-theme .navbar-collapse,
+.navbar-inversecorporate .navbar-form {
+    border-color: @clrNavBarGradient;
+}
+
+.navbar-hl-theme .navbar-nav > .open > a,
+.navbar-hl-theme .navbar-nav > .open > a:hover,
+.navbar-hl-theme .navbar-nav > .open > a:focus {
+    color: @clrNavActiveText;
+    background-color: @clrNavDivider;
+}
+
+.navbar-hl-theme .navbar-link {
+    color: @clrNavBarAccent;
+}
+
+.navbar-hl-theme .navbar-link:hover {
+    color: @clrNavActiveText;
+}
+

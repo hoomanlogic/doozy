@@ -1,0 +1,72 @@
+.linear-gradient(@from,@to,@default,@color1,@stop1,@color2,@stop2) {
+  background-color: @default;
+  background-image: -webkit-gradient(linear, left @from, left @to, color-stop(@stop1, @color1), color-stop(@stop2 @color2));
+  background-image: -webkit-linear-gradient(@from, @color1 @stop1, @color2 @stop2);
+  background-image: -moz-linear-gradient(@from, @color1 @stop1, @color2 @stop2);
+  background-image: -ms-linear-gradient(@from, @color1 @stop1, @color2 @stop2);
+  background-image: -o-linear-gradient(@from, @color1 @stop1, @color2 @stop2);
+  background-image: linear-gradient(@from, @color1 @stop1, @color2 @stop2);
+}
+.linear-gradient(@from,@to,@default,@color1,@stop1,@color2,@stop2,@color3,@stop3,@color4,@stop4) {
+    background-color: @default;
+    background-image: -webkit-gradient(linear, left @from, left @to, color-stop(@stop1, @color1), color-stop(@stop2 @color2), color-stop(@stop3 @color3), color-stop(@stop4 @color4));
+    background-image: -webkit-linear-gradient(@from, @color1 @stop1, @color2 @stop2, @color3 @stop3, @color4 @stop4);
+    background-image: -moz-linear-gradient(@from, @color1 @stop1, @color2 @stop2, @color3 @stop3, @color4 @stop4);
+    background-image: -ms-linear-gradient(@from, @color1 @stop1, @color2 @stop2, @color3 @stop3, @color4 @stop4);
+    background-image: -o-linear-gradient(@from, @color1 @stop1, @color2 @stop2, @color3 @stop3, @color4 @stop4);
+    background-image: linear-gradient(@from, @color1 @stop1, @color2 @stop2, @color3 @stop3, @color4 @stop4);
+}
+/* Vendor Prefixes */
+.transition(@arg1, @arg2) {
+    -webkit-transition: @arg1, @arg2;
+    -moz-transition: @arg1, @arg2;
+    -o-transition: @arg1, @arg2;
+    transition: @arg1, @arg2;
+}
+.transition(@transition) {
+  -webkit-transition: @transition;
+       -o-transition: @transition;
+          transition: @transition;
+}
+.transition-property(@transition-property) {
+  -webkit-transition-property: @transition-property;
+          transition-property: @transition-property;
+}
+.transition-delay(@transition-delay) {
+  -webkit-transition-delay: @transition-delay;
+          transition-delay: @transition-delay;
+}
+.transition-duration(@transition-duration) {
+  -webkit-transition-duration: @transition-duration;
+          transition-duration: @transition-duration;
+}
+.transition-timing-function(@timing-function) {
+  -webkit-transition-timing-function: @timing-function;
+          transition-timing-function: @timing-function;
+}
+.transition-transform(@transition) {
+  -webkit-transition: -webkit-transform @transition;
+     -moz-transition: -moz-transform @transition;
+       -o-transition: -o-transform @transition;
+          transition: transform @transition;
+}
+
+.bs-gradient-msdisabled(@color1,@color2,@colorStr1,@colorStr2) {
+  background-image: -webkit-linear-gradient(top, @color1 0, @color2 100%);
+  background-image:      -o-linear-gradient(top, @color1 0, @color2 100%);
+  background-image: -webkit-gradient(linear, left top, left bottom, from(@color1), to(@color2));
+  background-image:         linear-gradient(to bottom, @color1 0, @color2 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=@colorStr1, endColorstr=@colorStr2, GradientType=0);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+  background-repeat: repeat-x;
+}
+
+.bs-gradient(@color1,@color2,@colorStr1,@colorStr2) {
+  background-image: -webkit-linear-gradient(top, @color1 0, @color2 100%);
+  background-image:      -o-linear-gradient(top, @color1 0, @color2 100%);
+  background-image: -webkit-gradient(linear, left top, left bottom, from(@color1), to(@color2));
+  background-image:         linear-gradient(to bottom, @color1 0, @color2 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=@colorStr1, endColorstr=@colorStr2, GradientType=0);
+  background-repeat: repeat-x;
+}
+

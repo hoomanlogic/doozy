@@ -1,0 +1,157 @@
+.message-sent-grouping {
+    border-top: 1px solid @clrBsLight1;
+    color: #bdc1c9;
+    font-size: 11px;
+    margin: 17px 5px 2px;
+    text-align: center;
+}
+
+.message-sent-timestamp {
+    background-color: #fff;
+    padding: 0 5px;
+    position: relative;
+    top: -8px;
+}
+
+.conversation-container {
+    position:fixed;
+    height: 590px;
+    width: 360px;
+    bottom: 0;
+    right: 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    background: white;
+    box-shadow: #ddd -1px -1px 20px;
+    font-size: 16px;
+}
+
+.conversation-container-full {
+    padding: 10px;
+    font-size: 32px;
+    height: 80vh;
+}
+
+.conversation-messages {
+    max-height: 87%;
+    overflow-y: scroll;
+    overflow-x:hidden;
+    max-width: 100%;
+    padding-right: 15px;
+}
+
+.conversation-header {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    /*height: 45px;*/
+    font-weight: bold;
+}
+
+.conversation-form {
+    border-top: 1px solid #ddd;
+    padding-top: 5px;
+    margin-top: 5px;
+    height: 60px;
+}
+
+.conversation-form-full {
+    border-top: 1px solid #ddd;
+    padding-top: 5px;
+    margin-top: 5px;
+    height: 60px;
+    font-size: 20px;
+}
+input#msg {
+  width: 190px;
+  display: inline;
+  margin-right: 5px;
+}
+
+.message-row {
+  padding-top: 0.5em;
+}
+
+.file-input-hidden {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 1px;
+    width: 1px;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    outline: none;
+    cursor: inherit;
+    font-size: 1px !important;
+}
+
+.file-img {
+    vertical-align: middle;
+    padding: 5px;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.file-img.selected:hover, .file-img.none:hover {
+    color: inherit;
+}
+
+.file-img.selected {
+    color: inherit;
+}
+
+.file-img.none {
+    color: #d7d7c4;
+}
+
+.chat-link {
+    vertical-align: middle;
+    padding: 5px;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.chat-link.enabled:hover, .chat-link.disabled:hover {
+    color: inherit;
+}
+
+.chat-link.enabled {
+    color: inherit;
+}
+
+.chat-link.disabled {
+    color: #d7d7c4;
+}
+
+img.message {
+    max-width: 100%;
+}
+
+.connection-list-name {
+  font-size: 140%;
+  font-weight: bold;
+  padding: 2px 5px 0 5px;
+  vertical-align: middle;
+}
+
+.connection-list-lastmsg {
+  font-size: 120%;
+  vertical-align: middle;
+  color: #888;
+  
+  /* PATTERN: only first line visible */
+  display: inline-block;
+  max-width: 40%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.connection-list-lastmsg.old {
+  font-style: italic;
+  color: gray;
+}
+
+  

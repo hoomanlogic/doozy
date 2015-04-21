@@ -1,0 +1,105 @@
+﻿{
+    // connections are accounts and connections to physical devices, be it a server or a user
+    "connections": [
+        {
+            "id": "hoomanhub",
+            "pwd": "encrypted_text",
+            "ip": "0.0.0.0"
+        },
+        {
+            "id": "Geoff",
+            "pwd": "encrypted_text",
+            "ip": "0.0.0.0"
+        },
+        {
+            "id": "Joy",
+            "pwd": "encrypted_text",
+            "ip": "0.0.0.0"
+        }
+    ],
+    "cans": [
+        // This is a Global CAN (Content Access Network) that has no encryption,
+        // so any content assigned to this CAN will be accessible by ANYONE
+        {
+            "name": "hoomanhub",
+            "owner": null,
+            "server": "hoomanhub",
+            "key": null,
+            "parent": null,
+            "children": null,
+            "access": {
+                "allow": "all",
+                "deny": null
+            }
+        },
+        // Geoff prefers to host his self-host his content within the web app.
+        // Since his content resides in a location he trusts, he does not bother with encryption
+        // but instead has a collection of connections that he will serve content to.
+        {
+            "name": "Geoff", // every connection is also a CAN
+            "owner": "Geoff",
+            "server": "Geoff",
+            "key": null,
+            "parent": null,
+            "children": null,
+            "access": {
+                "allow": [ "Joy", "Jason" ],
+                "deny": null
+            }
+        },
+        // Joy prefers to have a physical server (hoomanhub) host her content.
+        // She uses a Private/Public key pair to encrypt her content
+        // and gives selected 'connections' the private key to access her content.
+        // Giving someone a private key also adds them to her access allowed list
+        {
+            "name": "Joy",
+            "owner": "Joy",
+            "server": "hoomanhub",
+            "key": "encrypted_public_key",
+            "parent": null,
+            "children": null,
+            "access": {
+                "allow": [ "Geoff" ],
+                "deny": null
+            }
+        }
+    ],
+    "content": [
+        {
+            "owner": "Geoff",
+            "can": "Geoff",
+            "tstamp": "2014-05-21 23:00:00 EST",
+            "text": "Check this out!",
+            "mediaType": "image",
+            "mediaData": "80jkocncjodu9-d3bn22jbncjksd8032h8dbnjkcdnjvkdsBNJDFKbnio2389",
+            "activity": [
+                {
+
+                    "user": "Joy",
+                    "tstamp": "2014-05-21 23:00:00 EST",
+                    "type": "comment",
+                    "text": "Sooo cool!",
+                    "mediaType": null,
+                    "mediaData": null,
+                    "activity": [
+                        {
+                            "user": "Geoff",
+                            "tstamp": "2014-05-21 23:00:00 EST",
+                            "type": "upvote",
+                            "text": null,
+                            "tstamp": "",
+                            "activity": null
+                        }
+                    ]
+                },
+                {
+                    "user": "Joy",
+                    "type": "upvote",
+                    "text": null,
+                    "tstamp": "",
+                    "activity": null
+                }
+            ]
+        }
+    ]
+}

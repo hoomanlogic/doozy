@@ -1,0 +1,1363 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="hoomanlogicModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Achievements">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Date" Type="datetime" />
+          <Property Name="Content" Type="nvarchar(max)" />
+          <Property Name="IsPublic" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ActionPathways">
+          <Key>
+            <PropertyRef Name="RootId" />
+            <PropertyRef Name="ParentId" />
+            <PropertyRef Name="ChildId" />
+          </Key>
+          <Property Name="RootId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ParentId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ChildId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Order" Type="tinyint" />
+        </EntityType>
+        <EntityType Name="Actions">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Kind" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="Enlist" Type="datetime" />
+          <Property Name="Retire" Type="datetime" />
+          <Property Name="StartAt" Type="smallint" />
+          <Property Name="Duration" Type="smallint" />
+          <Property Name="NextDate" Type="datetime" />
+          <Property Name="IsSomeday" Type="bit" Nullable="false" />
+          <Property Name="Content" Type="varchar(max)" />
+        </EntityType>
+        <EntityType Name="ActionsTags">
+          <Key>
+            <PropertyRef Name="ActionId" />
+            <PropertyRef Name="TagId" />
+          </Key>
+          <Property Name="ActionId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="TagId" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AspNetUsers">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Hometown" Type="nvarchar(max)" />
+          <Property Name="Email" Type="nvarchar" MaxLength="256" />
+          <Property Name="EmailConfirmed" Type="bit" Nullable="false" />
+          <Property Name="PasswordHash" Type="nvarchar(max)" />
+          <Property Name="SecurityStamp" Type="nvarchar(max)" />
+          <Property Name="PhoneNumber" Type="nvarchar(max)" />
+          <Property Name="PhoneNumberConfirmed" Type="bit" Nullable="false" />
+          <Property Name="TwoFactorEnabled" Type="bit" Nullable="false" />
+          <Property Name="LockoutEndDateUtc" Type="datetime" />
+          <Property Name="LockoutEnabled" Type="bit" Nullable="false" />
+          <Property Name="AccessFailedCount" Type="int" Nullable="false" />
+          <Property Name="UserName" Type="nvarchar" MaxLength="256" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ConnectionRequests">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="UserId_RequestedBy" />
+          </Key>
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="UserId_RequestedBy" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Persona" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Connections">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="UserId_Connection" />
+          </Key>
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Persona" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="UserId_Connection" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Persona_Connection" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Focuses">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Kind" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="Enlist" Type="datetime" />
+          <Property Name="Retire" Type="datetime" />
+          <Property Name="IconUri" Type="varchar" MaxLength="256" />
+          <Property Name="TagName" Type="varchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <EntityType Name="LogEntries">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ActionId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Date" Type="datetime" Nullable="false" />
+          <Property Name="Entry" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Duration" Type="smallint" />
+          <Property Name="RootActionId" Type="uniqueidentifier" />
+          <Property Name="Details" Type="varchar(max)" />
+        </EntityType>
+        <EntityType Name="Messages">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="UserId_From" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="UserId_To" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Text" Type="nvarchar(max)" />
+          <Property Name="Uri" Type="varchar" MaxLength="255" />
+          <Property Name="Sent" Type="datetime" Nullable="false" />
+          <Property Name="Read" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Notifications">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="OccurredAt" Type="datetime" Nullable="false" />
+          <Property Name="Kind" Type="varchar" MaxLength="128" Nullable="false" />
+          <Property Name="Subject" Type="varchar" MaxLength="128" Nullable="false" />
+          <Property Name="Context" Type="nvarchar(max)" />
+          <Property Name="ReadAt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Personas">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="Kind" />
+          </Key>
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Kind" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="KnownAs" Type="varchar" MaxLength="50" />
+          <Property Name="ProfileUri" Type="varchar" MaxLength="256" />
+        </EntityType>
+        <EntityType Name="Preferences">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="WeekStarts" Type="tinyint" Nullable="false" />
+          <Property Name="Location" Type="varchar" MaxLength="100" />
+          <Property Name="EmailNotifications" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="RecurrenceRules">
+          <Key>
+            <PropertyRef Name="ActionId" />
+            <PropertyRef Name="Rule" />
+          </Key>
+          <Property Name="ActionId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Rule" Type="varchar" MaxLength="500" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Tags">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="Kind" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Path" Type="varchar" MaxLength="200" Nullable="false" />
+          <Property Name="IsFocus" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Targets">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="TagId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Kind" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Timeline" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="Goal" Type="smallint" Nullable="false" />
+          <Property Name="Enlist" Type="datetime" />
+          <Property Name="Retire" Type="datetime" />
+        </EntityType>
+        <Association Name="FK_Achievements_Users">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Achievements" Type="Self.Achievements" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Achievements">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Action_User">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Actions" Type="Self.Actions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Actions">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ActionPathways_Child">
+          <End Role="Actions" Type="Self.Actions" Multiplicity="1" />
+          <End Role="ActionPathways" Type="Self.ActionPathways" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Actions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ActionPathways">
+              <PropertyRef Name="ChildId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ActionPathways_Parent">
+          <End Role="Actions" Type="Self.Actions" Multiplicity="1" />
+          <End Role="ActionPathways" Type="Self.ActionPathways" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Actions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ActionPathways">
+              <PropertyRef Name="ParentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ActionPathways_Root">
+          <End Role="Actions" Type="Self.Actions" Multiplicity="1" />
+          <End Role="ActionPathways" Type="Self.ActionPathways" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Actions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ActionPathways">
+              <PropertyRef Name="RootId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ActionsTags_Actions">
+          <End Role="Actions" Type="Self.Actions" Multiplicity="1" />
+          <End Role="ActionsTags" Type="Self.ActionsTags" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Actions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ActionsTags">
+              <PropertyRef Name="ActionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ActionsTags_Tags">
+          <End Role="Tags" Type="Self.Tags" Multiplicity="1" />
+          <End Role="ActionsTags" Type="Self.ActionsTags" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tags">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ActionsTags">
+              <PropertyRef Name="TagId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Connections_Personas1">
+          <End Role="Personas" Type="Self.Personas" Multiplicity="1" />
+          <End Role="Connections" Type="Self.Connections" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Personas">
+              <PropertyRef Name="UserId" />
+              <PropertyRef Name="Kind" />
+            </Principal>
+            <Dependent Role="Connections">
+              <PropertyRef Name="UserId" />
+              <PropertyRef Name="Persona" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Connections_Personas2">
+          <End Role="Personas" Type="Self.Personas" Multiplicity="1" />
+          <End Role="Connections" Type="Self.Connections" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Personas">
+              <PropertyRef Name="UserId" />
+              <PropertyRef Name="Kind" />
+            </Principal>
+            <Dependent Role="Connections">
+              <PropertyRef Name="UserId_Connection" />
+              <PropertyRef Name="Persona_Connection" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Connections_Users_User1">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Connections" Type="Self.Connections" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Connections">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Connections_Users_User2">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="Connections" Type="Self.Connections" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Connections">
+              <PropertyRef Name="UserId_Connection" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Focuses_User">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Focuses" Type="Self.Focuses" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Focuses">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Notifications_Users">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Notifications" Type="Self.Notifications" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Notifications">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Personas_Users">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Personas" Type="Self.Personas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Personas">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Preferences_User">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Preferences" Type="Self.Preferences" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Preferences">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RecurrenceRules_Actions">
+          <End Role="Actions" Type="Self.Actions" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="RecurrenceRules" Type="Self.RecurrenceRules" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Actions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="RecurrenceRules">
+              <PropertyRef Name="ActionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tags_Users">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Tags" Type="Self.Tags" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Tags">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Targets_Tags">
+          <End Role="Tags" Type="Self.Tags" Multiplicity="1" />
+          <End Role="Targets" Type="Self.Targets" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tags">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Targets">
+              <PropertyRef Name="TagId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Targets_Users">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Targets" Type="Self.Targets" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Targets">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserMessages_Users_From">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Messages" Type="Self.Messages" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Messages">
+              <PropertyRef Name="UserId_From" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserMessages_Users_To">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="Messages" Type="Self.Messages" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Messages">
+              <PropertyRef Name="UserId_To" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="hoomanlogicModelStoreContainer">
+          <EntitySet Name="Achievements" EntityType="Self.Achievements" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ActionPathways" EntityType="Self.ActionPathways" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Actions" EntityType="Self.Actions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ActionsTags" EntityType="Self.ActionsTags" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ConnectionRequests" EntityType="Self.ConnectionRequests" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Connections" EntityType="Self.Connections" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Focuses" EntityType="Self.Focuses" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LogEntries" EntityType="Self.LogEntries" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Messages" EntityType="Self.Messages" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Notifications" EntityType="Self.Notifications" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Personas" EntityType="Self.Personas" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Preferences" EntityType="Self.Preferences" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RecurrenceRules" EntityType="Self.RecurrenceRules" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tags" EntityType="Self.Tags" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Targets" EntityType="Self.Targets" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Achievements_Users" Association="Self.FK_Achievements_Users">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Achievements" EntitySet="Achievements" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Action_User" Association="Self.FK_Action_User">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Actions" EntitySet="Actions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ActionPathways_Child" Association="Self.FK_ActionPathways_Child">
+            <End Role="Actions" EntitySet="Actions" />
+            <End Role="ActionPathways" EntitySet="ActionPathways" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ActionPathways_Parent" Association="Self.FK_ActionPathways_Parent">
+            <End Role="Actions" EntitySet="Actions" />
+            <End Role="ActionPathways" EntitySet="ActionPathways" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ActionPathways_Root" Association="Self.FK_ActionPathways_Root">
+            <End Role="Actions" EntitySet="Actions" />
+            <End Role="ActionPathways" EntitySet="ActionPathways" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ActionsTags_Actions" Association="Self.FK_ActionsTags_Actions">
+            <End Role="Actions" EntitySet="Actions" />
+            <End Role="ActionsTags" EntitySet="ActionsTags" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ActionsTags_Tags" Association="Self.FK_ActionsTags_Tags">
+            <End Role="Tags" EntitySet="Tags" />
+            <End Role="ActionsTags" EntitySet="ActionsTags" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Connections_Personas1" Association="Self.FK_Connections_Personas1">
+            <End Role="Personas" EntitySet="Personas" />
+            <End Role="Connections" EntitySet="Connections" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Connections_Personas2" Association="Self.FK_Connections_Personas2">
+            <End Role="Personas" EntitySet="Personas" />
+            <End Role="Connections" EntitySet="Connections" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Connections_Users_User1" Association="Self.FK_Connections_Users_User1">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Connections" EntitySet="Connections" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Connections_Users_User2" Association="Self.FK_Connections_Users_User2">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Connections" EntitySet="Connections" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Focuses_User" Association="Self.FK_Focuses_User">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Focuses" EntitySet="Focuses" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Notifications_Users" Association="Self.FK_Notifications_Users">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Notifications" EntitySet="Notifications" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Personas_Users" Association="Self.FK_Personas_Users">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Personas" EntitySet="Personas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Preferences_User" Association="Self.FK_Preferences_User">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Preferences" EntitySet="Preferences" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RecurrenceRules_Actions" Association="Self.FK_RecurrenceRules_Actions">
+            <End Role="Actions" EntitySet="Actions" />
+            <End Role="RecurrenceRules" EntitySet="RecurrenceRules" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tags_Users" Association="Self.FK_Tags_Users">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Tags" EntitySet="Tags" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Targets_Tags" Association="Self.FK_Targets_Tags">
+            <End Role="Tags" EntitySet="Tags" />
+            <End Role="Targets" EntitySet="Targets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Targets_Users" Association="Self.FK_Targets_Users">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Targets" EntitySet="Targets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserMessages_Users_From" Association="Self.FK_UserMessages_Users_From">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Messages" EntitySet="Messages" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserMessages_Users_To" Association="Self.FK_UserMessages_Users_To">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Messages" EntitySet="Messages" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="hoomanlogicModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="hoomanlogicEntities" annotation:LazyLoadingEnabled="true" >
+          <EntitySet Name="Actions" EntityType="hoomanlogicModel.Action" />
+          <EntitySet Name="AspNetUsers" EntityType="hoomanlogicModel.AspNetUser" />
+          <AssociationSet Name="FK_Action_User" Association="hoomanlogicModel.FK_Action_User">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="Action" EntitySet="Actions" />
+          </AssociationSet>
+          <EntitySet Name="LogEntries" EntityType="hoomanlogicModel.LogEntry" />
+          <EntitySet Name="RecurrenceRules" EntityType="hoomanlogicModel.RecurrenceRule" />
+          <EntitySet Name="Achievements" EntityType="hoomanlogicModel.Achievement" />
+          <AssociationSet Name="FK_Achievements_Users" Association="hoomanlogicModel.FK_Achievements_Users">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="Achievement" EntitySet="Achievements" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RecurrenceRules_Actions" Association="hoomanlogicModel.FK_RecurrenceRules_Actions">
+            <End Role="Action" EntitySet="Actions" />
+            <End Role="RecurrenceRule" EntitySet="RecurrenceRules" />
+          </AssociationSet>
+          <EntitySet Name="Notifications" EntityType="hoomanlogicModel.Notification" />
+          <AssociationSet Name="FK_Notifications_Users" Association="hoomanlogicModel.FK_Notifications_Users">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="Notification" EntitySet="Notifications" />
+          </AssociationSet>
+          <EntitySet Name="Personas" EntityType="hoomanlogicModel.Persona" />
+          <AssociationSet Name="FK_Personas_Users" Association="hoomanlogicModel.FK_Personas_Users">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="Persona" EntitySet="Personas" />
+          </AssociationSet>
+          <EntitySet Name="Messages" EntityType="hoomanlogicModel.Message" />
+          <AssociationSet Name="FK_UserMessages_Users_From" Association="hoomanlogicModel.FK_UserMessages_Users_From">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="Message" EntitySet="Messages" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserMessages_Users_To" Association="hoomanlogicModel.FK_UserMessages_Users_To">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="Message" EntitySet="Messages" />
+          </AssociationSet>
+          <EntitySet Name="ConnectionRequests" EntityType="hoomanlogicModel.ConnectionRequest" />
+          <EntitySet Name="Connections" EntityType="hoomanlogicModel.Connection" />
+          <AssociationSet Name="FK_Connections_Users_User1" Association="hoomanlogicModel.FK_Connections_Users_User1">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="Connection" EntitySet="Connections" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Connections_Users_User2" Association="hoomanlogicModel.FK_Connections_Users_User2">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="Connection" EntitySet="Connections" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Connections_Personas1" Association="hoomanlogicModel.FK_Connections_Personas1">
+            <End Role="Persona" EntitySet="Personas" />
+            <End Role="Connection" EntitySet="Connections" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Connections_Personas2" Association="hoomanlogicModel.FK_Connections_Personas2">
+            <End Role="Persona" EntitySet="Personas" />
+            <End Role="Connection" EntitySet="Connections" />
+          </AssociationSet>
+          <EntitySet Name="ActionPathways" EntityType="hoomanlogicModel.ActionPathway" />
+          <AssociationSet Name="FK_ActionPathways_Child" Association="hoomanlogicModel.FK_ActionPathways_Child">
+            <End Role="Action" EntitySet="Actions" />
+            <End Role="ActionPathway" EntitySet="ActionPathways" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ActionPathways_Parent" Association="hoomanlogicModel.FK_ActionPathways_Parent">
+            <End Role="Action" EntitySet="Actions" />
+            <End Role="ActionPathway" EntitySet="ActionPathways" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ActionPathways_Root" Association="hoomanlogicModel.FK_ActionPathways_Root">
+            <End Role="Action" EntitySet="Actions" />
+            <End Role="ActionPathway" EntitySet="ActionPathways" />
+          </AssociationSet>
+          <EntitySet Name="Tags" EntityType="hoomanlogicModel.Tag" />
+          <AssociationSet Name="FK_Tags_Users" Association="hoomanlogicModel.FK_Tags_Users">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="Tag" EntitySet="Tags" />
+          </AssociationSet>
+          <AssociationSet Name="ActionsTags" Association="hoomanlogicModel.ActionsTags">
+            <End Role="Action" EntitySet="Actions" />
+            <End Role="Tag" EntitySet="Tags" />
+          </AssociationSet>
+          <EntitySet Name="Targets" EntityType="hoomanlogicModel.Target" />
+          <AssociationSet Name="FK_Targets_Users" Association="hoomanlogicModel.FK_Targets_Users">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="Target" EntitySet="Targets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Targets_Tags" Association="hoomanlogicModel.FK_Targets_Tags">
+            <End Role="Tag" EntitySet="Tags" />
+            <End Role="Target" EntitySet="Targets" />
+          </AssociationSet>
+          <EntitySet Name="Focuses" EntityType="hoomanlogicModel.Focus" />
+          <AssociationSet Name="FK_Focuses_User" Association="hoomanlogicModel.FK_Focuses_User">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="Focus" EntitySet="Focuses" />
+          </AssociationSet>
+          <EntitySet Name="Preferences" EntityType="hoomanlogicModel.Preference" />
+          <AssociationSet Name="FK_Preferences_User" Association="hoomanlogicModel.FK_Preferences_User">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="Preference" EntitySet="Preferences" />
+          </AssociationSet>
+          </EntityContainer>
+        <EntityType Name="Action">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Kind" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Enlist" Type="DateTime" Precision="3" />
+          <Property Name="Retire" Type="DateTime" Precision="3" />
+          <Property Name="StartAt" Type="Int16" />
+          <Property Name="Duration" Type="Int16" />
+          <NavigationProperty Name="AspNetUser" Relationship="hoomanlogicModel.FK_Action_User" FromRole="Action" ToRole="AspNetUser" />
+          <NavigationProperty Name="RecurrenceRules" Relationship="hoomanlogicModel.FK_RecurrenceRules_Actions" FromRole="Action" ToRole="RecurrenceRule" />
+          <NavigationProperty Name="ChildPathways" Relationship="hoomanlogicModel.FK_ActionPathways_Child" FromRole="Action" ToRole="ActionPathway" />
+          <NavigationProperty Name="ParentPathways" Relationship="hoomanlogicModel.FK_ActionPathways_Parent" FromRole="Action" ToRole="ActionPathway" />
+          <NavigationProperty Name="RootPathways" Relationship="hoomanlogicModel.FK_ActionPathways_Root" FromRole="Action" ToRole="ActionPathway" />
+          <NavigationProperty Name="Tags" Relationship="hoomanlogicModel.ActionsTags" FromRole="Action" ToRole="Tag" />
+          <Property Name="NextDate" Type="DateTime" Precision="3" />
+          <Property Name="IsSomeday" Type="Boolean" Nullable="false" />
+          <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="AspNetUser">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Hometown" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="EmailConfirmed" Type="Boolean" Nullable="false" />
+          <Property Name="PasswordHash" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SecurityStamp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumberConfirmed" Type="Boolean" Nullable="false" />
+          <Property Name="TwoFactorEnabled" Type="Boolean" Nullable="false" />
+          <Property Name="LockoutEndDateUtc" Type="DateTime" Precision="3" />
+          <Property Name="LockoutEnabled" Type="Boolean" Nullable="false" />
+          <Property Name="AccessFailedCount" Type="Int32" Nullable="false" />
+          <Property Name="UserName" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Actions" Relationship="hoomanlogicModel.FK_Action_User" FromRole="AspNetUser" ToRole="Action" />
+          <NavigationProperty Name="Achievements" Relationship="hoomanlogicModel.FK_Achievements_Users" FromRole="AspNetUser" ToRole="Achievement" />
+          <NavigationProperty Name="Notifications" Relationship="hoomanlogicModel.FK_Notifications_Users" FromRole="AspNetUser" ToRole="Notification" />
+          <NavigationProperty Name="Personas" Relationship="hoomanlogicModel.FK_Personas_Users" FromRole="AspNetUser" ToRole="Persona" />
+          <NavigationProperty Name="SentMessages" Relationship="hoomanlogicModel.FK_UserMessages_Users_From" FromRole="AspNetUser" ToRole="Message" />
+          <NavigationProperty Name="ReceivedMessages" Relationship="hoomanlogicModel.FK_UserMessages_Users_To" FromRole="AspNetUser" ToRole="Message" />
+          <NavigationProperty Name="Connections" Relationship="hoomanlogicModel.FK_Connections_Users_User1" FromRole="AspNetUser" ToRole="Connection" />
+          <NavigationProperty Name="Connections1" Relationship="hoomanlogicModel.FK_Connections_Users_User2" FromRole="AspNetUser" ToRole="Connection" />
+          <NavigationProperty Name="Tags" Relationship="hoomanlogicModel.FK_Tags_Users" FromRole="AspNetUser" ToRole="Tag" />
+          <NavigationProperty Name="Targets" Relationship="hoomanlogicModel.FK_Targets_Users" FromRole="AspNetUser" ToRole="Target" />
+          <NavigationProperty Name="Focuses" Relationship="hoomanlogicModel.FK_Focuses_User" FromRole="AspNetUser" ToRole="Focus" />
+          <NavigationProperty Name="Preference" Relationship="hoomanlogicModel.FK_Preferences_User" FromRole="AspNetUser" ToRole="Preference" />
+          </EntityType>
+        <Association Name="FK_Action_User">
+          <End Type="hoomanlogicModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="hoomanlogicModel.Action" Role="Action" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Action">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="LogEntry">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="ActionId" Type="Guid" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Entry" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Duration" Type="Int16" />
+          <Property Name="RootActionId" Type="Guid" />
+          <Property Name="Details" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="RecurrenceRule">
+          <Key>
+            <PropertyRef Name="ActionId" />
+            <PropertyRef Name="Rule" />
+          </Key>
+          <Property Name="ActionId" Type="Guid" Nullable="false" />
+          <Property Name="Rule" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Action" Relationship="hoomanlogicModel.FK_RecurrenceRules_Actions" FromRole="RecurrenceRule" ToRole="Action" />
+        </EntityType>
+        <EntityType Name="Achievement">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Date" Type="DateTime" Precision="3" />
+          <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IsPublic" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="AspNetUser" Relationship="hoomanlogicModel.FK_Achievements_Users" FromRole="Achievement" ToRole="AspNetUser" />
+        </EntityType>
+        <Association Name="FK_Achievements_Users">
+          <End Type="hoomanlogicModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="hoomanlogicModel.Achievement" Role="Achievement" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Achievement">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RecurrenceRules_Actions">
+          <End Type="hoomanlogicModel.Action" Role="Action" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="hoomanlogicModel.RecurrenceRule" Role="RecurrenceRule" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Action">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="RecurrenceRule">
+              <PropertyRef Name="ActionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Notification">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="OccurredAt" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Kind" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="false" />
+          <Property Name="Subject" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="false" />
+          <Property Name="Context" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ReadAt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="AspNetUser" Relationship="hoomanlogicModel.FK_Notifications_Users" FromRole="Notification" ToRole="AspNetUser" />
+        </EntityType>
+        <Association Name="FK_Notifications_Users">
+          <End Type="hoomanlogicModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="hoomanlogicModel.Notification" Role="Notification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Notification">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Persona">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="Kind" />
+          </Key>
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Kind" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="KnownAs" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ProfileUri" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="AspNetUser" Relationship="hoomanlogicModel.FK_Personas_Users" FromRole="Persona" ToRole="AspNetUser" />
+          <NavigationProperty Name="Connections" Relationship="hoomanlogicModel.FK_Connections_Personas1" FromRole="Persona" ToRole="Connection" />
+          <NavigationProperty Name="Connections1" Relationship="hoomanlogicModel.FK_Connections_Personas2" FromRole="Persona" ToRole="Connection" />
+        </EntityType>
+        <Association Name="FK_Personas_Users">
+          <End Type="hoomanlogicModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="hoomanlogicModel.Persona" Role="Persona" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Persona">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Message">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="UserId_From" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="UserId_To" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Text" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Uri" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Sent" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Read" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Sender" Relationship="hoomanlogicModel.FK_UserMessages_Users_From" FromRole="Message" ToRole="AspNetUser" />
+          <NavigationProperty Name="Receiver" Relationship="hoomanlogicModel.FK_UserMessages_Users_To" FromRole="Message" ToRole="AspNetUser" />
+        </EntityType>
+        <Association Name="FK_UserMessages_Users_From">
+          <End Type="hoomanlogicModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="hoomanlogicModel.Message" Role="Message" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Message">
+              <PropertyRef Name="UserId_From" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserMessages_Users_To">
+          <End Type="hoomanlogicModel.AspNetUser" Role="AspNetUser" Multiplicity="1" />
+          <End Type="hoomanlogicModel.Message" Role="Message" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Message">
+              <PropertyRef Name="UserId_To" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ConnectionRequest">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="UserId_RequestedBy" />
+          </Key>
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="UserId_RequestedBy" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Persona" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Connection">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="UserId_Connection" />
+          </Key>
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Persona" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="UserId_Connection" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Persona_Connection" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Me" Relationship="hoomanlogicModel.FK_Connections_Users_User1" FromRole="Connection" ToRole="AspNetUser" />
+          <NavigationProperty Name="Them" Relationship="hoomanlogicModel.FK_Connections_Users_User2" FromRole="Connection" ToRole="AspNetUser" />
+          <NavigationProperty Name="MyPersona" Relationship="hoomanlogicModel.FK_Connections_Personas1" FromRole="Connection" ToRole="Persona" />
+          <NavigationProperty Name="TheirPersona" Relationship="hoomanlogicModel.FK_Connections_Personas2" FromRole="Connection" ToRole="Persona" />
+        </EntityType>
+        <Association Name="FK_Connections_Users_User1">
+          <End Type="hoomanlogicModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="hoomanlogicModel.Connection" Role="Connection" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Connection">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Connections_Users_User2">
+          <End Type="hoomanlogicModel.AspNetUser" Role="AspNetUser" Multiplicity="1" />
+          <End Type="hoomanlogicModel.Connection" Role="Connection" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Connection">
+              <PropertyRef Name="UserId_Connection" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Connections_Personas1">
+          <End Type="hoomanlogicModel.Persona" Role="Persona" Multiplicity="1" />
+          <End Type="hoomanlogicModel.Connection" Role="Connection" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Persona">
+              <PropertyRef Name="UserId" />
+              <PropertyRef Name="Kind" />
+            </Principal>
+            <Dependent Role="Connection">
+              <PropertyRef Name="UserId" />
+              <PropertyRef Name="Persona" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Connections_Personas2">
+          <End Type="hoomanlogicModel.Persona" Role="Persona" Multiplicity="1" />
+          <End Type="hoomanlogicModel.Connection" Role="Connection" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Persona">
+              <PropertyRef Name="UserId" />
+              <PropertyRef Name="Kind" />
+            </Principal>
+            <Dependent Role="Connection">
+              <PropertyRef Name="UserId_Connection" />
+              <PropertyRef Name="Persona_Connection" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ActionPathway">
+          <Key>
+            <PropertyRef Name="RootId" />
+            <PropertyRef Name="ParentId" />
+            <PropertyRef Name="ChildId" />
+          </Key>
+          <Property Name="RootId" Type="Guid" Nullable="false" />
+          <Property Name="ParentId" Type="Guid" Nullable="false" />
+          <Property Name="ChildId" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="ChildAction" Relationship="hoomanlogicModel.FK_ActionPathways_Child" FromRole="ActionPathway" ToRole="Action" />
+          <NavigationProperty Name="ParentAction" Relationship="hoomanlogicModel.FK_ActionPathways_Parent" FromRole="ActionPathway" ToRole="Action" />
+          <NavigationProperty Name="RootAction" Relationship="hoomanlogicModel.FK_ActionPathways_Root" FromRole="ActionPathway" ToRole="Action" />
+          <Property Name="Order" Type="Byte" />
+        </EntityType>
+        <Association Name="FK_ActionPathways_Child">
+          <End Type="hoomanlogicModel.Action" Role="Action" Multiplicity="1" />
+          <End Type="hoomanlogicModel.ActionPathway" Role="ActionPathway" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Action">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ActionPathway">
+              <PropertyRef Name="ChildId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ActionPathways_Parent">
+          <End Type="hoomanlogicModel.Action" Role="Action" Multiplicity="1" />
+          <End Type="hoomanlogicModel.ActionPathway" Role="ActionPathway" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Action">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ActionPathway">
+              <PropertyRef Name="ParentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ActionPathways_Root">
+          <End Type="hoomanlogicModel.Action" Role="Action" Multiplicity="1" />
+          <End Type="hoomanlogicModel.ActionPathway" Role="ActionPathway" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Action">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ActionPathway">
+              <PropertyRef Name="RootId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Tag">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Kind" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Path" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="AspNetUser" Relationship="hoomanlogicModel.FK_Tags_Users" FromRole="Tag" ToRole="AspNetUser" />
+          <NavigationProperty Name="Actions" Relationship="hoomanlogicModel.ActionsTags" FromRole="Tag" ToRole="Action" />
+          <NavigationProperty Name="Targets" Relationship="hoomanlogicModel.FK_Targets_Tags" FromRole="Tag" ToRole="Target" />
+          <Property Name="IsFocus" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Tags_Users">
+          <End Type="hoomanlogicModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="hoomanlogicModel.Tag" Role="Tag" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Tag">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ActionsTags">
+          <End Type="hoomanlogicModel.Action" Role="Action" Multiplicity="*" />
+          <End Type="hoomanlogicModel.Tag" Role="Tag" Multiplicity="*" />
+        </Association>
+        <EntityType Name="Target">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="TagId" Type="Guid" Nullable="false" />
+          <Property Name="Kind" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Timeline" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Goal" Type="Int16" Nullable="false" />
+          <Property Name="Enlist" Type="DateTime" Precision="3" />
+          <Property Name="Retire" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="AspNetUser" Relationship="hoomanlogicModel.FK_Targets_Users" FromRole="Target" ToRole="AspNetUser" />
+          <NavigationProperty Name="Tag" Relationship="hoomanlogicModel.FK_Targets_Tags" FromRole="Target" ToRole="Tag" />
+        </EntityType>
+        <Association Name="FK_Targets_Users">
+          <End Type="hoomanlogicModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="hoomanlogicModel.Target" Role="Target" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Target">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Targets_Tags">
+          <End Type="hoomanlogicModel.Tag" Role="Tag" Multiplicity="1" />
+          <End Type="hoomanlogicModel.Target" Role="Target" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tag">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Target">
+              <PropertyRef Name="TagId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Focus">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Kind" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Enlist" Type="DateTime" Precision="3" />
+          <Property Name="Retire" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="AspNetUser" Relationship="hoomanlogicModel.FK_Focuses_User" FromRole="Focus" ToRole="AspNetUser" />
+          <Property Name="IconUri" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+          <Property Name="TagName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <Association Name="FK_Focuses_User">
+          <End Type="hoomanlogicModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="hoomanlogicModel.Focus" Role="Focus" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Focus">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Preference">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="WeekStarts" Type="Byte" Nullable="false" />
+          <Property Name="Location" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="EmailNotifications" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="AspNetUser" Relationship="hoomanlogicModel.FK_Preferences_User" FromRole="Preference" ToRole="AspNetUser" />
+        </EntityType>
+        <Association Name="FK_Preferences_User">
+          <End Type="hoomanlogicModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="hoomanlogicModel.Preference" Role="Preference" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Preference">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="hoomanlogicModelStoreContainer" CdmEntityContainer="hoomanlogicEntities" >
+          <EntitySetMapping Name="Actions">
+            <EntityTypeMapping TypeName="hoomanlogicModel.Action">
+              <MappingFragment StoreEntitySet="Actions">
+                <ScalarProperty Name="Content" ColumnName="Content" />
+                <ScalarProperty Name="IsSomeday" ColumnName="IsSomeday" />
+                <ScalarProperty Name="NextDate" ColumnName="NextDate" />
+                <ScalarProperty Name="Duration" ColumnName="Duration" />
+                <ScalarProperty Name="StartAt" ColumnName="StartAt" />
+                <ScalarProperty Name="Retire" ColumnName="Retire" />
+                <ScalarProperty Name="Enlist" ColumnName="Enlist" />
+                <ScalarProperty Name="Kind" ColumnName="Kind" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AspNetUsers">
+            <EntityTypeMapping TypeName="hoomanlogicModel.AspNetUser">
+              <MappingFragment StoreEntitySet="AspNetUsers">
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="AccessFailedCount" ColumnName="AccessFailedCount" />
+                <ScalarProperty Name="LockoutEnabled" ColumnName="LockoutEnabled" />
+                <ScalarProperty Name="LockoutEndDateUtc" ColumnName="LockoutEndDateUtc" />
+                <ScalarProperty Name="TwoFactorEnabled" ColumnName="TwoFactorEnabled" />
+                <ScalarProperty Name="PhoneNumberConfirmed" ColumnName="PhoneNumberConfirmed" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="SecurityStamp" ColumnName="SecurityStamp" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="EmailConfirmed" ColumnName="EmailConfirmed" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Hometown" ColumnName="Hometown" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LogEntries">
+            <EntityTypeMapping TypeName="hoomanlogicModel.LogEntry">
+              <MappingFragment StoreEntitySet="LogEntries">
+                <ScalarProperty Name="Details" ColumnName="Details" />
+                <ScalarProperty Name="RootActionId" ColumnName="RootActionId" />
+                <ScalarProperty Name="Duration" ColumnName="Duration" />
+                <ScalarProperty Name="Entry" ColumnName="Entry" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="ActionId" ColumnName="ActionId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RecurrenceRules">
+            <EntityTypeMapping TypeName="hoomanlogicModel.RecurrenceRule">
+              <MappingFragment StoreEntitySet="RecurrenceRules">
+                <ScalarProperty Name="Rule" ColumnName="Rule" />
+                <ScalarProperty Name="ActionId" ColumnName="ActionId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Achievements">
+            <EntityTypeMapping TypeName="hoomanlogicModel.Achievement">
+              <MappingFragment StoreEntitySet="Achievements">
+                <ScalarProperty Name="IsPublic" ColumnName="IsPublic" />
+                <ScalarProperty Name="Content" ColumnName="Content" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Notifications">
+            <EntityTypeMapping TypeName="hoomanlogicModel.Notification">
+              <MappingFragment StoreEntitySet="Notifications">
+                <ScalarProperty Name="ReadAt" ColumnName="ReadAt" />
+                <ScalarProperty Name="Context" ColumnName="Context" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="Kind" ColumnName="Kind" />
+                <ScalarProperty Name="OccurredAt" ColumnName="OccurredAt" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Personas">
+            <EntityTypeMapping TypeName="hoomanlogicModel.Persona">
+              <MappingFragment StoreEntitySet="Personas">
+                <ScalarProperty Name="ProfileUri" ColumnName="ProfileUri" />
+                <ScalarProperty Name="KnownAs" ColumnName="KnownAs" />
+                <ScalarProperty Name="Kind" ColumnName="Kind" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Messages">
+            <EntityTypeMapping TypeName="hoomanlogicModel.Message">
+              <MappingFragment StoreEntitySet="Messages">
+                <ScalarProperty Name="Read" ColumnName="Read" />
+                <ScalarProperty Name="Sent" ColumnName="Sent" />
+                <ScalarProperty Name="Uri" ColumnName="Uri" />
+                <ScalarProperty Name="Text" ColumnName="Text" />
+                <ScalarProperty Name="UserId_To" ColumnName="UserId_To" />
+                <ScalarProperty Name="UserId_From" ColumnName="UserId_From" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ConnectionRequests">
+            <EntityTypeMapping TypeName="hoomanlogicModel.ConnectionRequest">
+              <MappingFragment StoreEntitySet="ConnectionRequests">
+                <ScalarProperty Name="Persona" ColumnName="Persona" />
+                <ScalarProperty Name="UserId_RequestedBy" ColumnName="UserId_RequestedBy" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Connections">
+            <EntityTypeMapping TypeName="hoomanlogicModel.Connection">
+              <MappingFragment StoreEntitySet="Connections">
+                <ScalarProperty Name="Persona_Connection" ColumnName="Persona_Connection" />
+                <ScalarProperty Name="UserId_Connection" ColumnName="UserId_Connection" />
+                <ScalarProperty Name="Persona" ColumnName="Persona" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ActionPathways">
+            <EntityTypeMapping TypeName="hoomanlogicModel.ActionPathway">
+              <MappingFragment StoreEntitySet="ActionPathways">
+                <ScalarProperty Name="Order" ColumnName="Order" />
+                <ScalarProperty Name="ChildId" ColumnName="ChildId" />
+                <ScalarProperty Name="ParentId" ColumnName="ParentId" />
+                <ScalarProperty Name="RootId" ColumnName="RootId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tags">
+            <EntityTypeMapping TypeName="hoomanlogicModel.Tag">
+              <MappingFragment StoreEntitySet="Tags">
+                <ScalarProperty Name="IsFocus" ColumnName="IsFocus" />
+                <ScalarProperty Name="Path" ColumnName="Path" />
+                <ScalarProperty Name="Kind" ColumnName="Kind" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="ActionsTags" TypeName="hoomanlogicModel.ActionsTags" StoreEntitySet="ActionsTags">
+            <EndProperty Name="Tag">
+              <ScalarProperty Name="Id" ColumnName="TagId" />
+            </EndProperty>
+            <EndProperty Name="Action">
+              <ScalarProperty Name="Id" ColumnName="ActionId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <EntitySetMapping Name="Targets">
+            <EntityTypeMapping TypeName="hoomanlogicModel.Target">
+              <MappingFragment StoreEntitySet="Targets">
+                <ScalarProperty Name="Retire" ColumnName="Retire" />
+                <ScalarProperty Name="Enlist" ColumnName="Enlist" />
+                <ScalarProperty Name="Goal" ColumnName="Goal" />
+                <ScalarProperty Name="Timeline" ColumnName="Timeline" />
+                <ScalarProperty Name="Kind" ColumnName="Kind" />
+                <ScalarProperty Name="TagId" ColumnName="TagId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Focuses">
+            <EntityTypeMapping TypeName="hoomanlogicModel.Focus">
+              <MappingFragment StoreEntitySet="Focuses">
+                <ScalarProperty Name="TagName" ColumnName="TagName" />
+                <ScalarProperty Name="IconUri" ColumnName="IconUri" />
+                <ScalarProperty Name="Retire" ColumnName="Retire" />
+                <ScalarProperty Name="Enlist" ColumnName="Enlist" />
+                <ScalarProperty Name="Kind" ColumnName="Kind" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Preferences">
+            <EntityTypeMapping TypeName="hoomanlogicModel.Preference">
+              <MappingFragment StoreEntitySet="Preferences">
+                <ScalarProperty Name="EmailNotifications" ColumnName="EmailNotifications" />
+                <ScalarProperty Name="Location" ColumnName="Location" />
+                <ScalarProperty Name="WeekStarts" ColumnName="WeekStarts" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

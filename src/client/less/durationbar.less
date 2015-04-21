@@ -1,0 +1,23 @@
+.duration-bar {
+    color: white;
+    font-weight: bolder;
+    display: inline-block;
+    text-align: center;
+    -ms-text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    text-shadow: 0 0 3px black;
+    border: 1px solid black;
+}
+
+.duration-bar.elapsed {
+    .linear-gradient(left, right, black, black, 0, rgb(134, 134, 134), 100%);
+    border-radius: 4px 0 0 4px;
+    border-right: 0;
+}
+
+.duration-bar.remaining {
+    .linear-gradient(left, right, @clrNavBarAccent, @clrNavBarAccent, 0, @clrNavBarAccentGradient, 100%);
+    border-radius: 0 4px 4px 0;
+    border-left: 0;
+}

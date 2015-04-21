@@ -1,0 +1,55 @@
+.table-title {
+    padding: 2px 2px 2px 8px;
+    font-weight: bold;
+    font-size: 1.5em;
+}
+
+.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+    padding: 2px 2px 2px 8px;
+    line-height: 1.42857143;
+    vertical-align: top;
+    border-top: 1px solid #ddd;
+}
+
+/* HOVER HIGHLIGHTING */
+.table-striped > tbody > tr.highlight-hover:hover > td,
+.table-striped > tbody > tr.highlight-hover:hover > th {
+    background-color: @clrHighlightRow;
+    border-top: solid 1px @clrHighlightRowBorder;
+    cursor: pointer;
+}
+
+.table-striped > tbody > tr.highlight-hover:nth-child(odd):hover > td,
+.table-striped > tbody > tr.highlight-hover:nth-child(odd):hover > th {
+    background-color: @clrHighlightRow;
+    border-top: solid 1px @clrHighlightRowBorder;
+    cursor: pointer;
+}
+
+/* SELECTED HIGHLIGHTING */
+.table-striped > tbody > tr.highlight-row > td, .table-striped > tbody > tr.highlight-row > th {
+    background-color: @clrHighlightRow;
+    border-top: solid 1px @clrHighlightRowBorder;
+}
+
+.table-striped > tbody > tr.highlight-row:nth-child(odd) > td, .table-striped > tbody > tr.highlight-row:nth-child(odd) > th {
+    background-color: @clrHighlightRow;
+    border-top: solid 1px @clrHighlightRowBorder;
+}
+
+.table-striped > tbody > tr > td.estimated-time {
+    font-weight: normal;
+    font-style: italic;
+    color: gray;
+}
+
+.table-striped > tbody > tr > td.estimated-time-row {
+    font-weight: normal;
+    font-style: italic;
+}
+
+.table-striped > tbody > tr > td {
+    font-weight: bold;
+    font-style: normal;
+    color: rgba(0,0,0,1);
+}
