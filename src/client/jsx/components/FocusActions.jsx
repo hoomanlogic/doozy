@@ -64,8 +64,7 @@ var FocusActions = React.createClass({
          * Update globally accessible default tags
          */
         window['ui'] = window['ui'] || {};
-        window['ui'].tags = window['ui'].tags || [];
-        window['ui'].tags = _.union(window['ui'].tags, tagsFilter);
+        window['ui'].tags = tagsFilter;
     },
     
     handleActionStoreUpdate: function (actions, focusTag) {
