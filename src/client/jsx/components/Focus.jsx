@@ -1,4 +1,26 @@
 var Focus = React.createClass({
+    handleFocusClick: function (item) {
+        if (this.props.handleFocusClick) {
+            this.props.handleFocusClick(item);
+        }
+    },
+    naturalDays: function (date) {
+        if (!date) {
+            return '';   
+        }
+        var date1 = new Date(date.toLocaleDateString());
+        var date2 = new Date((new Date()).toLocaleDateString());
+        var timeDiff = Math.abs(date2.getTime() - date1.getTime());
+        var diffDays = Math.floor(timeDiff / (1000 * 3600 * 24));
+        if (diffDays === 0) {
+            return 'today';
+        } else if (diffDays === 1) {
+            return 'yesterday';
+        } else {
+            return diffDays + ' day' + (diffDays > 1 ? 's' : '') + ' ago';
+        }
+        
+    },
     render: function () {
         var item = this.props.data;
         
@@ -38,7 +60,7 @@ var Focus = React.createClass({
         var lastDone = this.naturalDays(lastDate);
         
         focus = (
-            <a onClick={this.handleFocusClicked.bind(null, item)} style={{borderBottom: '1px solid #e0e0e0', paddingTop: '3px', paddingBottom: '3px'}}>
+            <a onClick={this.handleFocusClick.bind(null, item)} style={{borderBottom: '1px solid #e0e0e0', paddingTop: '3px', paddingBottom: '3px'}}>
                 <div className="focus">
                     <img style={{display: 'inline', verticalAlign: 'inherit'}} src={item.iconUri} />
                     <div style={{display: 'inline-block'}}>
@@ -54,27 +76,5 @@ var Focus = React.createClass({
                 {focus}
             </li>
         );
-    },
-    handleFocusClicked: function (item) {
-        if (this.props.handleFocusClicked) {
-            this.props.handleFocusClicked(item);
-        }
-    },
-    naturalDays: function (date) {
-        if (!date) {
-            return '';   
-        }
-        var date1 = new Date(date.toLocaleDateString());
-        var date2 = new Date((new Date()).toLocaleDateString());
-        var timeDiff = Math.abs(date2.getTime() - date1.getTime());
-        var diffDays = Math.floor(timeDiff / (1000 * 3600 * 24));
-        if (diffDays === 0) {
-            return 'today';
-        } else if (diffDays === 1) {
-            return 'yesterday';
-        } else {
-            return diffDays + ' day' + (diffDays > 1 ? 's' : '') + ' ago';
-        }
-        
     }
 });

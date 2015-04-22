@@ -67,8 +67,9 @@ var Timer = React.createClass({
             verticalAlign: 'super'
         }
         
-        if (timerStore.updates.value.isRunning) {
-            var timeSoFar = timerStore.updates.value.timeSoFar + (new Date().getTime() - timerStore.updates.value.startedAt)
+        if (timerStore.updates.value.isRunning || timerStore.updates.value.timeSoFar > 0) {
+            var currentTime = new Date().getTime();
+            var timeSoFar = timerStore.updates.value.timeSoFar + (currentTime - (timerStore.updates.value.startedAt || currentTime))
             var duration = new babble.Duration(timeSoFar);
             displayDuration = (<span style={textStyle}>{duration.toString(':')}</span>);
         }

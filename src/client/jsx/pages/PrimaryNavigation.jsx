@@ -39,7 +39,13 @@ var PrimaryNavigation = React.createClass({
         this.setState({notificationsLastUpdated: new Date().toISOString()});
     },
     handleDoneTimerClick: function () {
+        timerStore.pauseTimer();
+        var duration = new babble.Duration(timerStore.updates.value.timeSoFar);
         
+        ui.logAction({
+            name: timerStore.updates.value.workingOn,
+            duration: duration.toMinutes()
+        });
     },
     handleResetTimerClick: function () {
         timerStore.resetTimer();
@@ -167,11 +173,6 @@ var PrimaryNavigation = React.createClass({
             <div className="navbar navbar-hl-theme navbar-fixed-top">
                 <ul className="nav navbar-nav">
                     {focusesDropDownMenu}
-                    <li>
-                        <a style={aStyle} href="javascript:;" onClick={this.handleResetTimerClick}>
-                            <i className="fa fa-2x fa-recycle"></i>
-                        </a>
-                    </li>
                     <Timer />
                     <li>
                         <input ref="workingOn" style={inputStyle} type="text" placeholder="What are you working on?" onChange={this.handleChange} value={timerStore.updates.value.workingOn} />
@@ -179,6 +180,11 @@ var PrimaryNavigation = React.createClass({
                     <li>
                         <a style={aStyle} href="javascript:;" onClick={this.handleDoneTimerClick}>
                             <i className="fa fa-2x fa-check-square-o"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a style={aStyle} href="javascript:;" onClick={this.handleResetTimerClick}>
+                            <i style={{marginTop: '-2px'}} className="fa fa-2x fa-times"></i>
                         </a>
                     </li>
                 </ul>

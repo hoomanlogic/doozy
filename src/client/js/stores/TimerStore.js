@@ -33,13 +33,15 @@ var TimerStore = function () {
     };
     
     this.pauseTimer = function () {
-        this.updates.value.timeSoFar += new Date().getTime() - this.updates.value.startedAt;
-        hlcommon.assign(me.updates.value, {
-            isRunning: false,
-            startedAt: null,
-        });
-        me.notify();
-        hlio.saveLocal('hl.timer', me.updates.value, 'nothingtohide');
+        if (me.updates.value.isRunning) {
+            this.updates.value.timeSoFar += new Date().getTime() - this.updates.value.startedAt;
+            hlcommon.assign(me.updates.value, {
+                isRunning: false,
+                startedAt: null,
+            });
+            me.notify();
+            hlio.saveLocal('hl.timer', me.updates.value, 'nothingtohide');
+        }
     };
     
     this.resetTimer = function () {

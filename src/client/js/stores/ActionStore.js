@@ -108,6 +108,46 @@ var ActionStore = function () {
         });
     };
     
+    this.lognew = function (newAction, log) {
+        
+        // update now for optimistic concurrency
+        updates.onNext(updates.value.concat(newAction));
+        
+        _api.postAction(newAction)
+        .done(function (postActionResult) {
+            jsonActionDates(postActionResult);
+            hlcommon.assign(newAction, postActionResult);
+            updates.onNext(updates.value);
+            hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
+            
+            var latestEntry = { date: log.performed, actionId: newAction.id, entry: 'performed', duration: log.duration, details: log.details };
+            hlcommon.assign(newAction, { retire: (newAction.recurrenceRules.length > 0 ? null : log.performed), latestEntry: latestEntry });
+            updates.onNext(updates.value);
+            
+            _api.postLog(latestEntry)
+            .done(function (postLogResult) {
+                jsonActionDates(postLogResult);
+                hlcommon.assign(newAction, postLogResult);
+                updates.onNext(updates.value);
+                hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
+                toastr.success('Logged new action ' + newAction.name);
+            })
+            .fail(function (err) {
+                hlcommon.assign(newAction, postActionResult);
+                updates.onNext(updates.value);
+                toastr.error(err.responseText);
+            });
+            
+        })
+        .fail( function (err) {
+            var filtered = updates.value.filter( function (item) { return item !== newAction; });
+            updates.onNext(filtered);
+            toastr.error(err.responseText);
+        });
+        
+
+    };
+    
     this.destroy = function (action) {
         // optimistic concurrency
         var filtered = updates.value.filter( function (item) { return item.ref !== action.ref; });

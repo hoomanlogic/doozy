@@ -76,6 +76,13 @@ var HoomanHubApp = React.createClass({
     
     componentDidMount: function () {
         this.initializeSignalR();
+        /**
+         * Global UI Handles
+         */
+        window['ui'] = window['ui'] || {};
+        window['ui'].addAction = this.addAction;
+        window['ui'].editAction = this.editAction;
+        window['ui'].logAction = this.logAction;
     },
     componentDidUpdate: function () {
         // save state of application
@@ -448,8 +455,8 @@ var HoomanHubApp = React.createClass({
                     handleFocusClick={this.handleFocusClick} />
                 {weatherBackdrop}
                 {page}
-                <AddEditAction ref="addeditaction" currentFocus={this.state.currentFocus} settings={this.props.settings} />
-                <LogAction ref="logaction" />
+                <AddEditAction ref="addeditaction" currentFocus={this.state.currentFocus} />
+                <LogAction ref="logaction" currentFocus={this.state.currentFocus} />
                 <Conversation conversation={this.state.activeConversation} send={this.send} userName={this.props.settings.userName} onClose={this.handleConversationClose} />
             </div>
         );

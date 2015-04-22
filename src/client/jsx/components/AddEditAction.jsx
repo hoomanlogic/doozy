@@ -55,7 +55,7 @@ var AddEditAction = React.createClass({
         if (this.show) {
             this.show = false;
             this.refs.modal.show();
-            if (this.state.mode === 'Add') {
+            if (this.state.mode === 'Add' && this.state.viewMode === this.VIEW_MODE.GENERAL) {
                 $(this.refs.name.getDOMNode()).focus();
             }
         }
