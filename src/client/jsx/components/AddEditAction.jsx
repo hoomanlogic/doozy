@@ -62,7 +62,7 @@ var AddEditAction = React.createClass({
      *************************************************************/
     add: function () {
         // create a new action
-        var action = new ToDo('New ToDo', TAG_PREFIX.FOCUS + this.props.currentFocus.tagName);
+        var action = new ToDo('New ToDo', this.props.focusTag);
         action.name = null;
         action.enlist = new Date();
         

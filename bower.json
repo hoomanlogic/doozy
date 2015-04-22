@@ -16,7 +16,7 @@
   ],
   "dependencies": {
     "jquery": "~1.11.2",
-    "selectize": "https://github.com/brianreavis/selectize.js.git#~0.11.2",
+    "selectize": "https://github.com/brianreavis/selectize.js.git#~0.12.1",
     "underscore": "~1.7.0",
     "toastr": "https://github.com/CodeSeven/toastr.git#~2.1.0",
     "simpleStorage": "~0.1.3",
@@ -33,5 +33,8 @@
     "jstorage": "~0.4.12",
     "Sugar": "https://github.com/geoffreyfloyd/Sugar.git#master",
     "babble": "https://github.com/hoomanlogic/babble.git#master"
+  },
+  "resolutions": {
+    "sifter": "0.4.x"
   }
 }

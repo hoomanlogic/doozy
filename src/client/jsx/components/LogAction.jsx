@@ -18,25 +18,23 @@ var LogAction = React.createClass({
     
     componentDidMount: function () {
         // initialize control for tags functionality
-        $(this.refs.name.getDOMNode()).selectize({
-            delimiter: '|',
-            persist: true,
-            create: function(input) {
-                return {
-                    value: input,
-                    text: input
-                }
-            },
-            maxItems: 1,
-            openOnFocus: false,
-            onItemAdd: function (value, $item) {
-                var existingAction = this.getExistingAction(value);
-                if (existingAction !== void 0 && existingAction !== null) {
-                    var hoomanduration = babble.get('durations').translate(existingAction.duration + ' min').tokens[0].value.toString();
-                    this.refs.actualduration.getDOMNode().value = hoomanduration;   
-                }
-            }.bind(this)
-        });
+        this.setupActionsControl();
+    },
+    
+    componentDidUpdate: function () {
+        if (this.show) {
+            
+            if (this.state.isNewAction) {
+                this.setupTagsControl();
+            }
+            this.show = false;
+            this.refs.modal.show();
+            if (this.actionName.length > 0) {
+                $(this.refs.actualduration.getDOMNode()).focus();
+            } else {
+                $(this.refs.name.getDOMNode())[0].selectize.focus();
+            }
+        }
     },
     
     /*************************************************************
@@ -121,7 +119,7 @@ var LogAction = React.createClass({
             } else {
                 var tags = ui.tags || [];
                 tags = tags.slice(); //copy
-                tags.push(TAG_PREFIX.FOCUS + this.props.currentFocus.tagName);
+                tags.push(this.props.focusTag);
                 
                 newAction = new ToDo(names[i], tags);
                 newAction.enlist = this.state.date;
@@ -136,7 +134,13 @@ var LogAction = React.createClass({
     /*************************************************************
      * MISC
      *************************************************************/
-    setOptions: function (selectize) {
+    getExistingAction: function (name) {
+        var existingAction = _.find(actionStore.updates.value, function(item) { 
+            return item.name.toLowerCase() === name.toLowerCase(); 
+        });
+        return existingAction;
+    },
+    setOptionsAction: function (selectize) {
         // clear previously set options
         selectize.clearOptions();
         
@@ -153,18 +157,112 @@ var LogAction = React.createClass({
             });
         });
     },
-    getExistingAction: function (name) {
-        var existingAction = _.find(actionStore.updates.value, function(item) { 
-            return item.name.toLowerCase() === name.toLowerCase(); 
+    setOptionsTag: function (selectize) {
+        // clear previously set options
+        selectize.clearOptions();
+        
+        // get distinct tags user has assigned to other actions
+        var actions = actionStore.updates.value;
+        var distinctTags = [];
+        actions.map(function(item) {
+            distinctTags = _.union(distinctTags, item.tags);
         });
-        return existingAction;
+        // { kind: 'Tag', name: tag }
+        // add tags that user has assigned to other actions
+        distinctTags.forEach( function (tag) {
+            selectize.addOption(parseTag(tag));
+        });
+    },
+    setupActionsControl: function () {
+        $(this.refs.name.getDOMNode()).selectize({
+            delimiter: '|',
+            persist: true,
+            create: function(input) {
+                return {
+                    value: input,
+                    text: input
+                }
+            },
+            maxItems: 1,
+            openOnFocus: false,
+            onItemAdd: function (value, $item) {
+                var existingAction = this.getExistingAction(value);
+                if (existingAction !== void 0 && existingAction !== null) {
+                    var hoomanduration = babble.get('durations').translate(existingAction.duration + ' min').tokens[0].value.toString();
+                    this.refs.actualduration.getDOMNode().value = hoomanduration;   
+                }
+            }.bind(this)
+        });  
+    },
+    setupTagsControl: function () {
+       
+        // initialize control for tags functionality
+        $(this.refs.tags.getDOMNode()).selectize({
+            delimiter: ',',
+            persist: true,
+            valueField: 'value',
+            labelField: 'name',
+            searchField: ['name', 'kind'],
+            render: {
+                item: function(item, escape) {
+                    return '<div class="item">' + escape(item.value) + '</div>';
+                },
+                option: function(item, escape) {
+                    var label = item.name || item.kind;
+                    var caption = item.kind ? item.kind : null;
+                    return '<div>' +
+                        '<span class="label">' + escape(label) + '</span>' +
+                        (caption ? '<span class="caption">' + escape(caption) + '</span>' : '') +
+                    '</div>';
+                }
+            },
+            create: function(input) {
+                var kind = 'Tag';
+                var name = input;
+                if (name.indexOf('!') === 0) {
+                    kind = 'Focus'; // part of
+                    name = name.substring(1);
+                } else if (name.indexOf('@') === 0) {
+                    kind = 'Place'; // where
+                    name = name.substring(1);
+                } else if (name.indexOf('>') === 0) {
+                    kind = 'Goal'; // to what end
+                    name = name.substring(1);
+                } else if (name.indexOf('$') === 0) {
+                    kind = 'Need'; // why
+                    name = name.substring(1);
+                } else if (name.indexOf('#') === 0) {
+                    kind = 'Box'; // when
+                    name = name.substring(1);
+                }
+                return {
+                    value: input,
+                    kind: kind,
+                    name: name
+                };
+            }
+        });
+
+        // populate existing tag options
+        var selectize = $(this.refs.tags.getDOMNode())[0].selectize;
+        this.setOptionsTag(selectize);
+
+        // set current value
+        var tags = ui.tags || [];
+        tags = tags.slice(); //copy
+        tags.push(this.props.focusTag);
+        selectize.setValue(tags);
     },
     
     /*************************************************************
      * API
      *************************************************************/
     log: function (action) {
-        var actionName;
+        
+        // flag to call modal's graceful open dialog function
+        this.show = true;
+        
+        var actionName = '';
         
         var state = {
             date: Date.create('today'),
@@ -190,6 +288,11 @@ var LogAction = React.createClass({
         } else if (typeof action === 'string') {
             actionName = action;
         }
+        this.actionName = actionName;
+        
+        if (!this.getExistingAction(actionName)) {
+            state.isNewAction = true;
+        }
         
         this.setState(state);
         
@@ -197,24 +300,16 @@ var LogAction = React.createClass({
          * Selectize the actions
          */
         var selectize = $(this.refs.name.getDOMNode())[0].selectize;
-        this.setOptions(selectize);
+        this.setOptionsAction(selectize);
         if (actionName) {
-            
-            if (!this.getExistingAction(actionName)) {
+            if (state.isNewAction && actionName.length > 0) {
                 selectize.addOption({
                     value: actionName,
                     text: actionName
                 });
             }
-            
             selectize.setValue(actionName);
         }
-        
-        /**
-         * Show modal and focus
-         */
-        this.refs.modal.show();
-        $(this.refs.name.getDOMNode())[0].selectize.focus();
     },
     
     /*************************************************************
@@ -236,6 +331,17 @@ var LogAction = React.createClass({
             top: '-28px',
             left: '285px'
         };
+        
+        var tags;
+        
+        if (this.state.isNewAction) {
+            tags = (
+                <div className="form-group">
+                    <label htmlFor="action-tags">Tags</label>
+                    <input id="action-tags" ref="tags" type="text" />
+                </div>  
+            );
+        }
 
         return (
             <Modal ref="modal" show={false} header="Log Action" buttons={buttons}>
@@ -244,6 +350,7 @@ var LogAction = React.createClass({
                         <label htmlFor="f1">What did you do?</label>
                         <input id="f1" ref="name" type="text" />
                     </div>
+                    {tags}
                     <div style={forceHeightStyle} className="form-group">
                         <label htmlFor="f2">When did you do this?</label>
                         <input id="f2" ref="performedat" type="text" className="form-control" onChange={this.handleChange} value={this.state.dateInput} />

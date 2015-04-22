@@ -452,8 +452,8 @@ var HoomanHubApp = React.createClass({
                     handleFocusClick={this.handleFocusClick} />
                 {weatherBackdrop}
                 {page}
-                <AddEditAction ref="addeditaction" currentFocus={this.state.currentFocus} />
-                <LogAction ref="logaction" currentFocus={this.state.currentFocus} />
+                <AddEditAction ref="addeditaction" focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : ''} />
+                <LogAction ref="logaction" focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : ''} />
                 <Conversation conversation={this.state.activeConversation} send={this.send} userName={this.props.settings.userName} onClose={this.handleConversationClose} />
             </div>
         );

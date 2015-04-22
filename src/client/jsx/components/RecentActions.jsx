@@ -51,7 +51,7 @@ var RecentActions = React.createClass({
         // html
         return (
             <div>
-                <div className="table-title">Recent Actions<button type="button" style={{ paddingTop: '3px', paddingBottom: '3px' }} className="btn btn-primary pull-right" onClick={this.props.logAction}><i className="fa fa-plus"></i> Log Action</button></div>
+                <div className="table-title">Recent Actions<button type="button" style={{ paddingTop: '3px', paddingBottom: '3px' }} className="btn btn-primary pull-right" onClick={ui.logAction}><i className="fa fa-plus"></i> Log Action</button></div>
                 <table className="table table-striped">
                     <tbody>                        
                         {recentActions.map(function(item, index) {
