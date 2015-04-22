@@ -1,7 +1,14 @@
 var ActionRow = React.createClass({
+    mixins: [React.addons.PureRenderMixin],
     /*************************************************************
      * COMPONENT LIFECYCLE
      *************************************************************/
+    getInitialState: function () {
+        return {
+            windowWidth: window.innerWidth
+        };
+    },
+    
     componentWillMount: function () {
         var nameChange = EventHandler.create();
         nameChange
@@ -19,16 +26,13 @@ var ActionRow = React.createClass({
             nameChange: nameChange
         };
     },
-    componentWillUnmount: function () {
-        this.handlers.nameChange.dispose();
+    componentDidMount: function() {
+        window.addEventListener('resize', this.handleResize);
     },
     
-    shouldComponentUpdate: function (nextProps, nextState) {
-        return (
-            nextProps.actionId !== this.props.actionId ||
-            nextProps.actionName !== this.props.actionName ||
-            nextProps.actionRetire !== this.props.actionRetire
-        );
+    componentWillUnmount: function () {
+        this.handlers.nameChange.dispose();
+        window.removeEventListener('resize', this.handleResize);
     },
     
     /*************************************************************
@@ -71,6 +75,7 @@ var ActionRow = React.createClass({
     },
     handleTouchStart: function(event) {
         this.isTap = true;
+        event.preventDefault()
     },
     handleTouchMove: function(event) {
         this.isTap = false;
@@ -83,6 +88,9 @@ var ActionRow = React.createClass({
     },
     handleNameChange: function (name) {
         actionStore.update({ actionRef: this.props.actionRef, state: { name: name } });
+    },
+    handleResize: function(e) {
+        this.setState({windowWidth: window.innerWidth});
     },
     
     /*************************************************************
@@ -136,7 +144,7 @@ var ActionRow = React.createClass({
                     {details}
                     {repeats}
                 </td>
-                <td title={title}>{this.props.actionLastPerformed ? this.naturalDays(this.props.actionLastPerformed) : ''}</td>
+                <td hidden={this.state.windowWidth < 600 ? true : false} title={title}>{this.props.actionLastPerformed ? this.naturalDays(this.props.actionLastPerformed) : ''}</td>
             </tr>
         );
     },
