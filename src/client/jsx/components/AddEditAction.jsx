@@ -47,12 +47,9 @@ var AddEditAction = React.createClass({
         this.userObserver.dispose();
     },
     
-    componentDidMount: function () {
-        this.setupTagsControl();
-    },
     componentDidUpdate: function () {
-        this.setupTagsControl();
         if (this.show) {
+            this.setupTagsControl();
             this.show = false;
             this.refs.modal.show();
             if (this.state.mode === 'Add' && this.state.viewMode === this.VIEW_MODE.GENERAL) {
@@ -168,6 +165,8 @@ var AddEditAction = React.createClass({
         
         // set state
         this.setState(state);
+        
+        this.setupTagsControl();
     },
     
     /*************************************************************

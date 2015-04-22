@@ -1,4 +1,7 @@
 var ActionRow = React.createClass({
+    /*************************************************************
+     * COMPONENT LIFECYCLE
+     *************************************************************/
     componentWillMount: function () {
         var nameChange = EventHandler.create();
         nameChange
@@ -10,7 +13,7 @@ var ActionRow = React.createClass({
                 return name.length > 2 && name !== this.props.action.name;
             }.bind(this))
             .distinctUntilChanged()
-            .subscribe(this.saveActionName);
+            .subscribe(this.handleNameChange);
        
         this.handlers = {
             nameChange: nameChange
@@ -19,6 +22,7 @@ var ActionRow = React.createClass({
     componentWillUnmount: function () {
         this.handlers.nameChange.dispose();
     },
+    
     shouldComponentUpdate: function (nextProps, nextState) {
         return (
             nextProps.actionId !== this.props.actionId ||
@@ -26,6 +30,10 @@ var ActionRow = React.createClass({
             nextProps.actionRetire !== this.props.actionRetire
         );
     },
+    
+    /*************************************************************
+     * HELPERS
+     *************************************************************/
     naturalDays: function (date) {
         if (!date) {
             return '';   
@@ -43,8 +51,31 @@ var ActionRow = React.createClass({
         } else {
             return diffDays + ' day' + (diffDays > 1 ? 's' : '') + ' ago';
         }
-        
     },
+    
+    /*************************************************************
+     * EVENT HANDLING
+     *************************************************************/
+    handleCheck: function(event) {
+        if (this.props.logAction && event.target.checked) {
+            this.props.logAction(this.props.action);
+        } else {
+            var result = prompt('Are you sure?');
+            if (result && result.slice(0,1).toLowerCase() === 'y') {
+                actionStore.toggle(this.props.action);
+            }
+        }
+    },
+    handleClick: function(event) {
+        this.props.editAction(this.props.action);
+    },
+    handleNameChange: function (name) {
+        actionStore.update({ actionRef: this.props.actionRef, state: { name: name } });
+    },
+    
+    /*************************************************************
+     * RENDERING
+     *************************************************************/
     render: function () {
         var checked = this.props.actionRetire !== null || (this.props.actionLastPerformed !== null && (this.props.actionNextDate === null || this.props.actionNextDate > new Date()));
         
@@ -97,20 +128,4 @@ var ActionRow = React.createClass({
             </tr>
         );
     },
-    saveActionName: function (name) {
-        actionStore.update({ actionRef: this.props.actionRef, state: { name: name } });
-    },
-    handleCheck: function(event) {
-        if (this.props.logAction && event.target.checked) {
-            this.props.logAction(this.props.action);
-        } else {
-            var result = prompt('Are you sure?');
-            if (result && result.slice(0,1).toLowerCase() === 'y') {
-                actionStore.toggle(this.props.action);
-            }
-        }
-    },
-    handleClick: function(event) {
-        this.props.editAction(this.props.action);
-    }
 });
