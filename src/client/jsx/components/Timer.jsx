@@ -20,6 +20,7 @@ var Timer = React.createClass({
     
     componentWillMount: function () {
         timerStore.subscribe(this.handleTimerStoreUpdate);
+        this.handleTimerStoreUpdate(timerStore.updates.value);
     },
     componentWillUnmount: function () {
         timerStore.dispose(this.handleNotificationStoreUpdate);
@@ -31,17 +32,20 @@ var Timer = React.createClass({
     /*************************************************************
      * EVENT HANDLING
      *************************************************************/
-    handleTimerStoreUpdate: function (prefs) {
+    handleTimerStoreUpdate: function (timer) {
+        if (timer.isRunning && typeof this.interval === 'undefined') {
+            this.interval = setInterval(this.handleRunningTotalUpdate, 1000);
+        } else if (!timer.isRunning && typeof this.interval !== 'undefined') {
+            clearInterval(this.interval);
+            this.interval = void 0;
+        }
         this.setState({timerLastUpdated: new Date().toISOString()});
     },
     handleToggleTimerClick: function () {
         if (timerStore.updates.value.isRunning) {
             timerStore.pauseTimer();
-            clearInterval(this.interval);
-            this.interval = null;
         } else {
             timerStore.startTimer();
-            this.interval = setInterval(this.handleRunningTotalUpdate, 1000);
         }
     },
     handleRunningTotalUpdate: function () {
@@ -66,7 +70,7 @@ var Timer = React.createClass({
         if (timerStore.updates.value.isRunning) {
             var timeSoFar = timerStore.updates.value.timeSoFar + (new Date().getTime() - timerStore.updates.value.startedAt)
             var duration = new babble.Duration(timeSoFar);
-            displayDuration = (<span style={textStyle}>{duration.toString('seconds', ':')}</span>);
+            displayDuration = (<span style={textStyle}>{duration.toString(':')}</span>);
         }
         return (
             <li key="timer"><a style={timerStyle} href="javascript:;" onClick={this.handleToggleTimerClick}><i style={iconStyle} className="fa fa-2x fa-clock-o"></i>{displayDuration}</a></li>
