@@ -294,9 +294,9 @@ var LogAction = React.createClass({
         }
         
         if (action.hasOwnProperty('name')) {
-            actionName = action.name;
+            actionName = action.name || '';
         } else if (typeof action === 'string') {
-            actionName = action;
+            actionName = action || '';
         }
         this.actionName = actionName;
         
