@@ -57,8 +57,8 @@ var ActionRow = React.createClass({
      * EVENT HANDLING
      *************************************************************/
     handleCheck: function(event) {
-        if (this.props.logAction && event.target.checked) {
-            this.props.logAction(this.props.action);
+        if (ui.logAction && event.target.checked) {
+            ui.logAction(this.props.action);
         } else {
             var result = prompt('Are you sure?');
             if (result && result.slice(0,1).toLowerCase() === 'y') {
@@ -67,7 +67,7 @@ var ActionRow = React.createClass({
         }
     },
     handleClick: function(event) {
-        this.props.editAction(this.props.action);
+        ui.editAction(this.props.action);
     },
     handleNameChange: function (name) {
         actionStore.update({ actionRef: this.props.actionRef, state: { name: name } });

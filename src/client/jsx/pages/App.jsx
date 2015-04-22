@@ -22,6 +22,16 @@ var HoomanHubApp = React.createClass({
     },
     
     componentWillMount: function () {
+        /**
+         * Global UI Handles
+         */
+        window['ui'] = window['ui'] || {};
+        window['ui'].addAction = this.addAction;
+        window['ui'].editAction = this.editAction;
+        window['ui'].logAction = this.logAction;
+        window['ui'].goTo = this.goTo;
+        window['ui'].openConversation = this.selectConversation;
+        
         // let error logger know which user
         errl.config.getUser = function () {
             return this.props.settings.userName;
@@ -76,13 +86,6 @@ var HoomanHubApp = React.createClass({
     
     componentDidMount: function () {
         this.initializeSignalR();
-        /**
-         * Global UI Handles
-         */
-        window['ui'] = window['ui'] || {};
-        window['ui'].addAction = this.addAction;
-        window['ui'].editAction = this.editAction;
-        window['ui'].logAction = this.logAction;
     },
     componentDidUpdate: function () {
         // save state of application
@@ -348,35 +351,37 @@ var HoomanHubApp = React.createClass({
      *************************************************************/
     renderManagePersona: function () {
         return (
-            <form role="form">
-                <ProfilePic uri={userStore.updates.value.profileUri} />
-                <div className="form-group">
-                    <label htmlFor="prefs-location">Where do you live?</label>
-                    <input id="prefs-location" ref="prefsLocation" type="text" className="form-control" placeholder="eg. Boulder, CO" defaultValue={userStore.updates.value.location} />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="prefs-week-starts">Which day does your week start on?</label>
-                    <select id="prefs-week-starts" ref="prefsWeekStarts" className="form-control" defaultValue={userStore.updates.value.weekStarts}>
-                        <option value="0">Sunday</option>
-                        <option value="1">Monday</option>
-                        <option value="2">Tuesday</option>
-                        <option value="3">Wednesday</option>
-                        <option value="4">Wednesday</option>
-                        <option value="5">Friday</option>
-                        <option value="6">Saturday</option>
-                    </select>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="prefs-email">What's your email address?</label>
-                    <input id="prefs-email" ref="prefsEmail" type="text" className="form-control" placeholder="" defaultValue={userStore.updates.value.email} />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="prefs-email-notifications">Send notifications through email?</label>
-                    <input id="prefs-email-notifications" ref="prefsEmailNotifications" type="checkbox" className="form-control" defaultValue={userStore.updates.value.emailNotifications} />
-                </div>
-                <button type="button" className="btn btn-primary" onClick={this.handleSavePreferencesClick}>Save Changes</button>
-                <button type="button" className="btn btn-danger" onClick={this.handleCancelClick}>Cancel</button>
-            </form>
+            <div style={{padding: '5px'}}>
+                <form role="form">
+                    <ProfilePic uri={userStore.updates.value.profileUri} />
+                    <div className="form-group">
+                        <label htmlFor="prefs-location">Where do you live?</label>
+                        <input id="prefs-location" ref="prefsLocation" type="text" className="form-control" placeholder="eg. Boulder, CO" defaultValue={userStore.updates.value.location} />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="prefs-week-starts">Which day does your week start on?</label>
+                        <select id="prefs-week-starts" ref="prefsWeekStarts" className="form-control" defaultValue={userStore.updates.value.weekStarts}>
+                            <option value="0">Sunday</option>
+                            <option value="1">Monday</option>
+                            <option value="2">Tuesday</option>
+                            <option value="3">Wednesday</option>
+                            <option value="4">Wednesday</option>
+                            <option value="5">Friday</option>
+                            <option value="6">Saturday</option>
+                        </select>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="prefs-email">What's your email address?</label>
+                        <input id="prefs-email" ref="prefsEmail" type="text" className="form-control" placeholder="" defaultValue={userStore.updates.value.email} />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="prefs-email-notifications">Send notifications through email?</label>
+                        <input id="prefs-email-notifications" ref="prefsEmailNotifications" type="checkbox" className="form-control" defaultValue={userStore.updates.value.emailNotifications} />
+                    </div>
+                    <button type="button" className="btn btn-primary" onClick={this.handleSavePreferencesClick}>Save Changes</button>
+                    <button type="button" className="btn btn-default" onClick={this.handleCancelClick}>Cancel Changes</button>
+                </form>
+            </div>
         );
     },
     renderWeatherBackdrop: function () {
@@ -432,15 +437,9 @@ var HoomanHubApp = React.createClass({
     
         var page = null;
         if (this.state.page === 'Do') {
-            page = (<FocusActions focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : ''} addAction={this.addAction} editAction={this.editAction} logAction={this.logAction} />
-            );
+            page = (<FocusActions focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : ''} />);
         } else if (this.state.page === 'Focus Management') {
-            page = (
-                <div>
-                    <ManageFocusPage currentFocus={this.state.currentFocus} />
-                    <button type="button" className="btn btn-danger" onClick={this.handleCancelClick}>Cancel</button>
-                </div>
-            );
+            page = (<ManageFocus currentFocus={this.state.currentFocus} />);
         } else if (this.state.page === 'Persona Management') {
             page = this.renderManagePersona();
         }
@@ -449,8 +448,6 @@ var HoomanHubApp = React.createClass({
             <div>
                 <PrimaryNavigation 
                     currentPage={this.state.page} 
-                    goTo={this.goTo} 
-                    openConversation={this.selectConversation} 
                     currentFocus={this.state.currentFocus} 
                     handleFocusClick={this.handleFocusClick} />
                 {weatherBackdrop}

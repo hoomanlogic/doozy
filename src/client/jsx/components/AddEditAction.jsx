@@ -27,8 +27,7 @@ var AddEditAction = React.createClass({
             repeatWed: false,
             repeatThu: false,
             repeatFri: false,
-            repeatSat: false,
-            except: null
+            repeatSat: false
         };  
     },
     
@@ -86,8 +85,7 @@ var AddEditAction = React.createClass({
             repeatWed: false,
             repeatThu: false,
             repeatFri: false,
-            repeatSat: false,
-            except: null
+            repeatSat: false
         });
     },
     edit: function (action) {
@@ -128,8 +126,7 @@ var AddEditAction = React.createClass({
             repeatWed: false,
             repeatThu: false,
             repeatFri: false,
-            repeatSat: false,
-            except: null
+            repeatSat: false
         };
         
         if (action.recurrenceRules.length > 0) {

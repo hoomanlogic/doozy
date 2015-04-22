@@ -55,7 +55,16 @@ var RecentActions = React.createClass({
                 <table className="table table-striped">
                     <tbody>                        
                         {recentActions.map(function(item, index) {
-                            return (<ActionRow key={item.ref} action={item} actionRef={item.ref} actionId={item.id} actionName={item.name} actionRetire={item.retire} actionLastPerformed={item.lastPerformed} actionNextDate={item.nextDate} editAction={this.props.editAction} logAction={this.props.logAction} />);
+                            return (
+                                <ActionRow key={item.ref} 
+                                    action={item} 
+                                    actionRef={item.ref} 
+                                    actionId={item.id} 
+                                    actionName={item.name} 
+                                    actionRetire={item.retire} 
+                                    actionLastPerformed={item.lastPerformed} 
+                                    actionNextDate={item.nextDate} />
+                            );
                         }.bind(this))}
                     </tbody>
                 </table>

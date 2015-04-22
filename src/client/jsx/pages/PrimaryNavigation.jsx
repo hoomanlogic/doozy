@@ -110,7 +110,7 @@ var PrimaryNavigation = React.createClass({
             return (
                 <li key={item.userName}>
                     <a href="javascript:;" 
-                        onClick={this.props.openConversation.bind(null, item.userName)} 
+                        onClick={ui.openConversation.bind(null, item.userName)} 
                         title={item.userName}>
                         
                         <div style={{display: 'inline-block'}} 
@@ -141,8 +141,8 @@ var PrimaryNavigation = React.createClass({
         }
         
         var menuItems = ([
-            <li key="manage-focuses"><a href="javascript:;" onClick={this.props.goTo.bind(null, 'Focus Management')} title="Manage Focuses">Manage Focuses</a></li>,
-            <li key="manage-persona"><a href="javascript:;" onClick={this.props.goTo.bind(null, 'Persona Management')} title="Manage Persona">Manage Persona</a></li>,
+            <li key="manage-focuses"><a href="javascript:;" onClick={ui.goTo.bind(null, 'Focus Management')} title="Manage Focuses">Manage Focuses</a></li>,
+            <li key="manage-persona"><a href="javascript:;" onClick={ui.goTo.bind(null, 'Persona Management')} title="Manage Persona">Manage Persona</a></li>,
             <li key="manage-account"><a href="/Manage" title="Manage">Account</a></li>,
 		    <li key="logout"><a href="javascript:sessionStorage.removeItem('accessToken');$('#logoutForm').submit();">Log off</a></li>		    
         ]);
@@ -192,9 +192,7 @@ var PrimaryNavigation = React.createClass({
                 <ul className="nav navbar-nav navbar-right">
                     {settingsDropDownMenu}
                     {connectionsDropDownMenu}
-                    <NotificationDropdown
-                        goTo={this.props.goTo} 
-                        openConversation={this.props.openConversation} />
+                    <NotificationDropdown />
                 </ul>
             </div>
         );

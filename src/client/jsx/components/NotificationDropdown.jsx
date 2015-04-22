@@ -24,9 +24,9 @@ var NotificationDropdown = React.createClass({
             connectionStore.rejectConnection(notification.subject);
         } else {
             if (notification.kind === 'New Message') {
-                this.props.openConversation(notification.subject);
+                ui.openConversation(notification.subject);
             } else if (notification.kind === 'Connection Accepted') {
-                this.props.goTo('Connect');
+                ui.goTo('Connect');
             }
             notificationStore.acknowledgeNotification(notification);
         }

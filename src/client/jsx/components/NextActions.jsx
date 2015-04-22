@@ -33,17 +33,14 @@ var NextActions = React.createClass({
                 <tbody>                        
                     {nextActions.map(function(item, index) {
                         return (
-                            <ActionRow 
-                                key={item.ref} 
+                            <ActionRow key={item.ref || item.id} 
                                 action={item} 
                                 actionRef={item.ref} 
                                 actionId={item.id} 
                                 actionName={item.name} 
                                 actionRetire={item.retire} 
                                 actionLastPerformed={item.lastPerformed} 
-                                actionNextDate={item.nextDate} 
-                                editAction={this.props.editAction} 
-                                logAction={this.props.logAction} />
+                                actionNextDate={item.nextDate} />
                         );
                     }.bind(this))}
                 </tbody>
@@ -78,7 +75,7 @@ var NextActions = React.createClass({
             <div>
                 <div className="table-title">
                     Next Actions
-                    <button type="button" style={{ paddingTop: '3px', paddingBottom: '3px' }} className="btn btn-primary pull-right" onClick={this.props.addAction}>
+                    <button type="button" style={{ paddingTop: '3px', paddingBottom: '3px' }} className="btn btn-primary pull-right" onClick={ui.addAction}>
                         <i className="fa fa-plus"></i> Add Action
                     </button>
                 </div>

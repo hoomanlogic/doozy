@@ -151,9 +151,9 @@ var FocusActions = React.createClass({
                 <Tags tags={this.state.tags} 
                       selectedTags={this.state.tagsFilter} 
                       selectionChanged={this.handleTagFilterClick} />
-                <NextActions actions={tagsFilteredFocusActions} addAction={this.props.addAction} editAction={this.props.editAction} logAction={this.props.logAction} />
-                <RecentActions actions={tagsFilteredFocusActions} addAction={this.props.addAction} editAction={this.props.editAction} logAction={this.props.logAction} />
-                <BoxedActions actions={tagsFilteredFocusActions} addAction={this.props.addAction}editAction={this.props.editAction} logAction={this.props.logAction} />
+                <NextActions actions={tagsFilteredFocusActions} />
+                <RecentActions actions={tagsFilteredFocusActions} />
+                <BoxedActions actions={tagsFilteredFocusActions} />
             </div>
         );
     }
