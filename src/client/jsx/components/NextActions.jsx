@@ -1,4 +1,7 @@
 var NextActions = React.createClass({
+    /*************************************************************
+     * MISC
+     *************************************************************/
     isNextAction: function (item, index) {
         /**
           * Exclude boxed actions
@@ -20,8 +23,37 @@ var NextActions = React.createClass({
           */
         return hldatetime.hourDiff(new Date(item.lastPerformed), new Date()) < 24 && new Date(item.lastPerformed).getDate() === (new Date()).getDate();
     },
+    
+    /*************************************************************
+     * RENDERING
+     *************************************************************/
+    renderNextActionsTable: function (nextActions) {
+        return (
+            <table className="table table-striped">
+                <tbody>                        
+                    {nextActions.map(function(item, index) {
+                        return (
+                            <ActionRow 
+                                key={item.ref} 
+                                action={item} 
+                                actionRef={item.ref} 
+                                actionId={item.id} 
+                                actionName={item.name} 
+                                actionRetire={item.retire} 
+                                actionLastPerformed={item.lastPerformed} 
+                                actionNextDate={item.nextDate} 
+                                editAction={this.props.editAction} 
+                                logAction={this.props.logAction} />
+                        );
+                    }.bind(this))}
+                </tbody>
+            </table>  
+        );
+    },
     render: function () {
-        var nextActions = this.props.actions.filter(this.isNextAction);
+        
+        var nextActionsTable = null,
+            nextActions = this.props.actions.filter(this.isNextAction);
         
         /**
           * Sort the actions by completed and name
@@ -34,21 +66,23 @@ var NextActions = React.createClass({
             return (checked ? '1' : '0') + '-' + action.name.toLowerCase(); 
         })
         
-        if (nextActions.length === 0) {
-            return null;        
+        /**
+          * Render the table if there are any actions
+          */
+        if (nextActions.length > 0) {
+            nextActionsTable = this.renderNextActionsTable(nextActions); 
         }
-      
+        
         // html
         return (
             <div>
-                <div className="table-title">Next Actions<button type="button" style={{ paddingTop: '3px', paddingBottom: '3px' }} className="btn btn-primary pull-right" onClick={this.props.addAction}><i className="fa fa-plus"></i> Add Action</button></div>
-                <table className="table table-striped">
-                    <tbody>                        
-                        {nextActions.map(function(item, index) {
-                            return (<ActionRow key={item.ref} action={item} actionRef={item.ref} actionId={item.id} actionName={item.name} actionRetire={item.retire} actionLastPerformed={item.lastPerformed} actionNextDate={item.nextDate} editAction={this.props.editAction} logAction={this.props.logAction} />);
-                        }.bind(this))}
-                    </tbody>
-                </table>
+                <div className="table-title">
+                    Next Actions
+                    <button type="button" style={{ paddingTop: '3px', paddingBottom: '3px' }} className="btn btn-primary pull-right" onClick={this.props.addAction}>
+                        <i className="fa fa-plus"></i> Add Action
+                    </button>
+                </div>
+                {nextActionsTable}
             </div>
         );
     }
