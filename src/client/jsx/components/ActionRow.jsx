@@ -85,10 +85,9 @@ var ActionRow = React.createClass({
             }
         }
         
-        
         return (
             <tr className={'highlight-hover' + (checked ? ' done' : '')} onDoubleClick={this.handleClick} onTouchEnd={this.handleClick}>
-                <td width="5px"><input type="checkbox" onChange={this.handleCheck} checked={checked} /></td>
+                <td width="5px" style={{padding: '0 0 0 5px'}}><input style={{height: '18px', width: '18px'}} type="checkbox" onChange={this.handleCheck} checked={checked} /></td>
                 <td>
                     <ContentEditable html={this.props.actionName} onChange={this.handlers.nameChange} />
                     {details}
