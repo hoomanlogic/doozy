@@ -1,4 +1,7 @@
 var FocusActions = React.createClass({
+    /*************************************************************
+     * COMPONENT LIFECYCLE
+     *************************************************************/
     getInitialState: function () {
         return { 
             focusActions: [],
@@ -7,19 +10,14 @@ var FocusActions = React.createClass({
             tagsFilterType: 'any'
         };
     },
+    
     componentWillMount: function () {
         /**
          * Subscribe to Action Store to be 
          * notified of updates to the store
          */
         this.actionsObserver = actionStore.updates
-            .subscribe(this.updateFocusActions);
-    },
-    componentWillUnmount: function () {
-        /**
-         * Clean up objects and bindings
-         */
-        this.actionsObserver.dispose();
+            .subscribe(this.handleActionStoreUpdate);
     },
     componentWillReceiveProps: function (nextProps) {
         /**
@@ -27,10 +25,50 @@ var FocusActions = React.createClass({
          * focus when the focus changes
          */
         if (nextProps.focusTag !== this.props.focusTag) {
-            this.updateFocusActions(actionStore.updates.value, nextProps.focusTag);
+            this.handleActionStoreUpdate(actionStore.updates.value, nextProps.focusTag);
         }
     },
-    updateFocusActions: function (actions, focusTag) {
+    componentWillUnmount: function () {
+        /**
+         * Clean up objects and bindings
+         */
+        this.actionsObserver.dispose();
+    },
+
+    /*************************************************************
+     * EVENT HANDLING
+     *************************************************************/
+    handleTagsFilterTypeClick: function (type) {
+        if (type !== this.state.tagsFilterType) {
+            this.setState({ tagsFilterType: type });   
+        }
+    },
+    handleTagFilterClick: function(tag) {
+        var tagsFilter = this.state.tagsFilter;
+        
+        /**
+         * Toggle tag selection (remove if exists, add if doesn't)
+         */
+        if (_.contains(tagsFilter, tag)) {
+            tagsFilter.splice(_.indexOf(tagsFilter, tag), 1);
+        } else {
+            tagsFilter.push(tag);
+        }
+        
+        /**
+         * Update filter state
+         */
+        this.setState({tagsFilter: tagsFilter});
+        
+        /**
+         * Update globally accessible default tags
+         */
+        window['ui'] = window['ui'] || {};
+        window['ui'].tags = window['ui'].tags || [];
+        window['ui'].tags = _.union(window['ui'].tags, tagsFilter);
+    },
+    
+    handleActionStoreUpdate: function (actions, focusTag) {
         /**
          * actionsObserver does not pass focusTag
          * so we default to the props.focusTag
@@ -55,12 +93,48 @@ var FocusActions = React.createClass({
         /**
          * Update state
          */
+        var tags = this.getFocusTags(focusActions, focusTag);
+        var tagsFilter = _.intersection(this.state.tagsFilter, tags);
         this.setState({
             focusActions: focusActions,
-            tagsFilter: [], 
-            tags: this.getFocusTags(focusActions, focusTag)
+            tags: tags,
+            tagsFilter: tagsFilter
         });   
+        
+        /**
+         * Reset globally accessible default tags
+         */
+        window['ui'] = window['ui'] || {};
+        window['ui'].tags = [];
     },
+    
+    /*************************************************************
+     * HELPERS
+     *************************************************************/
+    getFocusTags: function (focusActions, focusTag) {
+        
+        var distinctTags = [];
+        
+        /**
+         * Get all distinct tags of all this focus' 
+         * actions except for the special tags
+         */
+        var specialPrefixes = ['!','#'];
+        focusActions.map(function(action) {
+            distinctTags = _.union(distinctTags, _.reject(action.tags, function (tag) { 
+                return specialPrefixes.indexOf(tag.slice(0,1)) > -1; 
+            }));
+        });
+        
+        /**
+         * Return sorted tags
+         */
+        return distinctTags.sort();
+    },
+    
+    /*************************************************************
+     * RENDERING
+     *************************************************************/
     render: function () {
         
         /**
@@ -82,47 +156,5 @@ var FocusActions = React.createClass({
                 <BoxedActions actions={tagsFilteredFocusActions} addAction={this.props.addAction}editAction={this.props.editAction} logAction={this.props.logAction} />
             </div>
         );
-    },
-    getFocusTags: function (focusActions, focusTag) {
-        
-        var distinctTags = [];
-        
-        /**
-         * Get all distinct tags of all this focus' 
-         * actions except for the special tags
-         */
-        var specialPrefixes = ['!','#'];
-        focusActions.map(function(action) {
-            distinctTags = _.union(distinctTags, _.reject(action.tags, function (tag) { 
-                return specialPrefixes.indexOf(tag.slice(0,1)) > -1; 
-            }));
-        });
-        
-        /**
-         * Return sorted tags
-         */
-        return distinctTags.sort();
-    },
-    handleTagsFilterTypeClick: function (type) {
-        if (type !== this.state.tagsFilterType) {
-            this.setState({ tagsFilterType: type });   
-        }
-    },
-    handleTagFilterClick: function(tag) {
-        var tagsFilter = this.state.tagsFilter;
-        
-        /**
-         * Toggle tag selection (remove if exists, add if doesn't)
-         */
-        if (_.contains(tagsFilter, tag)) {
-            tagsFilter.splice(_.indexOf(tagsFilter, tag), 1);
-        } else {
-            tagsFilter.push(tag);
-        }
-        
-        /**
-         * Update filter state
-         */
-        this.setState({tagsFilter: tagsFilter});
     }
 });

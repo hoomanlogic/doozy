@@ -44,7 +44,8 @@ var PrimaryNavigation = React.createClass({
         
         ui.logAction({
             name: timerStore.updates.value.workingOn,
-            duration: duration.toMinutes()
+            duration: duration.toMinutes(),
+            tags: ui.tags
         });
     },
     handleResetTimerClick: function () {

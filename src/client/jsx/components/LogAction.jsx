@@ -119,7 +119,11 @@ var LogAction = React.createClass({
             if (existingAction) {
                 actionStore.log(existingAction, { performed: this.state.date, duration: this.state.duration, entry: 'performed', details: this.state.details });
             } else {
-                newAction = new ToDo(names[i], TAG_PREFIX.FOCUS + this.props.currentFocus.tagName);
+                var tags = ui.tags || [];
+                tags = tags.slice(); //copy
+                tags.push(TAG_PREFIX.FOCUS + this.props.currentFocus.tagName);
+                
+                newAction = new ToDo(names[i], tags);
                 newAction.enlist = this.state.date;
                 actionStore.lognew(newAction, { performed: this.state.date, duration: this.state.duration, entry: 'performed', details: this.state.details });
             }
