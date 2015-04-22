@@ -8,32 +8,47 @@ var PrimaryNavigation = React.createClass({
             connectionsLastUpdated: new Date().toISOString(),
             notificationsLastUpdated: new Date().toISOString(),
             preferencesLastUpdated: new Date().toISOString(),
+            timerLastUpdated: new Date().toISOString()
         };
     },
     
     componentWillMount: function () {
         connectionStore.subscribe(this.handleConnectionStoreUpdate);
         notificationStore.subscribe(this.handleNotificationStoreUpdate);
+        timerStore.subscribe(this.handleTimerStoreUpdate);
         this.userObserver = userStore.updates
             .subscribe(this.handleUserStoreUpdate);
     },
     componentWillUnmount: function () {
         connectionStore.dispose(this.handleConnectionStoreUpdate);
         notificationStore.dispose(this.handleNotificationStoreUpdate);
+        timerStore.dispose(this.handleTimerStoreUpdate);
         this.userObserver.dispose();
     },
     
     /*************************************************************
      * EVENT HANDLING
      *************************************************************/
+    handleChange: function (event) {
+        timerStore.updateWorkingOn(event.target.value);
+    },
     handleConnectionStoreUpdate: function () {
         this.setState({connectionsLastUpdated: new Date().toISOString()});
     },
     handleNotificationStoreUpdate: function () {
         this.setState({notificationsLastUpdated: new Date().toISOString()});
     },
+    handleDoneTimerClick: function () {
+        
+    },
+    handleResetTimerClick: function () {
+        timerStore.resetTimer();
+    },
     handleUserStoreUpdate: function (prefs) {
         this.setState({preferencesLastUpdated: new Date().toISOString()});
+    },
+    handleTimerStoreUpdate: function (prefs) {
+        this.setState({timerLastUpdated: new Date().toISOString()});
     },
     handleFocusClick: function (item) {
         this.props.handleFocusClick(item);  
@@ -138,11 +153,34 @@ var PrimaryNavigation = React.createClass({
         var focusesDropDownMenu = this.renderFocusesDropDownMenu();
         var connectionsDropDownMenu = this.renderConnectionsDropDownMenu();
         var settingsDropDownMenu = this.renderSettingsDropDownMenu();
-            
+        
+        var aStyle = {
+            padding: '5px'
+        };
+        
+        var inputStyle = {
+            position: 'relative',
+            top: '10px'   
+        };
+        
         return (
             <div className="navbar navbar-hl-theme navbar-fixed-top">
                 <ul className="nav navbar-nav">
                     {focusesDropDownMenu}
+                    <li>
+                        <a style={aStyle} href="javascript:;" onClick={this.handleResetTimerClick}>
+                            <i className="fa fa-2x fa-recycle"></i>
+                        </a>
+                    </li>
+                    <Timer />
+                    <li>
+                        <input ref="workingOn" style={inputStyle} type="text" placeholder="What are you working on?" onChange={this.handleChange} value={timerStore.updates.value.workingOn} />
+                    </li>
+                    <li>
+                        <a style={aStyle} href="javascript:;" onClick={this.handleDoneTimerClick}>
+                            <i className="fa fa-2x fa-check-square-o"></i>
+                        </a>
+                    </li>
                 </ul>
                 <ul className="nav navbar-nav navbar-right">
                     {settingsDropDownMenu}
