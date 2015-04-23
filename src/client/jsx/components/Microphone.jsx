@@ -26,7 +26,8 @@ var Microphone = React.createClass({
     },
     
     handleLogEventCommand: function (speech) {
-        var date = Date.create('today'), 
+        var date = Date.create('today'),
+            parseDuration = null,
             duration = 0, 
             dateSignal = false, 
             durationSignal = false,
@@ -49,9 +50,10 @@ var Microphone = React.createClass({
             date = Date.create(commandParts[0]);
         }
         if (durationSignal) {
-            duration = babble.get('durations')
-                .translate(commandParts[commandParts.length - 1])
-                .tokens[0].value.toMinutes();
+            var parseDuration = babble.get('durations').translate(commandParts[commandParts.length - 1]);
+            if (parseDuration.tokens.length > 0) {
+                duration = parseDuration.tokens[0].value.toMinutes();
+            }
         }
 
         if (commandParts.length === 3) {
@@ -85,12 +87,13 @@ var Microphone = React.createClass({
                 performed: date, 
                 duration: duration, 
                 entry: 'performed', 
-                details: 'Added with speech recognition!' 
+                details: null 
             });
         }
     },
     handleNewActionCommand: function (speech) {
         var date = Date.create('today'), 
+            parseDuration = null,
             duration = 0, 
             dateSignal = false, 
             durationSignal = false,
@@ -100,7 +103,7 @@ var Microphone = React.createClass({
             dateSignal = true;
             speech = speech.replace(' i will ', '|');
         }
-        if (speech.slice(0, 6) === 'i will ') {
+        if (speech.slice(0, 7) === 'i will ') {
             speech = speech.replace('i will ', '');
         }
         if (speech.indexOf(' for ') > -1) {
@@ -113,9 +116,10 @@ var Microphone = React.createClass({
             date = Date.create(commandParts[0]);
         }
         if (durationSignal) {
-            duration = babble.get('durations')
-                .translate(commandParts[commandParts.length - 1])
-                .tokens[0].value.toMinutes();
+            var parseDuration = babble.get('durations').translate(commandParts[commandParts.length - 1]);
+            if (parseDuration.tokens.length > 0) {
+                duration = parseDuration.tokens[0].value.toMinutes();
+            }
         }
 
         if (commandParts.length === 3) {
