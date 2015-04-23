@@ -151,6 +151,7 @@ var FocusActions = React.createClass({
                       selectedTags={this.state.tagsFilter} 
                       selectionChanged={this.handleTagFilterClick} />
                 <NextActions actions={tagsFilteredFocusActions} />
+                <UpcomingActions actions={tagsFilteredFocusActions} />
                 <RecentActions actions={tagsFilteredFocusActions} />
                 <BoxedActions actions={tagsFilteredFocusActions} />
             </div>

@@ -46,14 +46,26 @@ var ActionRow = React.createClass({
         var date2 = new Date((new Date()).toLocaleDateString());
         var timeDiff = Math.abs(date2.getTime() - date1.getTime());
         var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-        if (diffDays === 0) {
-            return 'Today';
-        } else if (diffDays === 1) {
-            return 'Yesterday';
-        } else if (diffDays < 7) {
-            return hldatetime.daysOfWeek[date1.getDay()];
+        if (date1 < date2) {
+            if (diffDays === 0) {
+                return 'Today';
+            } else if (diffDays === 1) {
+                return 'Yesterday';
+            } else if (diffDays < 7) {
+                return hldatetime.daysOfWeek[date1.getDay()];
+            } else {
+                return diffDays + ' day' + (diffDays > 1 ? 's' : '') + ' ago';
+            }
         } else {
-            return diffDays + ' day' + (diffDays > 1 ? 's' : '') + ' ago';
+            if (diffDays === 0) {
+                return 'Today';
+            } else if (diffDays === 1) {
+                return 'Tomorrow';
+            } else if (diffDays < 7) {
+                return hldatetime.daysOfWeek[date1.getDay()];
+            } else {
+                return 'in ' + diffDays + ' day' + (diffDays > 1 ? 's' : '');
+            }
         }
     },
     

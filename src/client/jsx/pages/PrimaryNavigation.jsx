@@ -206,6 +206,7 @@ var PrimaryNavigation = React.createClass({
             <div className="navbar navbar-hl-theme navbar-fixed-top" style={{width: this.state.windowWidth + 'px'}}>
                 <ul className="nav navbar-nav">
                     {focusesDropDownMenu}
+                    <Microphone focusTag={this.props.currentFocus ? '!' + this.props.currentFocus.tagName : ''} />
                     {timer}
                     {workingOn}
                     {timerDone}
