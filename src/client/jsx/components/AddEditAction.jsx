@@ -38,12 +38,23 @@ var AddEditAction = React.createClass({
          */
         this.userObserver = userStore.updates
             .subscribe(this.handleUserStoreUpdate);
+        
+        var detailsChange = EventHandler.create();
+        detailsChange
+            .throttle(1000)
+            .subscribe(this.handleDetailsChange);
+       
+        
+        this.handlers = {
+            detailsChange: detailsChange
+        };
     },
     componentWillUnmount: function () {
         /**
          * Clean up objects and bindings
          */
         this.userObserver.dispose();
+        this.handlers.detailsChange.dispose();
     },
     
     componentDidUpdate: function () {
@@ -346,6 +357,14 @@ var AddEditAction = React.createClass({
         this.refs.modal.hide();
         this.setState({ viewMode: 'hidden' });
     },
+    handleDetailsChange: function(event) {
+        for (var i = 0; i < this.state.action.logEntries.length; i++) {
+            if (this.state.action.logEntries[i].id === event.target.id) {
+                actionStore.updateLogEntry(this.state.action.logEntries[i], { details: event.target.value});
+                break;
+            }
+        }
+    },
     handleToggleViewModeClick: function(event) {
         if (this.state.viewMode === 'general') {
             this.setState({ viewMode: 'history' });
@@ -550,13 +569,23 @@ var AddEditAction = React.createClass({
     },
     renderHistoryView: function () {
         return (
-            <table className="table table-striped">
-                <tbody>                        
-                    {this.state.action.logEntries.map(function(item, index) {
-                        return (<tr><td>{item.entry + ' ' + item.date.toLocaleDateString() + ' ' + item.details}</td></tr>);
-                    }.bind(this))}
-                </tbody>
-            </table>
+            <div>
+                <h2 style={{ margin: '0 0 5px 5px'}}>Action History Log</h2>
+                <table className="table table-striped">
+                    <tbody>                        
+                        {this.state.action.logEntries.map(function(item, index) {
+                            return (
+                                <tr key={item.id}>
+                                    <td width="70px">{item.entry.slice(0,1).toUpperCase() + item.entry.slice(1)}</td>
+                                    <td width="80px" style={{textAlign: 'right'}} >{item.date.toLocaleDateString()}</td>
+                                    <td width="40px">{item.duration > 0 ? new babble.Duration(item.duration * 60000).toString(':') : ''}</td>
+                                    <td><ContentEditable id={item.id} html={item.details} onChange={this.handlers.detailsChange} /></td>
+                                </tr>
+                            );
+                        }.bind(this))}
+                    </tbody>
+                </table>
+            </div>
         );
     },
     render: function () {

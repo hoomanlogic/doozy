@@ -76,6 +76,19 @@ var ActionStore = function () {
                 contentType: 'application/json',
                 data: JSON.stringify(log)
             });
+        },
+        putLog: function (log) {
+            return $.ajax({
+                context: this,
+                url: hlapp.HOST_NAME + '/api/logentries',
+                dataType: 'json',
+                headers: {
+                    'Authorization': 'Bearer ' + hlapp.getAccessToken()
+                },
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(log)
+            });
         }
     };
     
@@ -187,6 +200,34 @@ var ActionStore = function () {
         .fail(function  (err) {
             hlcommon.assign(val, original);
             updates.onNext(updates.value);
+            toastr.error(err.responseText);
+        });
+    };
+    
+    this.updateLogEntry = function (log, updates) {
+        
+//        var actionToSave = _.find(updates.value, function(item) { 
+//            return item.ref === updateArgs.actionRef; 
+//        });
+//        var state = updateArgs.state,
+//            original = hlcommon.assign({}, actionToSave);
+//        
+        var val = log,
+            original = hlcommon.assign({}, log);
+        hlcommon.assign(val, updates);
+//        updates.onNext(updates.value);
+        
+        _api.putLog(val)
+        .done(function (result) {
+//            jsonActionDates(result);
+//            hlcommon.assign(val, result);
+//            updates.onNext(updates.value);
+//            hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
+            toastr.success('Updated log entry');
+        })
+        .fail(function  (err) {
+            hlcommon.assign(val, original);
+//            updates.onNext(updates.value);
             toastr.error(err.responseText);
         });
     };
