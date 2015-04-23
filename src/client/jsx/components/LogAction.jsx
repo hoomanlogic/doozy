@@ -198,8 +198,12 @@ var LogAction = React.createClass({
             onItemAdd: function (value, $item) {
                 var existingAction = this.getExistingAction(value);
                 if (existingAction !== void 0 && existingAction !== null) {
-                    var hoomanduration = babble.get('durations').translate(existingAction.duration + ' min').tokens[0].value.toString();
-                    this.refs.actualduration.getDOMNode().value = hoomanduration;   
+                    var duration = new babble.Duration(existingAction.duration * 60000);
+                    this.setState({
+                        duration: duration.toMinutes(),
+                        durationInput: duration.toString(),
+                        durationFeedback: duration.toString()
+                    });
                 }
             }.bind(this)
         });  
