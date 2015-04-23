@@ -75,7 +75,6 @@ var ActionRow = React.createClass({
     },
     handleTouchStart: function(event) {
         this.isTap = true;
-        event.preventDefault()
     },
     handleTouchMove: function(event) {
         this.isTap = false;
@@ -85,6 +84,7 @@ var ActionRow = React.createClass({
             this.handleClick();
         }
         this.isTap = false;
+        event.preventDefault();
     },
     handleNameChange: function (name) {
         actionStore.update({ actionRef: this.props.actionRef, state: { name: name } });
