@@ -70,6 +70,9 @@ var ActionRow = React.createClass({
             }
         }
     },
+    handleCheckTouch: function () {
+        this.preventTouch = true;
+    },
     handleClick: function(event) {
         ui.editAction(this.props.action);
     },
@@ -80,11 +83,12 @@ var ActionRow = React.createClass({
         this.isTap = false;
     },
     handleTouchEnd: function(event) {
-        if (this.isTap) {
+        if (this.isTap && !this.preventTouch) {
             this.handleClick();
+            event.preventDefault();
         }
         this.isTap = false;
-        event.preventDefault();
+        this.preventTouch = false;
     },
     handleNameChange: function (name) {
         actionStore.update({ actionRef: this.props.actionRef, state: { name: name } });
@@ -138,7 +142,7 @@ var ActionRow = React.createClass({
         
         return (
             <tr className={'highlight-hover' + (checked ? ' done' : '')} onDoubleClick={this.handleClick} onTouchStart={this.handleTouchStart} onTouchMove={this.handleTouchMove} onTouchEnd={this.handleTouchEnd}>
-                <td width="5px" style={{padding: '0 0 0 5px'}}><input style={{height: '18px', width: '18px'}} type="checkbox" onChange={this.handleCheck} checked={checked} /></td>
+                <td width="5px" style={{padding: '0 0 0 5px'}}><input style={{height: '18px', width: '18px'}} type="checkbox" onChange={this.handleCheck} onTouchStart={this.handleCheckTouch} checked={checked} /></td>
                 <td>
                     <ContentEditable html={this.props.actionName} onChange={this.handlers.nameChange} />
                     {details}
