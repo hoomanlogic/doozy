@@ -203,7 +203,7 @@ var PrimaryNavigation = React.createClass({
         }
         
         return (
-            <div className="navbar navbar-hl-theme navbar-fixed-top">
+            <div className="navbar navbar-hl-theme navbar-fixed-top" style={{width: this.state.windowWidth + 'px'}}>
                 <ul className="nav navbar-nav">
                     {focusesDropDownMenu}
                     {timer}

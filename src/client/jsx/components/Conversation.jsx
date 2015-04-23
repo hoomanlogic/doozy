@@ -1,14 +1,38 @@
 var Conversation = React.createClass({
+    /*************************************************************
+     * COMPONENT LIFECYCLE
+     *************************************************************/
+    getInitialState: function () {
+        return {
+            isOpen: true,
+            windowWidth: window.innerWidth
+        };
+    },
+    
     componentDidMount: function () {
         this.firstLook = true;
         this.goToEndOfConversation();
+        window.addEventListener('resize', this.handleResize);
     },
     componentDidUpdate: function () {
         this.goToEndOfConversation();
+        
     },
-    getInitialState: function () {
-        return { isOpen: true };  
+    
+    componentWillUnmount: function () {
+        window.removeEventListener('resize', this.handleResize);  
     },
+    
+    /*************************************************************
+     * EVENT HANDLING
+     *************************************************************/
+    handleResize: function(e) {
+        this.setState({windowWidth: window.innerWidth});
+    },
+    
+    /*************************************************************
+     * RENDERING
+     *************************************************************/
     render: function () {
         var conversation = this.props.conversation;
     
@@ -61,9 +85,18 @@ var Conversation = React.createClass({
                 );
             }.bind(this));
         
+        var containerStyle = {};
+        if (this.state.windowWidth < 600) {
+            containerStyle = {
+                width: this.state.windowWidth + 'px',
+                padding: '5px',
+                margin: '0',
+                height: (window.innerHeight - 55) + 'px'
+            }
+        }
         
         return (
-            <div className={"conversation-container" + (this.state.isOpen ? '' : ' hidden')}>
+            <div style={containerStyle} className={"conversation-container" + (this.state.isOpen ? '' : ' hidden')}>
                 <div className="conversation-header">
                     <button type="button" className="close" onClick={this.onClose}><span aria-hidden="true">&times;</span></button>
                     <h4 className="modal-title">{this.props.conversation.name}</h4>

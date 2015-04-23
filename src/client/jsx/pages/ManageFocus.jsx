@@ -65,7 +65,7 @@ var ManageFocus = React.createClass({
     render: function () {
         // html
         return (
-            <div style={{padding: '5px'}}>
+            <div className="row" style={{padding: '5px'}}>
                 <form role="form">
                     <Uploader type="Focus" arg={this.state.id} />
                     <div className="form-group">

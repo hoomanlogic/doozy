@@ -351,7 +351,7 @@ var HoomanHubApp = React.createClass({
      *************************************************************/
     renderManagePersona: function () {
         return (
-            <div style={{padding: '5px'}}>
+            <div className="row" style={{padding: '5px'}}>
                 <form role="form">
                     <ProfilePic uri={userStore.updates.value.profileUri} />
                     <div className="form-group">

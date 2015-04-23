@@ -64,7 +64,7 @@
     font-size: 20px;
 }
 input#msg {
-  width: 190px;
+  width: auto;
   display: inline;
   margin-right: 5px;
 }
@@ -73,8 +73,13 @@ input#msg {
   padding-top: 0.5em;
 }
 
+input[type=file] {
+  display: inline-block;
+}
+
 .file-input-hidden {
-    position: absolute;
+//    position: absolute; - this caused a layout issue, very noticeable in mobile devices
+    display: inline-block;
     bottom: 0;
     right: 0;
     height: 1px;

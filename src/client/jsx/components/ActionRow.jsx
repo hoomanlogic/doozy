@@ -140,6 +140,8 @@ var ActionRow = React.createClass({
             }
         }
         
+        // width={this.state.windowWidth >= 600 ? (this.state.windowWidth - 200) + 'px' : ''}
+            
         return (
             <tr className={'highlight-hover' + (checked ? ' done' : '')} onDoubleClick={this.handleClick} onTouchStart={this.handleTouchStart} onTouchMove={this.handleTouchMove} onTouchEnd={this.handleTouchEnd}>
                 <td width="5px" style={{padding: '0 0 0 5px'}}><input style={{height: '18px', width: '18px'}} type="checkbox" onChange={this.handleCheck} onTouchStart={this.handleCheckTouch} checked={checked} /></td>
@@ -148,7 +150,7 @@ var ActionRow = React.createClass({
                     {details}
                     {repeats}
                 </td>
-                <td hidden={this.state.windowWidth < 600 ? true : false} title={title}>{this.props.actionLastPerformed ? this.naturalDays(this.props.actionLastPerformed) : ''}</td>
+                <td width="150px" hidden={this.state.windowWidth < 600 ? true : false} title={title}>{this.props.actionLastPerformed ? this.naturalDays(this.props.actionLastPerformed) : ''}</td>
             </tr>
         );
     },
