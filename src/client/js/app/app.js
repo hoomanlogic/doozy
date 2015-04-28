@@ -50,6 +50,11 @@ if (typeof require !== 'undefined') {
             toastr.error("<p><string>Oops!</strong></p><p>We're really sorry about that.</p><p>We'll get this fixed as soon as possible.</p>" + '<a class="btn btn-default btn-link" target="_blank" href="' + errl.getErrorDetailUrl(err.errorId) + '">Show me details</a> ');
         }
     });
+    
+    exports.getWidth = function () {
+        return window.innerWidth;
+        //return document.getElementById('hooman-hub').clientWidth;
+    };
 	
 }(typeof exports === 'undefined' ? this['hlapp'] = {}: exports));
 

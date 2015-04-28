@@ -5,7 +5,7 @@ var Conversation = React.createClass({
     getInitialState: function () {
         return {
             isOpen: true,
-            windowWidth: window.innerWidth
+            windowWidth: hlapp.getWidth()
         };
     },
     
@@ -27,7 +27,7 @@ var Conversation = React.createClass({
      * EVENT HANDLING
      *************************************************************/
     handleResize: function(e) {
-        this.setState({windowWidth: window.innerWidth});
+        this.setState({windowWidth: hlapp.getWidth()});
     },
     
     /*************************************************************

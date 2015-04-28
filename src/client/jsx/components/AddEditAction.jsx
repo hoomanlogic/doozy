@@ -72,8 +72,13 @@ var AddEditAction = React.createClass({
      * API
      *************************************************************/
     add: function () {
+        // get tags from UI filter
+        var tags = ui.tags || [];
+        tags = tags.slice(); //copy
+        tags.push(this.props.focusTag);
+        
         // create a new action
-        var action = new ToDo('New ToDo', this.props.focusTag);
+        var action = new ToDo('New ToDo', tags);
         action.name = null;
         action.enlist = new Date();
         

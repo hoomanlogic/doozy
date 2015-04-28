@@ -9,7 +9,7 @@ var PrimaryNavigation = React.createClass({
             notificationsLastUpdated: new Date().toISOString(),
             preferencesLastUpdated: new Date().toISOString(),
             timerLastUpdated: new Date().toISOString(),
-            windowWidth: window.innerWidth
+            windowWidth: hlapp.getWidth()
         };
     },
 
@@ -69,7 +69,7 @@ var PrimaryNavigation = React.createClass({
         this.props.handleFocusClick(item);  
     },
     handleResize: function(e) {
-        this.setState({windowWidth: window.innerWidth});
+        this.setState({windowWidth: hlapp.getWidth()});
     },
 
     /*************************************************************
@@ -136,8 +136,7 @@ var PrimaryNavigation = React.createClass({
         }.bind(this));
 
         return (
-            <DropdownMenu 
-                className='pull-right' 
+            <DropdownMenu
                 style={{padding: '5px'}} 
                 buttonContent={button} 
                 menuItems={menuItems} />
@@ -159,9 +158,8 @@ var PrimaryNavigation = React.createClass({
         ]);
                           
         return (
-            <DropdownMenu 
-                className='pull-right' 
-                style={{padding: '5px', paddingRight: '20px'}} 
+            <DropdownMenu
+                style={{padding: '5px'}} 
                 buttonContent={button} 
                 menuItems={menuItems} />  
         );
@@ -201,9 +199,13 @@ var PrimaryNavigation = React.createClass({
                         </a>
                     </li>);
         }
-        
+                         
+        if (this.state.windowWidth < 500) {
+            var adjustDropDownMenu = { marginRight: '-103px'};
+        }
+
         return (
-            <div className="navbar navbar-hl-theme navbar-fixed-top" style={{width: this.state.windowWidth + 'px'}}>
+            <div className="navbar navbar-hl-theme navbar-fixed-top">
                 <ul className="nav navbar-nav">
                     {focusesDropDownMenu}
                     <Microphone focusTag={this.props.currentFocus ? '!' + this.props.currentFocus.tagName : ''} />
@@ -213,9 +215,9 @@ var PrimaryNavigation = React.createClass({
                     {timerReset}
                 </ul>
                 <ul className="nav navbar-nav navbar-right">
-                    {settingsDropDownMenu}
+                    <NotificationDropdown dropDownMenuStyle={adjustDropDownMenu} />
                     {connectionsDropDownMenu}
-                    <NotificationDropdown />
+                    {settingsDropDownMenu}
                 </ul>
             </div>
         );

@@ -5,7 +5,7 @@ var ActionRow = React.createClass({
      *************************************************************/
     getInitialState: function () {
         return {
-            windowWidth: window.innerWidth
+            windowWidth: hlapp.getWidth()
         };
     },
     
@@ -106,7 +106,7 @@ var ActionRow = React.createClass({
         actionStore.update({ actionRef: this.props.actionRef, state: { name: name } });
     },
     handleResize: function(e) {
-        this.setState({windowWidth: window.innerWidth});
+        this.setState({windowWidth: hlapp.getWidth()});
     },
     
     /*************************************************************

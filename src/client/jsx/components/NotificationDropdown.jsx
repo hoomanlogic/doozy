@@ -12,9 +12,9 @@ var NotificationDropdown = React.createClass({
                 return (<Notification key={item.id} data={item} handleNotificationClicked={this.handleNotificationClicked} />);
             }.bind(this)
         );
-              
+
         return (
-            <DropdownMenu className='pull-right' style={{padding: '5px'}} buttonContent={<span><i className="fa fa-2x fa-bell-o"></i>{badge}</span>} menuItems={menuItems} />
+            <DropdownMenu style={{padding: '5px'}} buttonContent={<span><i className="fa fa-2x fa-bell-o"></i>{badge}</span>} menuItems={menuItems} dropDownMenuStyle={this.props.dropDownMenuStyle} />
         );
     },
     handleNotificationClicked: function (notification, verb) {
