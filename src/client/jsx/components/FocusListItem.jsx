@@ -18,7 +18,7 @@ var FocusListItem = React.createClass({
             } else {
                 return 'You\'re ' + (startsWithAVowel(focus.name) ? 'an' : 'a') + ' ' + focus.name;
             }
-        } else if (item.kind === 'Path') {
+        } else if (focus.kind === 'Path') {
             return 'You\'re on a path of ' + focus.name;
         }
     },
