@@ -13,13 +13,13 @@ var FocusListItem = React.createClass({
      *************************************************************/
     calcFocusTitle: function (focus) {
         if (focus.kind === 'Role') {
-            if (hasPossessiveNoun(item.name)) {
-                return 'You\'re ' + item.name;
+            if (hasPossessiveNoun(focus.name)) {
+                return 'You\'re ' + focus.name;
             } else {
-                return 'You\'re ' + (startsWithAVowel(item.name) ? 'an' : 'a') + ' ' + item.name;
+                return 'You\'re ' + (startsWithAVowel(focus.name) ? 'an' : 'a') + ' ' + focus.name;
             }
         } else if (item.kind === 'Path') {
-            return 'You\'re on a path of ' + item.name;
+            return 'You\'re on a path of ' + focus.name;
         }
     },
     
