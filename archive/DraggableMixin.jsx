@@ -1,4 +1,3 @@
-/** @jsx React.DOM
 var Dropped = new CustomEvent('dropped', {
     'detail': {
         'dropped': true
@@ -160,4 +159,3 @@ var DraggableList = React.createClass({
       })}</ul>);
     }
 });
- */

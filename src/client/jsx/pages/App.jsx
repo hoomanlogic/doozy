@@ -1,4 +1,4 @@
-var HoomanHubApp = React.createClass({
+var HoomanLogicApp = React.createClass({
     
     /*************************************************************
      * COMPONENT LIFECYCLE

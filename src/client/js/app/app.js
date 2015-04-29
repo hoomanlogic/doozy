@@ -8,7 +8,6 @@ if (typeof require !== 'undefined') {
 	var errl = require('errl');
 	var hlcommon = require('common');
 	var skycons = require('skycons');
-	//var showdown = require('showdown');
 	var jstorage = require('jstorage');
 	var aes = require('aes');
 	var signalr = require('signalr');
@@ -53,7 +52,6 @@ if (typeof require !== 'undefined') {
     
     exports.getWidth = function () {
         return window.innerWidth;
-        //return document.getElementById('hooman-hub').clientWidth;
     };
 	
 }(typeof exports === 'undefined' ? this['hlapp'] = {}: exports));
@@ -85,7 +83,7 @@ $(document).ready(function () {
 			'Authorization': 'Bearer ' + hlapp.getAccessToken()
 		},
 		success: function (data) {
-			React.render(React.createElement(HoomanHubApp, { settings: data }), document.getElementById('hooman-hub'));
+			React.render(React.createElement(HoomanLogicApp, { settings: data }), document.getElementById('hooman-logic'));
 		}.bind(this),
 		error: function (xhr, status, err) {
 			console.error('settings.json', status, err.toString());
