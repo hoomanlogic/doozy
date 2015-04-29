@@ -1,13 +1,31 @@
 var RecentActions = React.createClass({
+    /*************************************************************
+     * COMPONENT LIFECYCLE
+     *************************************************************/
     getInitialState: function () {
-        return { showAll: false };
+        return { 
+            showAll: false 
+        };
     },
+    
+    /*************************************************************
+     * EVENT HANDLING
+     *************************************************************/
+    handleShowAllClick: function () {
+        this.setState({ 
+            showAll: true 
+        });
+    },
+    
+    /*************************************************************
+     * CALCULATIONS
+     *************************************************************/
+    
     /**
      * A Recent Action has been performed at least 24  
      * hours ago and is not at or past the Next Date
      */
     isRecentAction: function (item, index) {
-
         /**
           * Indicators that it is a Next Actions means it is not a Recent Action
           */
@@ -20,9 +38,10 @@ var RecentActions = React.createClass({
           */
         return hldatetime.hourDiff(new Date(item.lastPerformed), new Date()) >= 24;
     },
-    showAll: function () {
-        this.setState({ showAll: true });
-    },
+    
+    /*************************************************************
+     * RENDERING
+     *************************************************************/
     render: function () {
 
         var recentActions = this.props.actions.filter(this.isRecentAction);
@@ -40,7 +59,7 @@ var RecentActions = React.createClass({
         if (!this.state.showAll && recentActions.length > 10) {
             recentActions = recentActions.slice(0, 10);
             domShowAll = (
-                <a href="javascript:;" style={{ position: 'relative', top: '-20px', left: '30px'}} onClick={this.showAll}>Show All Recent Actions</a>
+                <a href="javascript:;" style={{ position: 'relative', top: '-20px', left: '30px'}} onClick={this.handleShowAllClick}>Show All Recent Actions</a>
             );    
         }
                           

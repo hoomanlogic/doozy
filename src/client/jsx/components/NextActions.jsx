@@ -1,6 +1,6 @@
 var NextActions = React.createClass({
     /*************************************************************
-     * MISC
+     * CALCULATIONS
      *************************************************************/
     isNextAction: function (item, index) {
         /**

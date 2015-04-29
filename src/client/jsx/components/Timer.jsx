@@ -23,6 +23,11 @@ var Timer = React.createClass({
     /*************************************************************
      * EVENT HANDLING
      *************************************************************/
+    handleRunningTotalUpdate: function () {
+        this.setState({
+            timerLastUpdated: new Date().getTime()
+        });
+    },
     handleTimerStoreUpdate: function (timer) {
         if (timer.isRunning && typeof this.interval === 'undefined') {
             this.interval = setInterval(this.handleRunningTotalUpdate, 1000);
@@ -38,11 +43,6 @@ var Timer = React.createClass({
         } else {
             timerStore.startTimer();
         }
-    },
-    handleRunningTotalUpdate: function () {
-        this.setState({
-            timerLastUpdated: new Date().getTime()
-        });
     },
     
     /*************************************************************

@@ -1,4 +1,7 @@
-var Notification = React.createClass({
+var NotificationListItem = React.createClass({
+    /*************************************************************
+     * RENDERING
+     *************************************************************/
     render: function () {
         var item = this.props.data;
         

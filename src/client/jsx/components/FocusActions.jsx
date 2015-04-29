@@ -147,7 +147,7 @@ var FocusActions = React.createClass({
                     <li className={'clickable' + (this.state.tagsFilterType === 'any' ? ' selected' : '')} onClick={this.handleTagsFilterTypeClick.bind(null, 'any')}>Any</li>
                     <li className={'clickable' + (this.state.tagsFilterType === 'all' ? ' selected' : '')} onClick={this.handleTagsFilterTypeClick.bind(null, 'all')}>All</li>
                 </ul>
-                <Tags tags={this.state.tags} 
+                <TagList tags={this.state.tags} 
                       selectedTags={this.state.tagsFilter} 
                       selectionChanged={this.handleTagFilterClick} />
                 <NextActions actions={tagsFilteredFocusActions} />

@@ -1,4 +1,7 @@
 var ProfilePic = React.createClass({
+    /*************************************************************
+     * RENDERING
+     *************************************************************/
     render: function () {
         return (
             <div className="focus">

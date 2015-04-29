@@ -1,14 +1,25 @@
-var Tags = React.createClass({
+var TagList = React.createClass({
+    /*************************************************************
+     * COMPONENT LIFECYCLE
+     *************************************************************/
     getDefaultProps: function () {
-      return { canAdd: false, canEdit: false, canRemove: false };
+      return { 
+          canAdd: false, 
+          canEdit: false, 
+          canRemove: false 
+      };
     },
+    
+    /*************************************************************
+     * RENDERING
+     *************************************************************/
     render: function () {
         var tags = this.props.tags;
         
         var domTags = tags.map(
             function(tag, index) {
                       return (
-                          <Tag key={tag}
+                          <TagListItem key={tag}
                                tag={tag}
                                canEdit={this.props.canEdit}
                                canRemove={this.props.canRemove}
@@ -21,7 +32,7 @@ var Tags = React.createClass({
 
         if (this.props.canAdd) {
             domTags.push(
-                <Tag key="newtag" 
+                <TagListItem key="newtag" 
                      tag="" 
                      canEdit={true}
                      canRemove={false}
