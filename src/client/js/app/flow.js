@@ -589,6 +589,53 @@ var parseTag = function (tag) {
     };
 };
 
+var calcNaturalDays = function (date) {
+    if (!date) {
+        return '';   
+    }
+    var date1 = new Date(date.toLocaleDateString());
+    var date2 = new Date((new Date()).toLocaleDateString());
+    var timeDiff = Math.abs(date2.getTime() - date1.getTime());
+    var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+    if (date1 < date2) {
+        if (diffDays === 0) {
+            return 'Today';
+        } else if (diffDays === 1) {
+            return 'Yesterday';
+        } else if (diffDays < 7) {
+            return hldatetime.daysOfWeek[date1.getDay()];
+        } else {
+            return diffDays + ' day' + (diffDays > 1 ? 's' : '') + ' ago';
+        }
+    } else {
+        if (diffDays === 0) {
+            return 'Today';
+        } else if (diffDays === 1) {
+            return 'Tomorrow';
+        } else if (diffDays < 7) {
+            return hldatetime.daysOfWeek[date1.getDay()];
+        } else {
+            return 'in ' + diffDays + ' day' + (diffDays > 1 ? 's' : '');
+        }
+    }
+};
+
+var startsWithAVowel = function (word) {
+    if (['a','e','i','o','u'].contains(word[0].toLowerCase())) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
+var hasPossessiveNoun = function (words) {
+    if (words.indexOf('\'s ') > 0) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
 //#region Objective
 //var Objective = function (name, tags) {
 

@@ -8,6 +8,21 @@
           user-select: none;
 }
 
+.text-summary {
+    overflow: hidden;
+    text-overflow: ellipsis; 
+    white-space: nowrap; 
+}
+
+.text-summary * {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.text-summary *:not(:first-child) {
+    display: none;
+}
+
 img.img-responsive,
 {
   display: block;

@@ -112,7 +112,7 @@ var LogAction = React.createClass({
         
         for (var i =0; i < names.length; i++) {
             
-            existingAction = this.getExistingAction(names[i]);
+            existingAction = actionStore.getExistingAction(names[i]);
 
             if (existingAction) {
                 actionStore.log(existingAction, { performed: this.state.date, duration: this.state.duration, entry: 'performed', details: this.state.details });
@@ -144,12 +144,6 @@ var LogAction = React.createClass({
     /*************************************************************
      * MISC
      *************************************************************/
-    getExistingAction: function (name) {
-        var existingAction = _.find(actionStore.updates.value, function(item) { 
-            return item.name.toLowerCase() === name.toLowerCase(); 
-        });
-        return existingAction;
-    },
     setOptionsAction: function (selectize) {
         // clear previously set options
         selectize.clearOptions();
@@ -196,7 +190,7 @@ var LogAction = React.createClass({
             maxItems: 1,
             openOnFocus: false,
             onItemAdd: function (value, $item) {
-                var existingAction = this.getExistingAction(value);
+                var existingAction = actionStore.getExistingAction(value);
                 if (existingAction !== void 0 && existingAction !== null) {
                     var duration = new babble.Duration(existingAction.duration * 60000);
                     this.setState({
@@ -304,7 +298,7 @@ var LogAction = React.createClass({
         }
         this.actionName = actionName;
         
-        if (!this.getExistingAction(actionName)) {
+        if (!actionStore.getExistingAction(actionName)) {
             state.isNewAction = true;
         }
         

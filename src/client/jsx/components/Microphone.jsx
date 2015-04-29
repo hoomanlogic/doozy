@@ -1,4 +1,5 @@
 var Microphone = React.createClass({
+    mixins: [React.addons.PureRenderMixin],
     /*************************************************************
      * COMPONENT LIFECYCLE
      *************************************************************/
@@ -14,6 +15,7 @@ var Microphone = React.createClass({
             recognition.continuous = false;
             recognition.interimResults = false;
             recognition.onresult = this.handleSpeech;
+            recognition.onend = this.handleNoSpeech;
         }
     },
 
@@ -24,8 +26,7 @@ var Microphone = React.createClass({
         this.recognition.start();
         this.setState({isListening: true});
     },
-    
-    handleLogEventCommand: function (speech) {
+    handleLogActionCommand: function (speech) {
         var date = Date.create('today'),
             parseDuration = null,
             duration = 0, 
@@ -64,7 +65,7 @@ var Microphone = React.createClass({
             actionIndex = 0;
         }
 
-        var existingAction = this.getExistingAction(commandParts[actionIndex]);
+        var existingAction = actionStore.getExistingAction(commandParts[actionIndex]);
 
 
         if (existingAction) {
@@ -130,7 +131,7 @@ var Microphone = React.createClass({
             actionIndex = 0;
         }
 
-        var existingAction = this.getExistingAction(commandParts[actionIndex]);
+        var existingAction = actionStore.getExistingAction(commandParts[actionIndex]);
         if (existingAction) {
             toastr.error('An action by this name already exists');
         } else {
@@ -187,7 +188,7 @@ var Microphone = React.createClass({
             }
 
             if (mode === 'log-action') {
-                this.handleLogEventCommand(speech);
+                this.handleLogActionCommand(speech);
             } else if (mode === 'new-action') {
                 this.handleNewActionCommand(speech);
             } else {
@@ -199,13 +200,10 @@ var Microphone = React.createClass({
         
         this.setState({isListening: false});
     },
-
-    getExistingAction: function (name) {
-        var existingAction = _.find(actionStore.updates.value, function(item) { 
-            return item.name.replace(/:/g, '').toLowerCase() === name.toLowerCase(); 
-        });
-        return existingAction;
+    handleNoSpeech: function () {
+        this.setState({isListening: false});
     },
+   
     /*************************************************************
      * RENDERING
      *************************************************************/
@@ -216,12 +214,12 @@ var Microphone = React.createClass({
         
         var iconStyle = this.state.isListening ? { } : { color: '#b2b2b2' };
         
-        var style = {
+        var listItemContentStyle = {
             padding: '5px'
         };
         
         return (
-            <li key="mic"><a style={style} href="javascript:;" onClick={this.handleSpeakReadyClick}><i style={iconStyle} className="fa fa-2x fa-microphone"></i></a></li>
+            <li key="mic"><a style={listItemContentStyle} href="javascript:;" onClick={this.handleSpeakReadyClick}><i style={iconStyle} className="fa fa-2x fa-microphone"></i></a></li>
         );
     },
 });

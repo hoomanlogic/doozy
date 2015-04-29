@@ -29,6 +29,51 @@ var Conversation = React.createClass({
     handleResize: function(e) {
         this.setState({windowWidth: hlapp.getWidth()});
     },
+    onClose: function () {
+        if (this.props.onClose !== null) {
+            this.props.onClose();
+        }
+    },
+    
+    /*************************************************************
+     * MISC
+     *************************************************************/
+    goToEndOfConversation: function () {
+        /**
+         * Don't do anything if there is nothing rendered due
+         * to there being no active conversation open or if 
+         * there are no messages in the conversation
+         */
+        if (_.isUndefined(this.refs.scrollWindow) || !this.props.conversation || !this.props.conversation.messages) {
+          return;
+        }
+      
+        /**
+         * Get DOM elements for the scrollwindow and the inner conversation
+         * that will be used to calculated the scrollTop property to move to
+         * the end of the conversation
+         */
+        var $scrollWindow = $(this.refs.scrollWindow.getDOMNode());
+        var $fullConversation = $(this.refs.fullConversation.getDOMNode());
+        
+        if (($fullConversation.height() - $scrollWindow.height()) === 0) {
+            return; 
+        }
+        
+        /**
+         * Seemingly React will call ComponentDidUpdate before the DOM is done being updated
+         * because height doesn't work when the inner messages for the container are initially added
+         * so we wait 150 milliseconds to make sure the DOM is finished and it will scroll all the way to the bottom
+         */ 
+        if (this.firstLook) {
+            this.firstLook = false;
+            setTimeout(this.goToEndOfConversation, 150);
+        } else {
+            $scrollWindow.animate({
+              scrollTop: $fullConversation.height() - $scrollWindow.height()
+            }, 1000);
+        }
+    },
     
     /*************************************************************
      * RENDERING
@@ -111,46 +156,5 @@ var Conversation = React.createClass({
                 </div>
             </div>
         );
-    },
-    goToEndOfConversation: function () {
-        /**
-         * Don't do anything if there is nothing rendered due
-         * to there being no active conversation open or if 
-         * there are no messages in the conversation
-         */
-        if (_.isUndefined(this.refs.scrollWindow) || !this.props.conversation || !this.props.conversation.messages) {
-          return;
-        }
-      
-        /**
-         * Get DOM elements for the scrollwindow and the inner conversation
-         * that will be used to calculated the scrollTop property to move to
-         * the end of the conversation
-         */
-        var $scrollWindow = $(this.refs.scrollWindow.getDOMNode());
-        var $fullConversation = $(this.refs.fullConversation.getDOMNode());
-        
-        if (($fullConversation.height() - $scrollWindow.height()) === 0) {
-            return; 
-        }
-        
-        /**
-         * Seemingly React will call ComponentDidUpdate before the DOM is done being updated
-         * because height doesn't work when the inner messages for the container are initially added
-         * so we wait 150 milliseconds to make sure the DOM is finished and it will scroll all the way to the bottom
-         */ 
-        if (this.firstLook) {
-            this.firstLook = false;
-            setTimeout(this.goToEndOfConversation, 150);
-        } else {
-            $scrollWindow.animate({
-              scrollTop: $fullConversation.height() - $scrollWindow.height()
-            }, 1000);
-        }
-    },
-    onClose: function () {
-        if (this.props.onClose !== null) {
-            this.props.onClose();
-        }
     }
 });

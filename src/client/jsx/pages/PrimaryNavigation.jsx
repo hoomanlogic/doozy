@@ -88,7 +88,7 @@ var PrimaryNavigation = React.createClass({
         
         var menuItems = focusStore.updates.value.map(function (item) {
             return (
-                <Focus 
+                <FocusListItem 
                     key={item.id} 
                     data={item} 
                     handleFocusClick={this.handleFocusClick} />

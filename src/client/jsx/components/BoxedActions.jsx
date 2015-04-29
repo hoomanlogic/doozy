@@ -1,5 +1,7 @@
 var BoxedActions = React.createClass({
-    
+    /*************************************************************
+     * COMPONENT LIFECYCLE
+     *************************************************************/
     getInitialState: function () {
         var boxTags = this.getBoxTags(this.props.actions);
         var boxes = this.getBoxes(boxTags, this.props.actions);
@@ -8,6 +10,7 @@ var BoxedActions = React.createClass({
             boxes: boxes
         };
     },
+    
     componentWillReceiveProps: function (nextProps) {
         var nextBoxTags = this.getBoxTags(nextProps.actions);
         var boxTags = [];
@@ -19,6 +22,18 @@ var BoxedActions = React.createClass({
             this.setState({ boxes: nextBoxes });
         }
     },
+    
+    /*************************************************************
+     * EVENT HANDLING
+     *************************************************************/
+    handleBoxTitleClick: function (box) {
+        box.expanded = !box.expanded;
+        this.setState({ boxes: this.state.boxes });
+    },
+    
+    /*************************************************************
+     * CALCULATIONS
+     *************************************************************/
     getBoxTags: function (actions) {
         // get distinct list of box tags
         var boxTags = [];
@@ -38,6 +53,10 @@ var BoxedActions = React.createClass({
             };
         });  
     },
+    
+    /*************************************************************
+     * RENDERING
+     *************************************************************/
     render: function () {
         
         if (this.state.boxes.length === 0) {
@@ -89,9 +108,5 @@ var BoxedActions = React.createClass({
             {boxesDom}
             </div>
         );
-    },
-    handleBoxTitleClick: function (box) {
-        box.expanded = !box.expanded;
-        this.setState({ boxes: this.state.boxes });
     }
 });

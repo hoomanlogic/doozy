@@ -1,19 +1,10 @@
 var Timer = React.createClass({
+    mixins: [React.addons.PureRenderMixin],
     /*************************************************************
      * COMPONENT LIFECYCLE
      *************************************************************/
     getInitialState: function () {
         return {
-            timerLastUpdated: new Date().toISOString(),
-            timeSoFar: 0
-        };
-    },
-    
-    getInitialState: function () {
-        return {
-            connectionsLastUpdated: new Date().toISOString(),
-            notificationsLastUpdated: new Date().toISOString(),
-            preferencesLastUpdated: new Date().toISOString(),
             timerLastUpdated: new Date().toISOString()
         };
     },
@@ -23,7 +14,7 @@ var Timer = React.createClass({
         this.handleTimerStoreUpdate(timerStore.updates.value);
     },
     componentWillUnmount: function () {
-        timerStore.dispose(this.handleNotificationStoreUpdate);
+        timerStore.dispose(this.handleTimerStoreUpdate);
         if (this.interval) {
             clearInterval(this.interval);
         }
@@ -50,7 +41,7 @@ var Timer = React.createClass({
     },
     handleRunningTotalUpdate: function () {
         this.setState({
-            time: new Date().getTime()
+            timerLastUpdated: new Date().getTime()
         });
     },
     

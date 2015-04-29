@@ -319,8 +319,19 @@ var ActionStore = function () {
 
     };
     
+    this.getExistingAction = function (name) {
+        var existingAction = _.find(updates.value, function(item) { 
+            return cleanActionName(item.name) === cleanActionName(name.toLowerCase()); 
+        });
+        return existingAction;
+    };
+    
     var user = 'my';
     var secret = 'hash';
+    
+    var cleanActionName = function (name) {
+        return name.replace(/:/g, '').replace(/  /g, ' ').trim().toLowerCase();
+    };
     
     var jsonActionDates = function (action) {
         if (action.lastPerformed === '0001-01-01T00:00:00' || action.lastPerformed === null) {
