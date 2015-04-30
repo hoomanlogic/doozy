@@ -18,7 +18,7 @@ var jsLibs = [
     'bower_components/underscore/underscore-min.js',
     'bower_components/toastr/build/toastr.min.js',
     'bower_components/skycons/skycons.min.js', 
-    'bower_components/showdown/compressed/Showdown.min.js', 
+    //'bower_components/showdown/compressed/Showdown.min.js', 
     'bower_components/jstorage/jstorage.min.js', 
     'aes.js', //bower_components/crypto-js/crypto-js is currently causing an issue
     'nuget_packages/Microsoft.AspNet.SignalR.JS.2.1.2/content/Scripts/jquery.signalR-2.1.2.min.js', 
@@ -26,16 +26,54 @@ var jsLibs = [
 	'bower_components/babble/dist/babble.min.js',
 	'bower_components/Sugar/release/date.min.js',
     '../errl_js/dist/*.min.js', 
-    '../common_js/dist/*.min.js'
+    '../common_js/dist/common.min.js',
+    '../common_js/dist/datetime.min.js',
+    '../common_js/dist/EventHandler.min.js',
+    '../common_js/dist/extensions.min.js',
+    '../common_js/dist/io.min.js',
+    '../common_js/dist/uri.min.js',
+	'../common_js/dist/store.min.js',
 ];
 
 var cssAll = [
 	'bower_components/fontawesome/css/font-awesome.min.css', 
 	'bower_components/toastr/build/toastr.min.css', 
 	'bower_components/selectize/dist/css/selectize.css', 
-	'bower_components/selectize/dist/css/selectize.default.css', 
-	'bower_components/datepickr/datepickr.min.css', 
+	'bower_components/selectize/dist/css/selectize.default.css',
 	'src/server/css/app.min.css'
+];
+
+var jsxFiles = [
+    '../react_components/src/**', 
+    
+    'src/client/jsx/components/ActionRow.jsx',
+    'src/client/jsx/components/FocusListItem.jsx',
+    'src/client/jsx/components/NotificationListItem.jsx',
+    'src/client/jsx/components/TagListItem.jsx',
+    'src/client/jsx/components/Uploader.jsx',
+    
+    'src/client/jsx/components/SendMessage.jsx',
+    
+    'src/client/jsx/components/AddEditAction.jsx',
+    'src/client/jsx/components/BoxedActions.jsx',
+    'src/client/jsx/components/Conversation.jsx',
+    'src/client/jsx/components/LogAction.jsx',
+    'src/client/jsx/components/Microphone.jsx',
+    'src/client/jsx/components/NextActions.jsx',
+    'src/client/jsx/components/NotificationDropdown.jsx',
+    'src/client/jsx/components/ProfilePic.jsx',
+    'src/client/jsx/components/RecentActions.jsx',
+    'src/client/jsx/components/TagList.jsx',
+    'src/client/jsx/components/Timer.jsx',
+    'src/client/jsx/components/UpcomingActions.jsx',
+    'src/client/jsx/components/WeatherIcon.jsx',
+    
+    'src/client/jsx/components/FocusActions.jsx',
+    
+    'src/client/jsx/pages/ManageFocus.jsx',
+    'src/client/jsx/pages/PrimaryNavigation.jsx',
+    
+    'src/client/jsx/pages/App.jsx',
 ];
 
 var maps = [
@@ -46,7 +84,7 @@ gulp.task('build', ['concat-js-libs', 'concat-css-all', 'concat-js-app']);
 
 // TASK: Compile JSX source
 gulp.task('compile-jsx', function () {
-    return gulp.src(['../react_components/src/**', 'src/client/jsx/components/**', 'src/client/jsx/pages/**'])
+    return gulp.src(jsxFiles)
         .pipe(plumber({
             errorHandler: onError
         }))

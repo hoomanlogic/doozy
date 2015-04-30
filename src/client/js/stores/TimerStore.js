@@ -1,62 +1,86 @@
-var TimerStore = function () {
-    hlstore.SimpleStore.call(this);
-    this.updates.value = [];
-    var me = this;
+// CommonJS, AMD, and Global shim
+(function (root, factory) {
+    'use strict';
+	if (typeof exports === "object") {
+		// CommonJS
+		module.exports = exports = factory(
+            require('../../../../../common_js/src/store')
+        );
+	}
+	else if (typeof define === "function" && define.amd) {
+		// AMD
+		define([
+            '../../../../../common_js/src/store'
+        ], factory);
+	}
+	else {
+		// Global (browser)
+		root.timerStore = factory(root.hlstore);
+	}
+}(this, function (hlstore) {
+    'use strict';
     
-    this.init = function () {
-        var timer = hlio.loadLocal('hl.timer', 'nothingtohide');
-        if (!timer) {
-            timer = {
-                isRunning: false,
-                startedAt: null,
-                workingOn: null,
-                timeSoFar: 0
+    var TimerStore = function () {
+        hlstore.Store.call(this);
+        this.updates.value = [];
+        var me = this;
+
+        this.init = function () {
+            var timer = hlio.loadLocal('hl.timer', 'nothingtohide');
+            if (!timer) {
+                timer = {
+                    isRunning: false,
+                    startedAt: null,
+                    workingOn: null,
+                    timeSoFar: 0
+                }
             }
-        }
-        me.updates.value = timer;
-        me.notify();
-    };
-    
-    this.updateWorkingOn = function (workingOn) {
-        hlcommon.assign(me.updates.value, {workingOn: workingOn});
-        me.notify();
-        hlio.saveLocal('hl.timer', me.updates.value, 'nothingtohide');
-    };
-    
-    this.startTimer = function () {
-        hlcommon.assign(me.updates.value, {
-            isRunning: true,
-            startedAt: new Date().getTime(),
-        });
-        me.notify();
-        hlio.saveLocal('hl.timer', me.updates.value, 'nothingtohide');
-    };
-    
-    this.pauseTimer = function () {
-        if (me.updates.value.isRunning) {
-            this.updates.value.timeSoFar += new Date().getTime() - this.updates.value.startedAt;
-            hlcommon.assign(me.updates.value, {
-                isRunning: false,
-                startedAt: null,
+            me.updates.value = timer;
+            me.notify();
+        };
+
+        this.updateWorkingOn = function (workingOn) {
+            me.assign(me.updates.value, {workingOn: workingOn});
+            me.notify();
+            me.saveLocal('hl.timer', me.updates.value, 'nothingtohide');
+        };
+
+        this.startTimer = function () {
+            me.assign(me.updates.value, {
+                isRunning: true,
+                startedAt: new Date().getTime(),
             });
             me.notify();
-            hlio.saveLocal('hl.timer', me.updates.value, 'nothingtohide');
-        }
-    };
-    
-    this.resetTimer = function () {
-        hlcommon.assign(me.updates.value, {
-            startedAt: new Date().getTime(),
-            workingOn: null,
-            timeSoFar: 0
-        });
-        me.notify();
-        hlio.saveLocal('hl.timer', me.updates.value, 'nothingtohide');
-    };
-    
-    this.init();
-};
-TimerStore.prototype = Object.create(hlstore.SimpleStore.prototype);
-TimerStore.prototype.constructor = TimerStore;
+            me.saveLocal('hl.timer', me.updates.value, 'nothingtohide');
+        };
 
-var timerStore = new TimerStore();
+        this.pauseTimer = function () {
+            if (me.updates.value.isRunning) {
+                me.updates.value.timeSoFar += new Date().getTime() - me.updates.value.startedAt;
+                me.assign(me.updates.value, {
+                    isRunning: false,
+                    startedAt: null,
+                });
+                me.notify();
+                me.saveLocal('hl.timer', me.updates.value, 'nothingtohide');
+            }
+        };
+
+        this.resetTimer = function () {
+            me.assign(me.updates.value, {
+                startedAt: new Date().getTime(),
+                workingOn: null,
+                timeSoFar: 0
+            });
+            me.notify();
+            me.saveLocal('hl.timer', me.updates.value, 'nothingtohide');
+        };
+
+        this.init();
+    };
+    
+    TimerStore.prototype = Object.create(hlstore.Store.prototype);
+    TimerStore.prototype.constructor = TimerStore;
+
+    return new TimerStore();
+}));
