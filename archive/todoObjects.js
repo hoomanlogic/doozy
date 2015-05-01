@@ -1,6 +1,5 @@
 //Dependencies: underscore.js
 
-//#region Focus - Base
 var Focus = function () {
 
     // ensure name was supplied
@@ -16,9 +15,7 @@ var Focus = function () {
     this.name = '';
     this.tagName = '';
 };
-//#endregion
 
-//#region Tag - Base
 var Tag = function (name, tags) {
 
     // ensure name was supplied
@@ -34,9 +31,7 @@ var Tag = function (name, tags) {
     this.parent = null;
     this.items = [];
 };
-//#endregion
 
-//#region Action - Base
 var Action = function (name, tags) {
 
     // ensure name was supplied
@@ -74,48 +69,44 @@ var Action = function (name, tags) {
     }
 };
 
-// instance methods
-Action.prototype.getDuration = function () {
+Action.prototype = {
+    getDuration: function () {
 
-    if (this.items.length === 0) {
-        return this.duration;
-    } else {
-        var duration = 0;
-        for (var i = 0; i < this.items.length; i++) {
-            duration += this.items[i].getDuration();
+        if (this.items.length === 0) {
+            return this.duration;
+        } else {
+            var duration = 0;
+            for (var i = 0; i < this.items.length; i++) {
+                duration += this.items[i].getDuration();
+            }
+            return duration;
         }
-        return duration;
+    },
+    getFormattedDuration: function () {
+        return babble.durations.formatDuration(this.getDuration());
+    },
+    formatTime: function (minutes) {
+        var hours = 0;
+        if (minutes < 60) {
+            return '0:' + minutes;
+        } else {
+            var leftover = minutes % 60;
+
+            hours = (minutes - leftover) / 60;
+
+            return (hours < 10 ? '0' + hours : hours) + ':' + (leftover < 10 ? '0' + leftover : leftover);
+        }
     }
 };
 
-Action.prototype.getFormattedDuration = function () {
-    return babble.durations.formatDuration(this.getDuration());
-};
-
-// static methods
-Action.prototype.formatTime = function (minutes) {
-    var hours = 0;
-    if (minutes < 60) {
-        return '0:' + minutes;
-    } else {
-        var leftover = minutes % 60;
-
-        hours = (minutes - leftover) / 60;
-
-        return (hours < 10 ? '0' + hours : hours) + ':' + (leftover < 10 ? '0' + leftover : leftover);
-    }
-};
-//#endregion
-
-//#region Flow
 var Flow = function (name, tags) {
     Action.call(this, name, tags);
     this.kind = 'Flow';
     this.items = [];
 };
+
 Flow.prototype = Object.create(Action.prototype);
 Flow.prototype.constructor = Flow;
-//#endregion 
 
 //#region Block
 // Blocks can change the current focus and allow actions to be dropped into them.
@@ -189,6 +180,39 @@ var LOG_UNIT = {
 };
 //#endregion
 
+//#region Objective
+var Objective = function (name, tags) {
+
+    // ensure name was supplied
+    if (typeof name === 'undefined') {
+        throw 'name is required';
+    }
+
+    // set instance variables
+    this.id = new Date().getTime().toString();
+    this.kind = 'Objective';
+    this.name = name;
+    this.enlist = null;
+    this.retire = null;
+    this.latestEntry = null;
+    // count in TARGET context means 3 actions, optionally add UNIT=MINUTE to treat TARGET as number of minutes in specified recurrence
+    // TARGET defaults to 1, UNIT defaults to ACTION
+    this.target = ["RRULE:FREQ=WEEKLY;TARGET=1;"];
+    this.tags = [];
+    this.items = [];
+    this.content = null;
+    
+    // add tags any were supplied
+    if (typeof tags !== 'undefined') {
+        if (typeof tags === 'string') {
+            this.tags.push(tags);
+        } else if (Object.prototype.toString.call(tags) === '[object Array]') {
+            this.tags = tags;
+        }
+    }
+};
+//#endregion
+
 var setProtoActions = function (actions) {
     // actions root
     actions.map( function (item) {
@@ -216,91 +240,6 @@ var setProtoAction = function (action) {
     } else if (action.kind === 'Milestone') {
         action.__proto__ = Milestone.prototype;
     }
-};
-
-var filterActions = function (actions, tags, type) {
-    // no filter, return all
-    if (typeof tags === 'undefined' || tags === null|| tags.length === 0) {
-        return actions;
-    }
-
-    if (typeof type !== 'string') {
-        type = 'any';
-    }
-    
-    // filter is a string, convert to array
-    if (typeof tags === 'string') {
-        tags = [tags];
-    }
-
-    // get actions that match at least one of the filter tags
-    if (type === 'any') {
-        return actions.filter(function (item) { return _.intersection(tags, item.tags).length > 0; });
-    } else if (type === 'all') {
-        return actions.filter(function (item) { return _.intersection(tags, item.tags).length === tags.length; });
-    }
-};
-
-var getRecurrenceObj = function (item) {
-
-    var kind = item.split(':');
-
-    // date lists: RDATE, EXDATE
-    if (kind[0] === 'RDATE' || kind[0] === 'EXDATE') {
-        var dateStrings = kind[1].split(',');
-        var dates = [];
-        // convert to array of datetime integers for easy comparison with underscore
-        dateStrings.map(function (item) {
-            if (item.length === 10) {
-                // not standard but easier for me
-                dates.push(babble.moments.getLocalDate(item).getTime());
-            } else {
-                // standard based
-                dates.push(new Date(item).getTime());
-            }
-        });
-        return {
-            kind: kind[0],
-            dates: dates
-        };
-    }
-
-    // rules: RRULE, EXRULE
-    var rule = {
-        kind: kind[0],
-        freq: null,
-        count: 365000, // covers daily for 1000 years to avoid null check
-        interval: 1,
-        byday: null
-    };
-
-    var props = kind[1].split(';');
-
-    for (var i = 0; i < props.length; i++) {
-        // split key from value
-        var keyval = props[i].split('=');
-
-        if (keyval[0] === 'BYDAY') {
-            rule.byday = [];
-            var byday = keyval[1].split(',');
-            for (var j = 0; j < byday.length; j++) {
-                if (byday[j].length === 2) {
-                    rule.byday.push({ day: byday[j], digit: 0 });
-                } else {
-                    // handle digit
-                    var day = byday[j].slice(-2);
-                    var digit = parseInt(byday[j].slice(0, byday[j].length - 2));
-                    rule.byday.push({ day: day, digit: digit });
-                }
-            }
-        } else if (keyval[0] === 'INTERVAL') {
-            rule[keyval[0].toLowerCase()] = parseInt(keyval[1]);
-        } else {
-            rule[keyval[0].toLowerCase()] = keyval[1];
-        }
-    }
-
-    return rule;
 };
 
 var processRecurrence = function (today, enlist, rule) {
@@ -468,203 +407,3 @@ var calculateOccurs = function (actions, date) {
 
     return today;
 };
-
-var getRecurrenceSummary = function (recurrenceRules) {
-    if (!recurrenceRules || recurrenceRules.length === 0) {
-        return null;   
-    }
-    
-    var summary = '';
-    recurrenceRules.forEach(function(item, index, array) {
-        var recurrenceObj = getRecurrenceObj(item);
-        
-
-        if (recurrenceObj.byday) {
-            var days = {
-                SU: false,
-                MO: false,
-                TU: false,
-                WE: false,
-                TH: false,
-                FR: false,
-                SA: false
-            };
-            // build days object
-            for (var i = 0; i < recurrenceObj.byday.length; i++) {
-                days[recurrenceObj.byday[i].day] = true;
-            }
-            
-            var twoCharDays = _.pluck(recurrenceObj.byday, 'day');
-            var fullnameDays = babble.moments.daysOfWeek.filter(function(item) {
-                return twoCharDays.indexOf(item.slice(0,2).toUpperCase()) > -1;
-            });
-            
-            if (recurrenceObj.interval > 1) {
-                if (days.SU && days.SA && !days.MO && !days.TU && !days.WE && !days.TH && !days.FR) {
-                    summary = 'Every ' + recurrenceObj.interval + ' ' + getFrequencyNoun(recurrenceObj.freq) + ' on the weekend';
-                } else if (!days.SU && !days.SA && days.MO && days.TU && days.WE && days.TH && days.FR) {
-                    summary = 'Every ' + recurrenceObj.interval + ' ' + getFrequencyNoun(recurrenceObj.freq) + ' on the weekdays';
-                } else {
-                    summary = 'Every ' + recurrenceObj.interval + ' ' + getFrequencyNoun(recurrenceObj.freq) + ' on ' + fullnameDays.join(', ');
-                }
-            } else {
-                if (days.SU && days.SA && !days.MO && !days.TU && !days.WE && !days.TH && !days.FR) {
-                    summary = 'Weekends';
-                } else if (!days.SU && !days.SA && days.MO && days.TU && days.WE && days.TH && days.FR) {
-                    summary = 'Weekdays';
-                } else {
-                    summary = 'Every ' + fullnameDays.join(', ');
-                }
-            }
-        } else {
-            if (recurrenceObj.interval > 1) {
-                summary = 'Every ' + recurrenceObj.interval + ' ' + getFrequencyNoun(recurrenceObj.freq) + 's';
-            } else {
-                summary = 'Every ' + getFrequencyNoun(recurrenceObj.freq);
-            }
-            
-        }
-    });
-    
-    return summary;
-};
-
-var getFrequencyNoun = function (freq) {
-    if (freq === 'WEEKLY') {
-        return 'week';   
-    } else if (freq === 'MONTHLY') {
-        return 'month';   
-    } else if (freq === 'DAILY') {
-        return 'day';   
-    }
-};
-
-var TAG_PREFIX = {
-    FOCUS: '!',
-    PLACE: '@',
-    GOAL: '>',
-    NEED: '$',
-    BOX: '#'
-}
-
-/**
- * Parses a tag string to an object
- */
-var parseTag = function (tag) {
-    var kind = 'Tag';
-    var name = tag;
-    
-    /**
-     * Compare first char of tag to
-     * determine if it is a special tag
-     */
-    var firstChar = name.slice(0,1);
-    if (firstChar === TAG_PREFIX.FOCUS) {
-        kind = 'Focus'; // part of
-    } else if (firstChar === TAG_PREFIX.PLACE) {
-        kind = 'Place'; // where
-    } else if (firstChar === TAG_PREFIX.GOAL) {
-        kind = 'Goal'; // to what end
-    } else if (firstChar === TAG_PREFIX.NEED) {
-        kind = 'Need'; // why
-    } else if (firstChar === TAG_PREFIX.BOX) {
-        kind = 'Box'; // when
-    }
-    
-    /**
-     * Separate the name from the 
-     * prefix when it is a special tag
-     */
-    if (kind !== 'Tag') {
-        name = name.slice(1);   
-    }
-    
-    /**
-     * Return tag object
-     */
-    return {
-        value: tag,
-        kind: kind,
-        name: name
-    };
-};
-
-var calcNaturalDays = function (date) {
-    if (!date) {
-        return '';   
-    }
-    var date1 = new Date(date.toLocaleDateString());
-    var date2 = new Date((new Date()).toLocaleDateString());
-    var timeDiff = Math.abs(date2.getTime() - date1.getTime());
-    var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-    if (date1 < date2) {
-        if (diffDays === 0) {
-            return 'Today';
-        } else if (diffDays === 1) {
-            return 'Yesterday';
-        } else if (diffDays < 7) {
-            return babble.moments.daysOfWeek[date1.getDay()];
-        } else {
-            return diffDays + ' day' + (diffDays > 1 ? 's' : '') + ' ago';
-        }
-    } else {
-        if (diffDays === 0) {
-            return 'Today';
-        } else if (diffDays === 1) {
-            return 'Tomorrow';
-        } else if (diffDays < 7) {
-            return babble.moments.daysOfWeek[date1.getDay()];
-        } else {
-            return 'in ' + diffDays + ' day' + (diffDays > 1 ? 's' : '');
-        }
-    }
-};
-
-var startsWithAVowel = function (word) {
-    if (['a','e','i','o','u'].contains(word[0].toLowerCase())) {
-        return true;
-    } else {
-        return false;
-    }
-};
-
-var hasPossessiveNoun = function (words) {
-    if (words.indexOf('\'s ') > 0) {
-        return true;
-    } else {
-        return false;
-    }
-};
-
-//#region Objective
-//var Objective = function (name, tags) {
-
-//    // ensure name was supplied
-//    if (typeof name === 'undefined') {
-//        throw 'name is required';
-//    }
-
-//    // set instance variables
-//    this.id = new Date().getTime().toString();
-//    this.kind = 'Objective';
-//    this.name = name;
-//    this.enlist = null;
-//    this.retire = null;
-//    this.latestEntry = null;
-//    // count in TARGET context means 3 actions, optionally add UNIT=MINUTE to treat TARGET as number of minutes in specified recurrence
-//    // TARGET defaults to 1, UNIT defaults to ACTION
-//    this.target = ["RRULE:FREQ=WEEKLY;TARGET=1;"];
-//    this.tags = [];
-//    this.items = [];
-//    this.content = null;
-    
-//    // add tags any were supplied
-//    if (typeof tags !== 'undefined') {
-//        if (typeof tags === 'string') {
-//            this.tags.push(tags);
-//        } else if (Object.prototype.toString.call(tags) === '[object Array]') {
-//            this.tags = tags;
-//        }
-//    }
-//};
-//#endregion

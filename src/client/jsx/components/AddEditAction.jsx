@@ -171,7 +171,7 @@
             };
 
             if (action.recurrenceRules.length > 0) {
-                var recurrenceObj = getRecurrenceObj(action.recurrenceRules[0]);
+                var recurrenceObj = hlapp.getRecurrenceObj(action.recurrenceRules[0]);
                 state.repeat = recurrenceObj.freq.slice(0,1).toLowerCase();
                 state.repeatInterval = recurrenceObj.interval;
                 if (recurrenceObj.byday) {
@@ -224,7 +224,7 @@
             // add tags that user has assigned to other actions
             distinctTags.forEach( function (tag) {
 
-                selectize.addOption(parseTag(tag));
+                selectize.addOption(hlapp.parseTag(tag));
             });
         },
         setupTagsControl: function () {

@@ -130,7 +130,6 @@
                 }
             });
         };
-        this.getConnections();
     };
     ConnectionStore.prototype = Object.create(hlstore.Store.prototype);
     ConnectionStore.prototype.constructor = ConnectionStore;

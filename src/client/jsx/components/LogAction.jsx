@@ -202,7 +202,7 @@
             // { kind: 'Tag', name: tag }
             // add tags that user has assigned to other actions
             distinctTags.forEach( function (tag) {
-                selectize.addOption(parseTag(tag));
+                selectize.addOption(hlapp.parseTag(tag));
             });
         },
         setupActionsControl: function () {

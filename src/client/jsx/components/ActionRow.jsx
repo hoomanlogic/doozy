@@ -123,7 +123,7 @@
                         latestDate = latestDate === null ? this.props.action.logEntries[i].date : (latestDate < this.props.action.logEntries[i].date ? this.props.action.logEntries[i].date : latestDate);
                     }
                     hoverText += this.props.action.logEntries[i].entry + (duration ? (' for ' + duration + 'm ') : '') + ' on ' + 
-                        this.props.action.logEntries[i].date.toLocaleDateString() + ' (' + calcNaturalDays(this.props.action.logEntries[i].date) + ') ' +
+                        this.props.action.logEntries[i].date.toLocaleDateString() + ' (' + hlapp.calcNaturalDays(this.props.action.logEntries[i].date) + ') ' +
                         (this.props.action.logEntries[i].details ? ': ' + this.props.action.logEntries[i].details : '') + 
                         '\n';   
                 }
@@ -166,7 +166,7 @@
              */
             if (this.props.action.recurrenceRules && this.props.action.recurrenceRules.length > 0) {
                 repeats = (
-                    <span> <i className="fa fa-repeat" title={getRecurrenceSummary(this.props.action.recurrenceRules)}></i></span>
+                    <span> <i className="fa fa-repeat" title={hlapp.getRecurrenceSummary(this.props.action.recurrenceRules)}></i></span>
                 );
             }
 
@@ -178,7 +178,7 @@
                         {details}
                         {repeats}
                     </td>
-                    <td width="150px" hidden={this.state.windowWidth < 600 ? true : false} title={hoverText}>{this.props.actionLastPerformed ? calcNaturalDays(this.props.actionLastPerformed) : ''}</td>
+                    <td width="150px" hidden={this.state.windowWidth < 600 ? true : false} title={hoverText}>{this.props.actionLastPerformed ? hlapp.calcNaturalDays(this.props.actionLastPerformed) : ''}</td>
                 </tr>
             );
         }

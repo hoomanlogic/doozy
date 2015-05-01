@@ -88,6 +88,7 @@
             actionStore.init(this.props.settings.userName, this.props.settings.userId);
             focusStore.init(this.props.settings.userName, this.props.settings.userId);
             weatherStore.init(this.props.settings.userName, this.props.settings.userId);
+            connectionStore.getConnections();
 
             /**
              * Work with initial data store values

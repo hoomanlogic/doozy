@@ -182,7 +182,7 @@
             /**
              * Filter focus actions by the tags filter to pass filtered list to children
              */
-            var tagsFilteredFocusActions = filterActions(this.state.focusActions, this.state.tagsFilter, this.state.tagsFilterType);
+            var tagsFilteredFocusActions = hlapp.filterActions(this.state.focusActions, this.state.tagsFilter, this.state.tagsFilterType);
 
             return (
                 <div className="row">
