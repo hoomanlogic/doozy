@@ -16,6 +16,10 @@ h2 {
 
 }
 
+h1, h3, h4 {
+    color: #12AB31
+}
+
 .flex-container {
     display: flex;
     flex-wrap: wrap;
@@ -37,4 +41,13 @@ section {
     section {
         text-align: left;
     }
+}
+
+#hoomanlogic {
+  display: inline-block;
+  width: 5rem;
+  height: 5rem;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-image: url(../media/hoomanlogic.svg );
 }

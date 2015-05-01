@@ -1,4 +1,4 @@
-.linear-gradient(@from,@to,@default,@color1,@stop1,@color2,@stop2) {
+.linear-gradient(@from;@to;@default;@color1;@stop1;@color2;@stop2) {
   background-color: @default;
   background-image: -webkit-gradient(linear, left @from, left @to, color-stop(@stop1, @color1), color-stop(@stop2 @color2));
   background-image: -webkit-linear-gradient(@from, @color1 @stop1, @color2 @stop2);
@@ -7,7 +7,7 @@
   background-image: -o-linear-gradient(@from, @color1 @stop1, @color2 @stop2);
   background-image: linear-gradient(@from, @color1 @stop1, @color2 @stop2);
 }
-.linear-gradient(@from,@to,@default,@color1,@stop1,@color2,@stop2,@color3,@stop3,@color4,@stop4) {
+.linear-gradient(@from;@to;@default;@color1;@stop1;@color2;@stop2;@color3;@stop3;@color4;@stop4) {
     background-color: @default;
     background-image: -webkit-gradient(linear, left @from, left @to, color-stop(@stop1, @color1), color-stop(@stop2 @color2), color-stop(@stop3 @color3), color-stop(@stop4 @color4));
     background-image: -webkit-linear-gradient(@from, @color1 @stop1, @color2 @stop2, @color3 @stop3, @color4 @stop4);
@@ -16,8 +16,35 @@
     background-image: -o-linear-gradient(@from, @color1 @stop1, @color2 @stop2, @color3 @stop3, @color4 @stop4);
     background-image: linear-gradient(@from, @color1 @stop1, @color2 @stop2, @color3 @stop3, @color4 @stop4);
 }
-/* Vendor Prefixes */
-.transition(@arg1, @arg2) {
+/* Flex Vendor Prefixes */
+.flexbox(@flexflow: row nowrap;) {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-flow: @flexflow;
+            flex-flow: @flexflow;
+}
+
+.flex(@values) {
+    -webkit-box-flex: @values;
+       -moz-box-flex:  @values;
+        -webkit-flex:  @values;
+            -ms-flex:  @values;
+                flex:  @values;
+}
+
+.order(@val) {
+    -webkit-box-ordinal-group: @val;  
+       -moz-box-ordinal-group: @val;     
+               -ms-flex-order: @val;     
+                -webkit-order: @val;  
+                        order: @val;
+}
+
+/* Transition Vendor Prefixes */
+.transition(@arg1; @arg2) {
     -webkit-transition: @arg1, @arg2;
     -moz-transition: @arg1, @arg2;
     -o-transition: @arg1, @arg2;
@@ -51,7 +78,8 @@
           transition: transform @transition;
 }
 
-.bs-gradient-msdisabled(@color1,@color2,@colorStr1,@colorStr2) {
+/* Bootstrap */
+.bs-gradient-msdisabled(@color1;@color2;@colorStr1;@colorStr2) {
   background-image: -webkit-linear-gradient(top, @color1 0, @color2 100%);
   background-image:      -o-linear-gradient(top, @color1 0, @color2 100%);
   background-image: -webkit-gradient(linear, left top, left bottom, from(@color1), to(@color2));
@@ -69,4 +97,3 @@
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=@colorStr1, endColorstr=@colorStr2, GradientType=0);
   background-repeat: repeat-x;
 }
-

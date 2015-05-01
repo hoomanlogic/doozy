@@ -40,13 +40,13 @@
         };
 
         this.updateWorkingOn = function (workingOn) {
-            me.assign(me.updates.value, {workingOn: workingOn});
+            Object.assign(me.updates.value, {workingOn: workingOn});
             me.notify();
             me.saveLocal('hl.timer', me.updates.value, 'nothingtohide');
         };
 
         this.startTimer = function () {
-            me.assign(me.updates.value, {
+            Object.assign(me.updates.value, {
                 isRunning: true,
                 startedAt: new Date().getTime(),
             });
@@ -57,7 +57,7 @@
         this.pauseTimer = function () {
             if (me.updates.value.isRunning) {
                 me.updates.value.timeSoFar += new Date().getTime() - me.updates.value.startedAt;
-                me.assign(me.updates.value, {
+                Object.assign(me.updates.value, {
                     isRunning: false,
                     startedAt: null,
                 });
@@ -67,7 +67,7 @@
         };
 
         this.resetTimer = function () {
-            me.assign(me.updates.value, {
+            Object.assign(me.updates.value, {
                 startedAt: new Date().getTime(),
                 workingOn: null,
                 timeSoFar: 0

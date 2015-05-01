@@ -26,7 +26,7 @@
   },
   "Css": {
     "AdjustRelativePaths": true,
-    "AutoMinify": false,
+    "AutoMinify": true,
     "Autoprefix": false,
     "AutoprefixerBrowsers": null,
     "GenerateRtlSourceMaps": true,
@@ -130,5 +130,55 @@
     "OutputDirectory": null,
     "ShowPreviewPane": true,
     "StrictBoldItalic": false
+  },
+  "LiveScript": {
+    "CompileOnBuild": false,
+    "CompileOnSave": true,
+    "GenerateSourceMaps": true,
+    "MinifyInPlace": false,
+    "OutputDirectory": null,
+    "ProcessSourceMapsForEditorEnhancements": true,
+    "ShowPreviewPane": true,
+    "WrapClosure": true
+  },
+  "Scss": {
+    "CompileOnBuild": false,
+    "CompileOnSave": true,
+    "EnableChainCompilation": true,
+    "GenerateSourceMaps": true,
+    "MinifyInPlace": false,
+    "NumberPrecision": 5,
+    "OutputDirectory": null,
+    "OutputStyle": "Expanded",
+    "ProcessSourceMapsForEditorEnhancements": true,
+    "ShowPreviewPane": true,
+    "UseRubyRuntime": false
+  },
+  "Sprite": {
+    "CssOutputDirectory": null,
+    "IsVertical": true,
+    "LessOutputDirectory": null,
+    "Margin": 1,
+    "Optimize": true,
+    "OutputDirectory": null,
+    "RunOnBuild": false,
+    "ScssOutputDirectory": null,
+    "UseAbsoluteUrl": false,
+    "UseFullPathForIdentifierName": true
+  },
+  "SweetJs": {
+    "CompileOnBuild": false,
+    "CompileOnSave": true,
+    "GenerateSourceMaps": true,
+    "MinifyInPlace": false,
+    "OutputDirectory": null,
+    "ProcessSourceMapsForEditorEnhancements": true,
+    "ShowPreviewPane": true
+  },
+  "TypeScript": {
+    "LintOnBuild": false,
+    "LintOnSave": true,
+    "LintResultLocation": "Message",
+    "ShowPreviewPane": true
   }
 }

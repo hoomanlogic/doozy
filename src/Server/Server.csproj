@@ -255,6 +255,7 @@
     <Content Include="js\react-with-addons.min.js" />
     <Content Include="js\react.js" />
     <Content Include="js\react.min.js" />
+    <Content Include="media\hoomanlogic.svg" />
     <Content Include="ms-icon-144x144.png" />
     <Content Include="ms-icon-150x150.png" />
     <Content Include="ms-icon-310x310.png" />
