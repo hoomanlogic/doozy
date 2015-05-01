@@ -245,16 +245,13 @@
     <Content Include="Global.asax" />
     <Content Include="js\app.js" />
     <Content Include="js\app.min.js" />
-    <Content Include="js\jquery.min.js" />
+    <Content Include="js\libs.js" />
     <Content Include="js\libs.min.js" />
     <Content Include="js\react-with-addons.js" />
     <Content Include="js\react-with-addons.min.js" />
     <Content Include="js\react.js" />
     <Content Include="js\react.min.js" />
-    <Content Include="js\require-config.js" />
     <Content Include="js\rx.js" />
-    <Content Include="js\rx.lite.compat.js" />
-    <Content Include="js\rx.lite.compat.min.js" />
     <Content Include="js\rx.lite.js" />
     <Content Include="js\rx.lite.min.js" />
     <Content Include="js\rx.min.js" />
@@ -263,19 +260,8 @@
     <Content Include="ms-icon-310x310.png" />
     <Content Include="ms-icon-70x70.png" />
     <Content Include="Properties\PublishProfiles\ArvixeDeploy.pubxml.user" />
-    <Content Include="js\skycons.min.js.map" />
-    <Content Include="js\jquery.min.js.map" />
-    <Content Include="js\jstorage.min.js.map" />
-    <Content Include="js\toastr.min.js.map" />
-    <Content Include="js\rx.lite.compat.min.js.map" />
-    <Content Include="js\app.min.js.map">
-      <DependentUpon>app.min.js</DependentUpon>
-    </Content>
     <Content Include="js\rx.map" />
     <Content Include="js\rx.lite.map" />
-    <Content Include="js\underscore-min.map" />
-    <Content Include="js\errl.min.js.map" />
-    <Content Include="js\toastr.js.map" />
     <Content Include="manifest.json" />
     <None Include="Properties\PublishProfiles\ArvixeDeploy.pubxml" />
     <Content Include="Views\_ViewStart.cshtml" />
