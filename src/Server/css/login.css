@@ -1,8 +1,7 @@
 ﻿body {
-    height: 100vh;
     padding: 5px;
     background-repeat: repeat-x;
-    background-color: #444;
+    background-color: #222;
     background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0,#444),color-stop(80% #222));
     background-image: -webkit-linear-gradient(top,#444 0,#222 80%);
     background-image: -moz-linear-gradient(top,#444 0,#222 80%);
@@ -13,11 +12,16 @@
 
 h2 {
     color: #e0e0e0;
-
+    margin: 0.2rem;
 }
 
 h1, h3, h4 {
-    color: #12AB31
+    color: #12AB31;
+    margin: 0.2rem;
+}
+
+h4 {
+  font-size: 1.2rem;
 }
 
 .flex-container {
