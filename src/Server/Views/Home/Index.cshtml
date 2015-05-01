@@ -1,12 +1,11 @@
-﻿@Html.Partial("_Home")
+@Html.Partial("_Home")
 @Html.Partial("_SessionPartial")
 @section Scripts {
-    <!-- minified libs -->
-    <script src="~/js/rx.lite.js"></script>
+    <!-- libs -->
     <script src="~/js/libs.js?@ViewBag.Version"></script>
     <script>
         errl.config = errl.config || {};
-        hlcommon.assign(errl.config, {
+        Object.assign(errl.config, {
             version: '@ViewBag.Version'
         });
     </script>

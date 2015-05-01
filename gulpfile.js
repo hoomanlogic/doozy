@@ -34,12 +34,17 @@ var jsLibs = [
 	'bower_components/babble/dist/babble.js',
 	'bower_components/Sugar/release/date.js',
     '../errl_js/src/errl.js',
+    
     '../common_js/src/common.js',
-    '../common_js/src/EventHandler.js',
     '../common_js/src/extensions.js',
+    '../common_js/src/polyfills.js',
     '../common_js/src/io.js',
     '../common_js/src/uri.js',
 	'../common_js/src/store.js',
+    
+    'bower_components/rxjs/dist/rx.lite.js',
+    '../common_js/src/EventHandler.js',
+    
 ];
 
 var cssAll = [

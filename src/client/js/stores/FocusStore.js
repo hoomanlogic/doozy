@@ -97,7 +97,7 @@ var FocusStore = function () {
         .done(function (result) {
             updates.value.forEach(function (item) { 
                 if (item === newFocus) {
-                    hlcommon.assign(item, result);
+                    Object.assign(item, result);
                     newFocus = item;
                 }
             });
@@ -134,21 +134,21 @@ var FocusStore = function () {
             return item.ref === updateArgs.focusRef; 
         });
         var state = updateArgs.state,
-            original = hlcommon.assign({}, focusToSave);
+            original = Object.assign({}, focusToSave);
         
         var val = focusToSave;
-        hlcommon.assign(val, state);
+        Object.assign(val, state);
         updates.onNext(updates.value);
         
         _api.putFocus(val)
         .done(function (result) {
-            hlcommon.assign(val, result);
+            Object.assign(val, result);
             updates.onNext(updates.value);
             hlio.saveLocal('hl.' + user + '.focuses', updates.value, secret);
             toastr.success('Updated focus ' + val.name);
         })
         .fail(function  (err) {
-            hlcommon.assign(val, original);
+            Object.assign(val, original);
             updates.onNext(updates.value);
             toastr.error(err.responseText);
         });
@@ -158,7 +158,7 @@ var FocusStore = function () {
         var focusToUpdate = _.find(updates.value, function(item) { 
             return item.ref === focusId; 
         });
-        hlcommon.assign(focusToUpdate, newState);
+        Object.assign(focusToUpdate, newState);
         updates.onNext(updates.value);
     };
 

@@ -109,7 +109,7 @@ var ActionStore = function () {
         _api.postAction(newAction)
         .done(function (result) {
             jsonActionDates(result);
-            hlcommon.assign(newAction, result);
+            Object.assign(newAction, result);
             updates.onNext(updates.value);
             hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
             toastr.success('Added action ' + newAction.name);
@@ -129,24 +129,24 @@ var ActionStore = function () {
         _api.postAction(newAction)
         .done(function (postActionResult) {
             jsonActionDates(postActionResult);
-            hlcommon.assign(newAction, postActionResult);
+            Object.assign(newAction, postActionResult);
             updates.onNext(updates.value);
             hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
             
             var latestEntry = { date: log.performed, actionId: newAction.id, entry: 'performed', duration: log.duration, details: log.details };
-            hlcommon.assign(newAction, { retire: (newAction.recurrenceRules.length > 0 ? null : log.performed), latestEntry: latestEntry });
+            Object.assign(newAction, { retire: (newAction.recurrenceRules.length > 0 ? null : log.performed), latestEntry: latestEntry });
             updates.onNext(updates.value);
             
             _api.postLog(latestEntry)
             .done(function (postLogResult) {
                 jsonActionDates(postLogResult);
-                hlcommon.assign(newAction, postLogResult);
+                Object.assign(newAction, postLogResult);
                 updates.onNext(updates.value);
                 hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
                 toastr.success('Logged new action ' + newAction.name);
             })
             .fail(function (err) {
-                hlcommon.assign(newAction, postActionResult);
+                Object.assign(newAction, postActionResult);
                 updates.onNext(updates.value);
                 toastr.error(err.responseText);
             });
@@ -183,22 +183,22 @@ var ActionStore = function () {
             return item.ref === updateArgs.actionRef; 
         });
         var state = updateArgs.state,
-            original = hlcommon.assign({}, actionToSave);
+            original = Object.assign({}, actionToSave);
         
         var val = actionToSave;
-        hlcommon.assign(val, state);
+        Object.assign(val, state);
         updates.onNext(updates.value);
         
         _api.putAction(val)
         .done(function (result) {
             jsonActionDates(result);
-            hlcommon.assign(val, result);
+            Object.assign(val, result);
             updates.onNext(updates.value);
             hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
             toastr.success('Updated action ' + val.name);
         })
         .fail(function  (err) {
-            hlcommon.assign(val, original);
+            Object.assign(val, original);
             updates.onNext(updates.value);
             toastr.error(err.responseText);
         });
@@ -210,23 +210,23 @@ var ActionStore = function () {
 //            return item.ref === updateArgs.actionRef; 
 //        });
 //        var state = updateArgs.state,
-//            original = hlcommon.assign({}, actionToSave);
+//            original = Object.assign({}, actionToSave);
 //        
         var val = log,
-            original = hlcommon.assign({}, log);
-        hlcommon.assign(val, updates);
+            original = Object.assign({}, log);
+        Object.assign(val, updates);
 //        updates.onNext(updates.value);
         
         _api.putLog(val)
         .done(function (result) {
 //            jsonActionDates(result);
-//            hlcommon.assign(val, result);
+//            Object.assign(val, result);
 //            updates.onNext(updates.value);
 //            hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
             toastr.success('Updated log entry');
         })
         .fail(function  (err) {
-            hlcommon.assign(val, original);
+            Object.assign(val, original);
 //            updates.onNext(updates.value);
             toastr.error(err.responseText);
         });
@@ -237,7 +237,7 @@ var ActionStore = function () {
         var actionToSave = _.find(updates.value, function(item) { 
             return item.ref === action.ref; 
         });
-        var original = hlcommon.assign({}, actionToSave);
+        var original = Object.assign({}, actionToSave);
         
         var val = actionToSave;
         
@@ -253,37 +253,37 @@ var ActionStore = function () {
                 return;   
             }
             var latestEntry = { date: performed, actionId: action.id, entry: 'performed', duration: duration };
-            hlcommon.assign(val, { retire: (action.recurrenceRules.length > 0 ? null : performed), latestEntry: latestEntry });
+            Object.assign(val, { retire: (action.recurrenceRules.length > 0 ? null : performed), latestEntry: latestEntry });
             updates.onNext(updates.value);
             
             _api.postLog(latestEntry)
             .done(function (result) {
                 jsonActionDates(result);
-                hlcommon.assign(val, result);
+                Object.assign(val, result);
                 updates.onNext(updates.value);
                 hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
                 toastr.success('Logged action ' + action.name);
             })
             .fail(function (err) {
-                hlcommon.assign(val, original);
+                Object.assign(val, original);
                 updates.onNext(updates.value);
                 toastr.error(err.responseText);
             });
         } else {
             var logId = actionToSave.latestEntry.id;
-            hlcommon.assign(val, { retire: null, latestEntry: null });
+            Object.assign(val, { retire: null, latestEntry: null });
             updates.onNext(updates.value);
             
             _api.deleteLog(logId)
             .done(function (result) {
                 jsonActionDates(result);
-                hlcommon.assign(val, result);
+                Object.assign(val, result);
                 updates.onNext(updates.value);
                 hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
                 toastr.success('Latest peformed log removed for action ' + action.name);
             })
             .fail(function () {
-                hlcommon.assign(val, original);
+                Object.assign(val, original);
                 updates.onNext(updates.value);
                 toastr.error(err.responseText);
             });
@@ -295,24 +295,24 @@ var ActionStore = function () {
         var actionToSave = _.find(updates.value, function(item) { 
             return item.ref === action.ref; 
         });
-        var original = hlcommon.assign({}, actionToSave);
+        var original = Object.assign({}, actionToSave);
         
         var val = actionToSave;
 
         var latestEntry = { date: log.performed, actionId: action.id, entry: 'performed', duration: log.duration, details: log.details };
-        hlcommon.assign(val, { retire: (action.recurrenceRules.length > 0 ? null : log.performed), latestEntry: latestEntry });
+        Object.assign(val, { retire: (action.recurrenceRules.length > 0 ? null : log.performed), latestEntry: latestEntry });
         updates.onNext(updates.value);
 
         _api.postLog(latestEntry)
         .done(function (result) {
             jsonActionDates(result);
-            hlcommon.assign(val, result);
+            Object.assign(val, result);
             updates.onNext(updates.value);
             hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
             toastr.success('Logged action ' + action.name);
         })
         .fail(function (err) {
-            hlcommon.assign(val, original);
+            Object.assign(val, original);
             updates.onNext(updates.value);
             toastr.error(err.responseText);
         });

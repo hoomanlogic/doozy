@@ -251,17 +251,11 @@
     <Content Include="js\react-with-addons.min.js" />
     <Content Include="js\react.js" />
     <Content Include="js\react.min.js" />
-    <Content Include="js\rx.js" />
-    <Content Include="js\rx.lite.js" />
-    <Content Include="js\rx.lite.min.js" />
-    <Content Include="js\rx.min.js" />
     <Content Include="ms-icon-144x144.png" />
     <Content Include="ms-icon-150x150.png" />
     <Content Include="ms-icon-310x310.png" />
     <Content Include="ms-icon-70x70.png" />
     <Content Include="Properties\PublishProfiles\ArvixeDeploy.pubxml.user" />
-    <Content Include="js\rx.map" />
-    <Content Include="js\rx.lite.map" />
     <Content Include="manifest.json" />
     <None Include="Properties\PublishProfiles\ArvixeDeploy.pubxml" />
     <Content Include="Views\_ViewStart.cshtml" />

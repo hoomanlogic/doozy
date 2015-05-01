@@ -132,7 +132,7 @@
         edit: function (action) {
             // create a copy of the action for editing
             var editableCopy = {};
-            hlcommon.assign(editableCopy, action);
+            Object.assign(editableCopy, action);
 
             // flag to call modal's graceful open dialog function
             this.show = true;

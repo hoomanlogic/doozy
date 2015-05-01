@@ -312,7 +312,7 @@
 
             if (typeof action === 'object' && action.hasOwnProperty('duration') && action.duration) {
                 var duration = new babble.Duration(action.duration * 60 * 1000);
-                hlcommon.assign(state, {
+                Object.assign(state, {
                     duration: duration.toMinutes(),
                     durationInput: duration.toString(),
                     durationFeedback: duration.toString()

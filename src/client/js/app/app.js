@@ -36,7 +36,7 @@ if (typeof require !== 'undefined') {
     
     // configure error logger
     errl.config = errl.config || {};
-    hlcommon.assign(errl.config, {
+    Object.assign(errl.config, {
         developer: 'hoomanlogic',
         key: '54263eb4-6ced-49bf-9bd7-14f0106c2a02',
         product: 'HoomanLogic',

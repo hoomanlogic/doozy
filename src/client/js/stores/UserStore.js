@@ -40,21 +40,21 @@ var UserStore = function () {
      */
     this.updateProfileUriFromSignalR = function (uri) {
         var val =  updates.value;
-        hlcommon.assign(val, { profileUri: uri });
+        Object.assign(val, { profileUri: uri });
         updates.onNext(val);
     };
     
     this.updatePrefs = function (prefs) {
         
         var updated = prefs,
-            original = hlcommon.assign({}, updates.value),
+            original = Object.assign({}, updates.value),
             val = updates.value;
         
         /**
          * Optimistic Concurrency
          * and Notify subscribers
          */
-        hlcommon.assign(val, updated);
+        Object.assign(val, updated);
         updates.onNext(val);
         
         _api.putPreference(val)
@@ -66,7 +66,7 @@ var UserStore = function () {
              * and Notify subscribers
              */
             if (typeof result !== 'undefined' && result != null) {
-                hlcommon.assign(val, result);
+                Object.assign(val, result);
                 updates.onNext(val);
             }
 
@@ -86,7 +86,7 @@ var UserStore = function () {
              * Sync back to the original model
              * and Notify subscribers
              */
-            hlcommon.assign(val, original);
+            Object.assign(val, original);
             updates.onNext(updates.value);
             
             /**
