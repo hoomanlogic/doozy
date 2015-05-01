@@ -14,25 +14,32 @@ var onError = function (err) {
 };
 
 var jsLibs = [
-    'bower_components/jquery/dist/jquery.min.js', 
-    'bower_components/underscore/underscore-min.js',
-    'bower_components/toastr/build/toastr.min.js',
-    'bower_components/skycons/skycons.min.js', 
+    'node_modules/jquery/dist/jquery.js', 
+    'bower_components/underscore/underscore.js',
+    'node_modules/json2/lib/JSON2/static/json2.js',
+    'bower_components/toastr/toastr.js',
+    'bower_components/skycons/skycons.js',
     //'bower_components/showdown/compressed/Showdown.min.js', 
-    'bower_components/jstorage/jstorage.min.js', 
-    'aes.js', //bower_components/crypto-js/crypto-js is currently causing an issue
-    'nuget_packages/Microsoft.AspNet.SignalR.JS.2.1.2/content/Scripts/jquery.signalR-2.1.2.min.js', 
-    'bower_components/selectize/dist/js/standalone/selectize.min.js',
-	'bower_components/babble/dist/babble.min.js',
-	'bower_components/Sugar/release/date.min.js',
-    '../errl_js/dist/*.min.js', 
-    '../common_js/dist/common.min.js',
-    '../common_js/dist/datetime.min.js',
-    '../common_js/dist/EventHandler.min.js',
-    '../common_js/dist/extensions.min.js',
-    '../common_js/dist/io.min.js',
-    '../common_js/dist/uri.min.js',
-	'../common_js/dist/store.min.js',
+    'bower_components/jstorage/jstorage.js',
+    
+    'bower_components/crypto-js/core.js',
+    'bower_components/crypto-js/enc-base64.js',
+    'bower_components/crypto-js/md5.js',
+    'bower_components/crypto-js/evpkdf.js',
+    'bower_components/crypto-js/cipher-core.js',
+    'bower_components/crypto-js/aes.js',
+    
+    'nuget_packages/Microsoft.AspNet.SignalR.JS.2.1.2/content/Scripts/jquery.signalR-2.1.2.js',
+    'bower_components/selectize/dist/js/standalone/selectize.js',
+	'bower_components/babble/dist/babble.js',
+	'bower_components/Sugar/release/date.js',
+    '../errl_js/src/errl.js',
+    '../common_js/src/common.js',
+    '../common_js/src/EventHandler.js',
+    '../common_js/src/extensions.js',
+    '../common_js/src/io.js',
+    '../common_js/src/uri.js',
+	'../common_js/src/store.js',
 ];
 
 var cssAll = [
@@ -115,7 +122,12 @@ gulp.task('concat-js-libs', function () {
         .pipe(plumber({
             errorHandler: onError
         }))
-        .pipe(concat('libs.min.js'))
+        .pipe(concat('libs.js'))
+        .pipe(gulp.dest('src/server/js'))
+        .pipe(rename(function (path) {
+            path.basename += '.min';
+        }))
+        .pipe(uglify())
         .pipe(gulp.dest('src/server/js'));
 });
 
