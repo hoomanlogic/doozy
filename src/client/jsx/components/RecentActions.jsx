@@ -8,7 +8,7 @@
 		module.exports = exports = factory(
             require('react'),
             require('./ActionRow'),
-            require('../../../../../common_js/src/datetime')
+            require('../../../../../babble/src/durations')
         );
 	}
 	else if (typeof define === "function" && define.amd) {
@@ -16,14 +16,14 @@
 		define([
             'react',
             './ActionRow',
-            '../../../../../common_js/src/datetime'
+            '../../../../../babble/src/durations'
         ], factory);
 	}
 	else {
 		// Global (browser)
-		root.RecentActions = factory(root.React, root.ActionRow, root.hldatetime);
+		root.RecentActions = factory(root.React, root.ActionRow, root.babble);
 	}
-}(this, function (React, ActionRow, hldatetime) {
+}(this, function (React, ActionRow, babble) {
     'use strict';
     return React.createClass({
         /*************************************************************
@@ -63,7 +63,7 @@
             /**
               * Was performed at least 24 hours ago
               */
-            return hldatetime.hourDiff(new Date(item.lastPerformed), new Date()) >= 24;
+            return babble.durations.hourDiff(new Date(item.lastPerformed), new Date()) >= 24;
         },
 
         /*************************************************************

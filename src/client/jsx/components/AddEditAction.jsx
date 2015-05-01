@@ -467,7 +467,7 @@
             this.state.action.recurrenceRules = recurrenceRules;
 
             // build next date
-            this.state.action.nextDate = hldatetime.parseLocalDate(this.state.action.nextDate);
+            this.state.action.nextDate = babble.moments.parseLocalDate(this.state.action.nextDate);
 
             // call method to save the action
             if (this.state.mode === 'Edit') {
@@ -514,7 +514,7 @@
                 var dayIndex = userStore.updates.value.weekStarts;
                 var daysOfWeek = [];
                 while (daysOfWeek.length < 7) {
-                    daysOfWeek.push(this.renderDayCheckbox(hldatetime.daysOfWeek[dayIndex].slice(0,3)));
+                    daysOfWeek.push(this.renderDayCheckbox(babble.moments.daysOfWeek[dayIndex].slice(0,3)));
                     dayIndex++;
                     if (dayIndex > 6) {
                         dayIndex = 0;   

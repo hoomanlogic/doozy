@@ -6,14 +6,16 @@
 	if (typeof exports === "object") {
 		// CommonJS
 		module.exports = exports = factory(
-            require('react'), 
+            require('react'),
+            require('../../../../../babble/src/moments'),
             require('./SendMessage')
         );
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
 		define([
-            'react', 
+            'react',
+            '../../../../../babble/src/moments',
             './SendMessage'
         ], factory);
 	}
@@ -21,7 +23,7 @@
 		// Global (browser)
 		root.Conversation = factory(root.React, root.SendMessage);
 	}
-}(this, function (React, SendMessage) {
+}(this, function (React, babble, SendMessage) {
     'use strict';
     return React.createClass({
         /*************************************************************
@@ -145,7 +147,7 @@
                     }
 
                     if (index === 0 || Math.abs(messages[index - 1].sent.getTime() - msg.sent.getTime()) > 500000) {
-                        section = <div className="message-sent-grouping col-xs-12"><span className="message-sent-timestamp">{hldatetime.formatDateTime(msg.sent)}</span></div>;
+                        section = <div className="message-sent-grouping col-xs-12"><span className="message-sent-timestamp">{babble.moments.formatDateTime(msg.sent)}</span></div>;
                     }
                     return (
                         <div key={msg.sent.getTime().toString()} className="clearfix message-row">

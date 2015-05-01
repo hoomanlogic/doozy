@@ -118,12 +118,15 @@
             }
         },
         handleSave: function(event) {
-            var existingAction, newAction;
+            var existingAction, 
+                newAction, 
+                names,
+                validationApology;
 
             // call method to save the action
             names = this.refs.name.getDOMNode().value.split('|');
 
-            var validationApology = 'Sorry, we don\'t have enough information yet.\n\n';
+            validationApology = 'Sorry, we don\'t have enough information yet.\n\n';
 
             if (names.length === 1 && names[0] === '') {
                 toastr.error(validationApology + 'What did you do?');

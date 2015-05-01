@@ -89,7 +89,7 @@ Action.prototype.getDuration = function () {
 };
 
 Action.prototype.getFormattedDuration = function () {
-    return hldatetime.formatDuration(this.getDuration());
+    return babble.durations.formatDuration(this.getDuration());
 };
 
 // static methods
@@ -253,7 +253,7 @@ var getRecurrenceObj = function (item) {
         dateStrings.map(function (item) {
             if (item.length === 10) {
                 // not standard but easier for me
-                dates.push(hldatetime.getLocalDate(item).getTime());
+                dates.push(babble.moments.getLocalDate(item).getTime());
             } else {
                 // standard based
                 dates.push(new Date(item).getTime());
@@ -395,7 +395,7 @@ var processRecurrence = function (today, enlist, rule) {
         }
     } else {
         // complex stepping 
-        var thisday = hldatetime.daysOfWeek[today.getDay()].slice(0, 2).toUpperCase();
+        var thisday = babble.moments.daysOfWeek[today.getDay()].slice(0, 2).toUpperCase();
 
         if (rule.byday.length === _.where(rule.byday, { digit: 0 }).length) {
             // simple byday
@@ -431,12 +431,12 @@ var calculateOccurs = function (actions, date) {
             setProtoAction(item);
 
             // first we make sure this action meets enlist and retire rules
-            if (item.enlist === null || hldatetime.getLocalDate(item.enlist) > date || (item.retire !== null && hldatetime.getLocalDate(item.retire) <= date)) {
+            if (item.enlist === null || babble.moments.getLocalDate(item.enlist) > date || (item.retire !== null && babble.moments.getLocalDate(item.retire) <= date)) {
                 return;
             }
 
             // use this to calculate intervals from enlist date
-            var enlist = hldatetime.getLocalDate(item.enlist);
+            var enlist = babble.moments.getLocalDate(item.enlist);
 
             // calculate if action occurs today
             var occursToday = false;
@@ -495,7 +495,7 @@ var getRecurrenceSummary = function (recurrenceRules) {
             }
             
             var twoCharDays = _.pluck(recurrenceObj.byday, 'day');
-            var fullnameDays = hldatetime.daysOfWeek.filter(function(item) {
+            var fullnameDays = babble.moments.daysOfWeek.filter(function(item) {
                 return twoCharDays.indexOf(item.slice(0,2).toUpperCase()) > -1;
             });
             
@@ -603,7 +603,7 @@ var calcNaturalDays = function (date) {
         } else if (diffDays === 1) {
             return 'Yesterday';
         } else if (diffDays < 7) {
-            return hldatetime.daysOfWeek[date1.getDay()];
+            return babble.moments.daysOfWeek[date1.getDay()];
         } else {
             return diffDays + ' day' + (diffDays > 1 ? 's' : '') + ' ago';
         }
@@ -613,7 +613,7 @@ var calcNaturalDays = function (date) {
         } else if (diffDays === 1) {
             return 'Tomorrow';
         } else if (diffDays < 7) {
-            return hldatetime.daysOfWeek[date1.getDay()];
+            return babble.moments.daysOfWeek[date1.getDay()];
         } else {
             return 'in ' + diffDays + ' day' + (diffDays > 1 ? 's' : '');
         }

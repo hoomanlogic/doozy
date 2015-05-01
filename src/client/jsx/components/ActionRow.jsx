@@ -7,24 +7,24 @@
 		// CommonJS
 		module.exports = exports = factory(
             require('react'),
-            require('../../../../../common_js/src/datetime')
+            require('../../../../../babble/src/durations')
         );
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
 		define([
             'react',
-            '../../../../../common_js/src/datetime'
+            '../../../../../babble/src/durations'
         ], factory);
 	}
 	else {
 		// Global (browser)
 		root.ActionRow = factory(
             root.React,
-            root.hldatetime
+            root.babble
         );
 	}
-}(this, function (React, hldatetime) {
+}(this, function (React, babble) {
     'use strict';
     return React.createClass({
         mixins: [React.addons.PureRenderMixin],
@@ -128,7 +128,7 @@
                         '\n';   
                 }
                 if (minutesTally) {
-                    var numWeeks = hldatetime.dayDiff(earliestDate, latestDate) / 7;
+                    var numWeeks = babble.durations.dayDiff(earliestDate, latestDate) / 7;
                     hoverText = 'Average minutes per week: ' + String(minutesTally / numWeeks) + '\n\n' + hoverText;
                 }
             }

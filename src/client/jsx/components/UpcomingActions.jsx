@@ -7,8 +7,7 @@
 		// CommonJS
 		module.exports = exports = factory(
             require('react'),
-            require('./ActionRow'),
-            require('../../../../../common_js/src/datetime')
+            require('./ActionRow')
         );
 	}
 	else if (typeof define === "function" && define.amd) {
@@ -16,14 +15,13 @@
 		define([
             'react',
             './ActionRow',
-            '../../../../../common_js/src/datetime'
         ], factory);
 	}
 	else {
 		// Global (browser)
-		root.UpcomingActions = factory(root.React, root.ActionRow, root.hldatetime);
+		root.UpcomingActions = factory(root.React, root.ActionRow);
 	}
-}(this, function (React, ActionRow, hldatetime) {
+}(this, function (React, ActionRow) {
     'use strict';
     return React.createClass({
         /*************************************************************
