@@ -233,6 +233,10 @@
     <Content Include="apple-icon.png" />
     <Content Include="browserconfig.xml" />
     <Content Include="css\all.min.css" />
+    <Content Include="css\login.css" />
+    <Content Include="css\login.min.css">
+      <DependentUpon>login.css</DependentUpon>
+    </Content>
     <Content Include="favicon-16x16.png" />
     <Content Include="favicon-32x32.png" />
     <Content Include="favicon-96x96.png" />

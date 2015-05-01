@@ -18,12 +18,112 @@ if (typeof require !== 'undefined') {
 (function (exports) {
     'use strict';
 	
-    // configure toastr notifications
-    toastr.options.closeButton = true;
-    toastr.options.timeOut = 2000;
-    toastr.options.positionClass = 'toast-bottom-right';
+    var getFrequencyNoun = function (freq) {
+        if (freq === 'WEEKLY') {
+            return 'week';   
+        } else if (freq === 'MONTHLY') {
+            return 'month';   
+        } else if (freq === 'DAILY') {
+            return 'day';   
+        }
+    };
 
-    exports.HOST_NAME = window.location.href.split('/').slice(0, 3).join('/');
+    var TAG_PREFIX = {
+        FOCUS: '!',
+        PLACE: '@',
+        GOAL: '>',
+        NEED: '$',
+        BOX: '#'
+    }
+
+    /**
+     * Parses a tag string to an object
+     */
+    exports.parseTag = function (tag) {
+        var kind = 'Tag';
+        var name = tag;
+
+        /**
+         * Compare first char of tag to
+         * determine if it is a special tag
+         */
+        var firstChar = name.slice(0,1);
+        if (firstChar === TAG_PREFIX.FOCUS) {
+            kind = 'Focus'; // part of
+        } else if (firstChar === TAG_PREFIX.PLACE) {
+            kind = 'Place'; // where
+        } else if (firstChar === TAG_PREFIX.GOAL) {
+            kind = 'Goal'; // to what end
+        } else if (firstChar === TAG_PREFIX.NEED) {
+            kind = 'Need'; // why
+        } else if (firstChar === TAG_PREFIX.BOX) {
+            kind = 'Box'; // when
+        }
+
+        /**
+         * Separate the name from the 
+         * prefix when it is a special tag
+         */
+        if (kind !== 'Tag') {
+            name = name.slice(1);   
+        }
+
+        /**
+         * Return tag object
+         */
+        return {
+            value: tag,
+            kind: kind,
+            name: name
+        };
+    };
+
+    exports.startsWithAVowel = function (word) {
+        if (['a','e','i','o','u'].contains(word[0].toLowerCase())) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
+    exports.hasPossessiveNoun = function (words) {
+        if (words.indexOf('\'s ') > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+    
+    exports.calcNaturalDays = function (date) {
+        if (!date) {
+            return '';   
+        }
+        var date1 = new Date(date.toLocaleDateString());
+        var date2 = new Date((new Date()).toLocaleDateString());
+        var timeDiff = Math.abs(date2.getTime() - date1.getTime());
+        var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+        if (date1 < date2) {
+            if (diffDays === 0) {
+                return 'Today';
+            } else if (diffDays === 1) {
+                return 'Yesterday';
+            } else if (diffDays < 7) {
+                return babble.moments.daysOfWeek[date1.getDay()];
+            } else {
+                return diffDays + ' day' + (diffDays > 1 ? 's' : '') + ' ago';
+            }
+        } else {
+            if (diffDays === 0) {
+                return 'Today';
+            } else if (diffDays === 1) {
+                return 'Tomorrow';
+            } else if (diffDays < 7) {
+                return babble.moments.daysOfWeek[date1.getDay()];
+            } else {
+                return 'in ' + diffDays + ' day' + (diffDays > 1 ? 's' : '');
+            }
+        }
+    };
     
     // Data access operations
     exports.setAccessToken = function (accessToken) {
@@ -32,6 +132,152 @@ if (typeof require !== 'undefined') {
 	
     exports.getAccessToken = function () {
         return sessionStorage.getItem('accessToken');
+    };
+    
+    // Actions
+    exports.filterActions = function (actions, tags, type) {
+        // no filter, return all
+        if (typeof tags === 'undefined' || tags === null|| tags.length === 0) {
+            return actions;
+        }
+
+        if (typeof type !== 'string') {
+            type = 'any';
+        }
+
+        // filter is a string, convert to array
+        if (typeof tags === 'string') {
+            tags = [tags];
+        }
+
+        // get actions that match at least one of the filter tags
+        if (type === 'any') {
+            return actions.filter(function (item) { return _.intersection(tags, item.tags).length > 0; });
+        } else if (type === 'all') {
+            return actions.filter(function (item) { return _.intersection(tags, item.tags).length === tags.length; });
+        }
+    };
+
+    exports.getRecurrenceObj = function (item) {
+
+        var kind = item.split(':');
+
+        // date lists: RDATE, EXDATE
+        if (kind[0] === 'RDATE' || kind[0] === 'EXDATE') {
+            var dateStrings = kind[1].split(',');
+            var dates = [];
+            // convert to array of datetime integers for easy comparison with underscore
+            dateStrings.map(function (item) {
+                if (item.length === 10) {
+                    // not standard but easier for me
+                    dates.push(babble.moments.getLocalDate(item).getTime());
+                } else {
+                    // standard based
+                    dates.push(new Date(item).getTime());
+                }
+            });
+            return {
+                kind: kind[0],
+                dates: dates
+            };
+        }
+
+        // rules: RRULE, EXRULE
+        var rule = {
+            kind: kind[0],
+            freq: null,
+            count: 365000, // covers daily for 1000 years to avoid null check
+            interval: 1,
+            byday: null
+        };
+
+        var props = kind[1].split(';');
+
+        for (var i = 0; i < props.length; i++) {
+            // split key from value
+            var keyval = props[i].split('=');
+
+            if (keyval[0] === 'BYDAY') {
+                rule.byday = [];
+                var byday = keyval[1].split(',');
+                for (var j = 0; j < byday.length; j++) {
+                    if (byday[j].length === 2) {
+                        rule.byday.push({ day: byday[j], digit: 0 });
+                    } else {
+                        // handle digit
+                        var day = byday[j].slice(-2);
+                        var digit = parseInt(byday[j].slice(0, byday[j].length - 2));
+                        rule.byday.push({ day: day, digit: digit });
+                    }
+                }
+            } else if (keyval[0] === 'INTERVAL') {
+                rule[keyval[0].toLowerCase()] = parseInt(keyval[1]);
+            } else {
+                rule[keyval[0].toLowerCase()] = keyval[1];
+            }
+        }
+
+        return rule;
+    };
+
+    exports.getRecurrenceSummary = function (recurrenceRules) {
+        if (!recurrenceRules || recurrenceRules.length === 0) {
+            return null;   
+        }
+
+        var summary = '';
+        recurrenceRules.forEach(function(item, index, array) {
+            var recurrenceObj = exports.getRecurrenceObj(item);
+
+
+            if (recurrenceObj.byday) {
+                var days = {
+                    SU: false,
+                    MO: false,
+                    TU: false,
+                    WE: false,
+                    TH: false,
+                    FR: false,
+                    SA: false
+                };
+                // build days object
+                for (var i = 0; i < recurrenceObj.byday.length; i++) {
+                    days[recurrenceObj.byday[i].day] = true;
+                }
+
+                var twoCharDays = _.pluck(recurrenceObj.byday, 'day');
+                var fullnameDays = babble.moments.daysOfWeek.filter(function(item) {
+                    return twoCharDays.indexOf(item.slice(0,2).toUpperCase()) > -1;
+                });
+
+                if (recurrenceObj.interval > 1) {
+                    if (days.SU && days.SA && !days.MO && !days.TU && !days.WE && !days.TH && !days.FR) {
+                        summary = 'Every ' + recurrenceObj.interval + ' ' + getFrequencyNoun(recurrenceObj.freq) + ' on the weekend';
+                    } else if (!days.SU && !days.SA && days.MO && days.TU && days.WE && days.TH && days.FR) {
+                        summary = 'Every ' + recurrenceObj.interval + ' ' + getFrequencyNoun(recurrenceObj.freq) + ' on the weekdays';
+                    } else {
+                        summary = 'Every ' + recurrenceObj.interval + ' ' + getFrequencyNoun(recurrenceObj.freq) + ' on ' + fullnameDays.join(', ');
+                    }
+                } else {
+                    if (days.SU && days.SA && !days.MO && !days.TU && !days.WE && !days.TH && !days.FR) {
+                        summary = 'Weekends';
+                    } else if (!days.SU && !days.SA && days.MO && days.TU && days.WE && days.TH && days.FR) {
+                        summary = 'Weekdays';
+                    } else {
+                        summary = 'Every ' + fullnameDays.join(', ');
+                    }
+                }
+            } else {
+                if (recurrenceObj.interval > 1) {
+                    summary = 'Every ' + recurrenceObj.interval + ' ' + getFrequencyNoun(recurrenceObj.freq) + 's';
+                } else {
+                    summary = 'Every ' + getFrequencyNoun(recurrenceObj.freq);
+                }
+
+            }
+        });
+
+        return summary;
     };
     
     // configure error logger
@@ -49,40 +295,13 @@ if (typeof require !== 'undefined') {
             toastr.error("<p><string>Oops!</strong></p><p>We're really sorry about that.</p><p>We'll get this fixed as soon as possible.</p>" + '<a class="btn btn-default btn-link" target="_blank" href="' + errl.getErrorDetailUrl(err.errorId) + '">Show me details</a> ');
         }
     });
+    
+    // configure toastr notifications
+    toastr.options.closeButton = true;
+    toastr.options.timeOut = 2000;
+    toastr.options.positionClass = 'toast-bottom-right';
+
+    // configure host name
+    exports.HOST_NAME = window.location.href.split('/').slice(0, 3).join('/');
 	
 }(typeof exports === 'undefined' ? this['hlapp'] = {}: exports));
-
-window.onerror = function () {
-	errl.log(arguments);
-};
-
-if (!hlapp.getAccessToken()) {
-	// The following code looks for a fragment in the URL to get the access token which will be
-	// used to call the protected Web API resource
-	var fragment = hluri.getHashToken();
-
-	if (fragment.access_token) {
-		// returning with access token, restore old hash, or at least hide token
-		window.location.hash = fragment.state || '';
-		hlapp.setAccessToken(fragment.access_token);
-	} else {
-		// no token - so bounce to Authorize endpoint in AccountController to sign in or register
-		window.location = "/Account/Authorize?client_id=web&response_type=token&state=" + encodeURIComponent(window.location.hash);
-	}
-}
-
-$(document).ready(function () {
-	$.ajax({
-		url: hlapp.HOST_NAME + '/api/settings',
-		dataType: 'json',
-		headers: {
-			'Authorization': 'Bearer ' + hlapp.getAccessToken()
-		},
-		success: function (data) {
-			React.render(React.createElement(HoomanLogicApp, { settings: data }), document.getElementById('hooman-logic'));
-		}.bind(this),
-		error: function (xhr, status, err) {
-			console.error('settings.json', status, err.toString());
-		}.bind(this)
-	});
-});
