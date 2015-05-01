@@ -99,7 +99,7 @@ var TargetStore = function () {
         .done(function (result) {
             updates.value.forEach(function (item) { 
                 if (item === newTarget) {
-                    hlcommon.assign(item, result);
+                    Object.assign(item, result);
                 }
             });
             updates.onNext(updates.value);
@@ -121,7 +121,7 @@ var TargetStore = function () {
         .done(function (result) {
             updates.value.forEach(function (item) { 
                 if (item === target) {
-                    hlcommon.assign(item, result);
+                    Object.assign(item, result);
                 }
             });
             updates.onNext(updates.value);
@@ -155,10 +155,10 @@ var TargetStore = function () {
             return item.ref === updateArgs.targetRef; 
         });
         var state = updateArgs.state,
-            original = hlcommon.assign({}, targetToSave);
+            original = Object.assign({}, targetToSave);
         
         var val = targetToSave;
-        hlcommon.assign(val, state);
+        Object.assign(val, state);
         updates.onNext(updates.value);
         
         _api.putTarget(val)
@@ -166,7 +166,7 @@ var TargetStore = function () {
             toastr.success('Updated target ' + val.name);
         })
         .fail(function  (err) {
-            hlcommon.assign(val, original);
+            Object.assign(val, original);
             updates.onNext(updates.value);
             toastr.error(err.responseText);
         });
@@ -184,10 +184,10 @@ var TargetStore = function () {
                         entry: 'performed',
                         duration: (prompt('How many minutes did it take?', target.duration) || this.props.target.duration)
                     });
-                    val = hlcommon.assign({}, target, { retire: performed })
+                    val = Object.assign({}, target, { retire: performed })
                 } else {
                     _api.deleteLog(target, target.latestEntry.id);
-                    val = hlcommon.assign({}, target, { retire: null, latestEntry: null })
+                    val = Object.assign({}, target, { retire: null, latestEntry: null })
                 }
             }
             return val;

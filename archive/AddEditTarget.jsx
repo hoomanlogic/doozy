@@ -53,7 +53,7 @@ var AddEditTarget = React.createClass({
         if (this.props.mode === 'edit') {
             targetStore.update({ targetRef: this.props.target.ref, state: this.getCurrentValues() });
         } else {
-            hlcommon.assign(this.props.target, this.getCurrentValues());
+            Object.assign(this.props.target, this.getCurrentValues());
             targetStore.add(this.props.target);
         }
       
