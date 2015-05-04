@@ -52,6 +52,13 @@
         },
 
         /*************************************************************
+         * EVENT HANDLING
+         *************************************************************/
+        handleAddActionClick: function () {
+            ui.addAction();  
+        },
+        
+        /*************************************************************
          * RENDERING
          *************************************************************/
         renderNextActionsTable: function (nextActions) {
@@ -102,7 +109,7 @@
                 <div>
                     <div className="table-title">
                         Next Actions
-                        <button type="button" style={{ paddingTop: '3px', paddingBottom: '3px' }} className="btn btn-primary pull-right" onClick={ui.addAction}>
+                        <button type="button" style={{ paddingTop: '3px', paddingBottom: '3px' }} className="btn btn-primary pull-right" onClick={this.handleAddActionClick}>
                             Add a new action
                         </button>
                     </div>

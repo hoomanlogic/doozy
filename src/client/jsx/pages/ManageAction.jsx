@@ -340,10 +340,7 @@
         },
         handleDeleteClick: function() {
             actionStore.destroy(this.props.action);
-
-            // hide the modal
-            this.refs.modal.hide();
-            this.setState({ viewMode: 'hidden' });
+            ui.goBack();
         },
         handleDetailsChange: function(event) {
             for (var i = 0; i < this.props.action.logEntries.length; i++) {
@@ -428,13 +425,12 @@
             this.props.action.nextDate = babble.moments.parseLocalDate(this.props.action.nextDate);
 
             // call method to save the action
-            if (this.state.mode === 'Edit') {
+            if (this.props.mode === 'Edit') {
                 actionStore.update({ actionRef: this.props.action.ref, state: this.props.action });
             } else {
                 actionStore.create(this.props.action);
             }
 
-            // hide the modal
             ui.goBack();
         },
 
@@ -605,7 +601,7 @@
              * Render
              */
             return (
-                <div className="row" style={{padding: '5px'}}>
+                <div style={{padding: '5px'}}>
                     <h2>{this.props.mode + ' Action'}</h2>
                     {currentView}
                     {buttonsDom}

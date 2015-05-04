@@ -179,20 +179,32 @@
          *************************************************************/
         render: function () {
 
+            var tagFilterTypeDom,
+                tagListDom;
+            
+            if (this.state.tags && this.state.tags.length > 0) {
+                tagFilterTypeDom = (
+                    <ul style={{ marginLeft: '2px'}} className="toggle-switch">
+                        <li className={'clickable' + (this.state.tagsFilterType === 'any' ? ' selected' : '')} onClick={this.handleTagsFilterTypeClick.bind(null, 'any')}>Any</li>
+                        <li className={'clickable' + (this.state.tagsFilterType === 'all' ? ' selected' : '')} onClick={this.handleTagsFilterTypeClick.bind(null, 'all')}>All</li>
+                    </ul>
+                );
+                tagListDom = (
+                    <TagList tags={this.state.tags} 
+                          selectedTags={this.state.tagsFilter} 
+                          selectionChanged={this.handleTagFilterClick} />
+                );
+            }
+            
             /**
              * Filter focus actions by the tags filter to pass filtered list to children
              */
             var tagsFilteredFocusActions = hlapp.filterActions(this.state.focusActions, this.state.tagsFilter, this.state.tagsFilterType);
 
             return (
-                <div className="row">
-                    <ul style={{ marginLeft: '2px'}} className="toggle-switch">
-                        <li className={'clickable' + (this.state.tagsFilterType === 'any' ? ' selected' : '')} onClick={this.handleTagsFilterTypeClick.bind(null, 'any')}>Any</li>
-                        <li className={'clickable' + (this.state.tagsFilterType === 'all' ? ' selected' : '')} onClick={this.handleTagsFilterTypeClick.bind(null, 'all')}>All</li>
-                    </ul>
-                    <TagList tags={this.state.tags} 
-                          selectedTags={this.state.tagsFilter} 
-                          selectionChanged={this.handleTagFilterClick} />
+                <div>
+                    {tagFilterTypeDom}
+                    {tagListDom}
                     <NextActions actions={tagsFilteredFocusActions} />
                     <UpcomingActions actions={tagsFilteredFocusActions} />
                     <RecentActions actions={tagsFilteredFocusActions} />

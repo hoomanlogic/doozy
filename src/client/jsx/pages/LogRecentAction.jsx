@@ -387,7 +387,7 @@
             }
 
             return (
-                <div className="row" style={{padding: '5px'}}>
+                <div style={{padding: '5px'}}>
                     <h2>{'Log Recent Action'}</h2>
                     <form role="form">
                         <div className="form-group">

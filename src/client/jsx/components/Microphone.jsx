@@ -235,10 +235,11 @@
                 return null;   
             }
 
-            var iconStyle = this.state.isListening ? { } : { color: '#b2b2b2' };
+            var iconStyle = this.state.isListening ? { minWidth: '40px' } : { color: '#b2b2b2',  minWidth: '40px' };
 
             var listItemContentStyle = {
-                padding: '5px'
+                padding: '5px',
+                textAlign: 'center'
             };
 
             return (

@@ -432,7 +432,7 @@
               fontSize: '1.1rem'
             };
             return (
-                <div className="row" style={{padding: '5px'}}>
+                <div style={{padding: '5px'}}>
                     <form role="form">
                         <ProfilePic uri={userStore.updates.value.profileUri} />
                         <div className="form-group">
@@ -491,7 +491,7 @@
                     position: 'absolute', 
                     bottom: '10px', 
                     right: '10px', 
-                    opacity: '0.07', 
+                    opacity: '0.05', 
                     zIndex: '-1' 
                 };
 
@@ -544,8 +544,6 @@
                         handleFocusClick={this.handleFocusClick} />
                     {weatherBackdrop}
                     {page}
-                    <AddEditAction ref="addeditaction" focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : ''} />
-                    <LogAction ref="logaction" focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : ''} />
                     <Conversation conversation={this.state.activeConversation} send={this.send} userName={this.props.settings.userName} onClose={this.handleConversationClose} />
                 </div>
             );
