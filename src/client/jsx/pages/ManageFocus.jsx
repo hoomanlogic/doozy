@@ -89,7 +89,7 @@
                         <Uploader type="Focus" arg={this.state.id} />
                         <div className="form-group">
                             <label htmlFor="f1">Name</label>
-                            <input id="f1" ref="name" type="text" value={this.state.name} onChange={this.handleChange} />
+                            <input id="f1" ref="name" type="text" className="form-control" value={this.state.name} onChange={this.handleChange} />
                         </div>
                         <div className="form-group">
                             <label htmlFor="f2">What kind of focus is this?</label>

@@ -103,7 +103,7 @@
             tags.push(this.props.focusTag);
 
             // create a new action
-            var action = new ToDo('New ToDo', tags);
+            var action = new hlapp.ToDo('New ToDo', tags);
             action.name = null;
             action.enlist = new Date();
 

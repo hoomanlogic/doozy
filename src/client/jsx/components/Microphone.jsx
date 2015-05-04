@@ -104,7 +104,7 @@
                 tags = tags.slice();
                 tags.push(this.props.focusTag);
 
-                newAction = new ToDo(commandParts[actionIndex].slice(0,1).toUpperCase() + commandParts[actionIndex].slice(1), tags);
+                newAction = new hlapp.ToDo(commandParts[actionIndex].slice(0,1).toUpperCase() + commandParts[actionIndex].slice(1), tags);
                 newAction.enlist = date;
 
                 actionStore.lognew(newAction, { 
@@ -162,7 +162,7 @@
                 tags = tags.slice();
                 tags.push(this.props.focusTag);
                 var actionName = commandParts[actionIndex].slice(0,1).toUpperCase() + commandParts[actionIndex].slice(1);
-                newAction = new ToDo(actionName, tags);
+                newAction = new hlapp.ToDo(actionName, tags);
                 newAction.enlist = date;
                 newAction.nextDate = date;
                 newAction.duration = duration;
@@ -188,7 +188,7 @@
     //                    tags = tags.slice();
     //                    tags.push(this.props.focusTag);
     //
-    //                    newAction = new ToDo(this.actionName.slice(0,1).toUpperCase() + this.actionName.slice(1), tags);
+    //                    newAction = new hlapp.ToDo(this.actionName.slice(0,1).toUpperCase() + this.actionName.slice(1), tags);
     //                    newAction.enlist = date;
     //                    
     //                    actionStore.lognew(newAction, { 

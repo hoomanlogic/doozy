@@ -142,7 +142,15 @@
              * Add additional menu item when in Focus Management
              */
             if (this.props.currentPage === 'Focus Management') {
-                var f = new Focus();
+                var ref = hlcommon.uuid();
+                var f = {
+                    isNew: true,
+                    ref: ref,
+                    id: ref,
+                    kind: 'Role',
+                    name: '',
+                    tagName: ''
+                };
                 menuItems.push((
                     <a onClick={this.handleFocusClick.bind(null, f)}>
                         <div className="focus">
@@ -195,7 +203,7 @@
 
             var menuItems = ([
                 <li key="manage-focuses"><a href="javascript:;" onClick={ui.goTo.bind(null, 'Focus Management')} title="Manage Focuses">Manage Focuses</a></li>,
-                <li key="manage-persona"><a href="javascript:;" onClick={ui.goTo.bind(null, 'Persona Management')} title="Manage Persona">Manage Persona</a></li>,
+                <li key="manage-persona"><a href="javascript:;" onClick={ui.goTo.bind(null, 'Preferences')} title="Preferences">Preferences</a></li>,
                 <li key="manage-account"><a href="/Manage" title="Manage">Account</a></li>,
                 <li key="logout"><a href="javascript:sessionStorage.removeItem('accessToken');$('#logoutForm').submit();">Log off</a></li>		    
             ]);

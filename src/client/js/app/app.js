@@ -135,6 +135,38 @@ if (typeof require !== 'undefined') {
     };
     
     // Actions
+    exports.ToDo = function (name, tags) {
+
+        // set instance variables
+        this.ref = hlcommon.uuid();
+        this.id = this.ref;
+        this.kind = 'ToDo';
+        this.name = name || '';
+        this.enlist = new Date();
+        this.retire = null;
+        this.latestEntry = null;
+        this.recurrenceRules = [];
+        this.startAt = null;
+        this.duration = 0;
+        this.items = [];
+        this.tags = [];
+        this.objectives = [];
+        this.content = null;
+        this.created = new Date();
+        this.lastPerformed = null;
+        this.logEntries = [];
+        this.nextDate = null;
+
+        // add tags any were supplied
+        if (typeof tags !== 'undefined') {
+            if (typeof tags === 'string') {
+                this.tags.push(tags);
+            } else if (Object.prototype.toString.call(tags) === '[object Array]') {
+                this.tags = tags;
+            }
+        }
+    };    
+
     exports.filterActions = function (actions, tags, type) {
         // no filter, return all
         if (typeof tags === 'undefined' || tags === null|| tags.length === 0) {

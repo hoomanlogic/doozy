@@ -159,7 +159,7 @@
                         tags.push(this.props.focusTag);
                     }
 
-                    newAction = new ToDo(names[i], tags);
+                    newAction = new hlapp.ToDo(names[i], tags);
                     newAction.enlist = this.state.date;
                     actionStore.lognew(newAction, { performed: this.state.date, duration: this.state.duration, entry: 'performed', details: this.state.details });
                 }

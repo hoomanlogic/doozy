@@ -21,7 +21,7 @@
 	}
 	else {
 		// Global (browser)
-		root.Conversation = factory(root.React, root.SendMessage);
+		root.Conversation = factory(root.React, root.babble, root.SendMessage);
 	}
 }(this, function (React, babble, SendMessage) {
     'use strict';

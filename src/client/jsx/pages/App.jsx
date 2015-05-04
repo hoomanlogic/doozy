@@ -55,13 +55,18 @@
                     currentFocus: null
                 };   
             }
-
+            
+            var page = 'Do';
+            if (window && window.history && window.history.state && window.history.state.page) {
+                page = window.history.state.page;   
+            }
+            
             return {
                 currentFocus: previousState.currentFocus || null,
                 weatherLastUpdated: null, 
                 conversations: [], 
                 activeConversation: null,
-                page: 'Do'
+                page: page
             };
         },
 
@@ -131,17 +136,31 @@
 
         componentDidMount: function () {
             this.initializeSignalR();
+            
+            if (window && window.history) {
+                window.history.replaceState({ page: this.state.page });
+                window.onpopstate = this.handleBrowserStateChange;
+            }
         },
         componentDidUpdate: function () {
             // save state of application
             hlio.saveLocal('hl.' + this.props.settings.userName + '.settings', { 
                 currentFocus: this.state.currentFocus,
             }, this.props.settings.userId);
+
+            if (window && window.history && window.history.state && window.history.state.page && this.state.page !== window.history.state.page) {
+                window.history.pushState({ page: this.state.page });   
+            }
         },
 
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
+        handleBrowserStateChange: function (event) {
+            if (event.state && event.state.page) {
+                this.setState({ page: event.state.page });   
+            }
+        },
         handleCancelClick: function () {
             this.setState({ page: 'Do' });
         },
@@ -172,7 +191,8 @@
                 email: this.refs.prefsEmail.getDOMNode().value,
                 emailNotifications: this.refs.prefsEmailNotifications.getDOMNode().value,
                 weekStarts: parseInt(this.refs.prefsWeekStarts.getDOMNode().value),
-                location: this.refs.prefsLocation.getDOMNode().value
+                location: this.refs.prefsLocation.getDOMNode().value,
+                knownAs: this.refs.prefsKnownAs.getDOMNode().value
             });
 
             this.setState({ page: 'Do' });
@@ -394,14 +414,22 @@
         /*************************************************************
          * RENDERING
          *************************************************************/
-        renderManagePersona: function () {
+        renderPreferences: function () {
             return (
                 <div className="row" style={{padding: '5px'}}>
                     <form role="form">
                         <ProfilePic uri={userStore.updates.value.profileUri} />
                         <div className="form-group">
+                            <label htmlFor="prefs-location">What name should others know you by?</label>
+                            <input id="prefs-location" ref="prefsKnownAs" type="text" className="form-control" placeholder="eg. Smokey the Bear" defaultValue={userStore.updates.value.knownAs} />
+                        </div>
+                        <div className="form-group">
                             <label htmlFor="prefs-location">Where do you live?</label>
                             <input id="prefs-location" ref="prefsLocation" type="text" className="form-control" placeholder="eg. Boulder, CO" defaultValue={userStore.updates.value.location} />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="prefs-email">What's your email address?</label>
+                            <input id="prefs-email" ref="prefsEmail" type="text" className="form-control" placeholder="" defaultValue={userStore.updates.value.email} />
                         </div>
                         <div className="form-group">
                             <label htmlFor="prefs-week-starts">Which day does your week start on?</label>
@@ -416,11 +444,7 @@
                             </select>
                         </div>
                         <div className="form-group">
-                            <label htmlFor="prefs-email">What's your email address?</label>
-                            <input id="prefs-email" ref="prefsEmail" type="text" className="form-control" placeholder="" defaultValue={userStore.updates.value.email} />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="prefs-email-notifications">Send notifications through email?</label>
+                            <label htmlFor="prefs-email-notifications">Receive email notifications?</label>
                             <input id="prefs-email-notifications" ref="prefsEmailNotifications" type="checkbox" className="form-control" defaultValue={userStore.updates.value.emailNotifications} />
                         </div>
                         <button type="button" className="btn btn-primary" onClick={this.handleSavePreferencesClick}>Save Changes</button>
@@ -485,8 +509,8 @@
                 page = (<FocusActions focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : ''} />);
             } else if (this.state.page === 'Focus Management') {
                 page = (<ManageFocus currentFocus={this.state.currentFocus} />);
-            } else if (this.state.page === 'Persona Management') {
-                page = this.renderManagePersona();
+            } else if (this.state.page === 'Preferences') {
+                page = this.renderPreferences();
             }
 
             return (

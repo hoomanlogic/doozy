@@ -10,6 +10,7 @@ namespace HoomanLogic.Models
     {
         public string UserId { get; set; }
         public string UserName { get; set; }
+        public string KnownAs { get; set; }
         public string ProfileUri { get; set; }
         public byte WeekStarts { get; set; }
         public string Location { get; set; }
