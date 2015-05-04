@@ -66,7 +66,8 @@
                 weatherLastUpdated: null, 
                 conversations: [], 
                 activeConversation: null,
-                page: page
+                page: page,
+                pageOptions: null
             };
         },
 
@@ -79,6 +80,7 @@
             window['ui'].editAction = this.editAction;
             window['ui'].logAction = this.logAction;
             window['ui'].goTo = this.goTo;
+            window['ui'].goBack = this.goBack;
             window['ui'].openConversation = this.selectConversation;
 
             // let error logger know which user
@@ -138,7 +140,7 @@
             this.initializeSignalR();
             
             if (window && window.history) {
-                window.history.replaceState({ page: this.state.page });
+                window.history.replaceState({ page: this.state.page, pageOptions: this.state.pageOptions });
                 window.onpopstate = this.handleBrowserStateChange;
             }
         },
@@ -149,7 +151,7 @@
             }, this.props.settings.userId);
 
             if (window && window.history && window.history.state && window.history.state.page && this.state.page !== window.history.state.page) {
-                window.history.pushState({ page: this.state.page });   
+                window.history.pushState({ page: this.state.page, pageOptions: this.state.pageOptions });   
             }
         },
 
@@ -158,7 +160,7 @@
          *************************************************************/
         handleBrowserStateChange: function (event) {
             if (event.state && event.state.page) {
-                this.setState({ page: event.state.page });   
+                this.setState({ page: event.state.page, pageOptions: event.state.pageOptions || null });   
             }
         },
         handleCancelClick: function () {
@@ -245,19 +247,27 @@
         },
 
         addAction: function (action) {
-            this.refs.addeditaction.add(action);
+            this.goTo('Manage Action', { action: action, mode: 'Add'});
+            //this.refs.addeditaction.add(action);
         },
         editAction: function (action) {
-            this.refs.addeditaction.edit(action);
+            this.goTo('Manage Action', { action: action, mode: 'Edit'});
+            //this.refs.addeditaction.edit(action);
         },
         logAction: function (action) {
-            this.refs.logaction.log(action);
+            this.goTo('Log Recent Action', { action: action});
+            //this.refs.logaction.log(action);
         },
-
-        goTo: function (page) {
+        goTo: function (page, options) {
             if (this.state.page !== page) {
-                this.setState({ page: page });
+                this.setState({ page: page, pageOptions: options || null});
             }
+        },
+        goBack: function (page) {
+//            if (window.history && window.history.back()) {
+//                window.history.back();
+//            }
+            ui.goTo('Do');
         },
         openConversation: function (userName) {
             var conversations = this.state.conversations;
@@ -415,6 +425,12 @@
          * RENDERING
          *************************************************************/
         renderPreferences: function () {
+            var buttonStyle = {
+              display: 'block',
+              width: '100%',
+              marginBottom: '5px',
+              fontSize: '1.1rem'
+            };
             return (
                 <div className="row" style={{padding: '5px'}}>
                     <form role="form">
@@ -447,8 +463,8 @@
                             <label htmlFor="prefs-email-notifications">Receive email notifications?</label>
                             <input id="prefs-email-notifications" ref="prefsEmailNotifications" type="checkbox" className="form-control" defaultValue={userStore.updates.value.emailNotifications} />
                         </div>
-                        <button type="button" className="btn btn-primary" onClick={this.handleSavePreferencesClick}>Save Changes</button>
-                        <button type="button" className="btn btn-default" onClick={this.handleCancelClick}>Cancel Changes</button>
+                        <button style={buttonStyle} type="button" className="btn btn-primary" onClick={this.handleSavePreferencesClick}>Save Changes</button>
+                        <button style={buttonStyle} type="button" className="btn btn-default" onClick={this.handleCancelClick}>Cancel</button>
                     </form>
                 </div>
             );
@@ -473,9 +489,9 @@
 
                 style = {
                     position: 'absolute', 
-                    bottom: '2px', 
-                    right: '20px', 
-                    opacity: '0.1', 
+                    bottom: '10px', 
+                    right: '10px', 
+                    opacity: '0.07', 
                     zIndex: '-1' 
                 };
 
@@ -494,7 +510,7 @@
                         style={style} 
                         info={info} 
                         height={500} 
-                        width={420} 
+                        width={window.innerWidth - 20} 
                         color={color} />
                 );
             }
@@ -503,7 +519,8 @@
         },
         render: function () {
             var weatherBackdrop = this.renderWeatherBackdrop();
-
+            var action, mode;
+            
             var page = null;
             if (this.state.page === 'Do') {
                 page = (<FocusActions focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : ''} />);
@@ -511,6 +528,12 @@
                 page = (<ManageFocus currentFocus={this.state.currentFocus} />);
             } else if (this.state.page === 'Preferences') {
                 page = this.renderPreferences();
+            } else if (this.state.page === 'Manage Action') {
+                action = (this.state.pageOptions || {}).action || null;
+                mode = (this.state.pageOptions || {}).mode || 'Add';
+                page = (<ManageAction action={action} mode={mode} />);
+            } else if (this.state.page === 'Log Recent Action') {
+                page = (<LogRecentAction action={this.state.pageOptions.action} />);
             }
 
             return (

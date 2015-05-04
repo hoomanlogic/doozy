@@ -137,7 +137,11 @@
         },
 
         calcIsDone: function () {
-            return this.props.actionRetire !== null || (this.props.actionLastPerformed !== null && (this.props.actionNextDate === null || this.props.actionNextDate > new Date()));
+            if (typeof this.props.overrideIsDone !== 'undefined' && this.props.overrideIsDone !== null) {
+                return this.props.overrideIsDone;
+            } else {
+                return this.props.actionRetire !== null || (this.props.actionLastPerformed !== null && (this.props.actionNextDate === null || this.props.actionNextDate > new Date()));
+            }
         },
 
         /*************************************************************

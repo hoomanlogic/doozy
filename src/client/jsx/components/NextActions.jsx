@@ -103,7 +103,7 @@
                     <div className="table-title">
                         Next Actions
                         <button type="button" style={{ paddingTop: '3px', paddingBottom: '3px' }} className="btn btn-primary pull-right" onClick={ui.addAction}>
-                            <i className="fa fa-plus"></i> Add Action
+                            Add a new action
                         </button>
                     </div>
                     {nextActionsTable}

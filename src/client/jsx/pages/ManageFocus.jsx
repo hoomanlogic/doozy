@@ -82,6 +82,12 @@
          * RENDERING
          *************************************************************/
         render: function () {
+            var buttonStyle = {
+              display: 'block',
+              width: '100%',
+              marginBottom: '5px',
+              fontSize: '1.1rem'
+            };
             // html
             return (
                 <div className="row" style={{padding: '5px'}}>
@@ -102,9 +108,9 @@
                             <label htmlFor="f3">Tag</label>
                             <input id="f3" ref="tagname" type="text" className="form-control" value={this.state.tagName} onChange={this.handleChange} />
                         </div>
-                        <button type="button" className="btn btn-success" onClick={this.handleSaveClick}>Save Changes</button>
-                        <button type="button" className="btn btn-default" onClick={this.handleCancelClick}>Cancel Changes</button>
-                        <button type="button" className="btn btn-danger" onClick={this.handleDeleteClick}>Delete Focus</button>
+                        <button style={buttonStyle} type="button" className="btn btn-primary" onClick={this.handleSaveClick}>Save Changes</button>
+                        <button style={buttonStyle} type="button" className="btn btn-default" onClick={this.handleCancelClick}>Cancel</button>
+                        <button style={buttonStyle} type="button" className="btn btn-danger" onClick={this.handleDeleteClick}>Delete Focus</button>
                     </form>
                 </div>
             );

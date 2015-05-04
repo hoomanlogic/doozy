@@ -54,6 +54,7 @@
                         {upcomingActions.map(function(item, index) {
                             return (
                                 <ActionRow key={item.ref || item.id} 
+                                    overrideIsDone={false}
                                     action={item} 
                                     actionRef={item.ref} 
                                     actionId={item.id} 
@@ -80,11 +81,13 @@
             })
 
             /**
-              * Render the table if there are any actions
+              * Return null if there are no upcoming actions
               */
-            if (upcomingActions.length > 0) {
-                upcomingActionsTable = this.renderUpcomingActionsTable(upcomingActions); 
+            if (upcomingActions.length === 0) {
+                return null;
             }
+        
+            upcomingActionsTable = this.renderUpcomingActionsTable(upcomingActions); 
 
             // html
             return (

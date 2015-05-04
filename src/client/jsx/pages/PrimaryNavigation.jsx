@@ -256,7 +256,7 @@
             }
 
             return (
-                <div className="navbar navbar-hl-theme navbar-fixed-top">
+                <div className="navbar navbar-hl-theme">
                     <ul className="nav navbar-nav">
                         {focusesDropDownMenu}
                         <Microphone focusTag={this.props.currentFocus ? '!' + this.props.currentFocus.tagName : ''} />
