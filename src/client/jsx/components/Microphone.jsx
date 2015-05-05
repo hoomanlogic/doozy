@@ -46,6 +46,13 @@
          * EVENT HANDLING
          *************************************************************/
         handleSpeakReadyClick: function () {
+            /**
+             * Already listening, abort
+             */
+            if (this.state.isListening) {
+                return;   
+            }
+            
             this.recognition.start();
             this.setState({isListening: true});
         },
