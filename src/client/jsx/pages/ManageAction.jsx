@@ -24,10 +24,19 @@
     return React.createClass({
 
         /*************************************************************
+         * TYPES AND ENUMERATIONS
+         *************************************************************/
+        VIEW_MODE: {
+            GENERAL: 'general',  
+            HISTORY: 'history' 
+        },
+        
+        /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
         getInitialState: function () {
             return {
+                viewMode: 'general',
                 durationValue: null,
                 durationDisplay: null,
                 dateInput: null, 
@@ -128,7 +137,6 @@
                 durationDisplay: null,
                 dateInput: date, 
                 dateDisplay: null,
-                viewMode: 'general',
                 mode: 'Edit',
                 repeat: 'o',
                 repeatInterval: 1,
@@ -555,12 +563,41 @@
                 </form>
             ); 
         },
+        renderHistoryView: function () {
+            return (
+                <div>
+                    <h2 style={{ margin: '0 0 5px 5px'}}>Action History Log</h2>
+                    <table className="table table-striped">
+                        <tbody>                        
+                            {this.props.action.logEntries.map(function(item, index) {
+                                return (
+                                    <tr key={item.id}>
+                                        <td width="70px">{item.entry.slice(0,1).toUpperCase() + item.entry.slice(1)}</td>
+                                        <td width="80px" style={{textAlign: 'right'}} >{item.date.toLocaleDateString()}</td>
+                                        <td width="40px">{item.duration > 0 ? new babble.Duration(item.duration * 60000).toString(':') : ''}</td>
+                                        <td><ContentEditable id={item.id} html={item.details} onChange={this.handlers.detailsChange} /></td>
+                                    </tr>
+                                );
+                            }.bind(this))}
+                        </tbody>
+                    </table>
+                </div>
+            );
+        },
         render: function () {
 
             /**
              * Render view based on the current view mode
              */
-            var currentView = this.renderGeneralView();
+            var currentView = null,
+                toggleTitle = null;
+            if (this.state.viewMode === this.VIEW_MODE.GENERAL) {
+                currentView = this.renderGeneralView();
+                toggleTitle = 'View Action Log';
+            } else if (this.state.viewMode === this.VIEW_MODE.HISTORY) {
+                currentView = this.renderHistoryView();
+                toggleTitle = 'View General';
+            }
             
             /**
              * Buttons array to pass to Modal component
@@ -577,7 +614,10 @@
                            ];
             }
             else {
-                buttons = [{type: 'primary', 
+                buttons = [{type: 'default', 
+                            text: toggleTitle,
+                            handler: this.handleToggleViewModeClick},
+                           {type: 'primary', 
                             text: 'Save Changes',
                             handler: this.handleSaveClick},
                            {type: 'default', 
@@ -598,7 +638,6 @@
             var buttonsDom = buttons.map(function(button, index) {
                 return <button key={index} style={buttonStyle} type="button" className={'btn btn-' + button.type} onClick={button.handler}>{button.text}</button>
             })
-
 
             /**
              * Render
