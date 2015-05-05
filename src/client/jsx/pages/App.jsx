@@ -257,7 +257,7 @@
             // Start the connection.
             $.connection.hub.start();
         },
-
+        
         addAction: function (action) {
             this.goTo('Manage Action', { actionRef: (action ? (action.ref || action.id) : null), mode: 'Add'});
             //this.refs.addeditaction.add(action);
@@ -272,6 +272,9 @@
         },
         goTo: function (page, options) {
             if (this.state.page !== page) {
+                if (options && typeof options === 'object' && options.hasOwnProperty('nativeEvent')) {
+                    options = null;
+                }
                 this.setState({ page: page, pageOptions: options || null});
             }
         },
