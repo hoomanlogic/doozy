@@ -102,6 +102,15 @@
 
         componentDidMount: function () {
             this.setupTagsControl();
+            
+            var resizeTextArea = function () {
+                if (Math.abs($(this).height() - this.scrollHeight) > 16) {
+                    $(this).height(0).height(this.scrollHeight);
+                }
+            };
+            
+            $(this.refs.content.getDOMNode()).on( 'change keyup keydown paste cut', resizeTextArea).change();
+            
             if (this.props.mode === 'Add') {
                 $(this.refs.name.getDOMNode()).focus();
             }
