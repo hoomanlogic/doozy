@@ -74,8 +74,7 @@
          * RENDERING
          *************************************************************/
         render: function () {
-            var tag = this.props.tag,
-                tagClass = 'fa-tag';
+            var tag = hlapp.parseTag(this.props.tag);
             
             var isSelected = this.props.isSelected ? ' selected' : '';
 
@@ -84,25 +83,14 @@
                 closeButton = <button type="button" className="close"><span aria-hidden="true">&times;</span></button>;
             }
 
-            if (tag.slice(0,1) === hlapp.TAG_PREFIX.PLACE) {
-                tagClass = 'fa-anchor';
-                tag = tag.slice(1);
-            } else if (tag.slice(0,1) === hlapp.TAG_PREFIX.NEED) {
-                tagClass = 'fa-recycle';
-                tag = tag.slice(1);
-            } else if (tag.slice(0,1) === hlapp.TAG_PREFIX.GOAL) {
-                tagClass = 'fa-trophy';
-                tag = tag.slice(1);
-            }
-            
-            var domTag = <span>{tag}</span>;
+            var domTag = <span> {tag.name}</span>;
             if (this.props.canEdit) {
-                domTag = <ContentEditable html={tag} onChange={this.handleTagNameChange} />
+                domTag = <ContentEditable html={tag.value} onChange={this.handleTagNameChange} />
             }
 
             return (
                 <li onClick={this.handleClick} className={'tag-item clickable' + isSelected} >
-                    <i className={"fa " + tagClass}></i> {domTag}{closeButton}
+                    <i className={"fa " + tag.className}></i>{domTag}{closeButton}
                 </li>
             );
         },

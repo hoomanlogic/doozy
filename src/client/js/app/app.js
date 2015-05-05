@@ -42,8 +42,9 @@ if (typeof require !== 'undefined') {
      * Parses a tag string to an object
      */
     exports.parseTag = function (tag) {
-        var kind = 'Tag';
-        var name = tag;
+        var kind = 'Tag',
+            name = tag,
+            className = 'fa-tag';
 
         /**
          * Compare first char of tag to
@@ -52,14 +53,19 @@ if (typeof require !== 'undefined') {
         var firstChar = name.slice(0,1);
         if (firstChar === TAG_PREFIX.FOCUS) {
             kind = 'Focus'; // part of
+            className = 'fa-eye';
         } else if (firstChar === TAG_PREFIX.PLACE) {
             kind = 'Place'; // where
+            className = 'fa-anchor';
         } else if (firstChar === TAG_PREFIX.GOAL) {
             kind = 'Goal'; // to what end
+            className = 'fa-trophy';
         } else if (firstChar === TAG_PREFIX.NEED) {
             kind = 'Need'; // why
+            className = 'fa-recycle';
         } else if (firstChar === TAG_PREFIX.BOX) {
             kind = 'Box'; // when
+            className = 'fa-cube';
         }
 
         /**
@@ -76,7 +82,8 @@ if (typeof require !== 'undefined') {
         return {
             value: tag,
             kind: kind,
-            name: name
+            name: name,
+            className: className
         };
     };
 
