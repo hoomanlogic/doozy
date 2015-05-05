@@ -21,7 +21,7 @@ ul.toggle-switch li {
   .bs-gradient(@clrBsDefault1,@clrBsDefault2,@clrBsDefaultStr1,@clrBsDefaultStr2);
 
   &.selected {
-    color: #222;
+//    color: #222;
 //    .bs-gradient(@clrBsInfo1,@clrBsInfo4,@clrBsInfoStr1,@clrBsInfoStr4);
     border: 1px solid #178ee9;
     background-color: #1b9dec;
@@ -30,6 +30,7 @@ ul.toggle-switch li {
     background-image: -webkit-linear-gradient(top, #1da7ee, #178ee9);
     background-image: -o-linear-gradient(top, #1da7ee, #178ee9);
     background-image: linear-gradient(to bottom, #1da7ee, #178ee9);
+    color: #f0f0f0;
   }
 }
 
@@ -75,6 +76,9 @@ ul.toggle-switch li:last-child {
     background-image: -webkit-linear-gradient(top, #1da7ee, #178ee9);
     background-image: -o-linear-gradient(top, #1da7ee, #178ee9);
     background-image: linear-gradient(to bottom, #1da7ee, #178ee9);
+    & > span {
+      color: #f0f0f0;
+    }
   }
   .close {
     margin-left: 2px;
