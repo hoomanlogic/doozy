@@ -217,7 +217,24 @@
                     searchField: ['name', 'kind'],
                     render: {
                         item: function(item, escape) {
-                            return '<div class="item">' + escape(item.value) + '</div>';
+                            var tag = item.value, tagClass = 'fa-tag';
+                            if (tag.slice(0,1) === hlapp.TAG_PREFIX.PLACE) {
+                                tagClass = 'fa-anchor';
+                                tag = tag.slice(1);
+                            } else if (tag.slice(0,1) === hlapp.TAG_PREFIX.NEED) {
+                                tagClass = 'fa-recycle';
+                                tag = tag.slice(1);
+                            } else if (tag.slice(0,1) === hlapp.TAG_PREFIX.GOAL) {
+                                tagClass = 'fa-trophy';
+                                tag = tag.slice(1);
+                            } else if (tag.slice(0,1) === hlapp.TAG_PREFIX.FOCUS) {
+                                tagClass = 'fa-eye';
+                                tag = tag.slice(1);
+                            } else if (tag.slice(0,1) === hlapp.TAG_PREFIX.BOX) {
+                                tagClass = 'fa-cube';
+                                tag = tag.slice(1);
+                            }
+                            return '<div class="item"><i class="fa ' + tagClass + '"></i> ' + escape(tag) + '</div>';
                         },
                         option: function(item, escape) {
                             var label = item.name || item.kind;

@@ -35,6 +35,8 @@ if (typeof require !== 'undefined') {
         NEED: '$',
         BOX: '#'
     }
+    
+    exports.TAG_PREFIX = TAG_PREFIX;
 
     /**
      * Parses a tag string to an object
