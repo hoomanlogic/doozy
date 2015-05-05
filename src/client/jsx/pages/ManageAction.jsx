@@ -55,6 +55,8 @@
                 nextProps.action = new hlapp.ToDo('New ToDo', tags);
                 nextProps.action.name = null;
                 nextProps.action.enlist = new Date();
+            } else {
+                nextProps.action = this.edit(nextProps.action);
             }
         },
         componentWillMount: function () {
@@ -69,6 +71,8 @@
                 this.props.action = new hlapp.ToDo('New ToDo', tags);
                 this.props.action.name = null;
                 this.props.action.enlist = new Date();
+            } else {
+                this.props.action = this.edit(this.props.action);
             }
             
             var detailsChange = EventHandler.create();
@@ -120,7 +124,6 @@
 
             // build state
             var state = {
-                action: editableCopy,
                 durationValue: durationValue,
                 durationDisplay: null,
                 dateInput: date, 
@@ -171,8 +174,8 @@
 
             // set state
             this.setState(state);
-
-            this.setupTagsControl();
+            
+            return editableCopy;
         },
 
         /*************************************************************

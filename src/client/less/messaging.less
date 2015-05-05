@@ -13,6 +13,12 @@
     top: -8px;
 }
 
+.conversation-flex-container {
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+}
+
 .conversation-container {
     position:fixed;
     height: 590px;
@@ -27,17 +33,17 @@
     font-size: 16px;
 }
 
-.conversation-container-full {
-    padding: 10px;
-    font-size: 32px;
-    height: 80vh;
-}
+//.conversation-container-full {
+//    padding: 10px;
+//    font-size: 32px;
+//    height: 80vh;
+//}
 
 .conversation-messages {
-    max-height: 87%;
+//    max-height: 76vh;
     overflow-y: scroll;
-    overflow-x:hidden;
-    max-width: 100%;
+//    overflow-x:hidden;
+//    max-width: 100%;
     padding-right: 15px;
 }
 
@@ -47,22 +53,23 @@
     margin-bottom: 5px;
     /*height: 45px;*/
     font-weight: bold;
+    min-height: 27px;
 }
 
 .conversation-form {
     border-top: 1px solid #ddd;
     padding-top: 5px;
     margin-top: 5px;
-    height: 60px;
+    min-height: 83px;
 }
 
-.conversation-form-full {
-    border-top: 1px solid #ddd;
-    padding-top: 5px;
-    margin-top: 5px;
-    height: 60px;
-    font-size: 20px;
-}
+//.conversation-form-full {
+//    border-top: 1px solid #ddd;
+//    padding-top: 5px;
+//    margin-top: 5px;
+//    height: 60px;
+//    font-size: 20px;
+//}
 input#msg {
   width: auto;
   display: inline;

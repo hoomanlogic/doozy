@@ -86,17 +86,19 @@
          *************************************************************/
         render: function () {
             return (
-                <div className="form form-inline" role="form" style={{width: '100%'}} onKeyPress={this.handleKeyPress}>
-                    <div className="form-group" style={{width: '100%'}}>
-                        <input type="text" className="form-control" id="msg" placeholder="message to send..." />
-                        <button className="btn btn-default btn-primary" type="button" onClick={this.handleSendClick}>Send</button>
-                        <a onClick={this.handleFileDialogClick}>
-                            <i className={'file-img fa fa-2x fa-camera' + (this.state.filesSelected ? ' selected' : ' none')}></i>
-                            <input type="file" className="file-input-hidden" id="theFile" multiple accept="image/*" placeholder="share an image..." onChange={this.handleFileChange} />
-                        </a>
-                        <a onClick={this.handlePrivateConnectionClick}>            
-                            <i className={'chat-link fa fa-2x' + (this.state.mode !== 'inbox' ? ' fa-link enabled' : ' fa-unlink disabled')}></i>
-                        </a>
+                <div className="form form-inline" role="form" onKeyPress={this.handleKeyPress}>
+                    <div className="form-group" style={{width: '100%', display: 'flex'}}>
+                        <div style={{display: 'flex', flexDirection: 'column'}}> 
+                            <a style={{minWidth: '55px'}} onClick={this.handleFileDialogClick}>
+                                <i style={{paddingLeft: '0'}} className={'file-img fa fa-2x fa-camera' + (this.state.filesSelected ? ' selected' : ' none')}></i>
+                                <input type="file" className="file-input-hidden" id="theFile" multiple accept="image/*" placeholder="share an image..." onChange={this.handleFileChange} />
+                            </a>
+                            <a style={{minWidth: '55px'}} onClick={this.handlePrivateConnectionClick}>            
+                                <i style={{paddingLeft: '0'}} className={'chat-link fa fa-2x' + (this.state.mode !== 'inbox' ? ' fa-link enabled' : ' fa-unlink disabled')}></i>
+                            </a>
+                        </div>
+                        <textarea className="form-control" id="msg" placeholder="message to send..." />
+                        <button style={{ minWidth: '70px'}} className="btn btn-default btn-primary" type="button" onClick={this.handleSendClick}>Send</button>
                     </div>
                 </div>  
             );

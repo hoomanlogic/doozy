@@ -34,14 +34,13 @@
 		root.PrimaryNavigation = factory(
             root.React,
             root.connectionStore, 
-            root.notificationStore, 
-            root.timerStore, 
+            root.notificationStore,
             root.FocusListItem, 
             root.DropdownMenu, 
             root.NotificationDropDown, 
             root.Timer);
 	}
-}(this, function (React, connectionStore, notificationStore, timerStore, FocusListItem, DropdownMenu, NotificationDropDown, Timer) {
+}(this, function (React, connectionStore, notificationStore, FocusListItem, DropdownMenu, NotificationDropDown, Timer) {
     'use strict';
     return React.createClass({
 
@@ -53,7 +52,6 @@
                 connectionsLastUpdated: new Date().toISOString(),
                 notificationsLastUpdated: new Date().toISOString(),
                 preferencesLastUpdated: new Date().toISOString(),
-                timerLastUpdated: new Date().toISOString(),
                 windowWidth: window.innerWidth
             };
         },
@@ -65,14 +63,12 @@
         componentWillMount: function () {
             connectionStore.subscribe(this.handleConnectionStoreUpdate);
             notificationStore.subscribe(this.handleNotificationStoreUpdate);
-            timerStore.subscribe(this.handleTimerStoreUpdate);
             this.userObserver = userStore.updates
                 .subscribe(this.handleUserStoreUpdate);
         },
         componentWillUnmount: function () {
             connectionStore.dispose(this.handleConnectionStoreUpdate);
             notificationStore.dispose(this.handleNotificationStoreUpdate);
-            timerStore.dispose(this.handleTimerStoreUpdate);
             this.userObserver.dispose();
             window.removeEventListener('resize', this.handleResize);
         },
@@ -80,33 +76,15 @@
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
-        handleChange: function (event) {
-            timerStore.updateWorkingOn(event.target.value);
-        },
+
         handleConnectionStoreUpdate: function () {
             this.setState({connectionsLastUpdated: new Date().toISOString()});
         },
         handleNotificationStoreUpdate: function () {
             this.setState({notificationsLastUpdated: new Date().toISOString()});
         },
-        handleDoneTimerClick: function () {
-            timerStore.pauseTimer();
-            var duration = new babble.Duration(timerStore.updates.value.timeSoFar);
-
-            ui.logAction({
-                name: timerStore.updates.value.workingOn,
-                duration: duration.toMinutes(),
-                tags: ui.tags
-            });
-        },
-        handleResetTimerClick: function () {
-            timerStore.resetTimer();
-        },
         handleUserStoreUpdate: function (prefs) {
             this.setState({preferencesLastUpdated: new Date().toISOString()});
-        },
-        handleTimerStoreUpdate: function (prefs) {
-            this.setState({timerLastUpdated: new Date().toISOString()});
         },
         handleFocusClick: function (item) {
             this.props.handleFocusClick(item);  
@@ -221,52 +199,20 @@
             var connectionsDropDownMenu = this.renderConnectionsDropDownMenu();
             var settingsDropDownMenu = this.renderSettingsDropDownMenu();
 
-            var aStyle = {
-                padding: '5px'
-            };
-
-            var inputStyle = {
-                position: 'relative',
-                top: '10px'   
-            };
-
-            var timer, workingOn, timerDone, timerReset;
-
-            if (this.state.windowWidth > 600) {
-                timer = (<Timer />);
-                workingOn = (
-                    <li>
-                        <input ref="workingOn" style={inputStyle} type="text" placeholder="What are you working on?" onChange={this.handleChange} value={timerStore.updates.value.workingOn} />
-                    </li>
-                );
-                timerDone = (<li>
-                            <a style={aStyle} href="javascript:;" onClick={this.handleDoneTimerClick}>
-                                <i className="fa fa-2x fa-check-square-o"></i>
-                            </a>
-                        </li>);
-                timerReset = (<li>
-                            <a style={aStyle} href="javascript:;" onClick={this.handleResetTimerClick}>
-                                <i style={{marginTop: '-2px'}} className="fa fa-2x fa-times"></i>
-                            </a>
-                        </li>);
-            }
-
-            if (this.state.windowWidth < 500) {
-                var adjustDropDownMenu = { marginRight: '-103px'};
-            }
-
+//            if (this.state.windowWidth < 500) {
+//                var adjustDropDownMenu = { marginRight: '-103px'};
+//            }
+//            <NotificationDropdown dropDownMenuStyle={adjustDropDownMenu} />
+            
             return (
                 <div className="navbar navbar-hl-theme">
                     <ul className="nav navbar-nav">
                         {focusesDropDownMenu}
                         <Microphone focusTag={this.props.currentFocus ? '!' + this.props.currentFocus.tagName : ''} />
-                        {timer}
-                        {workingOn}
-                        {timerDone}
-                        {timerReset}
+                        <Timer />
                     </ul>
                     <ul className="nav navbar-nav navbar-right">
-                        <NotificationDropdown dropDownMenuStyle={adjustDropDownMenu} />
+                        
                         {connectionsDropDownMenu}
                         {settingsDropDownMenu}
                     </ul>

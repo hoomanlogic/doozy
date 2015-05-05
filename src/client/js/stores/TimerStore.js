@@ -44,11 +44,27 @@
             me.notify();
             me.saveLocal('hl.timer', me.updates.value, 'nothingtohide');
         };
+        
+        this.openTimer = function () {
+            Object.assign(me.updates.value, {
+                isOpen: true
+            });
+            me.notify();
+            me.saveLocal('hl.timer', me.updates.value, 'nothingtohide');
+        };
 
         this.startTimer = function () {
             Object.assign(me.updates.value, {
                 isRunning: true,
                 startedAt: new Date().getTime(),
+            });
+            me.notify();
+            me.saveLocal('hl.timer', me.updates.value, 'nothingtohide');
+        };
+        
+        this.hideTimer = function () {
+            Object.assign(me.updates.value, {
+                isOpen: false,
             });
             me.notify();
             me.saveLocal('hl.timer', me.updates.value, 'nothingtohide');

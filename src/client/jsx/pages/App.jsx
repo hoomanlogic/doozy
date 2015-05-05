@@ -67,7 +67,8 @@
                 conversations: [], 
                 activeConversation: null,
                 page: page,
-                pageOptions: null
+                pageOptions: null,
+                timerLastUpdated: new Date().toISOString(),
             };
         },
 
@@ -82,6 +83,7 @@
             window['ui'].goTo = this.goTo;
             window['ui'].goBack = this.goBack;
             window['ui'].openConversation = this.selectConversation;
+            window['ui'].getHeightBuffer = this.getHeightBuffer;
 
             // let error logger know which user
             errl.config.getUser = function () {
@@ -95,6 +97,8 @@
             actionStore.init(this.props.settings.userName, this.props.settings.userId);
             focusStore.init(this.props.settings.userName, this.props.settings.userId);
             weatherStore.init(this.props.settings.userName, this.props.settings.userId);
+            timerStore.subscribe(this.handleTimerStoreUpdate);
+            
             connectionStore.getConnections();
 
             /**
@@ -134,6 +138,7 @@
             this.focusesObserver.dispose();
             this.userObserver.dispose();
             weatherStore.dispose(this.handleWeatherStoreUpdate);
+            timerStore.dispose(this.handleTimerStoreUpdate);
         },
 
         componentDidMount: function () {
@@ -158,6 +163,44 @@
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
+        handleWorkingOnChange: function (event) {
+            timerStore.updateWorkingOn(event.target.value);
+        },
+        handleDoneTimerClick: function () {
+            timerStore.pauseTimer();
+            var duration = new babble.Duration(timerStore.updates.value.timeSoFar);
+
+            ui.logAction({
+                name: timerStore.updates.value.workingOn,
+                duration: duration.toMinutes(),
+                tags: ui.tags
+            });
+        },
+        handleResetTimerClick: function () {
+            timerStore.resetTimer();
+        },
+        handlePlayPauseTimerClick: function () {
+            if (timerStore.updates.value.isRunning) {
+                timerStore.pauseTimer();
+            } else {
+                timerStore.startTimer();
+            }
+        },
+        handleRunningTotalUpdate: function () {
+            this.setState({
+                timerLastUpdated: new Date().getTime()
+            });
+        },
+        handleTimerStoreUpdate: function (timer) {
+            if (timer.isRunning && typeof this.timerInterval === 'undefined') {
+                this.timerInterval = setInterval(this.handleRunningTotalUpdate, 1000);
+            } else if (!timer.isRunning && typeof this.timerInterval !== 'undefined') {
+                clearInterval(this.timerInterval);
+                this.timerInterval = void 0;
+            }
+            this.setState({timerLastUpdated: new Date().toISOString()});
+        },
+        
         handleBrowserStateChange: function (event) {
             if (event.state && event.state.page) {
                 this.setState({ page: event.state.page, pageOptions: event.state.pageOptions || null });   
@@ -167,7 +210,7 @@
             this.setState({ page: 'Do' });
         },
         handleConversationClose: function () {
-          this.setState({activeConversation: null});  
+          this.setState({activeConversation: null, page: 'Do'});
         },
         handleFocusClick: function (item) {
             this.setState({ currentFocus: item });  
@@ -212,6 +255,13 @@
         /*************************************************************
          * MISC
          *************************************************************/
+        getHeightBuffer: function () {
+            if (timerStore.updates.value.isOpen) {
+                return 55 + 38;
+            } else {
+                return 55;
+            }
+        },
         initializeSignalR: function () {
             // signal-r chat server
             this.chat = $.connection.chatHub;
@@ -342,7 +392,7 @@
 
             for (var i = 0; i < conversations.length; i++) {
                 if (conversations[i].id === id) {
-                    this.setState({ activeConversation: conversations[i] });   
+                    this.setState({ page: 'Conversation', activeConversation: conversations[i] });   
                 }
             }
         },
@@ -469,6 +519,58 @@
                 </div>
             );
         },
+        renderTimerRow: function () {
+            
+            var workingOn, timerDone, timerReset;
+            if (timerStore.updates.value.isOpen) {
+                
+                var aStyle = {
+                    padding: '5px',
+                    color: '#e2ff63'
+                };
+                
+                var textStyle = {
+                    fontSize: '1.5rem',
+                    padding: '0.2rem',
+                    color: '#e2ff63'
+                }
+                var displayDuration = null;
+                if (timerStore.updates.value.isRunning || timerStore.updates.value.timeSoFar > 0) {
+                    var currentTime = new Date().getTime();
+                    var timeSoFar = timerStore.updates.value.timeSoFar + (currentTime - (timerStore.updates.value.startedAt || currentTime))
+                    var duration = new babble.Duration(timeSoFar);
+                    displayDuration = (<span style={textStyle}>{duration.toString(':')}</span>);
+                }
+//                <div>
+//                    <a style={aStyle} href="javascript:;">
+//                        <i style={{ margin: '0.3rem 0.2rem 0.1rem 0.2rem'}} className="fa fa-2x fa-check-square-o"></i>
+//                    </a>
+//                </div>
+                
+                return (
+                    <div style={{ display: 'flex', padding: '2px', backgroundColor: '#444' }}>
+                        <div style={{ flexGrow: '1' }}>
+                            <input ref="workingOn" className="form-control" type="text" placeholder="What are you working on?" onChange={this.handleWorkingOnChange} value={timerStore.updates.value.workingOn} />
+                        </div>
+                        <div onClick={this.handleDoneTimerClick}>{displayDuration}</div>
+                        
+                        <div>
+                            <a style={aStyle} href="javascript:;" onClick={this.handlePlayPauseTimerClick}>
+                                <i style={{ margin: '0.2rem'}} className={'fa fa-2x ' + (timerStore.updates.value.isRunning ? 'fa-pause' : 'fa-play')}></i>
+                            </a>
+                        </div>
+                        <div>
+                            <a style={aStyle} href="javascript:;" onClick={this.handleResetTimerClick}>
+                                <i style={{ margin: '0.2rem'}} className={'fa fa-2x fa-times'}></i>
+                            </a>
+                        </div>
+                    </div>
+                );
+            }
+            else {
+                return null;                 
+            }
+        },
         renderWeatherBackdrop: function () {
             // states
             var weather = weatherStore.updates.value,
@@ -491,7 +593,7 @@
                     position: 'absolute', 
                     bottom: '10px', 
                     right: '10px', 
-                    opacity: '0.05', 
+                    opacity: weather.currently.temperature >= 60 && weather.currently.temperature <= 80 ? '0.05' : '0.1', 
                     zIndex: '-1' 
                 };
 
@@ -522,18 +624,21 @@
             var action, mode;
             
             var page = null;
-            if (this.state.page === 'Do') {
-                page = (<FocusActions focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : ''} />);
-            } else if (this.state.page === 'Focus Management') {
+            if (this.state.page === 'Focus Management') {
                 page = (<ManageFocus currentFocus={this.state.currentFocus} />);
             } else if (this.state.page === 'Preferences') {
                 page = this.renderPreferences();
             } else if (this.state.page === 'Manage Action') {
                 action = (this.state.pageOptions || {}).action || null;
                 mode = (this.state.pageOptions || {}).mode || 'Add';
-                page = (<ManageAction action={action} mode={mode} />);
+                page = (<ManageAction action={action} mode={mode} focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : ''} />);
             } else if (this.state.page === 'Log Recent Action') {
-                page = (<LogRecentAction action={this.state.pageOptions.action} />);
+                action = (this.state.pageOptions || {}).action || null;
+                page = (<LogRecentAction action={action} focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : ''} />);
+            } else if (this.state.page === 'Conversation' && typeof this.state.activeConversation !== 'undefined' && this.state.activeConversation !== null) {
+                page = (<Conversation conversation={this.state.activeConversation} send={this.send} userName={this.props.settings.userName} onClose={this.handleConversationClose} />);
+            } else { //DO
+                page = (<FocusActions focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : ''} />);
             }
 
             return (
@@ -542,9 +647,9 @@
                         currentPage={this.state.page} 
                         currentFocus={this.state.currentFocus} 
                         handleFocusClick={this.handleFocusClick} />
+                    {this.renderTimerRow()}
                     {weatherBackdrop}
                     {page}
-                    <Conversation conversation={this.state.activeConversation} send={this.send} userName={this.props.settings.userName} onClose={this.handleConversationClose} />
                 </div>
             );
         },

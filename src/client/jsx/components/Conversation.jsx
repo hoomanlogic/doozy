@@ -157,18 +157,15 @@
                     );
                 }.bind(this));
 
-            var containerStyle = {};
-            if (this.state.windowWidth < 600) {
-                containerStyle = {
-                    width: this.state.windowWidth + 'px',
-                    padding: '5px',
-                    margin: '0',
-                    height: (window.innerHeight - 55) + 'px'
-                }
-            }
+            var containerStyle = {
+                padding: '5px',
+                margin: '0'
+            };
+                             
+            // style={containerStyle} className={"conversation-container" + (this.state.isOpen ? '' : ' hidden')}
 
             return (
-                <div style={containerStyle} className={"conversation-container" + (this.state.isOpen ? '' : ' hidden')}>
+                <div style={{ padding: '5px', margin: '0', display: 'flex', flexDirection: 'column', height: (window.innerHeight - ui.getHeightBuffer()) + 'px' }}>
                     <div className="conversation-header">
                         <button type="button" className="close" onClick={this.onClose}><span aria-hidden="true">&times;</span></button>
                         <h4 className="modal-title">{this.props.conversation.name}</h4>
