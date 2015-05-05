@@ -61,14 +61,14 @@
          * RENDERING
          *************************************************************/
         render: function () {
-            var iconStyle = timerStore.updates.value.isRunning ? { marginRight: '5px' } : { color: '#b2b2b2', marginRight: '5px' };
+            var iconStyle = { marginRight: '5px' };
             
             var timerStyle = {
                 padding: '5px'
             };
             
             return (
-                <li key="timer"><a style={timerStyle} href="javascript:;" onClick={this.handleToggleTimerClick}><i style={iconStyle} className="fa fa-2x fa-clock-o"></i></a></li>
+                <li key="timer"><a className={timerStore.updates.value.isRunning ? 'active' : ''} style={timerStyle} href="javascript:;" onClick={this.handleToggleTimerClick}><i style={iconStyle} className="fa fa-2x fa-clock-o"></i></a></li>
             );
         },
     });

@@ -235,7 +235,7 @@
                 return null;   
             }
 
-            var iconStyle = this.state.isListening ? { minWidth: '40px' } : { color: '#b2b2b2',  minWidth: '40px' };
+            var iconStyle = { minWidth: '40px' };
 
             var listItemContentStyle = {
                 padding: '5px',
@@ -243,7 +243,7 @@
             };
 
             return (
-                <li key="mic"><a style={listItemContentStyle} href="javascript:;" onClick={this.handleSpeakReadyClick}><i style={iconStyle} className="fa fa-2x fa-microphone"></i></a></li>
+                <li key="mic"><a className={this.state.isListening ? 'active' : ''} style={listItemContentStyle} href="javascript:;" onClick={this.handleSpeakReadyClick}><i style={iconStyle} className="fa fa-2x fa-microphone"></i></a></li>
             );
         },
     });

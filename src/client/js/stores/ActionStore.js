@@ -326,6 +326,13 @@ var ActionStore = function () {
         return existingAction;
     };
     
+    this.getActionByRef = function (ref) {
+        var existingAction = _.find(updates.value, function(item) { 
+            return item.ref.toLowerCase() === ref.toLowerCase() || item.id === ref.toLowerCase(); 
+        });
+        return existingAction;
+    };
+    
     var user = 'my';
     var secret = 'hash';
     

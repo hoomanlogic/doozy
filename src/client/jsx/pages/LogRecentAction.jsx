@@ -38,11 +38,34 @@
                 details: '',
             };
         },
+        
+        componentWillMount: function () {
+            if (this.props.action) {
+                this.log(this.props.action);
+            }
+        },
 
         componentDidMount: function () {
-            // initialize control for tags functionality
+            /**
+             * Setup Action selector
+             */
             this.setupActionsControl();
-            if (this.actionName.length > 0) {
+            var selectize = $(this.refs.name.getDOMNode())[0].selectize;
+            this.setOptionsAction(selectize);
+            if (this.props.action && this.props.action.name) {
+                if (this.state.isNewAction && this.props.action.name.length > 0) {
+                    selectize.addOption({
+                        value: this.props.action.name,
+                        text: this.props.action.name
+                    });
+                }
+                selectize.setValue(this.props.action.name);
+            }
+            
+            /**
+             * Set focus to control
+             */
+            if (this.props.action && this.props.action.name && this.props.action.name.length > 0) {
                 $(this.refs.actualduration.getDOMNode()).focus();
             } else {
                 $(this.refs.name.getDOMNode())[0].selectize.focus();
@@ -52,7 +75,7 @@
         componentDidUpdate: function () {
             if (this.state.isNewAction) {
                 this.setupTagsControl();
-            }  
+            }
         },
         /*************************************************************
          * EVENT HANDLING
@@ -291,9 +314,6 @@
          *************************************************************/
         log: function (action) {
 
-            // flag to call modal's graceful open dialog function
-            this.show = true;
-
             var actionName = '';
 
             var state = {
@@ -320,28 +340,12 @@
             } else if (typeof action === 'string') {
                 actionName = action || '';
             }
-            this.actionName = actionName;
-
+            
             if (!actionStore.getExistingAction(actionName)) {
                 state.isNewAction = true;
             }
 
             this.setState(state);
-
-            /**
-             * Selectize the actions
-             */
-            var selectize = $(this.refs.name.getDOMNode())[0].selectize;
-            this.setOptionsAction(selectize);
-            if (actionName) {
-                if (state.isNewAction && actionName.length > 0) {
-                    selectize.addOption({
-                        value: actionName,
-                        text: actionName
-                    });
-                }
-                selectize.setValue(actionName);
-            }
         },
 
         /*************************************************************

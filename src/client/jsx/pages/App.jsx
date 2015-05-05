@@ -7,7 +7,8 @@
 		// CommonJS
 		module.exports = exports = factory(
             require('react'), 
-            require('../../js/stores/ActionStore'), 
+            require('../../js/stores/ActionStore'),
+            require('../components/TimerBar'), 
             require('../components/WeatherIcon'), 
             require('../components/FocusActions'), 
             require('./ManageFocus'),
@@ -19,7 +20,8 @@
 		// AMD
 		define([
             'react', 
-            '../../js/stores/ActionStore', 
+            '../../js/stores/ActionStore',
+            '../components/TimerBar', 
             '../components/WeatherIcon', 
             '../components/FocusActions', 
             './ManageFocus',
@@ -32,7 +34,8 @@
 		// Global (browser)
 		root.HoomanLogicApp = factory(
             root.React, 
-            root.actionStore, 
+            root.actionStore,
+            root.TimerBar,
             root.WeatherIcon, 
             root.FocusActions, 
             root.ManageFocus,
@@ -41,7 +44,7 @@
             root.Conversation
         );
 	}
-}(this, function (React, actionStore, WeatherIcon, FocusActions, ManageFocus, AddEditAction, LogAction, Conversation) {
+}(this, function (React, actionStore, TimerBar, WeatherIcon, FocusActions, ManageFocus, AddEditAction, LogAction, Conversation) {
     'use strict';
     return React.createClass({
         /*************************************************************
@@ -68,7 +71,6 @@
                 activeConversation: null,
                 page: page,
                 pageOptions: null,
-                timerLastUpdated: new Date().toISOString(),
             };
         },
 
@@ -97,7 +99,6 @@
             actionStore.init(this.props.settings.userName, this.props.settings.userId);
             focusStore.init(this.props.settings.userName, this.props.settings.userId);
             weatherStore.init(this.props.settings.userName, this.props.settings.userId);
-            timerStore.subscribe(this.handleTimerStoreUpdate);
             
             connectionStore.getConnections();
 
@@ -138,7 +139,6 @@
             this.focusesObserver.dispose();
             this.userObserver.dispose();
             weatherStore.dispose(this.handleWeatherStoreUpdate);
-            timerStore.dispose(this.handleTimerStoreUpdate);
         },
 
         componentDidMount: function () {
@@ -162,45 +162,7 @@
 
         /*************************************************************
          * EVENT HANDLING
-         *************************************************************/
-        handleWorkingOnChange: function (event) {
-            timerStore.updateWorkingOn(event.target.value);
-        },
-        handleDoneTimerClick: function () {
-            timerStore.pauseTimer();
-            var duration = new babble.Duration(timerStore.updates.value.timeSoFar);
-
-            ui.logAction({
-                name: timerStore.updates.value.workingOn,
-                duration: duration.toMinutes(),
-                tags: ui.tags
-            });
-        },
-        handleResetTimerClick: function () {
-            timerStore.resetTimer();
-        },
-        handlePlayPauseTimerClick: function () {
-            if (timerStore.updates.value.isRunning) {
-                timerStore.pauseTimer();
-            } else {
-                timerStore.startTimer();
-            }
-        },
-        handleRunningTotalUpdate: function () {
-            this.setState({
-                timerLastUpdated: new Date().getTime()
-            });
-        },
-        handleTimerStoreUpdate: function (timer) {
-            if (timer.isRunning && typeof this.timerInterval === 'undefined') {
-                this.timerInterval = setInterval(this.handleRunningTotalUpdate, 1000);
-            } else if (!timer.isRunning && typeof this.timerInterval !== 'undefined') {
-                clearInterval(this.timerInterval);
-                this.timerInterval = void 0;
-            }
-            this.setState({timerLastUpdated: new Date().toISOString()});
-        },
-        
+         *************************************************************/    
         handleBrowserStateChange: function (event) {
             if (event.state && event.state.page) {
                 this.setState({ page: event.state.page, pageOptions: event.state.pageOptions || null });   
@@ -297,15 +259,15 @@
         },
 
         addAction: function (action) {
-            this.goTo('Manage Action', { action: action, mode: 'Add'});
+            this.goTo('Manage Action', { actionRef: (action ? (action.ref || action.id) : null), mode: 'Add'});
             //this.refs.addeditaction.add(action);
         },
         editAction: function (action) {
-            this.goTo('Manage Action', { action: action, mode: 'Edit'});
+            this.goTo('Manage Action', { actionRef: (action ? (action.ref || action.id) : null), mode: 'Edit'});
             //this.refs.addeditaction.edit(action);
         },
         logAction: function (action) {
-            this.goTo('Log Recent Action', { action: action});
+            this.goTo('Log Recent Action', { actionRef: (action ? (action.ref || action.id) : null) });
             //this.refs.logaction.log(action);
         },
         goTo: function (page, options) {
@@ -519,58 +481,6 @@
                 </div>
             );
         },
-        renderTimerRow: function () {
-            
-            var workingOn, timerDone, timerReset;
-            if (timerStore.updates.value.isOpen) {
-                
-                var aStyle = {
-                    padding: '5px',
-                    color: '#e2ff63'
-                };
-                
-                var textStyle = {
-                    fontSize: '1.5rem',
-                    padding: '0.2rem',
-                    color: '#e2ff63'
-                }
-                var displayDuration = null;
-                if (timerStore.updates.value.isRunning || timerStore.updates.value.timeSoFar > 0) {
-                    var currentTime = new Date().getTime();
-                    var timeSoFar = timerStore.updates.value.timeSoFar + (currentTime - (timerStore.updates.value.startedAt || currentTime))
-                    var duration = new babble.Duration(timeSoFar);
-                    displayDuration = (<span style={textStyle}>{duration.toString(':')}</span>);
-                }
-//                <div>
-//                    <a style={aStyle} href="javascript:;">
-//                        <i style={{ margin: '0.3rem 0.2rem 0.1rem 0.2rem'}} className="fa fa-2x fa-check-square-o"></i>
-//                    </a>
-//                </div>
-                
-                return (
-                    <div style={{ display: 'flex', padding: '2px', backgroundColor: '#444' }}>
-                        <div style={{ flexGrow: '1' }}>
-                            <input ref="workingOn" className="form-control" type="text" placeholder="What are you working on?" onChange={this.handleWorkingOnChange} value={timerStore.updates.value.workingOn} />
-                        </div>
-                        <div onClick={this.handleDoneTimerClick}>{displayDuration}</div>
-                        
-                        <div>
-                            <a style={aStyle} href="javascript:;" onClick={this.handlePlayPauseTimerClick}>
-                                <i style={{ margin: '0.2rem'}} className={'fa fa-2x ' + (timerStore.updates.value.isRunning ? 'fa-pause' : 'fa-play')}></i>
-                            </a>
-                        </div>
-                        <div>
-                            <a style={aStyle} href="javascript:;" onClick={this.handleResetTimerClick}>
-                                <i style={{ margin: '0.2rem'}} className={'fa fa-2x fa-times'}></i>
-                            </a>
-                        </div>
-                    </div>
-                );
-            }
-            else {
-                return null;                 
-            }
-        },
         renderWeatherBackdrop: function () {
             // states
             var weather = weatherStore.updates.value,
@@ -621,7 +531,7 @@
         },
         render: function () {
             var weatherBackdrop = this.renderWeatherBackdrop();
-            var action, mode;
+            var action, actionRef, mode;
             
             var page = null;
             if (this.state.page === 'Focus Management') {
@@ -629,11 +539,17 @@
             } else if (this.state.page === 'Preferences') {
                 page = this.renderPreferences();
             } else if (this.state.page === 'Manage Action') {
-                action = (this.state.pageOptions || {}).action || null;
+                actionRef = (this.state.pageOptions || {}).actionRef || null;
+                if (actionRef) {
+                    action = actionStore.getActionByRef(actionRef);
+                }
                 mode = (this.state.pageOptions || {}).mode || 'Add';
                 page = (<ManageAction action={action} mode={mode} focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : ''} />);
             } else if (this.state.page === 'Log Recent Action') {
-                action = (this.state.pageOptions || {}).action || null;
+                actionRef = (this.state.pageOptions || {}).actionRef || null;
+                if (actionRef) {
+                    action = actionStore.getActionByRef(actionRef);
+                }
                 page = (<LogRecentAction action={action} focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : ''} />);
             } else if (this.state.page === 'Conversation' && typeof this.state.activeConversation !== 'undefined' && this.state.activeConversation !== null) {
                 page = (<Conversation conversation={this.state.activeConversation} send={this.send} userName={this.props.settings.userName} onClose={this.handleConversationClose} />);
@@ -647,7 +563,7 @@
                         currentPage={this.state.page} 
                         currentFocus={this.state.currentFocus} 
                         handleFocusClick={this.handleFocusClick} />
-                    {this.renderTimerRow()}
+                    <TimerBar />
                     {weatherBackdrop}
                     {page}
                 </div>
