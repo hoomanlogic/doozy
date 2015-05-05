@@ -411,7 +411,7 @@
                         </div>
                         <div className="form-group">
                             <label htmlFor="f4">Anything else?</label>
-                            <input id="f4" ref="details" type="text" className="form-control" onChange={this.handleChange} value={this.state.details} />
+                            <textarea id="f4" ref="details" type="text" className="form-control" onChange={this.handleChange} value={this.state.details} />
                         </div>
                     </form>
                     {buttonsDom}
