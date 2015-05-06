@@ -17,7 +17,7 @@ namespace HoomanLogic.Models
         public string Ref { get; set; }
         public string Kind { get; set; }
         public string Name { get; set; }
-        public bool IsSomeday { get; set; }
+        public bool IsPublic { get; set; }
         public string Content { get; set; }
         public DateTime? Enlist { get; set; }
         public DateTime? Retire { get; set; }

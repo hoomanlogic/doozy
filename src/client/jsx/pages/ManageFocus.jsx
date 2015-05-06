@@ -99,7 +99,8 @@
             if (!this.state.filesSelected) {
                 currentImage = (<img style={{display: 'inline', maxWidth: '100px', maxHeight: '100px'}} src={this.props.currentFocus.iconUri} />);
             }
-                                
+            //<button style={buttonStyle} type="button" className="btn btn-danger" onClick={this.handleDeleteClick}>Delete Focus</button>
+            
             // html
             return (
                 <div style={{padding: '5px'}}>
@@ -124,7 +125,7 @@
                         </div>
                         <button style={buttonStyle} type="button" className="btn btn-primary" onClick={this.handleSaveClick}>Save Changes</button>
                         <button style={buttonStyle} type="button" className="btn btn-default" onClick={this.handleCancelClick}>Cancel</button>
-                        <button style={buttonStyle} type="button" className="btn btn-danger" onClick={this.handleDeleteClick}>Delete Focus</button>
+                        
                     </form>
                 </div>
             );

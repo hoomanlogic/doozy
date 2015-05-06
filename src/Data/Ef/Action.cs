@@ -34,6 +34,7 @@ namespace HoomanLogic.Data.Ef
         public Nullable<System.DateTime> NextDate { get; set; }
         public bool IsSomeday { get; set; }
         public string Content { get; set; }
+        public bool IsPublic { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
         public virtual ICollection<RecurrenceRule> RecurrenceRules { get; set; }

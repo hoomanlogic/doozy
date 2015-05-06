@@ -59,7 +59,7 @@
                     <a onClick={this.handleFocusClick.bind(null, data)} style={{borderBottom: '1px solid #e0e0e0', paddingTop: '3px', paddingBottom: '3px'}}>
                         <div className="focus">
                             <img style={{display: 'inline', verticalAlign: 'inherit'}} src={data.iconUri} />
-                            <div style={{display: 'inline-block'}}>
+                            <div style={{display: 'inline-block', verticalAlign: 'top'}}>
                                 <div>{this.calcFocusTitle(data)}</div>
                                 <div>{'last acted ' + lastDone}</div>
                             </div>

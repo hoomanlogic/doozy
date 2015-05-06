@@ -100,7 +100,7 @@
             var currentFocus = this.props.currentFocus;
 
             var button = null;
-            if (currentFocus !== null) { 
+            if (typeof currentFocus !== 'undefined' && currentFocus !== null) { 
 
                 button = (
                     <div className="focus"><img src={currentFocus.iconUri} title={currentFocus.kind + ': ' + currentFocus.name} /></div>
@@ -127,14 +127,21 @@
                     id: ref,
                     kind: 'Role',
                     name: '',
-                    tagName: ''
+                    tagName: '',
+                    iconUri: null
                 };
+                
                 menuItems.push((
-                    <a onClick={this.handleFocusClick.bind(null, f)}>
-                        <div className="focus">
-                            Add New Focus
-                        </div>
-                    </a>
+                    <li key="newfocus" >
+                        <a onClick={this.handleFocusClick.bind(null, f)} style={{borderBottom: '1px solid #e0e0e0', paddingTop: '3px', paddingBottom: '3px'}}>
+                            <div className="focus">
+                                <div style={{display: 'inline', verticalAlign: 'inherit'}}>
+                                    <i className="fa fa-eye fa-2x" style={{width: '50px'}}></i>
+                                </div>
+                                <div style={{display: 'inline-block'}}>Add New Focus</div>
+                            </div>
+                        </a>
+                    </li>
                 ));
             }
 

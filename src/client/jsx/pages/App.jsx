@@ -467,7 +467,7 @@
                         </div>
                         <div className="form-group">
                             <label htmlFor="prefs-email-notifications">Receive email notifications?</label>
-                            <input id="prefs-email-notifications" ref="prefsEmailNotifications" type="checkbox" className="form-control" defaultValue={userStore.updates.value.emailNotifications} />
+                            <input id="prefs-email-notifications" ref="prefsEmailNotifications" type="checkbox" className="form-control" defaultChecked={userStore.updates.value.emailNotifications} />
                         </div>
                         <button style={buttonStyle} type="button" className="btn btn-primary" onClick={this.handleSavePreferencesClick}>Save Changes</button>
                         <button style={buttonStyle} type="button" className="btn btn-default" onClick={this.handleCancelClick}>Cancel</button>
@@ -532,7 +532,7 @@
             
             var page = null, hideMain = true;
             if (this.state.page === 'Focus Management') {
-                page = (<ManageFocus currentFocus={this.state.currentFocus} />);
+                page = (<ManageFocus currentFocus={this.state.currentFocus || focusStore.updates.value[0]} />);
             } else if (this.state.page === 'Preferences') {
                 page = this.renderPreferences();
             } else if (this.state.page === 'Manage Action') {

@@ -35,7 +35,7 @@ namespace HoomanLogic.Data
                     StartAt = row.StartAt,
                     Duration = row.Duration,
                     NextDate = row.NextDate,
-                    IsSomeday = row.IsSomeday,
+                    IsPublic = row.IsPublic,
                     Content = row.Content,
                     RecurrenceRules = row.RecurrenceRules.Select(a => a.Rule).ToList(),
                     Tags = row.Tags.Select(tag => (tag.Kind == "Focus" ? "!" : (tag.Kind == "Place" ? "@" : (tag.Kind == "Need" ? "$" : (tag.Kind == "Goal" ? ">" : (tag.Kind == "Box" ? "#" : ""))))) + tag.Name).ToList(),
@@ -72,7 +72,7 @@ namespace HoomanLogic.Data
                                StartAt = row.StartAt,
                                Duration = row.Duration,
                                NextDate = row.NextDate,
-                               IsSomeday = row.IsSomeday,
+                               IsPublic = row.IsPublic,
                                Content = row.Content,
                                RecurrenceRules = row.RecurrenceRules.Select(a => a.Rule).ToList(),
                                Tags = row.Tags.Select(tag => (tag.Kind == "Focus" ? "!" : (tag.Kind == "Place" ? "@" : (tag.Kind == "Need" ? "$" : (tag.Kind == "Goal" ? ">" : (tag.Kind == "Box" ? "#" : ""))))) + tag.Name).ToList(),
@@ -105,7 +105,7 @@ namespace HoomanLogic.Data
                                StartAt = row.StartAt,
                                Duration = row.Duration,
                                NextDate = row.NextDate,
-                               IsSomeday = row.IsSomeday,
+                               IsPublic = row.IsPublic,
                                Content = row.Content,
                                RecurrenceRules = row.RecurrenceRules.Select(a => a.Rule).ToList(),
                                Tags = row.Tags.Select(tag => (tag.Kind == "Focus" ? "!" : (tag.Kind == "Place" ? "@" : (tag.Kind == "Need" ? "$" : (tag.Kind == "Goal" ? ">" : (tag.Kind == "Box" ? "#" : ""))))) + tag.Name).ToList(),
@@ -426,7 +426,7 @@ namespace HoomanLogic.Data
             row.Retire = model.Retire;
             row.StartAt = model.StartAt;
             row.Duration = model.Duration;
-            row.IsSomeday = model.IsSomeday;
+            row.IsPublic = model.IsPublic;
             row.Content = model.Content;
             row.NextDate = model.NextDate;
             //row.ParentId = parentId;
@@ -488,7 +488,7 @@ namespace HoomanLogic.Data
             row.Retire = model.Retire;
             row.StartAt = model.StartAt;
             row.Duration = model.Duration;
-            row.IsSomeday = model.IsSomeday;
+            row.IsPublic = model.IsPublic;
             row.Content = model.Content;
             row.NextDate = model.NextDate;
 

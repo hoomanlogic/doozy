@@ -41,6 +41,7 @@
           <Property Name="NextDate" Type="datetime" />
           <Property Name="IsSomeday" Type="bit" Nullable="false" />
           <Property Name="Content" Type="varchar(max)" />
+          <Property Name="IsPublic" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="ActionsTags">
           <Key>
@@ -689,6 +690,7 @@
           <Property Name="NextDate" Type="DateTime" Precision="3" />
           <Property Name="IsSomeday" Type="Boolean" Nullable="false" />
           <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="IsPublic" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="AspNetUser">
           <Key>
@@ -1149,6 +1151,7 @@
           <EntitySetMapping Name="Actions">
             <EntityTypeMapping TypeName="hoomanlogicModel.Action">
               <MappingFragment StoreEntitySet="Actions">
+                <ScalarProperty Name="IsPublic" ColumnName="IsPublic" />
                 <ScalarProperty Name="Content" ColumnName="Content" />
                 <ScalarProperty Name="IsSomeday" ColumnName="IsSomeday" />
                 <ScalarProperty Name="NextDate" ColumnName="NextDate" />

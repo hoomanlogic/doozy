@@ -317,6 +317,8 @@
                 this.state.repeatFri = event.target.checked;
             } else if (this.refs.repeatSat && event.target === this.refs.repeatSat.getDOMNode()) {
                 this.state.repeatSat = event.target.checked;
+            } else if (event.target === this.refs.ispublic.getDOMNode()) {
+                this.props.action.isPublic = event.target.checked;
             }
             this.setState({ 
                 action: this.props.action,
@@ -506,6 +508,7 @@
              * State and Prop Dependencies
              */
             var action = this.props.action;
+            var isPublic = action.isPublic;
             var name = action.name || '';
             var content = action.content || '';
             var durationValue = this.state.durationValue;
@@ -553,6 +556,10 @@
                         <label htmlFor="action-nextdate">Hold off on this until</label>
                         <input id="action-nextdate" ref="nextdate" type="datetime" className="form-control" value={dateInput} onChange={this.handleChange} />
                         <span>{this.state.dateDisplay}</span>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="action-ispublic">Allow others to see this action?</label>
+                        <input id="action-ispublic" ref="ispublic" type="checkbox" className="form-control" checked={isPublic} onChange={this.handleChange} />
                     </div>
                 </form>
             ); 
@@ -617,9 +624,9 @@
                            {type: 'default', 
                             text: 'Cancel', 
                             handler: this.handleCancelClick}, 
-                           {type: 'danger', 
-                            text: 'Delete Action', 
-                            handler: this.handleDeleteClick},
+//                           {type: 'danger', 
+//                            text: 'Delete Action', 
+//                            handler: this.handleDeleteClick},
                            ];
             }
             
