@@ -36,40 +36,29 @@
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
-        handleNotificationClicked: function (notification, verb) {
-            if (!_.isUndefined(verb) && verb === 'Accept Connection') {
-                connectionStore.acceptConnection(notification.subject);
-            } else if (!_.isUndefined(verb) && verb === 'Reject Connection') {
-                connectionStore.rejectConnection(notification.subject);
+        handleToggleClick: function () {
+            var isOpen = !this.props.isOpen;
+            if (isOpen) {
+                ui.goTo('Notifications');
             } else {
-                if (notification.kind === 'New Message') {
-                    ui.openConversation(notification.subject);
-                } else if (notification.kind === 'Connection Accepted') {
-                    ui.goTo('Connect');
-                }
-                notificationStore.acknowledgeNotification(notification);
+                ui.goTo('Do');
             }
         },
-
+        
         /*************************************************************
          * RENDERING
          *************************************************************/
         render: function () {
-            var notifications = _.sortBy(notificationStore.updates.value, 'occurredAt').reverse();
-            var unreadCount = _.where(this.props.notifications, {readAt: null}).length;
-            var badge = null;
+            var badge,
+                unreadCount = _.where(notificationStore.updates.value, {readAt: null}).length;
             if (unreadCount > 0) {
                 badge = (<span className="notify-badge">{unreadCount}</span>);
             }
 
-            var menuItems = notifications.map( 
-                function(item) {
-                    return (<NotificationListItem key={item.id} data={item} handleNotificationClicked={this.handleNotificationClicked} />);
-                }.bind(this)
-            );
-
             return (
-                <DropdownMenu style={{padding: '5px'}} buttonContent={<span><i className="fa fa-2x fa-bell-o"></i>{badge}</span>} menuItems={menuItems} dropDownMenuStyle={this.props.dropDownMenuStyle} />
+                <li ref="root" onClick={this.handleToggleClick}>
+                    <a className={this.props.isOpen ? 'active' : ''} href="javascript:;" style={{padding: '5px'}}><span><i className="fa fa-2x fa-bell-o"></i>{badge}</span></a>
+                </li>
             );
         }
     });

@@ -199,10 +199,9 @@
             var connectionsDropDownMenu = this.renderConnectionsDropDownMenu();
             var settingsDropDownMenu = this.renderSettingsDropDownMenu();
 
-//            if (this.state.windowWidth < 500) {
-//                var adjustDropDownMenu = { marginRight: '-103px'};
-//            }
-//            <NotificationDropdown dropDownMenuStyle={adjustDropDownMenu} />
+            if (this.state.windowWidth < 500) {
+                var adjustDropDownMenu = { marginRight: '-103px'};
+            }
             
             return (
                 <div className="navbar navbar-hl-theme">
@@ -212,7 +211,7 @@
                         <Timer />
                     </ul>
                     <ul className="nav navbar-nav navbar-right">
-                        
+                        <NotificationDropdown isOpen={ui.page === 'Notifications'} dropDownMenuStyle={adjustDropDownMenu} />
                         {connectionsDropDownMenu}
                         {settingsDropDownMenu}
                     </ul>

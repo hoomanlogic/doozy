@@ -295,6 +295,7 @@
                 var profileUri = null;
                 var myProfileUri = null;
                 if (connection !== null) {
+                    userName = connection.userName;
                     name = connection.name;
                     profileUri = connection.profileUri;
                     myProfileUri = connection.myProfileUri;
@@ -309,7 +310,7 @@
                 };
                 conversations.push(conversation);
                 this.setState({ conversations: conversations });
-
+                
                 // get message history
                 $.ajax({
                     context: this,
@@ -342,24 +343,14 @@
                 });
             }
 
-
+            return conversation;
         },
         selectConversation: function (id) {
             var conversation = this.openConversation(id);
 
             var conversations = this.state.conversations;
             var selectedConversation = this.state.activeConversation;
-
-            // avoid setting state when it's already selected
-            if (selectedConversation !== null && selectedConversation.id === id) {
-                return;   
-            }
-
-            for (var i = 0; i < conversations.length; i++) {
-                if (conversations[i].id === id) {
-                    this.setState({ page: 'Conversation', activeConversation: conversations[i] });   
-                }
-            }
+            this.setState({ page: 'Conversation', activeConversation: conversation });   
         },
 
         addMessageToConversation: function(id, msg, select) {
@@ -404,7 +395,7 @@
         findConnectionFromId: function (id) {
             var connections = connectionStore.updates.value;
             for (var i = 0; i < connections.length; i++) {
-                if (connections[i].userName === id) {
+                if (connections[i].userName === id || connections[i].name === id) {
                     return connections[i];
                 }
             }
@@ -533,10 +524,13 @@
             return backdrop;
         },
         render: function () {
+            // let other components know what page we're on
+            window['ui'].page = this.state.page;
+            
             var weatherBackdrop = this.renderWeatherBackdrop();
             var action, actionRef, mode;
             
-            var page = null;
+            var page = null, hideMain = true;
             if (this.state.page === 'Focus Management') {
                 page = (<ManageFocus currentFocus={this.state.currentFocus} />);
             } else if (this.state.page === 'Preferences') {
@@ -556,8 +550,10 @@
                 page = (<LogRecentAction action={action} focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : ''} />);
             } else if (this.state.page === 'Conversation' && typeof this.state.activeConversation !== 'undefined' && this.state.activeConversation !== null) {
                 page = (<Conversation conversation={this.state.activeConversation} send={this.send} userName={this.props.settings.userName} onClose={this.handleConversationClose} />);
+            } else if (this.state.page === 'Notifications') {
+                page = (<NotificationList />);
             } else { //DO
-                page = (<FocusActions focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : ''} />);
+                hideMain = false;
             }
 
             return (
@@ -568,6 +564,7 @@
                         handleFocusClick={this.handleFocusClick} />
                     <TimerBar />
                     {weatherBackdrop}
+                    <FocusActions hidden={hideMain} focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : ''} />
                     {page}
                 </div>
             );

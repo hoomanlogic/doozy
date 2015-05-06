@@ -40,7 +40,7 @@ var NotificationListItem = React.createClass({
         }
 
         return (
-            <li key={'notify' + item.occurredAt.getTime()}>
+            <li className="notification" key={'notify' + item.occurredAt.getTime()}>
                 {notification}
             </li>
         );

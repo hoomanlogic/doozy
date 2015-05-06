@@ -28,11 +28,11 @@ namespace HoomanLogic.Data
 
                 db.Messages.Add(message);
                 db.SaveChanges();
-
+                
                 // add row to notifications table if recipient isn't online
                 if (!isRecipientOnline)
                 {
-                    string senderName = db.AspNetUsers.Where(row => row.Id == senderId).Select(row => row.UserName).First();
+                    string senderName = db.Personas.Where(a => a.UserId == senderId && a.Kind == "Public").Select(a => a.KnownAs).First();
                     NotificationsRepository.AddNotification(db, receiverId, "New Message", senderName);
                 }
 

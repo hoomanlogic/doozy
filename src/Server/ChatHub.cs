@@ -137,6 +137,7 @@ namespace HoomanLogic.Server
 
         public override Task OnConnected()
         {
+
             if (!_Users.Contains(Context.User.Identity.Name)) {
                 _Users.Add(Context.User.Identity.Name);
             }

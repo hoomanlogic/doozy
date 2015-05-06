@@ -73,6 +73,7 @@ var jsxFiles = [
     'src/client/jsx/components/Microphone.jsx',
     'src/client/jsx/components/NextActions.jsx',
     'src/client/jsx/components/NotificationDropdown.jsx',
+	'src/client/jsx/components/NotificationList.jsx',
     'src/client/jsx/components/ProfilePic.jsx',
     'src/client/jsx/components/RecentActions.jsx',
     'src/client/jsx/components/TagList.jsx',

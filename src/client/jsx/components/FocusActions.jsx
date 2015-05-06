@@ -203,7 +203,7 @@
             var tagsFilteredFocusActions = hlapp.filterActions(this.state.focusActions, this.state.tagsFilter, this.state.tagsFilterType);
 
             return (
-                <div>
+                <div className={this.props.hidden ? 'hidden' : ''}>
                     {tagFilterTypeDom}
                     {tagListDom}
                     <NextActions actions={tagsFilteredFocusActions} />
