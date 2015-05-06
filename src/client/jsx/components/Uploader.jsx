@@ -35,6 +35,9 @@
          *************************************************************/
         handleFileChange: function () {
             if ($('#theFile').prop('files').length > 0) {
+                if (this.props.onFileChange) {
+                    this.props.onFileChange(true);
+                }
                 hlio.convertFileToDataUrl($('#theFile').prop('files')[0], function (fileName, dataUrl) {
                     this.setState({ 
                         filesSelected: true,
@@ -42,6 +45,9 @@
                     });
                 }.bind(this));
             } else if ($('#theFile').prop('files').length === 0) {
+                if (this.props.onFileChange) {
+                    this.props.onFileChange(false);
+                }
                 this.setState({
                     filesSelected: false,
                     dataUrl: null
@@ -51,15 +57,16 @@
         handleFileDialogClick: function () {
             $('#theFile').click();
         },
-        handleUploadClick: function (evt) {
-            if ($('#theFile').prop('files').length > 0) {
-                for (var i = 0; i < $('#theFile').prop('files').length; i++) {
-                    hlio.convertFileToDataUrl($('#theFile').prop('files')[i], function (fileName, dataUrl) {
-                        $.connection.chatHub.server.upload(this.props.type, this.props.arg || null, dataUrl, fileName);
-                    }.bind(this));
-                }
-            }
-        },
+        
+//        handleUploadClick: function (evt) {
+//            if ($('#theFile').prop('files').length > 0) {
+//                for (var i = 0; i < $('#theFile').prop('files').length; i++) {
+//                    hlio.convertFileToDataUrl($('#theFile').prop('files')[i], function (fileName, dataUrl) {
+//                        $.connection.chatHub.server.upload(this.props.type, this.props.arg || null, dataUrl, fileName);
+//                    }.bind(this));
+//                }
+//            }
+//        },
         
         uploadFile: function () {
  
@@ -75,13 +82,9 @@
             var xhr = new XMLHttpRequest();
 
             xhr.upload.addEventListener("progress", this.uploadProgress, false);
-
             xhr.addEventListener("load", this.uploadComplete, false);
-
             xhr.addEventListener("error", this.uploadFailed, false);
-
             xhr.addEventListener("abort", this.uploadCanceled, false);
-            
             if (this.props.arg) {
                 xhr.open("POST", "api/uploadfiles/" + this.props.type + '/' + this.props.arg);
             } else {
@@ -98,7 +101,7 @@
                 document.getElementById('progress').innerHTML = percentComplete.toString() + '%';
 
             } else {
-                document.getElementById('progress').innerHTML = 'unable to compute';
+                document.getElementById('progress').innerHTML = 'Uploading...';
             }
         },
  
@@ -113,15 +116,11 @@
         },
 
         uploadFailed: function (evt) {
-
-            alert("There was an error attempting to upload the file.");
-
+            toastr.error("There was an error attempting to upload the file.");
         },
 
         uploadCanceled: function (evt) {
-
-            alert("The upload has been canceled by the user or the browser dropped the connection.");
-
+            toastr.error("The upload has been canceled by the user or the browser dropped the connection.");
         },
 
         /*************************************************************
@@ -130,7 +129,7 @@
         render: function () {
             var img = null;
             if (this.state.dataUrl) {
-                img = <img style={{display: 'inline'}} src={this.state.dataUrl} />
+                img = <img style={{display: 'inline', maxWidth: '100px', maxHeight: '100px'}} src={this.state.dataUrl} />
             }
 
             return (

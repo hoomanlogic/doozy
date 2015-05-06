@@ -411,11 +411,17 @@
                 }
                 recurrenceRules.push(weeklyRule);
             } else if (this.state.repeat === 'm') {
-                var dailyRule = 'RRULE:FREQ=MONTHLY';
+                var monthlyRule = 'RRULE:FREQ=MONTHLY';
                 if (this.state.repeatInterval > 1) {
-                    dailyRule += ';INTERVAL=' + this.state.repeatInterval;    
+                    monthlyRule += ';INTERVAL=' + this.state.repeatInterval;    
                 }
-                recurrenceRules.push(dailyRule);
+                recurrenceRules.push(monthlyRule);
+            } else if (this.state.repeat === 'y') {
+                var yearlyRule = 'RRULE:FREQ=YEARLY';
+                if (this.state.repeatInterval > 1) {
+                    yearlyRule += ';INTERVAL=' + this.state.repeatInterval;    
+                }
+                recurrenceRules.push(yearlyRule);
             }
             this.props.action.recurrenceRules = recurrenceRules;
 
@@ -482,12 +488,12 @@
                         {daysOfWeek}
                     </div>
                 ]);
-            } else if (repeat === 'd' || repeat === 'm') {
+            } else if (repeat === 'd' || repeat === 'm' || repeat === 'y') {
                 return (
                     <div className="form-group">
                         <label htmlFor="action-repeat-interval">Every</label>
                         <input id="action-repeat-interval" ref="repeatInterval" type="number" className="form-control" value={this.state.repeatInterval} onChange={this.handleChange} />
-                        <label>{this.state.repeat === 'd' ? 'Day(s)' : 'Month(s)'}</label>
+                        <label>{hlapp.getFrequencyNoun(this.state.repeat) + '(s)'}</label>
                     </div>
                 );
             } else {
@@ -535,6 +541,7 @@
                             <option value="d">Daily</option>
                             <option value="w">Weekly</option>
                             <option value="m">Monthly</option>
+                            <option value="y">Yearly</option>
                         </select>
                     </div>
                     {repeatOptions}

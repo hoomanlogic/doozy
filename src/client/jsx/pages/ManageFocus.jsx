@@ -28,7 +28,8 @@
                 ref: this.props.currentFocus.id,
                 name: this.props.currentFocus.name,
                 kind: this.props.currentFocus.kind,
-                tagName: this.props.currentFocus.tagName
+                tagName: this.props.currentFocus.tagName,
+                filesSelected: false  
             };
         },
         componentWillReceiveProps: function (nextProps) {
@@ -64,6 +65,11 @@
                 focusStore.destroy(this.props.currentFocus);
             }
         },
+        handleOnFileChange: function (filesSelected) {
+            this.setState({
+                filesSelected: filesSelected
+            });
+        },
         handleSaveClick: function () {
             if (!this.state.isNew) {
                 focusStore.update({ focusRef: this.state.ref, state: this.state });
@@ -88,15 +94,19 @@
               marginBottom: '5px',
               fontSize: '1.1rem'
             };
+            
+            var currentImage;
+            if (!this.state.filesSelected) {
+                currentImage = (<img style={{display: 'inline', maxWidth: '100px', maxHeight: '100px'}} src={this.props.currentFocus.iconUri} />);
+            }
+                                
             // html
             return (
                 <div style={{padding: '5px'}}>
                     <form role="form">
-                        <Uploader type="Focus" arg={this.state.id} />
-                        <div className="form-group">
-                            <label htmlFor="f1">Name</label>
-                            <input id="f1" ref="name" type="text" className="form-control" value={this.state.name} onChange={this.handleChange} />
-                        </div>
+                        <label>What picture best represents this focus?</label>
+                        {currentImage}
+                        <Uploader type="Focus" arg={this.state.id} onFileChange={this.handleOnFileChange} />
                         <div className="form-group">
                             <label htmlFor="f2">What kind of focus is this?</label>
                             <select id="f2" ref="kind" className="form-control" value={this.state.kind} onChange={this.handleChange}>
@@ -105,7 +115,11 @@
                             </select>
                         </div>
                         <div className="form-group">
-                            <label htmlFor="f3">Tag</label>
+                            <label htmlFor="f1">What {this.state.kind.toLowerCase()} does this focus represent?</label>
+                            <input id="f1" ref="name" type="text" className="form-control" value={this.state.name} onChange={this.handleChange} />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="f3">What tag-word should be connected to this focus?</label>
                             <input id="f3" ref="tagname" type="text" className="form-control" value={this.state.tagName} onChange={this.handleChange} />
                         </div>
                         <button style={buttonStyle} type="button" className="btn btn-primary" onClick={this.handleSaveClick}>Save Changes</button>

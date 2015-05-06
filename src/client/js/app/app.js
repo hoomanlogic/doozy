@@ -19,12 +19,15 @@ if (typeof require !== 'undefined') {
     'use strict';
 	
     var getFrequencyNoun = function (freq) {
-        if (freq === 'WEEKLY') {
-            return 'week';   
-        } else if (freq === 'MONTHLY') {
-            return 'month';   
-        } else if (freq === 'DAILY') {
-            return 'day';   
+        freq = freq.slice(0,1).toLowerCase();
+        if (freq === 'w') {
+            return 'Week';   
+        } else if (freq === 'm') {
+            return 'Month';   
+        } else if (freq === 'y') {
+            return 'Year';   
+        } else if (freq === 'd') {
+            return 'Day';   
         }
     };
 
@@ -37,6 +40,7 @@ if (typeof require !== 'undefined') {
     }
     
     exports.TAG_PREFIX = TAG_PREFIX;
+    exports.getFrequencyNoun = getFrequencyNoun;
 
     /**
      * Parses a tag string to an object
@@ -196,6 +200,8 @@ if (typeof require !== 'undefined') {
             return actions.filter(function (item) { return _.intersection(tags, item.tags).length > 0; });
         } else if (type === 'all') {
             return actions.filter(function (item) { return _.intersection(tags, item.tags).length === tags.length; });
+        }  else if (type === 'not') {
+            return actions.filter(function (item) { return _.intersection(tags, item.tags).length === 0; });
         }
     };
 
@@ -293,11 +299,11 @@ if (typeof require !== 'undefined') {
 
                 if (recurrenceObj.interval > 1) {
                     if (days.SU && days.SA && !days.MO && !days.TU && !days.WE && !days.TH && !days.FR) {
-                        summary = 'Every ' + recurrenceObj.interval + ' ' + getFrequencyNoun(recurrenceObj.freq) + ' on the weekend';
+                        summary = 'Every ' + recurrenceObj.interval + ' ' + getFrequencyNoun(recurrenceObj.freq).toLowerCase() + ' on the weekend';
                     } else if (!days.SU && !days.SA && days.MO && days.TU && days.WE && days.TH && days.FR) {
-                        summary = 'Every ' + recurrenceObj.interval + ' ' + getFrequencyNoun(recurrenceObj.freq) + ' on the weekdays';
+                        summary = 'Every ' + recurrenceObj.interval + ' ' + getFrequencyNoun(recurrenceObj.freq).toLowerCase() + ' on the weekdays';
                     } else {
-                        summary = 'Every ' + recurrenceObj.interval + ' ' + getFrequencyNoun(recurrenceObj.freq) + ' on ' + fullnameDays.join(', ');
+                        summary = 'Every ' + recurrenceObj.interval + ' ' + getFrequencyNoun(recurrenceObj.freq).toLowerCase() + ' on ' + fullnameDays.join(', ');
                     }
                 } else {
                     if (days.SU && days.SA && !days.MO && !days.TU && !days.WE && !days.TH && !days.FR) {
@@ -310,9 +316,9 @@ if (typeof require !== 'undefined') {
                 }
             } else {
                 if (recurrenceObj.interval > 1) {
-                    summary = 'Every ' + recurrenceObj.interval + ' ' + getFrequencyNoun(recurrenceObj.freq) + 's';
+                    summary = 'Every ' + recurrenceObj.interval + ' ' + getFrequencyNoun(recurrenceObj.freq).toLowerCase() + 's';
                 } else {
-                    summary = 'Every ' + getFrequencyNoun(recurrenceObj.freq);
+                    summary = 'Every ' + getFrequencyNoun(recurrenceObj.freq).toLowerCase();
                 }
 
             }
