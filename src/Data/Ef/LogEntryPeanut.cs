@@ -12,21 +12,17 @@ namespace HoomanLogic.Data.Ef
     using System;
     using System.Collections.Generic;
     
-    public partial class LogEntry
+    public partial class LogEntryPeanut
     {
-        public LogEntry()
-        {
-            this.LogEntryPeanuts = new HashSet<LogEntryPeanut>();
-        }
-    
         public System.Guid Id { get; set; }
-        public System.Guid ActionId { get; set; }
+        public string UserId { get; set; }
+        public System.Guid LogEntryId { get; set; }
         public System.DateTime Date { get; set; }
-        public string Entry { get; set; }
-        public Nullable<short> Duration { get; set; }
-        public Nullable<System.Guid> RootActionId { get; set; }
-        public string Details { get; set; }
+        public string Kind { get; set; }
+        public string Comment { get; set; }
+        public string AttachmentUri { get; set; }
     
-        public virtual ICollection<LogEntryPeanut> LogEntryPeanuts { get; set; }
+        public virtual AspNetUser AspNetUser { get; set; }
+        public virtual LogEntry LogEntry { get; set; }
     }
 }

@@ -62,6 +62,9 @@
     <Compile Include="Ef\AspNetUser.cs">
       <DependentUpon>EfHoomanLogic.tt</DependentUpon>
     </Compile>
+    <Compile Include="Ef\Attachment.cs">
+      <DependentUpon>EfHoomanLogic.tt</DependentUpon>
+    </Compile>
     <Compile Include="Ef\Connection.cs">
       <DependentUpon>EfHoomanLogic.tt</DependentUpon>
     </Compile>
@@ -87,6 +90,9 @@
       <DependentUpon>EfHoomanLogic.tt</DependentUpon>
     </Compile>
     <Compile Include="Ef\LogEntry.cs">
+      <DependentUpon>EfHoomanLogic.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Ef\LogEntryPeanut.cs">
       <DependentUpon>EfHoomanLogic.tt</DependentUpon>
     </Compile>
     <Compile Include="Ef\Message.cs">

@@ -40,5 +40,7 @@ namespace HoomanLogic.Data.Ef
         public virtual DbSet<Target> Targets { get; set; }
         public virtual DbSet<Focus> Focuses { get; set; }
         public virtual DbSet<Preference> Preferences { get; set; }
+        public virtual DbSet<Attachment> Attachments { get; set; }
+        public virtual DbSet<LogEntryPeanut> LogEntryPeanuts { get; set; }
     }
 }

@@ -40,6 +40,12 @@
         <AssociationConnector Association="hoomanlogicModel.FK_Focuses_User" />
         <EntityTypeShape EntityType="hoomanlogicModel.Preference" Width="1.5" PointX="5.875" PointY="17.375" />
         <AssociationConnector Association="hoomanlogicModel.FK_Preferences_User" />
+        <EntityTypeShape EntityType="hoomanlogicModel.Attachment" Width="1.5" PointX="10.875" PointY="0.75" />
+        <EntityTypeShape EntityType="hoomanlogicModel.LogEntryPeanut" Width="1.5" PointX="12.875" PointY="8.25" />
+        <AssociationConnector Association="hoomanlogicModel.FK_Attachments_Users" />
+        <AssociationConnector Association="hoomanlogicModel.FK_LogEntryPeanuts_Users" />
+        <AssociationConnector Association="hoomanlogicModel.FK_LogEntryPeanuts_LogEntries" />
+        <AssociationConnector Association="hoomanlogicModel.ActionsAttachments" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

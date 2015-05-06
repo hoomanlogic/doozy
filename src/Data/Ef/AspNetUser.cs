@@ -27,6 +27,8 @@ namespace HoomanLogic.Data.Ef
             this.Tags = new HashSet<Tag>();
             this.Targets = new HashSet<Target>();
             this.Focuses = new HashSet<Focus>();
+            this.Attachments = new HashSet<Attachment>();
+            this.LogEntryPeanuts = new HashSet<LogEntryPeanut>();
         }
     
         public string Id { get; set; }
@@ -55,5 +57,7 @@ namespace HoomanLogic.Data.Ef
         public virtual ICollection<Target> Targets { get; set; }
         public virtual ICollection<Focus> Focuses { get; set; }
         public virtual Preference Preference { get; set; }
+        public virtual ICollection<Attachment> Attachments { get; set; }
+        public virtual ICollection<LogEntryPeanut> LogEntryPeanuts { get; set; }
     }
 }

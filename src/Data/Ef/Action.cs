@@ -21,6 +21,7 @@ namespace HoomanLogic.Data.Ef
             this.ParentPathways = new HashSet<ActionPathway>();
             this.RootPathways = new HashSet<ActionPathway>();
             this.Tags = new HashSet<Tag>();
+            this.Attachments = new HashSet<Attachment>();
         }
     
         public System.Guid Id { get; set; }
@@ -42,5 +43,6 @@ namespace HoomanLogic.Data.Ef
         public virtual ICollection<ActionPathway> ParentPathways { get; set; }
         public virtual ICollection<ActionPathway> RootPathways { get; set; }
         public virtual ICollection<Tag> Tags { get; set; }
+        public virtual ICollection<Attachment> Attachments { get; set; }
     }
 }

@@ -43,6 +43,14 @@
           <Property Name="Content" Type="varchar(max)" />
           <Property Name="IsPublic" Type="bit" Nullable="false" />
         </EntityType>
+        <EntityType Name="ActionsAttachments">
+          <Key>
+            <PropertyRef Name="ActionId" />
+            <PropertyRef Name="AttachmentId" />
+          </Key>
+          <Property Name="ActionId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="AttachmentId" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
         <EntityType Name="ActionsTags">
           <Key>
             <PropertyRef Name="ActionId" />
@@ -68,6 +76,16 @@
           <Property Name="LockoutEnabled" Type="bit" Nullable="false" />
           <Property Name="AccessFailedCount" Type="int" Nullable="false" />
           <Property Name="UserName" Type="nvarchar" MaxLength="256" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Attachments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Kind" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Path" Type="varchar" MaxLength="256" Nullable="false" />
         </EntityType>
         <EntityType Name="ConnectionRequests">
           <Key>
@@ -112,6 +130,18 @@
           <Property Name="Duration" Type="smallint" />
           <Property Name="RootActionId" Type="uniqueidentifier" />
           <Property Name="Details" Type="varchar(max)" />
+        </EntityType>
+        <EntityType Name="LogEntryPeanuts">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="LogEntryId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Date" Type="datetime" Nullable="false" />
+          <Property Name="Kind" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Comment" Type="varchar" MaxLength="50" />
+          <Property Name="AttachmentUri" Type="varchar" MaxLength="256" />
         </EntityType>
         <EntityType Name="Messages">
           <Key>
@@ -252,6 +282,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ActionsAttachments_Actions">
+          <End Role="Actions" Type="Self.Actions" Multiplicity="1" />
+          <End Role="ActionsAttachments" Type="Self.ActionsAttachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Actions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ActionsAttachments">
+              <PropertyRef Name="ActionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ActionsAttachments_Attachments">
+          <End Role="Attachments" Type="Self.Attachments" Multiplicity="1" />
+          <End Role="ActionsAttachments" Type="Self.ActionsAttachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Attachments">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ActionsAttachments">
+              <PropertyRef Name="AttachmentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ActionsTags_Actions">
           <End Role="Actions" Type="Self.Actions" Multiplicity="1" />
           <End Role="ActionsTags" Type="Self.ActionsTags" Multiplicity="*" />
@@ -273,6 +327,20 @@
             </Principal>
             <Dependent Role="ActionsTags">
               <PropertyRef Name="TagId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Attachments_Users">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Attachments" Type="Self.Attachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Attachments">
+              <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -340,6 +408,34 @@
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="Focuses">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LogEntryPeanuts_LogEntries">
+          <End Role="LogEntries" Type="Self.LogEntries" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="LogEntryPeanuts" Type="Self.LogEntryPeanuts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LogEntries">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="LogEntryPeanuts">
+              <PropertyRef Name="LogEntryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LogEntryPeanuts_Users">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="LogEntryPeanuts" Type="Self.LogEntryPeanuts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="LogEntryPeanuts">
               <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
@@ -470,12 +566,15 @@
           <EntitySet Name="Achievements" EntityType="Self.Achievements" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ActionPathways" EntityType="Self.ActionPathways" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Actions" EntityType="Self.Actions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ActionsAttachments" EntityType="Self.ActionsAttachments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ActionsTags" EntityType="Self.ActionsTags" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Attachments" EntityType="Self.Attachments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ConnectionRequests" EntityType="Self.ConnectionRequests" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Connections" EntityType="Self.Connections" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Focuses" EntityType="Self.Focuses" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LogEntries" EntityType="Self.LogEntries" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LogEntryPeanuts" EntityType="Self.LogEntryPeanuts" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Messages" EntityType="Self.Messages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Notifications" EntityType="Self.Notifications" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Personas" EntityType="Self.Personas" Schema="dbo" store:Type="Tables" />
@@ -503,6 +602,14 @@
             <End Role="Actions" EntitySet="Actions" />
             <End Role="ActionPathways" EntitySet="ActionPathways" />
           </AssociationSet>
+          <AssociationSet Name="FK_ActionsAttachments_Actions" Association="Self.FK_ActionsAttachments_Actions">
+            <End Role="Actions" EntitySet="Actions" />
+            <End Role="ActionsAttachments" EntitySet="ActionsAttachments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ActionsAttachments_Attachments" Association="Self.FK_ActionsAttachments_Attachments">
+            <End Role="Attachments" EntitySet="Attachments" />
+            <End Role="ActionsAttachments" EntitySet="ActionsAttachments" />
+          </AssociationSet>
           <AssociationSet Name="FK_ActionsTags_Actions" Association="Self.FK_ActionsTags_Actions">
             <End Role="Actions" EntitySet="Actions" />
             <End Role="ActionsTags" EntitySet="ActionsTags" />
@@ -510,6 +617,10 @@
           <AssociationSet Name="FK_ActionsTags_Tags" Association="Self.FK_ActionsTags_Tags">
             <End Role="Tags" EntitySet="Tags" />
             <End Role="ActionsTags" EntitySet="ActionsTags" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Attachments_Users" Association="Self.FK_Attachments_Users">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Attachments" EntitySet="Attachments" />
           </AssociationSet>
           <AssociationSet Name="FK_Connections_Personas1" Association="Self.FK_Connections_Personas1">
             <End Role="Personas" EntitySet="Personas" />
@@ -530,6 +641,14 @@
           <AssociationSet Name="FK_Focuses_User" Association="Self.FK_Focuses_User">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="Focuses" EntitySet="Focuses" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LogEntryPeanuts_LogEntries" Association="Self.FK_LogEntryPeanuts_LogEntries">
+            <End Role="LogEntries" EntitySet="LogEntries" />
+            <End Role="LogEntryPeanuts" EntitySet="LogEntryPeanuts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LogEntryPeanuts_Users" Association="Self.FK_LogEntryPeanuts_Users">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="LogEntryPeanuts" EntitySet="LogEntryPeanuts" />
           </AssociationSet>
           <AssociationSet Name="FK_Notifications_Users" Association="Self.FK_Notifications_Users">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
@@ -668,6 +787,24 @@
             <End Role="AspNetUser" EntitySet="AspNetUsers" />
             <End Role="Preference" EntitySet="Preferences" />
           </AssociationSet>
+          <EntitySet Name="Attachments" EntityType="hoomanlogicModel.Attachment" />
+          <EntitySet Name="LogEntryPeanuts" EntityType="hoomanlogicModel.LogEntryPeanut" />
+          <AssociationSet Name="FK_Attachments_Users" Association="hoomanlogicModel.FK_Attachments_Users">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="Attachment" EntitySet="Attachments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LogEntryPeanuts_Users" Association="hoomanlogicModel.FK_LogEntryPeanuts_Users">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="LogEntryPeanut" EntitySet="LogEntryPeanuts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LogEntryPeanuts_LogEntries" Association="hoomanlogicModel.FK_LogEntryPeanuts_LogEntries">
+            <End Role="LogEntry" EntitySet="LogEntries" />
+            <End Role="LogEntryPeanut" EntitySet="LogEntryPeanuts" />
+          </AssociationSet>
+          <AssociationSet Name="ActionsAttachments" Association="hoomanlogicModel.ActionsAttachments">
+            <End Role="Action" EntitySet="Actions" />
+            <End Role="Attachment" EntitySet="Attachments" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="Action">
           <Key>
@@ -691,6 +828,7 @@
           <Property Name="IsSomeday" Type="Boolean" Nullable="false" />
           <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="IsPublic" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Attachments" Relationship="hoomanlogicModel.ActionsAttachments" FromRole="Action" ToRole="Attachment" />
         </EntityType>
         <EntityType Name="AspNetUser">
           <Key>
@@ -721,6 +859,8 @@
           <NavigationProperty Name="Targets" Relationship="hoomanlogicModel.FK_Targets_Users" FromRole="AspNetUser" ToRole="Target" />
           <NavigationProperty Name="Focuses" Relationship="hoomanlogicModel.FK_Focuses_User" FromRole="AspNetUser" ToRole="Focus" />
           <NavigationProperty Name="Preference" Relationship="hoomanlogicModel.FK_Preferences_User" FromRole="AspNetUser" ToRole="Preference" />
+          <NavigationProperty Name="Attachments" Relationship="hoomanlogicModel.FK_Attachments_Users" FromRole="AspNetUser" ToRole="Attachment" />
+          <NavigationProperty Name="LogEntryPeanuts" Relationship="hoomanlogicModel.FK_LogEntryPeanuts_Users" FromRole="AspNetUser" ToRole="LogEntryPeanut" />
           </EntityType>
         <Association Name="FK_Action_User">
           <End Type="hoomanlogicModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
@@ -747,6 +887,7 @@
           <Property Name="Duration" Type="Int16" />
           <Property Name="RootActionId" Type="Guid" />
           <Property Name="Details" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="LogEntryPeanuts" Relationship="hoomanlogicModel.FK_LogEntryPeanuts_LogEntries" FromRole="LogEntry" ToRole="LogEntryPeanut" />
         </EntityType>
         <EntityType Name="RecurrenceRule">
           <Key>
@@ -1142,6 +1283,78 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Attachment">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Kind" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Path" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="AspNetUser" Relationship="hoomanlogicModel.FK_Attachments_Users" FromRole="Attachment" ToRole="AspNetUser" />
+          <NavigationProperty Name="Actions" Relationship="hoomanlogicModel.ActionsAttachments" FromRole="Attachment" ToRole="Action" />
+        </EntityType>
+        <EntityType Name="LogEntryPeanut">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="LogEntryId" Type="Guid" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Kind" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Comment" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="AttachmentUri" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="AspNetUser" Relationship="hoomanlogicModel.FK_LogEntryPeanuts_Users" FromRole="LogEntryPeanut" ToRole="AspNetUser" />
+          <NavigationProperty Name="LogEntry" Relationship="hoomanlogicModel.FK_LogEntryPeanuts_LogEntries" FromRole="LogEntryPeanut" ToRole="LogEntry" />
+        </EntityType>
+        <Association Name="FK_Attachments_Users">
+          <End Type="hoomanlogicModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="hoomanlogicModel.Attachment" Role="Attachment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Attachment">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LogEntryPeanuts_Users">
+          <End Type="hoomanlogicModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="hoomanlogicModel.LogEntryPeanut" Role="LogEntryPeanut" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="LogEntryPeanut">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LogEntryPeanuts_LogEntries">
+          <End Type="hoomanlogicModel.LogEntry" Role="LogEntry" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="hoomanlogicModel.LogEntryPeanut" Role="LogEntryPeanut" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LogEntry">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="LogEntryPeanut">
+              <PropertyRef Name="LogEntryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ActionsAttachments">
+          <End Type="hoomanlogicModel.Action" Role="Action" Multiplicity="*" />
+          <End Type="hoomanlogicModel.Attachment" Role="Attachment" Multiplicity="*" />
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1340,6 +1553,38 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Attachments">
+            <EntityTypeMapping TypeName="hoomanlogicModel.Attachment">
+              <MappingFragment StoreEntitySet="Attachments">
+                <ScalarProperty Name="Path" ColumnName="Path" />
+                <ScalarProperty Name="Kind" ColumnName="Kind" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LogEntryPeanuts">
+            <EntityTypeMapping TypeName="hoomanlogicModel.LogEntryPeanut">
+              <MappingFragment StoreEntitySet="LogEntryPeanuts">
+                <ScalarProperty Name="AttachmentUri" ColumnName="AttachmentUri" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="Kind" ColumnName="Kind" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="LogEntryId" ColumnName="LogEntryId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="ActionsAttachments" TypeName="hoomanlogicModel.ActionsAttachments" StoreEntitySet="ActionsAttachments">
+            <EndProperty Name="Attachment">
+              <ScalarProperty Name="Id" ColumnName="AttachmentId" />
+            </EndProperty>
+            <EndProperty Name="Action">
+              <ScalarProperty Name="Id" ColumnName="ActionId" />
+            </EndProperty>
+          </AssociationSetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
