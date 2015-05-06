@@ -76,6 +76,17 @@ namespace HoomanLogic.Data
                 db.SaveChanges();
                 model.Id = row.Id;
 
+                // add the tag
+                TagModel focusTag = new TagModel();
+                focusTag.Id = Guid.NewGuid();
+                focusTag.IsFocus = true;
+                focusTag.Kind = "Focus";
+                focusTag.Name = model.TagName;
+                focusTag.Parent = null;
+                focusTag.Path = "/" + model.TagName + "/";
+
+                TagsRepository.Add(userId, focusTag);
+
                 return new { Ref = model.Ref, Id = row.Id, Name = row.Name };
             }
         }
@@ -88,6 +99,16 @@ namespace HoomanLogic.Data
                 ef.Focus row = db.Focuses.Where(a =>
                         a.Id == model.Id
                     ).First();
+
+                // update the tag
+                if (row.TagName != model.TagName) {
+                    ef.Tag focusTag = db.Tags.Where(a => a.UserId == userId && a.Name == row.TagName).FirstOrDefault();
+                    if (focusTag != null)
+                    {
+                        focusTag.Name = model.TagName;
+                    }
+                }
+
                 row.Kind = model.Kind;
                 row.Name = model.Name;
                 row.TagName = model.TagName;
