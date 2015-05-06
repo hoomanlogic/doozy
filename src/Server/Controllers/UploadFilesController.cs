@@ -10,6 +10,7 @@ using System.Web.Http;
 using Microsoft.AspNet.Identity;
 using System.Drawing;
 using System.Text.RegularExpressions;
+using HoomanLogic.Data;
 
 namespace HoomanLogic.Server.Controllers
 {
@@ -22,16 +23,17 @@ namespace HoomanLogic.Server.Controllers
 
         }
 
-        [Route("api/uploadfiles/{type}")]
-        public List<string> Post(string type, [FromBody] FileUpload file)
-        {
-            List<string> messages = new List<string>();
-            messages.Add("File uploaded as " + file.FileName);
-            return messages;
+        //[Route("api/uploadfiles/{type}")]
+        //public List<string> Post(string type, [FromBody] FileUpload file)
+        //{
+        //    List<string> messages = new List<string>();
+        //    messages.Add("File uploaded as " + file.FileName);
+        //    return messages;
            
-        }
+        //}
 
-        public async Task<List<string>> PostBackupAsync(string type)
+        [Route("api/uploadfiles/{type}")]
+        public async Task<List<string>> PostAsync(string type)
         {
 
             if (Request.Content.IsMimeMultipartContent())
@@ -44,15 +46,95 @@ namespace HoomanLogic.Server.Controllers
                     System.IO.Directory.CreateDirectory(uploadPath);
                 }
 
-                MyStreamProvider streamProvider = new MyStreamProvider(uploadPath);
+                MultipartFormDataStreamProvider streamProvider = new MultipartFormDataStreamProvider(uploadPath);
 
                 await Request.Content.ReadAsMultipartAsync(streamProvider);
 
                 List<string> messages = new List<string>();
+                List<string> filePaths = new List<string>();
                 foreach (var file in streamProvider.FileData)
                 {
+                    filePaths.Add(file.LocalFileName);
                     FileInfo fi = new FileInfo(file.LocalFileName);
-                    messages.Add("File uploaded as " + fi.FullName + " (" + fi.Length + " bytes)");
+                    messages.Add("/uploads/" + userId + "/" + type + "/" + file.Headers.ContentDisposition.FileName.Replace("\"", ""));
+                    fi.CopyTo(uploadPath + "\\" + file.Headers.ContentDisposition.FileName.Replace("\"", ""), true);
+                    //fi.Delete();
+                    if (type.ToLower() == "profile")
+                    {
+                        UsersRepository.UpdateProfileUri(userId, "/uploads/" + userId + "/" + type + "/" + file.Headers.ContentDisposition.FileName.Replace("\"", ""));
+                    }
+                }
+
+                try
+                {
+                    foreach (var filePath in filePaths)
+                    {
+                        File.Delete(filePath);
+                    }
+                }
+                catch
+                {
+
+
+                }
+
+                return messages;
+            }
+            else
+            {
+                HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.BadRequest, "Invalid Request!");
+                throw new HttpResponseException(response);
+            }
+        }
+
+        [Route("api/uploadfiles/{type}/{arg}")]
+        public async Task<List<string>> PostAsync(string type, string arg)
+        {
+
+            if (Request.Content.IsMimeMultipartContent())
+            {
+                string userId = User.Identity.GetUserId();
+
+                string uploadPath = HttpContext.Current.Server.MapPath("~/uploads/" + userId + "/" + type);
+                if (!System.IO.Directory.Exists(uploadPath))
+                {
+                    System.IO.Directory.CreateDirectory(uploadPath);
+                }
+
+                MultipartFormDataStreamProvider streamProvider = new MultipartFormDataStreamProvider(uploadPath);
+
+                await Request.Content.ReadAsMultipartAsync(streamProvider);
+
+                List<string> messages = new List<string>();
+                List<string> filePaths = new List<string>();
+                foreach (var file in streamProvider.FileData)
+                {
+                    filePaths.Add(file.LocalFileName);
+                    FileInfo fi = new FileInfo(file.LocalFileName);
+                    messages.Add("/uploads/" + userId + "/" + type + "/" + file.Headers.ContentDisposition.FileName.Replace("\"", ""));
+                    fi.CopyTo(uploadPath + "\\" + file.Headers.ContentDisposition.FileName.Replace("\"", ""), true);
+                    //fi.Delete();
+                    if (type.ToLower() == "profile")
+                    {
+                        UsersRepository.UpdateProfileUri(userId, "/uploads/" + userId + "/" + type + "/" + file.Headers.ContentDisposition.FileName.Replace("\"", ""));
+                    }
+                    else if (type.ToLower() == "focus")
+                    {
+                        FocusesRepository.UpdateFocusUri(userId, arg, "/uploads/" + userId + "/" + type + "/" + file.Headers.ContentDisposition.FileName.Replace("\"", ""));
+                    }
+                }
+
+                try
+                {
+                    foreach (var filePath in filePaths)
+                    {
+                        File.Delete(filePath);
+                    }
+                }
+                catch
+                {
+
+
                 }
 
                 return messages;
