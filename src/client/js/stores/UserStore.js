@@ -78,7 +78,7 @@ var UserStore = function () {
             /**
              * Notify user of successful update
              */
-            toastr.success('Updated preferences ' + val.name);
+            toastr.success('Updated preferences');
         })
         .fail(function (err) {
             /**

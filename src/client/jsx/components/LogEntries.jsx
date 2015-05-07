@@ -27,6 +27,7 @@
          *************************************************************/
         getInitialState: function () {
             return {
+                maxReturn: 5,
                 connectionsLastUpdated: new Date().toISOString()
             };
         },
@@ -34,6 +35,12 @@
         componentWillMount: function () {
             logEntryStore.subscribe(this.handleLogEntryStoreUpdate);
             this.handleLogEntryStoreUpdate(logEntryStore.updates.value);
+            var me = this;
+            $(window).scroll(function() {
+               if($(window).scrollTop() + $(window).height() == $(document).height()) {
+                   me.setState({ maxReturn: me.state.maxReturn + 5});
+               }
+            });
         },
         componentWillUnmount: function () {
             logEntryStore.dispose(this.handleLogEntryStoreUpdate);
@@ -55,6 +62,7 @@
             var logEntries = _.where(logEntryStore.updates.value, {userName: userName});
             logEntries = _.sortBy(logEntries, function (item) { return hlapp.getComparableLocalDateString(item.date) + '-' + (item.entry === 'performed' ? '1' : '0')});
             logEntries.reverse();
+            logEntries = logEntries.slice(0, this.state.maxReturn);
             
             return (
                 <div className={'log-entries ' + (this.props.hidden ? 'hidden' : '')} style={{padding: '5px'}}>

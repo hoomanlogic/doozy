@@ -50,7 +50,7 @@ namespace HoomanLogic.Data
                                   select t).FirstOrDefault();
                 rowPersona.KnownAs = prefs.KnownAs;
 
-                db.SaveChangesAsync();
+                db.SaveChanges();
             }
         }
 
