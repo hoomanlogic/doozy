@@ -530,7 +530,7 @@
             var weatherBackdrop = this.renderWeatherBackdrop();
             var action, actionRef, mode;
             
-            var page = null, hideMain = true;
+            var page = null, hideMain = true, additional;
             if (this.state.page === 'Focus Management') {
                 page = (<ManageFocus currentFocus={this.state.currentFocus || focusStore.updates.value[0]} />);
             } else if (this.state.page === 'Preferences') {
@@ -552,6 +552,11 @@
                 page = (<Conversation conversation={this.state.activeConversation} send={this.send} userName={this.props.settings.userName} onClose={this.handleConversationClose} />);
             } else if (this.state.page === 'Notifications') {
                 page = (<NotificationList />);
+            } else if (this.state.page === 'Log Entries' && this.state.pageOptions && this.state.pageOptions.userName) {
+                page = (<LogEntries userName={this.state.pageOptions.userName} />);
+            } else if (this.state.page === 'Comment' && this.state.pageOptions && this.state.pageOptions.userName && this.state.pageOptions.id) {
+                page = (<CommentForm userName={this.state.pageOptions.userName} articleId={this.state.pageOptions.id} />);
+                additional = (<LogEntries userName={this.state.pageOptions.userName} />);
             } else { //DO
                 hideMain = false;
             }

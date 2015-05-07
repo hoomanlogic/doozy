@@ -22,6 +22,7 @@ namespace HoomanLogic.Data.Ef
             this.RootPathways = new HashSet<ActionPathway>();
             this.Tags = new HashSet<Tag>();
             this.Attachments = new HashSet<Attachment>();
+            this.LogEntries = new HashSet<LogEntry>();
         }
     
         public System.Guid Id { get; set; }
@@ -44,5 +45,6 @@ namespace HoomanLogic.Data.Ef
         public virtual ICollection<ActionPathway> RootPathways { get; set; }
         public virtual ICollection<Tag> Tags { get; set; }
         public virtual ICollection<Attachment> Attachments { get; set; }
+        public virtual ICollection<LogEntry> LogEntries { get; set; }
     }
 }

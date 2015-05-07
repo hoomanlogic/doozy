@@ -81,6 +81,10 @@ var jsxFiles = [
     'src/client/jsx/components/UpcomingActions.jsx',
     'src/client/jsx/components/WeatherIcon.jsx',
     
+	'src/client/jsx/components/LogEntryBox.jsx',
+	'src/client/jsx/components/LogEntries.jsx',
+	'src/client/jsx/components/CommentForm.jsx',
+	
     'src/client/jsx/components/FocusActions.jsx',
     
 	'src/client/jsx/components/TimerBar.jsx',

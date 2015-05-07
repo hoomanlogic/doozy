@@ -10,6 +10,15 @@ namespace HoomanLogic.Data
     {
         #region Public API
 
+        public static string GetUserId(string userName)
+        {
+            using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())
+            {
+                string id = db.AspNetUsers.Where(r => r.UserName == userName).Select(r => r.Id).FirstOrDefault();
+                return id;
+            }
+        }
+
         public static List<string> GetUserIds()
         {
             using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())

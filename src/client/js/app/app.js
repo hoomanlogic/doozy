@@ -107,6 +107,29 @@ if (typeof require !== 'undefined') {
         }
     };
     
+    /**
+     * Pluralizes a word based on how many
+     */
+    exports.formatNoun = function (noun, howMany) {
+
+        var plural = function (noun) {
+            var vowels = ['a','e','i','o','u'];
+            if (noun[noun.length - 1] === 'y' && vowels.indexOf(noun[noun.length - 2].toLowerCase()) === -1) {
+                return noun.substring(0, noun.length - 1) + 'ies';
+            } else {
+                return noun + 's';
+            }
+        }
+
+        if (howMany === 0) {
+            return 'no ' + plural(noun);
+        } else if (howMany === 1) {
+            return noun;
+        } else {
+            return plural(noun);
+        }
+    };
+    
     exports.calcNaturalDays = function (date) {
         if (!date) {
             return '';   

@@ -120,6 +120,7 @@
     <Compile Include="MessagesRepository.cs" />
     <Compile Include="NotificationsRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="LogEntriesRepository.cs" />
     <Compile Include="TagsRepository.cs" />
     <Compile Include="TargetsRepository.cs" />
     <Compile Include="Automation.cs" />

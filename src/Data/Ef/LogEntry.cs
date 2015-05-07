@@ -28,5 +28,6 @@ namespace HoomanLogic.Data.Ef
         public string Details { get; set; }
     
         public virtual ICollection<LogEntryPeanut> LogEntryPeanuts { get; set; }
+        public virtual Action Action { get; set; }
     }
 }

@@ -56,6 +56,10 @@
         handleResize: function(e) {
             this.setState({windowWidth: window.innerWidth});
         },
+        handleViewLogEntriesClick: function () {
+            connectionStore.getLogEntries(this.props.conversation.id);
+            ui.goTo('Log Entries', { userName: this.props.conversation.id});  
+        },
         onClose: function () {
             if (this.props.onClose !== null) {
                 this.props.onClose();
@@ -169,6 +173,7 @@
                     <div className="conversation-header">
                         <button type="button" className="close" onClick={this.onClose}><span aria-hidden="true">&times;</span></button>
                         <h4 className="modal-title">{this.props.conversation.name}</h4>
+                        <a style={{ float: 'right', marginTop: '-20px', marginRight: '10px'}} href="javascript:;" onClick={this.handleViewLogEntriesClick}>See what I've been doing</a>
                     </div>
                     <div ref="scrollWindow" id="conversation-scroll" className="conversation-messages">
                         <div ref="fullConversation" id="conversation-full-height">

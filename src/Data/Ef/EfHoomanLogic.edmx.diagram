@@ -46,6 +46,7 @@
         <AssociationConnector Association="hoomanlogicModel.FK_LogEntryPeanuts_Users" />
         <AssociationConnector Association="hoomanlogicModel.FK_LogEntryPeanuts_LogEntries" />
         <AssociationConnector Association="hoomanlogicModel.ActionsAttachments" />
+        <AssociationConnector Association="hoomanlogicModel.FK_LogEntries_Actions" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
