@@ -56,7 +56,7 @@
                             <div style={{minWidth: '45px', paddingRight: '5px'}}><img style={{maxHeight: '45px', padding: '2px'}} src={this.props.data.profileUri} /></div>
                             <div>
                                 <div>
-                                    <span style={{fontWeight: 'bold'}}>{this.props.data.name}</span> {data.entry} <span style={{fontWeight: 'bold'}}>{data.actionName}</span>
+                                    <span style={{fontWeight: 'bold'}}>{this.props.data.knownAs}</span> {data.entry} <span style={{fontWeight: 'bold'}}>{data.actionName}</span>
                                 </div>
                                 <div>
                                     <small>{hlapp.calcNaturalDays(new Date(data.date)) + (data.duration ? ' for ' + new babble.Duration(data.duration * 60000).toString() : '')}</small>

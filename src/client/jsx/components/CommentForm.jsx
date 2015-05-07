@@ -51,7 +51,12 @@
         },
         
         handlePostCommentClick: function () {
-            logEntryStore.addComment(this.props.userName, this.props.articleId, this.refs.comment.getDOMNode().value);
+            var comment = this.refs.comment.getDOMNode().value || '';
+            comment = comment.trim();
+            if (comment.length > 0) {
+                logEntryStore.addComment(this.props.userName, this.props.articleId, comment);
+            }
+            this.refs.comment.getDOMNode().value = '';
         },
         /*************************************************************
          * RENDERING
@@ -85,9 +90,9 @@
                                 
                                 return (
                                     <div>
-                                        <div><img src={item.profileUri} title={item.userName} /></div>
+                                        <div><img src={item.profileUri} title={item.knownAs} /></div>
                                         <div>
-                                            <div style={{fontWeight: 'bold'}}>{item.userName}</div>
+                                            <div style={{fontWeight: 'bold'}}>{item.knownAs}</div>
                                             <div>{item.comment}</div>
                                             <div style={{fontStyle: 'italic', fontSize: '0.8rem'}}>{duration.toString().split(', ')[0] + ' ago'}</div>
                                         </div>

@@ -672,7 +672,7 @@
              */
             return (
                 <div style={{padding: '5px'}}>
-                    <h2>{this.props.mode + ' Action'}</h2>
+                    <h2 style={{marginTop: '0.2rem', marginBottom: '0.2rem'}}>{this.props.mode === 'Edit' ? this.props.action.name : 'New Action'}</h2>
                     {currentView}
                     {buttonsDom}
                 </div>

@@ -17,7 +17,7 @@ namespace HoomanLogic.Models
         public Guid Id { get; set; }
         public string UserId { get; set; }
         public string UserName { get; set; }
-        public string Name { get; set; }
+        public string KnownAs { get; set; }
         public string ProfileUri { get; set; }
         public DateTime Date { get; set; }
         public Guid ActionId { get; set; }
@@ -34,7 +34,7 @@ namespace HoomanLogic.Models
     {
         public Guid Id { get; set; }
         public string UserId { get; set; }
-        public string UserName { get; set; }
+        public string KnownAs { get; set; }
         public string ProfileUri { get; set; }
         public DateTime Date { get; set; }
         public string Comment { get; set; }
