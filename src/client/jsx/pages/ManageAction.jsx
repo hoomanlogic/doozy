@@ -580,7 +580,8 @@
             var logEntries = logEntryStore.updates.value.filter(function (item) {
                 return item.actionId === actionId;
             });
-            logEntries = _.sortBy(logEntries, function(item){ return item.date.split('T')[0] + '-' + (item.entry === 'performed' ? '1' : '0'); });
+            
+            logEntries = _.sortBy(logEntries, function(item){ return hlapp.getComparableLocalDateString(item.date) + '-' + (item.entry === 'performed' ? '1' : '0'); });
             logEntries.reverse();
             
             

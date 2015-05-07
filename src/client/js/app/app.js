@@ -42,6 +42,11 @@ if (typeof require !== 'undefined') {
     exports.TAG_PREFIX = TAG_PREFIX;
     exports.getFrequencyNoun = getFrequencyNoun;
 
+    exports.getComparableLocalDateString = function (jsonDate) {
+        var date = new Date(jsonDate);
+        return (date.getYear() + 1900) + '-' + (date.getMonth() + 1) + '-' + (date.getDate());
+    };
+
     /**
      * Parses a tag string to an object
      */
