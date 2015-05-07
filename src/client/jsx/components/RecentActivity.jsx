@@ -31,7 +31,7 @@
          *************************************************************/
         getInitialState: function () {
             return { 
-                showAll: false,
+                maxReturn: 5,
                 logEntriesLastUpdated: new Date().toISOString()
             };
         },
@@ -41,6 +41,19 @@
              * notified of updates to the store
              */
             logEntryStore.subscribe(this.handleLogEntryStoreUpdate);
+            var me = this;
+            $(window).scroll(function() {
+               if($(window).scrollTop() + $(window).height() == $(document).height()) {
+                   me.setState({ maxReturn: me.state.maxReturn + 5});
+               }
+            });
+        },
+        componentWillReceiveProps: function (nextProps) {
+            if (nextProps.actions && nextProps.actions.length && nextProps.actions[0].tags[0] !== this.props.actions[0].tags[0]) {
+                this.setState({
+                    maxReturn: 5
+                });
+            }
         },
         componentWillUnmount: function () {
             /**
@@ -69,6 +82,8 @@
             logEntries = _.sortBy(logEntries, function(item){ return hlapp.getComparableLocalDateString(item.date) + '-' + (item.entry === 'performed' ? '1' : '0'); });
             logEntries.reverse();
 
+            logEntries = logEntries.slice(0, this.state.maxReturn);
+            
             // html
             return (
                 <div style={{ marginTop: '5px' }}>

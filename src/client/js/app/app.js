@@ -44,7 +44,16 @@ if (typeof require !== 'undefined') {
 
     exports.getComparableLocalDateString = function (jsonDate) {
         var date = new Date(jsonDate);
-        return (date.getYear() + 1900) + '-' + (date.getMonth() + 1) + '-' + (date.getDate());
+        var year = String(date.getYear() + 1900);
+        var month = String(date.getMonth() + 1);
+        var day = String(date.getDate());
+        if (month.length === 1) {
+            month = '0' + month;   
+        }
+        if (day.length === 1) {
+            day = '0' + day;   
+        }
+        return year + '-' + month + '-' + day;
     };
 
     /**
