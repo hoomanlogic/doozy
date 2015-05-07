@@ -75,7 +75,7 @@ var jsxFiles = [
     'src/client/jsx/components/NotificationDropdown.jsx',
 	'src/client/jsx/components/NotificationList.jsx',
     'src/client/jsx/components/ProfilePic.jsx',
-    'src/client/jsx/components/RecentActions.jsx',
+    'src/client/jsx/components/RecentActivity.jsx',
     'src/client/jsx/components/TagList.jsx',
     'src/client/jsx/components/Timer.jsx',
     'src/client/jsx/components/UpcomingActions.jsx',

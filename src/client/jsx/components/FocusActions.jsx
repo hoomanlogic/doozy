@@ -11,7 +11,7 @@
             require('./TagList'),
             require('./NextActions'),
             require('./UpcomingActions'),
-            require('./RecentActions'),
+            require('./RecentActivity'),
             require('./BoxedActions')
         );
 	}
@@ -23,7 +23,7 @@
             './TagList',
             './NextActions',
             './UpcomingActions',
-            './RecentActions',
+            './RecentActivity',
             './BoxedActions'
         ], factory);
 	}
@@ -35,11 +35,11 @@
             root.TagList, 
             root.NextActions, 
             root.UpcomingActions, 
-            root.RecentActions, 
+            root.RecentActivity, 
             root.BoxedActions
         );
 	}
-}(this, function (React, actionStore, TagList, NextActions, UpcomingActions, RecentActions, BoxedActions) {
+}(this, function (React, actionStore, TagList, NextActions, UpcomingActions, RecentActivity, BoxedActions) {
     'use strict';
     return React.createClass({
         /*************************************************************
@@ -61,6 +61,7 @@
              */
             this.actionsObserver = actionStore.updates
                 .subscribe(this.handleActionStoreUpdate);
+            
         },
         componentWillReceiveProps: function (nextProps) {
             /**
@@ -208,8 +209,8 @@
                     {tagListDom}
                     <NextActions actions={tagsFilteredFocusActions} />
                     <UpcomingActions actions={tagsFilteredFocusActions} />
-                    <RecentActions actions={tagsFilteredFocusActions} />
                     <BoxedActions actions={tagsFilteredFocusActions} />
+                    <RecentActivity actions={tagsFilteredFocusActions} />
                 </div>
             );
         }
