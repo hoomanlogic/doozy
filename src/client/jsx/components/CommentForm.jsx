@@ -32,18 +32,18 @@
         },
 
         componentWillMount: function () {
-            connectionStore.subscribe(this.handleConnectionStoreUpdate);
-            this.handleConnectionStoreUpdate(connectionStore.updates.value);
+            logEntryStore.subscribe(this.handleLogEntryStoreUpdate);
+            this.handleLogEntryStoreUpdate(logEntryStore.updates.value);
         },
         componentWillUnmount: function () {
-            connectionStore.dispose(this.handleConnectionStoreUpdate);
+            logEntryStore.dispose(this.handleLogEntryStoreUpdate);
         },
 
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
-        handleConnectionStoreUpdate: function (connections) {
-            this.setState({connectionsLastUpdated: new Date().toISOString()});
+        handleLogEntryStoreUpdate: function (connections) {
+            this.setState({logEntriesLastUpdated: new Date().toISOString()});
         },
         
         handleClose: function () {
@@ -51,7 +51,7 @@
         },
         
         handlePostCommentClick: function () {
-            connectionStore.addComment(this.props.userName, this.props.articleId, this.refs.comment.getDOMNode().value);
+            logEntryStore.addComment(this.props.userName, this.props.articleId, this.refs.comment.getDOMNode().value);
         },
         /*************************************************************
          * RENDERING
@@ -61,34 +61,14 @@
             
             // find existing connection
             var connections = connectionStore.updates.value;
+                        // find log entries for this user
+            var logEntry = _.find( logEntryStore.updates.value, { id: this.props.articleId } );
             
-            var index = -1;
-            for (var i = 0; i < connections.length; i++) {
-                if (connections[i].userName === userName) {
-                    index = i;
-                    break;
-                }
-            }
-            
-            if (index === -1 || !connections[index].logEntries) {
+            if (!logEntry) {
                 return null;
             }
-            var connection = connections[index];
-            index = -1;
-            for (var i = 0; i < connection.logEntries.length; i++) {
-                if (connection.logEntries[i].id === this.props.articleId) {
-                    index = i;
-                    break;
-                }
-            }
             
-            if (index === -1) {
-                return null;   
-            }
-            
-            var comments = _.sortBy(connection.logEntries[index].comments, function (item) { return item.date});
-            
-            
+            var comments = _.sortBy(logEntry.comments, function (item) { return item.date; });
             
             return (
                 <div className="comments" style={{padding: '5px'}}>

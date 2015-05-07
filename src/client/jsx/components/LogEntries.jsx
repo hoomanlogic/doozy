@@ -32,18 +32,18 @@
         },
 
         componentWillMount: function () {
-            connectionStore.subscribe(this.handleConnectionStoreUpdate);
-            this.handleConnectionStoreUpdate(connectionStore.updates.value);
+            logEntryStore.subscribe(this.handleLogEntryStoreUpdate);
+            this.handleLogEntryStoreUpdate(logEntryStore.updates.value);
         },
         componentWillUnmount: function () {
-            connectionStore.dispose(this.handleConnectionStoreUpdate);
+            logEntryStore.dispose(this.handleLogEntryStoreUpdate);
         },
 
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
-        handleConnectionStoreUpdate: function (connections) {
-            this.setState({connectionsLastUpdated: new Date().toISOString()});
+        handleLogEntryStoreUpdate: function (connections) {
+            this.setState({logEntriesLastUpdated: new Date().toISOString()});
         },
         /*************************************************************
          * RENDERING
@@ -51,29 +51,16 @@
         render: function () {
             var userName = this.props.userName;
             
-            // find existing connection
-            var connections = connectionStore.updates.value;
-            
-            var index = -1;
-            for (var i = 0; i < connections.length; i++) {
-                if (connections[i].userName === userName) {
-                    index = i;
-                    break;
-                }
-            }
-            
-            if (index === -1 || !connections[index].logEntries) {
-                return null;   
-            }
-            
-            var logEntries = _.sortBy(connections[index].logEntries, function (item) { return item.date});
+            // find log entries for this user
+            var logEntries = _.where(logEntryStore.updates.value, {userName: userName});
+            logEntries = _.sortBy(logEntries, function (item) { return item.date.split('T')[0] + '-' + (item.entry === 'performed' ? '1' : '0')});
             logEntries.reverse();
             
             return (
                 <div className={'log-entries ' + (this.props.hidden ? 'hidden' : '')} style={{padding: '5px'}}>
                     {logEntries.map(
                         function(item) {
-                            return (<LogEntryBox connection={connections[index]} data={item} />);
+                            return (<LogEntryBox data={item} />);
                         }.bind(this)
                     )}
                 </div>

@@ -26,11 +26,11 @@
          * EVENT HANDLING
          *************************************************************/
         handleUpvoteClick: function () {
-            connectionStore.toggleUpvote(this.props.connection.userName, this.props.data.id);
+            logEntryStore.toggleUpvote(this.props.data.userName, this.props.data.id);
         },
         
         handleCommentClick: function () {
-            ui.goTo('Comment', { userName: this.props.connection.userName, id: this.props.data.id });
+            ui.goTo('Comment', { userName: this.props.data.userName, id: this.props.data.id });
         },
         
         /*************************************************************
@@ -53,10 +53,10 @@
                 <article key={data.id} className="log-entry-box" style={{display: 'flex', flexDirection: 'column'}}>
                     <div>
                         <header style={{display: 'flex', flexDirection: 'row'}}>
-                            <div style={{paddingRight: '5px'}}><img style={{maxHeight: '45px', minWidth: '45px', padding: '2px'}} src={this.props.connection.profileUri} /></div>
+                            <div style={{minWidth: '45px', paddingRight: '5px'}}><img style={{maxHeight: '45px', padding: '2px'}} src={this.props.data.profileUri} /></div>
                             <div>
                                 <div>
-                                    <span style={{fontWeight: 'bold'}}>{this.props.connection.name}</span> {data.entry} <span style={{fontWeight: 'bold'}}>{data.actionName}</span>
+                                    <span style={{fontWeight: 'bold'}}>{this.props.data.name}</span> {data.entry} <span style={{fontWeight: 'bold'}}>{data.actionName}</span>
                                 </div>
                                 <div>
                                     <small>{hlapp.calcNaturalDays(new Date(data.date)) + (data.duration ? ' for ' + new babble.Duration(data.duration * 60000).toString() : '')}</small>

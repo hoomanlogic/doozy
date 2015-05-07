@@ -49,7 +49,8 @@
                 repeatWed: false,
                 repeatThu: false,
                 repeatFri: false,
-                repeatSat: false
+                repeatSat: false,
+                logEntriesLastUpdated: new Date().toISOString()
             };  
         },
 
@@ -92,12 +93,16 @@
             this.handlers = {
                 detailsChange: detailsChange
             };
+            
+            logEntryStore.subscribe(this.handleLogEntryStoreUpdate);
         },
         componentWillUnmount: function () {
             /**
              * Clean up objects and bindings
              */
             this.handlers.detailsChange.dispose();
+            
+            logEntryStore.dispose(this.handleLogEntryStoreUpdate);
         },
 
         componentDidMount: function () {
@@ -256,6 +261,12 @@
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
+        handleLogEntryStoreUpdate: function (logEntries) {
+            if (this.state.viewMode === this.VIEW_MODE.HISTORY) {
+                this.setState({logEntriesLastUpdated: new Date().toISOString()});
+            }
+        },
+        
         handleChange: function (event) {
             if (event.target === this.refs.name.getDOMNode()) {
                 this.props.action.name = event.target.value;
@@ -565,23 +576,39 @@
             ); 
         },
         renderHistoryView: function () {
+            var actionId = this.props.action.id;
+            var logEntries = logEntryStore.updates.value.filter(function (item) {
+                return item.actionId === actionId;
+            });
+            logEntries = _.sortBy(logEntries, function(item){ return item.date.split('T')[0] + '-' + (item.entry === 'performed' ? '1' : '0'); });
+            logEntries.reverse();
+            
+            
+//            <table className="table table-striped">
+//                        <tbody>                        
+//                            {this.props.action.logEntries.map(function(item, index) {
+//                                return (
+//                                    <tr key={item.id}>
+//                                        <td width="70px">{item.entry.slice(0,1).toUpperCase() + item.entry.slice(1)}</td>
+//                                        <td width="80px" style={{textAlign: 'right'}} >{item.date.toLocaleDateString()}</td>
+//                                        <td width="40px">{item.duration > 0 ? new babble.Duration(item.duration * 60000).toString(':') : ''}</td>
+//                                        <td><ContentEditable id={item.id} html={item.details} onChange={this.handlers.detailsChange} /></td>
+//                                    </tr>
+//                                );
+//                            }.bind(this))}
+//                        </tbody>
+//                    </table>
+            
             return (
                 <div>
                     <h2 style={{ margin: '0 0 5px 5px'}}>Action History Log</h2>
-                    <table className="table table-striped">
-                        <tbody>                        
-                            {this.props.action.logEntries.map(function(item, index) {
-                                return (
-                                    <tr key={item.id}>
-                                        <td width="70px">{item.entry.slice(0,1).toUpperCase() + item.entry.slice(1)}</td>
-                                        <td width="80px" style={{textAlign: 'right'}} >{item.date.toLocaleDateString()}</td>
-                                        <td width="40px">{item.duration > 0 ? new babble.Duration(item.duration * 60000).toString(':') : ''}</td>
-                                        <td><ContentEditable id={item.id} html={item.details} onChange={this.handlers.detailsChange} /></td>
-                                    </tr>
-                                );
-                            }.bind(this))}
-                        </tbody>
-                    </table>
+                    <div className={'log-entries ' + (this.props.hidden ? 'hidden' : '')} style={{padding: '5px', marginLeft: '-5px', marginRight: '-5px'}}>
+                        {logEntries.map(
+                            function(item) {
+                                return (<LogEntryBox data={item} />);
+                            }.bind(this)
+                        )}
+                    </div>
                 </div>
             );
         },

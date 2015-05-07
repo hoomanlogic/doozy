@@ -100,6 +100,7 @@
             focusStore.init(this.props.settings.userName, this.props.settings.userId);
             weatherStore.init(this.props.settings.userName, this.props.settings.userId);
             
+            logEntryStore.getMyLogEntries();
             connectionStore.getConnections();
 
             /**

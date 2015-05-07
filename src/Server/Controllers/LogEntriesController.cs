@@ -9,6 +9,13 @@ namespace HoomanLogic.Server.Controllers
 {
     public class LogEntriesController : ApiController
     {
+        public List<LogEntryModel> Get()
+        {
+            // return latest for this action
+            string userId = User.Identity.GetUserId();
+            return LogEntriesRepository.Get(userId, true);
+        }
+
         public List<LogEntryModel> Get(string userName)
         {
             // return latest for this action
@@ -45,7 +52,7 @@ namespace HoomanLogic.Server.Controllers
 
         [HttpPost]
         [Route("api/toggleupvote")]
-        public bool ToggleUpvote([FromBody] ToggleUpvoteRequest request)
+        public LogEntryPeanut ToggleUpvote([FromBody] ToggleUpvoteRequest request)
         {
             string userId = User.Identity.GetUserId();
             return LogEntriesRepository.ToggleUpvote(userId, request.Id);
@@ -59,10 +66,10 @@ namespace HoomanLogic.Server.Controllers
 
         [HttpPost]
         [Route("api/comment")]
-        public void PostComment([FromBody] PostCommentRequest request)
+        public LogEntryPeanut PostComment([FromBody] PostCommentRequest request)
         {
             string userId = User.Identity.GetUserId();
-            LogEntriesRepository.AddComment(userId, request.Id, request.Comment);
+            return LogEntriesRepository.AddComment(userId, request.Id, request.Comment);
         }
         public class PostCommentRequest
         {

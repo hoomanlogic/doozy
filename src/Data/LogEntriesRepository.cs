@@ -17,6 +17,36 @@ namespace HoomanLogic.Data
                 var models = db.LogEntries.Where(c => c.Action.UserId == userId && c.Action.IsPublic).Select(row => new LogEntryModel()
                 {
                     Id = row.Id,
+                    UserId = row.Action.UserId,
+                    UserName = row.Action.AspNetUser.UserName,
+                    Name = row.Action.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs,
+                    ProfileUri = row.Action.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().ProfileUri, 
+                    Date = row.Date,
+                    ActionId = row.ActionId,
+                    ActionName = row.Action.Name,
+                    Details = row.Details,
+                    Duration = row.Duration,
+                    Entry = row.Entry,
+                    Upvotes = row.LogEntryPeanuts.Where(a => a.Kind == "Upvote").Select(a => new LogEntryPeanut() { Id = a.Id, UserId = a.UserId, Date = a.Date, Comment = a.Comment, AttachmentUri = a.AttachmentUri, ProfileUri = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().ProfileUri, UserName = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs }).ToList(),
+                    Comments = row.LogEntryPeanuts.Where(a => a.Kind == "Comment").Select(a => new LogEntryPeanut() { Id = a.Id, UserId = a.UserId, Date = a.Date, Comment = a.Comment, AttachmentUri = a.AttachmentUri, ProfileUri = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().ProfileUri, UserName = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs }).ToList(),
+                    Attachments = row.LogEntryPeanuts.Where(a => a.Kind == "Attachment").Select(a => new LogEntryPeanut() { Id = a.Id, UserId = a.UserId, Date = a.Date, Comment = a.Comment, AttachmentUri = a.AttachmentUri, ProfileUri = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().ProfileUri, UserName = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs }).ToList()
+                }).ToList();
+
+                return models;
+            }
+        }
+
+        public static List<LogEntryModel> Get(string userId, bool isMine)
+        {
+            using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())
+            {
+                var models = db.LogEntries.Where(c => c.Action.UserId == userId && (c.Action.IsPublic || isMine)).Select(row => new LogEntryModel()
+                {
+                    Id = row.Id,
+                    UserId = row.Action.UserId,
+                    UserName = row.Action.AspNetUser.UserName,
+                    Name = row.Action.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs,
+                    ProfileUri = row.Action.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().ProfileUri,
                     Date = row.Date,
                     ActionId = row.ActionId,
                     ActionName = row.Action.Name,
@@ -52,45 +82,66 @@ namespace HoomanLogic.Data
             }
         }
 
-        public static bool ToggleUpvote(string userId, Guid id)
+        public static LogEntryPeanut ToggleUpvote(string userId, Guid id)
         {
             using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())
             {
-                bool added = false;
+                LogEntryPeanut peanut = null;
                 var row = db.LogEntryPeanuts.Where(c => c.LogEntryId == id && c.UserId == userId && c.Kind == "Upvote").FirstOrDefault();
                 if (row == null)
                 {
-                    db.LogEntryPeanuts.Add(new ef.LogEntryPeanut()
+                    peanut = new LogEntryPeanut()
                     {
                         Id = Guid.NewGuid(),
                         UserId = userId,
+                        Date = DateTime.UtcNow
+                    };
+
+                    db.LogEntryPeanuts.Add(new ef.LogEntryPeanut()
+                    {
+                        Id = peanut.Id,
+                        UserId = peanut.UserId,
                         LogEntryId = id,
                         Kind = "Upvote",
-                        Date = DateTime.UtcNow
+                        Date = peanut.Date
                     });
-                    added = true;
                 } else {
                     db.LogEntryPeanuts.Remove(row);
                 }
                 db.SaveChanges();
-                return added;
+                return peanut;
            }
         }
 
-        public static void AddComment(string userId, Guid id, string comment)
+        public static LogEntryPeanut AddComment(string userId, Guid id, string comment)
         {
             using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())
             {
-                db.LogEntryPeanuts.Add(new ef.LogEntryPeanut()
+
+                LogEntryPeanut peanut = new LogEntryPeanut()
                 {
                     Id = Guid.NewGuid(),
                     UserId = userId,
-                    LogEntryId = id,
-                    Kind = "Comment",
                     Date = DateTime.UtcNow,
                     Comment = comment
+                };
+
+                db.LogEntryPeanuts.Add(new ef.LogEntryPeanut()
+                {
+                    LogEntryId = id,
+                    Id = peanut.Id,
+                    UserId = peanut.UserId,
+                    Kind = "Comment",
+                    Date = peanut.Date,
+                    Comment = peanut.Comment
                 });
                 db.SaveChanges();
+
+                var persona = db.Personas.Where(a => a.UserId == userId && a.Kind == "Public").First();
+                peanut.UserName = persona.KnownAs;
+                peanut.ProfileUri = persona.ProfileUri;
+
+                return peanut;
             }
         }
 

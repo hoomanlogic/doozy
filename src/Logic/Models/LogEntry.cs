@@ -15,6 +15,10 @@ namespace HoomanLogic.Models
         }
 
         public Guid Id { get; set; }
+        public string UserId { get; set; }
+        public string UserName { get; set; }
+        public string Name { get; set; }
+        public string ProfileUri { get; set; }
         public DateTime Date { get; set; }
         public Guid ActionId { get; set; }
         public string ActionName { get; set; }
@@ -30,10 +34,12 @@ namespace HoomanLogic.Models
     {
         public Guid Id { get; set; }
         public string UserId { get; set; }
+        public string UserName { get; set; }
+        public string ProfileUri { get; set; }
         public DateTime Date { get; set; }
         public string Comment { get; set; }
         public string AttachmentUri { get; set; }
-        public string ProfileUri { get; set; }
-        public string UserName { get; set; }
+        
+
     }
 }
