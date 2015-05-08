@@ -64,7 +64,7 @@
                 // create a new action
                 nextProps.action = hlapp.action('New ToDo', tags);
                 nextProps.action.name = null;
-                nextProps.action.enlist = new Date();
+                nextProps.action.created = new Date().toISOString();
             } else {
                 nextProps.action = this.edit(nextProps.action);
             }
@@ -80,7 +80,7 @@
                 // create a new action
                 this.props.action = hlapp.action('New ToDo', tags);
                 this.props.action.name = null;
-                this.props.action.enlist = new Date();
+                this.props.action.created = new Date().toISOString();
             } else {
                 this.props.action = this.edit(this.props.action);
             }

@@ -132,7 +132,7 @@ var ActionStore = function () {
             hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
             
             var latestEntry = { date: log.performed, actionId: newAction.id, entry: 'performed', duration: log.duration, details: log.details };
-            Object.assign(newAction, { retire: (newAction.recurrenceRules.length > 0 ? null : log.performed), latestEntry: latestEntry });
+            Object.assign(newAction, { latestEntry: latestEntry });
             updates.onNext(updates.value);
             
             _api.postLog(latestEntry)
@@ -236,7 +236,7 @@ var ActionStore = function () {
         
         var val = actionToSave;
         
-        var isChecked = action.retire !== null || action.lastPerformed !== null;
+        var isChecked = action.lastPerformed !== null;
         if (!isChecked) {
             var performed = prompt('When was this performed?', new Date());
             if (performed === null) {
@@ -248,7 +248,7 @@ var ActionStore = function () {
                 return;   
             }
             var latestEntry = { date: performed, actionId: action.id, entry: 'performed', duration: duration };
-            Object.assign(val, { retire: (action.recurrenceRules.length > 0 ? null : performed), latestEntry: latestEntry });
+            Object.assign(val, { latestEntry: latestEntry });
             updates.onNext(updates.value);
             
             _api.postLog(latestEntry)
@@ -265,7 +265,7 @@ var ActionStore = function () {
             });
         } else {
             var logId = actionToSave.latestEntry.id;
-            Object.assign(val, { retire: null, latestEntry: null });
+            Object.assign(val, { latestEntry: null });
             updates.onNext(updates.value);
             
             _api.deleteLog(logId)
@@ -293,7 +293,7 @@ var ActionStore = function () {
         var val = actionToSave;
 
         var latestEntry = { date: log.performed, actionId: action.id, entry: 'performed', duration: log.duration, details: log.details };
-        Object.assign(val, { retire: (action.recurrenceRules.length > 0 ? null : log.performed), latestEntry: latestEntry });
+        Object.assign(val, { latestEntry: latestEntry });
         updates.onNext(updates.value);
 
         _api.postLog(latestEntry)

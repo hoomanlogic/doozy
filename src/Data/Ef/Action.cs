@@ -16,35 +16,33 @@ namespace HoomanLogic.Data.Ef
     {
         public Action()
         {
-            this.RecurrenceRules = new HashSet<RecurrenceRule>();
-            this.ChildPathways = new HashSet<ActionPathway>();
-            this.ParentPathways = new HashSet<ActionPathway>();
-            this.RootPathways = new HashSet<ActionPathway>();
-            this.Tags = new HashSet<Tag>();
-            this.Attachments = new HashSet<Attachment>();
+            this.ActionPathways = new HashSet<ActionPathway>();
+            this.ActionPathways1 = new HashSet<ActionPathway>();
+            this.ActionPathways2 = new HashSet<ActionPathway>();
             this.LogEntries = new HashSet<LogEntry>();
+            this.RecurrenceRules = new HashSet<RecurrenceRule>();
+            this.Attachments = new HashSet<Attachment>();
+            this.Tags = new HashSet<Tag>();
         }
     
         public System.Guid Id { get; set; }
         public string UserId { get; set; }
         public string Name { get; set; }
         public string Kind { get; set; }
-        public Nullable<System.DateTime> Enlist { get; set; }
-        public Nullable<System.DateTime> Retire { get; set; }
-        public Nullable<short> StartAt { get; set; }
         public Nullable<short> Duration { get; set; }
         public Nullable<System.DateTime> NextDate { get; set; }
-        public bool IsSomeday { get; set; }
         public string Content { get; set; }
         public bool IsPublic { get; set; }
+        public Nullable<bool> IsArchive { get; set; }
+        public Nullable<System.DateTime> Created { get; set; }
     
+        public virtual ICollection<ActionPathway> ActionPathways { get; set; }
+        public virtual ICollection<ActionPathway> ActionPathways1 { get; set; }
+        public virtual ICollection<ActionPathway> ActionPathways2 { get; set; }
         public virtual AspNetUser AspNetUser { get; set; }
-        public virtual ICollection<RecurrenceRule> RecurrenceRules { get; set; }
-        public virtual ICollection<ActionPathway> ChildPathways { get; set; }
-        public virtual ICollection<ActionPathway> ParentPathways { get; set; }
-        public virtual ICollection<ActionPathway> RootPathways { get; set; }
-        public virtual ICollection<Tag> Tags { get; set; }
-        public virtual ICollection<Attachment> Attachments { get; set; }
         public virtual ICollection<LogEntry> LogEntries { get; set; }
+        public virtual ICollection<RecurrenceRule> RecurrenceRules { get; set; }
+        public virtual ICollection<Attachment> Attachments { get; set; }
+        public virtual ICollection<Tag> Tags { get; set; }
     }
 }

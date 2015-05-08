@@ -25,7 +25,6 @@ namespace HoomanLogic.Data.Ef
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<Action> Actions { get; set; }
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
         public virtual DbSet<LogEntry> LogEntries { get; set; }
         public virtual DbSet<RecurrenceRule> RecurrenceRules { get; set; }
@@ -42,5 +41,6 @@ namespace HoomanLogic.Data.Ef
         public virtual DbSet<Preference> Preferences { get; set; }
         public virtual DbSet<Attachment> Attachments { get; set; }
         public virtual DbSet<LogEntryPeanut> LogEntryPeanuts { get; set; }
+        public virtual DbSet<Action> Actions { get; set; }
     }
 }

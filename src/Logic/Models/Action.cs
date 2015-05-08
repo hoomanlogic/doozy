@@ -28,7 +28,6 @@ namespace HoomanLogic.Models
         public DateTime? LastPerformed { get; set; }
         public DateTime? NextDate { get; set; }
         public LogEntryModel LatestEntry { get; set; }
-        public List<LogEntryModel> LogEntries  { get; set; }
         public List<ActionModel> Items { get; set; }
         public List<String> RecurrenceRules { get; set; }
     }

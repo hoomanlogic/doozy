@@ -16,7 +16,6 @@ namespace HoomanLogic.Data.Ef
     {
         public AspNetUser()
         {
-            this.Actions = new HashSet<Action>();
             this.Achievements = new HashSet<Achievement>();
             this.Notifications = new HashSet<Notification>();
             this.Personas = new HashSet<Persona>();
@@ -29,6 +28,7 @@ namespace HoomanLogic.Data.Ef
             this.Focuses = new HashSet<Focus>();
             this.Attachments = new HashSet<Attachment>();
             this.LogEntryPeanuts = new HashSet<LogEntryPeanut>();
+            this.Actions = new HashSet<Action>();
         }
     
         public string Id { get; set; }
@@ -45,7 +45,6 @@ namespace HoomanLogic.Data.Ef
         public int AccessFailedCount { get; set; }
         public string UserName { get; set; }
     
-        public virtual ICollection<Action> Actions { get; set; }
         public virtual ICollection<Achievement> Achievements { get; set; }
         public virtual ICollection<Notification> Notifications { get; set; }
         public virtual ICollection<Persona> Personas { get; set; }
@@ -59,5 +58,6 @@ namespace HoomanLogic.Data.Ef
         public virtual Preference Preference { get; set; }
         public virtual ICollection<Attachment> Attachments { get; set; }
         public virtual ICollection<LogEntryPeanut> LogEntryPeanuts { get; set; }
+        public virtual ICollection<Action> Actions { get; set; }
     }
 }

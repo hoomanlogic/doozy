@@ -203,8 +203,7 @@ if (typeof require !== 'undefined') {
             id: this.ref,
             kind: 'Action',
             name: name || '',
-            enlist: new Date().toISOString(),
-            retire: null,
+            created: new Date().toISOString(),
             latestEntry: null,
             recurrenceRules: [],
             startAt: null,
@@ -217,6 +216,7 @@ if (typeof require !== 'undefined') {
             lastPerformed: null,
             logEntries: [],
             nextDate: null,
+            isArchive: false
         };
     };    
 

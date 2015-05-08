@@ -51,8 +51,8 @@
          *************************************************************/
         render: function () {
             var data = this.props.data;
-            var lastDate = new Date(data.latestEntry ? data.latestEntry.date : data.enlist);
-            var lastDone = hlapp.calcNaturalDays(lastDate);
+            var lastDate = new Date(data.latestEntry ? data.latestEntry.date : data.created.toISOString());
+            var lastDone = hlapp.calcNaturalDays(new Date(lastDate));
 
             return (
                 <li key={data.id}>

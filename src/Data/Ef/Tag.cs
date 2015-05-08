@@ -16,8 +16,8 @@ namespace HoomanLogic.Data.Ef
     {
         public Tag()
         {
-            this.Actions = new HashSet<Action>();
             this.Targets = new HashSet<Target>();
+            this.Actions = new HashSet<Action>();
         }
     
         public System.Guid Id { get; set; }
@@ -28,7 +28,7 @@ namespace HoomanLogic.Data.Ef
         public bool IsFocus { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
-        public virtual ICollection<Action> Actions { get; set; }
         public virtual ICollection<Target> Targets { get; set; }
+        public virtual ICollection<Action> Actions { get; set; }
     }
 }

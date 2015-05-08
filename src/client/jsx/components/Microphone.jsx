@@ -112,7 +112,7 @@
                 tags.push(this.props.focusTag);
 
                 var newAction = hlapp.action(commandParts[actionIndex].slice(0,1).toUpperCase() + commandParts[actionIndex].slice(1), tags);
-                newAction.enlist = date;
+                newAction.created = date;
 
                 actionStore.lognew(newAction, { 
                     performed: date, 
@@ -170,7 +170,7 @@
                 tags.push(this.props.focusTag);
                 var actionName = commandParts[actionIndex].slice(0,1).toUpperCase() + commandParts[actionIndex].slice(1);
                 var newAction = hlapp.action(actionName, tags);
-                newAction.enlist = date;
+                newAction.created = date;
                 newAction.nextDate = date;
                 newAction.duration = duration;
                 actionStore.create(newAction);
@@ -181,35 +181,6 @@
                 mode;
 
             if (event.results.length > 0) {
-
-    //            if (this.isExpectingAnswer) {
-    //                
-    //                this.isExpectingAnswer = false;
-    //                speech = event.results[0][0].transcript.trim().toLowerCase()
-    //                
-    //                if (speech.slice(0,1) === 'y') {
-    //                    duration = this.duration;
-    //                    date = this.date;
-    //                    
-    //                    var tags = ui.tags || [];
-    //                    tags = tags.slice();
-    //                    tags.push(this.props.focusTag);
-    //
-    //                    newAction = hlapp.action(this.actionName.slice(0,1).toUpperCase() + this.actionName.slice(1), tags);
-    //                    newAction.enlist = date;
-    //                    
-    //                    actionStore.lognew(newAction, { 
-    //                        performed: date, 
-    //                        duration: duration, 
-    //                        entry: 'performed', 
-    //                        details: null 
-    //                    });
-    //                    
-    //                    this.setState({isListening: false});
-    //                    return;
-    //                }
-    //            } else {
-
                 speech = event.results[0][0].transcript.trim().toLowerCase();
                 if (speech.indexOf('i did ') > -1) {
                     mode = 'log-action';
@@ -224,8 +195,6 @@
                 } else {
                     toastr.error('Sorry, I did not understand. I heard, "' + event.results[0][0].transcript + '"');
                 }
-    //            }
-
             }
 
             this.setState({isListening: false});

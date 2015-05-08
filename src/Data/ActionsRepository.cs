@@ -30,19 +30,15 @@ namespace HoomanLogic.Data
                     Ref = row.Id.ToString(),
                     Kind = row.Kind,
                     Name = row.Name,
-                    Enlist = row.Enlist,
-                    Retire = row.Retire,
-                    StartAt = row.StartAt,
+                    Created = row.Created,
                     Duration = row.Duration,
                     NextDate = row.NextDate,
                     IsPublic = row.IsPublic,
                     Content = row.Content,
                     RecurrenceRules = row.RecurrenceRules.Select(a => a.Rule).ToList(),
                     Tags = row.Tags.Select(tag => (tag.Kind == "Focus" ? "!" : (tag.Kind == "Place" ? "@" : (tag.Kind == "Need" ? "$" : (tag.Kind == "Goal" ? ">" : (tag.Kind == "Box" ? "#" : ""))))) + tag.Name).ToList(),
-                    Created = db.LogEntries.Where(a => a.ActionId == row.Id && a.Entry == "created").OrderByDescending(b => b.Date).Select(c => c.Date).FirstOrDefault(),
                     LastPerformed = db.LogEntries.Where(a => a.ActionId == row.Id && a.Entry == "performed").OrderByDescending(b => b.Date).Select(c => c.Date).FirstOrDefault(),
-                    LatestEntry = db.LogEntries.Where(a => a.ActionId == row.Id).OrderByDescending(b => b.Date).Select(c => new Models.LogEntryModel() { Id = c.Id, ActionId = c.ActionId, Date = c.Date, Entry = c.Entry, Duration = c.Duration, Details = c.Details }).FirstOrDefault(),
-                    LogEntries = db.LogEntries.Where(a => a.ActionId == row.Id).OrderByDescending(b => b.Date).Select(c => new Models.LogEntryModel() { Id = c.Id, ActionId = c.ActionId, Date = c.Date, Entry = c.Entry, Duration = c.Duration, Details = c.Details }).ToList()
+                    LatestEntry = db.LogEntries.Where(a => a.ActionId == row.Id).OrderByDescending(b => b.Date).Select(c => new Models.LogEntryModel() { Id = c.Id, ActionId = c.ActionId, Date = c.Date, Entry = c.Entry, Duration = c.Duration, Details = c.Details }).FirstOrDefault()
                 }).FirstOrDefault();
 
                 /**
@@ -76,19 +72,15 @@ namespace HoomanLogic.Data
                                Ref = row.Id.ToString(),
                                Kind = row.Kind,
                                Name = row.Name,
-                               Enlist = row.Enlist,
-                               Retire = row.Retire,
-                               StartAt = row.StartAt,
+                               Created = row.Created,
                                Duration = row.Duration,
                                NextDate = row.NextDate,
                                IsPublic = row.IsPublic,
                                Content = row.Content,
                                RecurrenceRules = row.RecurrenceRules.Select(a => a.Rule).ToList(),
                                Tags = row.Tags.Select(tag => (tag.Kind == "Focus" ? "!" : (tag.Kind == "Place" ? "@" : (tag.Kind == "Need" ? "$" : (tag.Kind == "Goal" ? ">" : (tag.Kind == "Box" ? "#" : ""))))) + tag.Name).ToList(),
-                               Created = db.LogEntries.Where(a => a.ActionId == row.Id && a.Entry == "created").OrderByDescending(b => b.Date).Select(c => c.Date).FirstOrDefault(),
                                LastPerformed = db.LogEntries.Where(a => a.ActionId == row.Id && a.Entry == "performed").OrderByDescending(b => b.Date).Select(c => c.Date).FirstOrDefault(),
-                               LatestEntry = db.LogEntries.Where(a => a.ActionId == row.Id).OrderByDescending(b => b.Date).Select(c => new Models.LogEntryModel() { Id = c.Id, ActionId = c.ActionId, Date = c.Date, Entry = c.Entry, Duration = c.Duration, Details = c.Details }).FirstOrDefault(),
-                               LogEntries = db.LogEntries.Where(a => a.ActionId == row.Id).OrderByDescending(b => b.Date).Select(c => new Models.LogEntryModel() { Id = c.Id, ActionId = c.ActionId, Date = c.Date, Entry = c.Entry, Duration = c.Duration, Details = c.Details }).ToList()
+                               LatestEntry = db.LogEntries.Where(a => a.ActionId == row.Id).OrderByDescending(b => b.Date).Select(c => new Models.LogEntryModel() { Id = c.Id, ActionId = c.ActionId, Date = c.Date, Entry = c.Entry, Duration = c.Duration, Details = c.Details }).FirstOrDefault()
                            }).ToList();
 
                 foreach (var action in actions)
@@ -118,19 +110,15 @@ namespace HoomanLogic.Data
                                Ref = row.Id.ToString(),
                                Kind = row.Kind,
                                Name = row.Name,
-                               Enlist = row.Enlist,
-                               Retire = row.Retire,
-                               StartAt = row.StartAt,
+                               Created = row.Created,
                                Duration = row.Duration,
                                NextDate = row.NextDate,
                                IsPublic = row.IsPublic,
                                Content = row.Content,
                                RecurrenceRules = row.RecurrenceRules.Select(a => a.Rule).ToList(),
                                Tags = row.Tags.Select(tag => (tag.Kind == "Focus" ? "!" : (tag.Kind == "Place" ? "@" : (tag.Kind == "Need" ? "$" : (tag.Kind == "Goal" ? ">" : (tag.Kind == "Box" ? "#" : ""))))) + tag.Name).ToList(),
-                               Created = db.LogEntries.Where(a => a.ActionId == row.Id && a.Entry == "created").OrderByDescending(b => b.Date).Select(c => c.Date).FirstOrDefault(),
                                LastPerformed = db.LogEntries.Where(a => a.ActionId == row.Id && a.Entry == "performed").OrderByDescending(b => b.Date).Select(c => c.Date).FirstOrDefault(),
-                               LatestEntry = db.LogEntries.Where(a => a.ActionId == row.Id).OrderByDescending(b => b.Date).Select(c => new Models.LogEntryModel() { Id = c.Id, ActionId = c.ActionId, Date = c.Date, Entry = c.Entry, Duration = c.Duration, Details = c.Details }).FirstOrDefault(),
-                               LogEntries = db.LogEntries.Where(a => a.ActionId == row.Id).OrderByDescending(b => b.Date).Select(c => new Models.LogEntryModel() { Id = c.Id, ActionId = c.ActionId, Date = c.Date, Entry = c.Entry, Duration = c.Duration, Details = c.Details }).ToList()
+                               LatestEntry = db.LogEntries.Where(a => a.ActionId == row.Id).OrderByDescending(b => b.Date).Select(c => new Models.LogEntryModel() { Id = c.Id, ActionId = c.ActionId, Date = c.Date, Entry = c.Entry, Duration = c.Duration, Details = c.Details }).FirstOrDefault()
                            }).ToList();
 
                 /**
@@ -241,7 +229,7 @@ namespace HoomanLogic.Data
                             recurrenceRules.Add(RecurrenceModel.GetRecurrence(rule.Rule));
                         }
 
-                        action.NextDate = GetNextOccurrence(recurrenceRules, action.Enlist.Value, model.Date);
+                        action.NextDate = GetNextOccurrence(recurrenceRules, action.Created.Value, model.Date);
                         // persist changes
                         db.SaveChanges();
                     }
@@ -280,7 +268,7 @@ namespace HoomanLogic.Data
                             recurrenceRules.Add(RecurrenceModel.GetRecurrence(rule.Rule));
                         }
 
-                        action.NextDate = GetNextOccurrence(recurrenceRules, action.Enlist.Value, model.Date);
+                        action.NextDate = GetNextOccurrence(recurrenceRules, action.Created.Value, model.Date);
 
                         // persist changes
                         db.SaveChanges();
@@ -328,7 +316,7 @@ namespace HoomanLogic.Data
                     if (latestOccurrenceMinDefault != DateTime.MinValue) {
                         latestOccurrence = latestOccurrenceMinDefault;
                     }
-                    action.NextDate = GetNextOccurrence(recurrenceRules, action.Enlist.Value, latestOccurrence);
+                    action.NextDate = GetNextOccurrence(recurrenceRules, action.Created.Value, latestOccurrence);
                     db.SaveChanges();
                 }
 
@@ -447,18 +435,18 @@ namespace HoomanLogic.Data
 
         private static ef.Action RecursiveAdd(ef.hoomanlogicEntities db, Guid? parentId, string userId, Models.ActionModel model)
         {
+            DateTime thisMoment = DateTime.UtcNow;
+
             ef.Action row = new ef.Action();
             row.Id = Guid.NewGuid();
             row.UserId = userId;
             row.Kind = model.Kind;
             row.Name = model.Name;
-            row.Enlist = model.Enlist;
-            row.Retire = model.Retire;
-            row.StartAt = model.StartAt;
             row.Duration = model.Duration;
             row.IsPublic = model.IsPublic;
             row.Content = model.Content;
             row.NextDate = model.NextDate;
+            row.Created = thisMoment;
             //row.ParentId = parentId;
 
             // add tags
@@ -500,7 +488,7 @@ namespace HoomanLogic.Data
             ef.LogEntry rowCreatedLog = new ef.LogEntry();
             rowCreatedLog.Id = Guid.NewGuid();
             rowCreatedLog.ActionId = row.Id;
-            rowCreatedLog.Date = DateTime.UtcNow;
+            rowCreatedLog.Date = thisMoment;
             rowCreatedLog.Entry = "created";
             rowCreatedLog.Duration = null;
             db.LogEntries.Add(rowCreatedLog);
@@ -514,9 +502,6 @@ namespace HoomanLogic.Data
             ef.Action row = db.Actions.Where(c => c.Id == model.Id).First();
             row.Kind = model.Kind;
             row.Name = model.Name;
-            row.Enlist = model.Enlist;
-            row.Retire = model.Retire;
-            row.StartAt = model.StartAt;
             row.Duration = model.Duration;
             row.IsPublic = model.IsPublic;
             row.Content = model.Content;

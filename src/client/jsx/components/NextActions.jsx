@@ -72,7 +72,6 @@
                                     actionRef={item.ref} 
                                     actionId={item.id} 
                                     actionName={item.name} 
-                                    actionRetire={item.retire} 
                                     actionLastPerformed={item.lastPerformed} 
                                     actionNextDate={item.nextDate} />
                             );
@@ -91,7 +90,6 @@
               */
             nextActions = _.sortBy(nextActions, function(action){ 
                 var checked = 
-                    action.retire !== null || 
                     (action.lastPerformed !== null && (action.nextDate === null || 
                                                        new Date(action.nextDate) > new Date()));
                 return (checked ? '1' : '0') + '-' + action.name.toLowerCase(); 

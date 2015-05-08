@@ -127,7 +127,7 @@
              */
             var focusActions = actions.filter(function (action) {
                 if (action.tags.indexOf(focusTag) > -1) {
-                    return action.kind !== 'Flow' && action.kind !== 'Block';
+                    return true;
                 } else {
                     return false;   
                 }

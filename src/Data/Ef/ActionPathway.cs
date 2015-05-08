@@ -19,8 +19,8 @@ namespace HoomanLogic.Data.Ef
         public System.Guid ChildId { get; set; }
         public Nullable<byte> Order { get; set; }
     
-        public virtual Action ChildAction { get; set; }
-        public virtual Action ParentAction { get; set; }
-        public virtual Action RootAction { get; set; }
+        public virtual Action Action { get; set; }
+        public virtual Action Action1 { get; set; }
+        public virtual Action Action2 { get; set; }
     }
 }

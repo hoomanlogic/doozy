@@ -58,8 +58,7 @@
                                     action={item} 
                                     actionRef={item.ref} 
                                     actionId={item.id} 
-                                    actionName={item.name} 
-                                    actionRetire={item.retire} 
+                                    actionName={item.name}
                                     actionLastPerformed={item.nextDate} 
                                     actionNextDate={item.nextDate} />
                             );
