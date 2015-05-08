@@ -93,7 +93,7 @@
                 var checked = 
                     action.retire !== null || 
                     (action.lastPerformed !== null && (action.nextDate === null || 
-                                                       action.nextDate > new Date()));
+                                                       new Date(action.nextDate) > new Date()));
                 return (checked ? '1' : '0') + '-' + action.name.toLowerCase(); 
             })
 
