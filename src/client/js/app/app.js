@@ -204,19 +204,16 @@ if (typeof require !== 'undefined') {
             kind: 'Action',
             name: name || '',
             created: new Date().toISOString(),
-            latestEntry: null,
-            recurrenceRules: [],
-            startAt: null,
             duration: 0,
-            items: [],
-            tags: t,
-            objectives: [],
             content: null,
-            created: new Date().toISOString(),
-            lastPerformed: null,
-            logEntries: [],
             nextDate: null,
-            isArchive: false
+            isPublic: false,
+            isArchive: false,
+            lastPerformed: null,
+            latestEntry: null,
+            tags: t,
+            recurrenceRules: [],
+            items: []
         };
     };    
 

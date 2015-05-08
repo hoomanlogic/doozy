@@ -19,9 +19,6 @@ namespace HoomanLogic.Models
         public string Name { get; set; }
         public bool IsPublic { get; set; }
         public string Content { get; set; }
-        public DateTime? Enlist { get; set; }
-        public DateTime? Retire { get; set; }
-        public short? StartAt { get; set; }
         public short? Duration { get; set; }
         public List<string> Tags { get; set; }
         public DateTime? Created { get; set; }
