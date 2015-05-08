@@ -205,8 +205,10 @@
 
             return (
                 <div className={this.props.hidden ? 'hidden' : ''}>
-                    {tagFilterTypeDom}
-                    {tagListDom}
+                    <div style={{marginTop: '2px'}}>
+                        {tagFilterTypeDom}
+                        {tagListDom}
+                    </div>
                     <NextActions actions={tagsFilteredFocusActions} />
                     <UpcomingActions actions={tagsFilteredFocusActions} />
                     <BoxedActions actions={tagsFilteredFocusActions} />

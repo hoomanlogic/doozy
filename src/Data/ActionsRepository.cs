@@ -173,7 +173,7 @@ namespace HoomanLogic.Data
         {
             using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())
             {
-                db.Database.ExecuteSqlCommand("exec dbo.archiveAction @ActionId", id);
+                db.Database.ExecuteSqlCommand("exec dbo.archiveAction @p0", id);
             }
         }
 

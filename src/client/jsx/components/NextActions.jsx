@@ -105,7 +105,7 @@
             // html
             return (
                 <div>
-                    <div className="table-title">
+                    <div className="table-title" style={{ color: '#e2ff63', backgroundColor: '#444', paddingBottom: '0' }}>
                         Next Actions
                         <button type="button" style={{ paddingTop: '3px', paddingBottom: '3px' }} className="btn btn-primary pull-right" onClick={this.handleAddActionClick}>
                             Add a new action

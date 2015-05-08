@@ -632,41 +632,51 @@
              * Buttons array to pass to Modal component
              */
             var buttons;
-
-            if (this.props.mode === 'Add') {
-                buttons = [{type: 'primary', 
-                            text: 'Save Action',
-                            handler: this.handleSaveClick},
-                           {type: 'default', 
-                            text: 'Cancel', 
-                            handler: this.handleCancelClick},
-                           ];
-            }
-            else {
-                buttons = [{type: 'default', 
-                            text: toggleTitle,
-                            handler: this.handleToggleViewModeClick},
-                           {type: 'primary', 
-                            text: 'Save Changes',
-                            handler: this.handleSaveClick},
-                           {type: 'default', 
-                            text: 'Cancel', 
-                            handler: this.handleCancelClick}, 
-                           {type: 'danger', 
-                            text: 'Delete Action', 
-                            handler: this.handleDeleteClick},
-                           ];
-            }
-            
             var buttonStyle = {
               display: 'block',
               width: '100%',
               marginBottom: '5px',
               fontSize: '1.1rem'
             };
+            
+            var deleteButtonStyle = Object.assign({}, buttonStyle, {
+              marginTop: '3rem'
+            });
+            
+            if (this.props.mode === 'Add') {
+                buttons = [{type: 'primary', 
+                            text: 'Save Action',
+                            handler: this.handleSaveClick,
+                            buttonStyle: buttonStyle},
+                           {type: 'default', 
+                            text: 'Cancel', 
+                            handler: this.handleCancelClick,
+                            buttonStyle: buttonStyle},
+                           ];
+            }
+            else {
+                buttons = [{type: 'default', 
+                            text: toggleTitle,
+                            handler: this.handleToggleViewModeClick,
+                            buttonStyle: buttonStyle},
+                           {type: 'primary', 
+                            text: 'Save Changes',
+                            handler: this.handleSaveClick,
+                            buttonStyle: buttonStyle},
+                           {type: 'default', 
+                            text: 'Cancel', 
+                            handler: this.handleCancelClick,
+                            buttonStyle: buttonStyle}, 
+                           {type: 'danger', 
+                            text: 'Delete', 
+                            handler: this.handleDeleteClick,
+                            buttonStyle: deleteButtonStyle} 
+                           ];
+            }
+            
             var buttonsDom = buttons.map(function(button, index) {
-                return <button key={index} style={buttonStyle} type="button" className={'btn btn-' + button.type} onClick={button.handler}>{button.text}</button>
-            })
+                return <button key={index} style={button.buttonStyle} type="button" className={'btn btn-' + button.type} onClick={button.handler}>{button.text}</button>
+            });
 
             /**
              * Render

@@ -87,7 +87,7 @@
             // html
             return (
                 <div style={{ marginTop: '5px' }}>
-                    <div className="table-title" style={{ color: '#e2ff63', backgroundColor: '#444' }}>Recent Activity<button type="button" style={{paddingTop: '3px', paddingBottom: '3px' }} className="btn btn-primary pull-right" onClick={ui.logAction}>Log a recent action</button></div>
+                    <div className="table-title" style={{ color: '#e2ff63', backgroundColor: '#444', paddingBottom: '0' }}>Recent Activity<button type="button" style={{paddingTop: '3px', paddingBottom: '3px' }} className="btn btn-primary pull-right" onClick={ui.logAction}>Log a recent action</button></div>
                     
                     <div className={'log-entries ' + (this.props.hidden ? 'hidden' : '')}>
                         {logEntries.map(
