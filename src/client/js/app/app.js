@@ -208,7 +208,6 @@ if (typeof require !== 'undefined') {
             content: null,
             nextDate: null,
             isPublic: false,
-            isArchive: false,
             lastPerformed: null,
             latestEntry: null,
             tags: t,

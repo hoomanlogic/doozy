@@ -652,9 +652,9 @@
                            {type: 'default', 
                             text: 'Cancel', 
                             handler: this.handleCancelClick}, 
-//                           {type: 'danger', 
-//                            text: 'Delete Action', 
-//                            handler: this.handleDeleteClick},
+                           {type: 'danger', 
+                            text: 'Delete Action', 
+                            handler: this.handleDeleteClick},
                            ];
             }
             

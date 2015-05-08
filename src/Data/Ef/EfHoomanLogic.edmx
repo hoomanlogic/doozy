@@ -15,17 +15,6 @@
           <Property Name="Content" Type="nvarchar(max)" />
           <Property Name="IsPublic" Type="bit" Nullable="false" />
         </EntityType>
-        <EntityType Name="ActionPathways">
-          <Key>
-            <PropertyRef Name="RootId" />
-            <PropertyRef Name="ParentId" />
-            <PropertyRef Name="ChildId" />
-          </Key>
-          <Property Name="RootId" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="ParentId" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="ChildId" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="Order" Type="tinyint" />
-        </EntityType>
         <EntityType Name="Actions">
           <Key>
             <PropertyRef Name="Id" />
@@ -241,42 +230,6 @@
             </Principal>
             <Dependent Role="Actions">
               <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ActionPathways_Child">
-          <End Role="Actions" Type="Self.Actions" Multiplicity="1" />
-          <End Role="ActionPathways" Type="Self.ActionPathways" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Actions">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="ActionPathways">
-              <PropertyRef Name="ChildId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ActionPathways_Parent">
-          <End Role="Actions" Type="Self.Actions" Multiplicity="1" />
-          <End Role="ActionPathways" Type="Self.ActionPathways" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Actions">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="ActionPathways">
-              <PropertyRef Name="ParentId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ActionPathways_Root">
-          <End Role="Actions" Type="Self.Actions" Multiplicity="1" />
-          <End Role="ActionPathways" Type="Self.ActionPathways" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Actions">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="ActionPathways">
-              <PropertyRef Name="RootId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -574,7 +527,6 @@
         </Association>
         <EntityContainer Name="hoomanlogicModelStoreContainer">
           <EntitySet Name="Achievements" EntityType="Self.Achievements" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="ActionPathways" EntityType="Self.ActionPathways" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Actions" EntityType="Self.Actions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ActionsAttachments" EntityType="Self.ActionsAttachments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ActionsTags" EntityType="Self.ActionsTags" Schema="dbo" store:Type="Tables" />
@@ -599,18 +551,6 @@
           <AssociationSet Name="FK_Action_User" Association="Self.FK_Action_User">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="Actions" EntitySet="Actions" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ActionPathways_Child" Association="Self.FK_ActionPathways_Child">
-            <End Role="Actions" EntitySet="Actions" />
-            <End Role="ActionPathways" EntitySet="ActionPathways" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ActionPathways_Parent" Association="Self.FK_ActionPathways_Parent">
-            <End Role="Actions" EntitySet="Actions" />
-            <End Role="ActionPathways" EntitySet="ActionPathways" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ActionPathways_Root" Association="Self.FK_ActionPathways_Root">
-            <End Role="Actions" EntitySet="Actions" />
-            <End Role="ActionPathways" EntitySet="ActionPathways" />
           </AssociationSet>
           <AssociationSet Name="FK_ActionsAttachments_Actions" Association="Self.FK_ActionsAttachments_Actions">
             <End Role="Actions" EntitySet="Actions" />
@@ -751,7 +691,6 @@
             <End Role="Persona" EntitySet="Personas" />
             <End Role="Connection" EntitySet="Connections" />
           </AssociationSet>
-          <EntitySet Name="ActionPathways" EntityType="hoomanlogicModel.ActionPathway" />
           <EntitySet Name="Tags" EntityType="hoomanlogicModel.Tag" />
           <AssociationSet Name="FK_Tags_Users" Association="hoomanlogicModel.FK_Tags_Users">
             <End Role="AspNetUser" EntitySet="AspNetUsers" />
@@ -791,18 +730,6 @@
             <End Role="LogEntryPeanut" EntitySet="LogEntryPeanuts" />
           </AssociationSet>
           <EntitySet Name="Actions" EntityType="hoomanlogicModel.Action" />
-          <AssociationSet Name="FK_ActionPathways_Child" Association="hoomanlogicModel.FK_ActionPathways_Child">
-            <End Role="Action" EntitySet="Actions" />
-            <End Role="ActionPathway" EntitySet="ActionPathways" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ActionPathways_Parent" Association="hoomanlogicModel.FK_ActionPathways_Parent">
-            <End Role="Action" EntitySet="Actions" />
-            <End Role="ActionPathway" EntitySet="ActionPathways" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ActionPathways_Root" Association="hoomanlogicModel.FK_ActionPathways_Root">
-            <End Role="Action" EntitySet="Actions" />
-            <End Role="ActionPathway" EntitySet="ActionPathways" />
-          </AssociationSet>
           <AssociationSet Name="FK_Action_User" Association="hoomanlogicModel.FK_Action_User">
             <End Role="AspNetUser" EntitySet="AspNetUsers" />
             <End Role="Action" EntitySet="Actions" />
@@ -1075,20 +1002,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="ActionPathway">
-          <Key>
-            <PropertyRef Name="RootId" />
-            <PropertyRef Name="ParentId" />
-            <PropertyRef Name="ChildId" />
-          </Key>
-          <Property Name="RootId" Type="Guid" Nullable="false" />
-          <Property Name="ParentId" Type="Guid" Nullable="false" />
-          <Property Name="ChildId" Type="Guid" Nullable="false" />
-          <Property Name="Order" Type="Byte" />
-          <NavigationProperty Name="Action" Relationship="hoomanlogicModel.FK_ActionPathways_Child" FromRole="ActionPathway" ToRole="Action" />
-          <NavigationProperty Name="Action1" Relationship="hoomanlogicModel.FK_ActionPathways_Parent" FromRole="ActionPathway" ToRole="Action" />
-          <NavigationProperty Name="Action2" Relationship="hoomanlogicModel.FK_ActionPathways_Root" FromRole="ActionPathway" ToRole="Action" />
-        </EntityType>
         <EntityType Name="Tag">
           <Key>
             <PropertyRef Name="Id" />
@@ -1290,53 +1203,13 @@
           <Property Name="NextDate" Type="DateTime" Precision="3" />
           <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="IsPublic" Type="Boolean" Nullable="false" />
-          <Property Name="IsArchive" Type="Boolean" />
           <Property Name="Created" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="ActionPathways" Relationship="hoomanlogicModel.FK_ActionPathways_Child" FromRole="Action" ToRole="ActionPathway" />
-          <NavigationProperty Name="ActionPathways1" Relationship="hoomanlogicModel.FK_ActionPathways_Parent" FromRole="Action" ToRole="ActionPathway" />
-          <NavigationProperty Name="ActionPathways2" Relationship="hoomanlogicModel.FK_ActionPathways_Root" FromRole="Action" ToRole="ActionPathway" />
           <NavigationProperty Name="AspNetUser" Relationship="hoomanlogicModel.FK_Action_User" FromRole="Action" ToRole="AspNetUser" />
           <NavigationProperty Name="LogEntries" Relationship="hoomanlogicModel.FK_LogEntries_Actions" FromRole="Action" ToRole="LogEntry" />
           <NavigationProperty Name="RecurrenceRules" Relationship="hoomanlogicModel.FK_RecurrenceRules_Actions" FromRole="Action" ToRole="RecurrenceRule" />
           <NavigationProperty Name="Attachments" Relationship="hoomanlogicModel.ActionsAttachments" FromRole="Action" ToRole="Attachment" />
           <NavigationProperty Name="Tags" Relationship="hoomanlogicModel.ActionsTags" FromRole="Action" ToRole="Tag" />
         </EntityType>
-        <Association Name="FK_ActionPathways_Child">
-          <End Type="hoomanlogicModel.Action" Role="Action" Multiplicity="1" />
-          <End Type="hoomanlogicModel.ActionPathway" Role="ActionPathway" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Action">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="ActionPathway">
-              <PropertyRef Name="ChildId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ActionPathways_Parent">
-          <End Type="hoomanlogicModel.Action" Role="Action" Multiplicity="1" />
-          <End Type="hoomanlogicModel.ActionPathway" Role="ActionPathway" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Action">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="ActionPathway">
-              <PropertyRef Name="ParentId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ActionPathways_Root">
-          <End Type="hoomanlogicModel.Action" Role="Action" Multiplicity="1" />
-          <End Type="hoomanlogicModel.ActionPathway" Role="ActionPathway" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Action">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="ActionPathway">
-              <PropertyRef Name="RootId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Action_User">
           <End Type="hoomanlogicModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -1497,16 +1370,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="ActionPathways">
-            <EntityTypeMapping TypeName="hoomanlogicModel.ActionPathway">
-              <MappingFragment StoreEntitySet="ActionPathways">
-                <ScalarProperty Name="Order" ColumnName="Order" />
-                <ScalarProperty Name="ChildId" ColumnName="ChildId" />
-                <ScalarProperty Name="ParentId" ColumnName="ParentId" />
-                <ScalarProperty Name="RootId" ColumnName="RootId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Tags">
             <EntityTypeMapping TypeName="hoomanlogicModel.Tag">
               <MappingFragment StoreEntitySet="Tags">
@@ -1585,7 +1448,6 @@
             <EntityTypeMapping TypeName="hoomanlogicModel.Action">
               <MappingFragment StoreEntitySet="Actions">
                 <ScalarProperty Name="Created" ColumnName="Created" />
-                <ScalarProperty Name="IsArchive" ColumnName="IsArchive" />
                 <ScalarProperty Name="IsPublic" ColumnName="IsPublic" />
                 <ScalarProperty Name="Content" ColumnName="Content" />
                 <ScalarProperty Name="NextDate" ColumnName="NextDate" />

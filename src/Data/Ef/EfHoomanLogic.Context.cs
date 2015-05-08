@@ -34,7 +34,6 @@ namespace HoomanLogic.Data.Ef
         public virtual DbSet<Message> Messages { get; set; }
         public virtual DbSet<ConnectionRequest> ConnectionRequests { get; set; }
         public virtual DbSet<Connection> Connections { get; set; }
-        public virtual DbSet<ActionPathway> ActionPathways { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
         public virtual DbSet<Target> Targets { get; set; }
         public virtual DbSet<Focus> Focuses { get; set; }

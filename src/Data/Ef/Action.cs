@@ -16,9 +16,6 @@ namespace HoomanLogic.Data.Ef
     {
         public Action()
         {
-            this.ActionPathways = new HashSet<ActionPathway>();
-            this.ActionPathways1 = new HashSet<ActionPathway>();
-            this.ActionPathways2 = new HashSet<ActionPathway>();
             this.LogEntries = new HashSet<LogEntry>();
             this.RecurrenceRules = new HashSet<RecurrenceRule>();
             this.Attachments = new HashSet<Attachment>();
@@ -33,12 +30,8 @@ namespace HoomanLogic.Data.Ef
         public Nullable<System.DateTime> NextDate { get; set; }
         public string Content { get; set; }
         public bool IsPublic { get; set; }
-        public Nullable<bool> IsArchive { get; set; }
         public Nullable<System.DateTime> Created { get; set; }
     
-        public virtual ICollection<ActionPathway> ActionPathways { get; set; }
-        public virtual ICollection<ActionPathway> ActionPathways1 { get; set; }
-        public virtual ICollection<ActionPathway> ActionPathways2 { get; set; }
         public virtual AspNetUser AspNetUser { get; set; }
         public virtual ICollection<LogEntry> LogEntries { get; set; }
         public virtual ICollection<RecurrenceRule> RecurrenceRules { get; set; }

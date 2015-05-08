@@ -171,9 +171,13 @@ var FocusStore = function () {
         secret = userId;
         
         // populate store - call to database
-        _api.getFocuses().done(function (result) {
+        _api.getFocuses()
+        .done(function (result) {
             updates.onNext(result);
             hlio.saveLocal('hl.' + user + '.focuses', updates.value, secret);
+        })
+        .fail(function (err) {
+            toastr.error(err.responseText);
         });
 
         var focuses = hlio.loadLocal('hl.' + user + '.focuses', secret);

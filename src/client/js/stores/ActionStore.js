@@ -338,9 +338,13 @@ var ActionStore = function () {
         secret = userId;
         
         // populate store - call to database
-        _api.getActions().done(function (result) {
+        _api.getActions()
+        .done(function (result) {
             hlio.saveLocal('hl.' + user + '.actions', result, secret);
             updates.onNext(result);
+        })
+        .fail(function (err) {
+            toastr.error(err.responseText);
         });
 
         var actions = hlio.loadLocal('hl.' + user + '.actions', secret);

@@ -56,9 +56,6 @@
     <Compile Include="Ef\Action.cs">
       <DependentUpon>EfHoomanLogic.tt</DependentUpon>
     </Compile>
-    <Compile Include="Ef\ActionPathway.cs">
-      <DependentUpon>EfHoomanLogic.tt</DependentUpon>
-    </Compile>
     <Compile Include="Ef\AspNetUser.cs">
       <DependentUpon>EfHoomanLogic.tt</DependentUpon>
     </Compile>

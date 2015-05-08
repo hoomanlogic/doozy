@@ -62,48 +62,49 @@ namespace HoomanLogic.Data
 
             if (parentId != null)
             {
-                actions = (from row in db.Actions
-                           join pw in db.ActionPathways on row.Id equals pw.ChildId
-                           where pw.ParentId == parentId
-                           orderby pw.Order
-                           select new Models.ActionModel()
-                           {
-                               Id = row.Id,
-                               Ref = row.Id.ToString(),
-                               Kind = row.Kind,
-                               Name = row.Name,
-                               Created = row.Created,
-                               Duration = row.Duration,
-                               NextDate = row.NextDate,
-                               IsPublic = row.IsPublic,
-                               Content = row.Content,
-                               RecurrenceRules = row.RecurrenceRules.Select(a => a.Rule).ToList(),
-                               Tags = row.Tags.Select(tag => (tag.Kind == "Focus" ? "!" : (tag.Kind == "Place" ? "@" : (tag.Kind == "Need" ? "$" : (tag.Kind == "Goal" ? ">" : (tag.Kind == "Box" ? "#" : ""))))) + tag.Name).ToList(),
-                               LastPerformed = db.LogEntries.Where(a => a.ActionId == row.Id && a.Entry == "performed").OrderByDescending(b => b.Date).Select(c => c.Date).FirstOrDefault(),
-                               LatestEntry = db.LogEntries.Where(a => a.ActionId == row.Id).OrderByDescending(b => b.Date).Select(c => new Models.LogEntryModel() { Id = c.Id, ActionId = c.ActionId, Date = c.Date, Entry = c.Entry, Duration = c.Duration, Details = c.Details }).FirstOrDefault()
-                           }).ToList();
+                //actions = (from row in db.Actions
+                //           join pw in db.ActionPathways on row.Id equals pw.ChildId
+                //           where pw.ParentId == parentId
+                //           orderby pw.Order
+                //           select new Models.ActionModel()
+                //           {
+                //               Id = row.Id,
+                //               Ref = row.Id.ToString(),
+                //               Kind = row.Kind,
+                //               Name = row.Name,
+                //               Created = row.Created,
+                //               Duration = row.Duration,
+                //               NextDate = row.NextDate,
+                //               IsPublic = row.IsPublic,
+                //               Content = row.Content,
+                //               RecurrenceRules = row.RecurrenceRules.Select(a => a.Rule).ToList(),
+                //               Tags = row.Tags.Select(tag => (tag.Kind == "Focus" ? "!" : (tag.Kind == "Place" ? "@" : (tag.Kind == "Need" ? "$" : (tag.Kind == "Goal" ? ">" : (tag.Kind == "Box" ? "#" : ""))))) + tag.Name).ToList(),
+                //               LastPerformed = db.LogEntries.Where(a => a.ActionId == row.Id && a.Entry == "performed").OrderByDescending(b => b.Date).Select(c => c.Date).FirstOrDefault(),
+                //               LatestEntry = db.LogEntries.Where(a => a.ActionId == row.Id).OrderByDescending(b => b.Date).Select(c => new Models.LogEntryModel() { Id = c.Id, ActionId = c.ActionId, Date = c.Date, Entry = c.Entry, Duration = c.Duration, Details = c.Details }).FirstOrDefault()
+                //           }).ToList();
 
-                foreach (var action in actions)
-                {
-                    /**
-                     * Linq FirstOrDefault returns DateTime.MinValue 
-                     * instead of Null so we force it to null here
-                     */
-                    if (action.LastPerformed == DateTime.MinValue)
-                    {
-                        action.LastPerformed = null;
-                    }
+                //foreach (var action in actions)
+                //{
+                //    /**
+                //     * Linq FirstOrDefault returns DateTime.MinValue 
+                //     * instead of Null so we force it to null here
+                //     */
+                //    if (action.LastPerformed == DateTime.MinValue)
+                //    {
+                //        action.LastPerformed = null;
+                //    }
 
-                    action.Items = GetActionsByParent(db, userId, action.Id);
-                }
+                //    action.Items = GetActionsByParent(db, userId, action.Id);
+                //}
             }
             else
             {
+                //join o in db.ActionPathways
+                //on row.Id equals o.ChildId into sr
+                //from x in sr.DefaultIfEmpty()
+
                 actions = (from row in db.Actions
-                           join o in db.ActionPathways
-                                on row.Id equals o.ChildId into sr
-                           from x in sr.DefaultIfEmpty()
-                           where row.UserId == userId && x == null
+                           where row.UserId == userId
                            select new Models.ActionModel()
                            {
                                Id = row.Id,
@@ -172,30 +173,7 @@ namespace HoomanLogic.Data
         {
             using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())
             {
-                db.ActionPathways.RemoveRange(
-                    db.ActionPathways.Where(a =>
-                        a.RootId == id || a.ChildId == id || a.ParentId == id
-                    )
-                );
-                db.LogEntries.RemoveRange(
-                    db.LogEntries.Where(a =>
-                        a.ActionId == id
-                    )
-                );
-
-                var action = db.Actions.Where(a =>
-                        a.Id == id
-                    ).First();
-
-                foreach (var tag in action.Tags.ToList()) {
-                    action.Tags.Remove(tag);
-                }
-
-                db.Actions.Remove(
-                    action
-                );
-
-                db.SaveChanges();
+                db.Database.ExecuteSqlCommand("exec dbo.archiveAction @ActionId", id);
             }
         }
 

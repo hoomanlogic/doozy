@@ -23,7 +23,6 @@
         <AssociationConnector Association="hoomanlogicModel.FK_Connections_Users_User2" />
         <AssociationConnector Association="hoomanlogicModel.FK_Connections_Personas1" />
         <AssociationConnector Association="hoomanlogicModel.FK_Connections_Personas2" />
-        <EntityTypeShape EntityType="hoomanlogicModel.ActionPathway" Width="1.5" PointX="3.625" PointY="13.25" />
         <EntityTypeShape EntityType="hoomanlogicModel.Tag" Width="1.5" PointX="5.875" PointY="5.125" />
         <AssociationConnector Association="hoomanlogicModel.FK_Tags_Users" />
         <EntityTypeShape EntityType="hoomanlogicModel.Target" Width="1.5" PointX="8.125" PointY="4.625" />
@@ -39,9 +38,6 @@
         <AssociationConnector Association="hoomanlogicModel.FK_LogEntryPeanuts_Users" />
         <AssociationConnector Association="hoomanlogicModel.FK_LogEntryPeanuts_LogEntries" />
         <EntityTypeShape EntityType="hoomanlogicModel.Action" Width="1.5" PointX="5.875" PointY="21" />
-        <AssociationConnector Association="hoomanlogicModel.FK_ActionPathways_Child" />
-        <AssociationConnector Association="hoomanlogicModel.FK_ActionPathways_Parent" />
-        <AssociationConnector Association="hoomanlogicModel.FK_ActionPathways_Root" />
         <AssociationConnector Association="hoomanlogicModel.FK_Action_User" />
         <AssociationConnector Association="hoomanlogicModel.FK_LogEntries_Actions" />
         <AssociationConnector Association="hoomanlogicModel.FK_RecurrenceRules_Actions" />
