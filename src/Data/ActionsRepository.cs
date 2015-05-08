@@ -45,6 +45,15 @@ namespace HoomanLogic.Data
                     LogEntries = db.LogEntries.Where(a => a.ActionId == row.Id).OrderByDescending(b => b.Date).Select(c => new Models.LogEntryModel() { Id = c.Id, ActionId = c.ActionId, Date = c.Date, Entry = c.Entry, Duration = c.Duration, Details = c.Details }).ToList()
                 }).FirstOrDefault();
 
+                /**
+                 * Linq FirstOrDefault returns DateTime.MinValue 
+                 * instead of Null so we force it to null here
+                 */
+                if (action.LastPerformed == DateTime.MinValue)
+                {
+                    action.LastPerformed = null;
+                }
+
                 action.Items = GetActionsByParent(db, userId, action.Id);
 
                 return action;
@@ -84,6 +93,15 @@ namespace HoomanLogic.Data
 
                 foreach (var action in actions)
                 {
+                    /**
+                     * Linq FirstOrDefault returns DateTime.MinValue 
+                     * instead of Null so we force it to null here
+                     */
+                    if (action.LastPerformed == DateTime.MinValue)
+                    {
+                        action.LastPerformed = null;
+                    }
+
                     action.Items = GetActionsByParent(db, userId, action.Id);
                 }
             }
@@ -114,6 +132,18 @@ namespace HoomanLogic.Data
                                LatestEntry = db.LogEntries.Where(a => a.ActionId == row.Id).OrderByDescending(b => b.Date).Select(c => new Models.LogEntryModel() { Id = c.Id, ActionId = c.ActionId, Date = c.Date, Entry = c.Entry, Duration = c.Duration, Details = c.Details }).FirstOrDefault(),
                                LogEntries = db.LogEntries.Where(a => a.ActionId == row.Id).OrderByDescending(b => b.Date).Select(c => new Models.LogEntryModel() { Id = c.Id, ActionId = c.ActionId, Date = c.Date, Entry = c.Entry, Duration = c.Duration, Details = c.Details }).ToList()
                            }).ToList();
+
+                /**
+                 * Linq FirstOrDefault returns DateTime.MinValue 
+                 * instead of Null so we force it to null here
+                 */
+                actions.ForEach(a =>
+                {
+                    if (a.LastPerformed == DateTime.MinValue)
+                    {
+                        a.LastPerformed = null;
+                    }
+                });
             }
        
             return actions;

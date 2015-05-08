@@ -108,7 +108,6 @@ var ActionStore = function () {
         
         _api.postAction(newAction)
         .done(function (result) {
-            jsonActionDates(result);
             Object.assign(newAction, result);
             updates.onNext(updates.value);
             hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
@@ -128,7 +127,6 @@ var ActionStore = function () {
         
         _api.postAction(newAction)
         .done(function (postActionResult) {
-            jsonActionDates(postActionResult);
             Object.assign(newAction, postActionResult);
             updates.onNext(updates.value);
             hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
@@ -139,7 +137,6 @@ var ActionStore = function () {
             
             _api.postLog(latestEntry)
             .done(function (postLogResult) {
-                jsonActionDates(postLogResult);
                 Object.assign(newAction, postLogResult);
                 updates.onNext(updates.value);
                 hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
@@ -191,7 +188,6 @@ var ActionStore = function () {
         
         _api.putAction(val)
         .done(function (result) {
-            jsonActionDates(result);
             Object.assign(val, result);
             updates.onNext(updates.value);
             hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
@@ -219,7 +215,6 @@ var ActionStore = function () {
         
         _api.putLog(val)
         .done(function (result) {
-//            jsonActionDates(result);
 //            Object.assign(val, result);
 //            updates.onNext(updates.value);
 //            hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
@@ -258,7 +253,6 @@ var ActionStore = function () {
             
             _api.postLog(latestEntry)
             .done(function (result) {
-                jsonActionDates(result);
                 Object.assign(val, result);
                 updates.onNext(updates.value);
                 hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
@@ -276,7 +270,6 @@ var ActionStore = function () {
             
             _api.deleteLog(logId)
             .done(function (result) {
-                jsonActionDates(result);
                 Object.assign(val, result);
                 updates.onNext(updates.value);
                 hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
@@ -305,7 +298,6 @@ var ActionStore = function () {
 
         _api.postLog(latestEntry)
         .done(function (result) {
-            jsonActionDates(result);
             Object.assign(val, result);
             updates.onNext(updates.value);
             hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
@@ -340,31 +332,6 @@ var ActionStore = function () {
         return name.replace(/:/g, '').replace(/  /g, ' ').trim().toLowerCase();
     };
     
-    var jsonActionDates = function (action) {
-        if (action.lastPerformed === '0001-01-01T00:00:00' || action.lastPerformed === null) {
-            action.lastPerformed = null;   
-        } else {
-            action.lastPerformed = new Date(action.lastPerformed);   
-        }
-        if (action.created === '0001-01-01T00:00:00' || action.created === null) {
-            action.created = null;   
-        } else {
-            action.created = new Date(action.created);   
-        }
-        if (action.nextDate === '0001-01-01T00:00:00' || action.nextDate === null) {
-            action.nextDate = null;   
-        } else {
-            action.nextDate = new Date(action.nextDate);   
-        }
-        for (var i = 0; i < action.logEntries.length; i++) {
-            if (action.logEntries[i].date === '0001-01-01T00:00:00' || action.logEntries[i].date === null) {
-                action.logEntries[i].date = null;   
-            } else {
-                action.logEntries[i].date = new Date(action.logEntries[i].date);   
-            }
-        }
-    };
-    
     this.init = function (userName, userId) {
         
         user = userName;
@@ -372,18 +339,12 @@ var ActionStore = function () {
         
         // populate store - call to database
         _api.getActions().done(function (result) {
-            result.forEach(function (item) {
-                jsonActionDates(item);
-            });
             hlio.saveLocal('hl.' + user + '.actions', result, secret);
             updates.onNext(result);
         });
 
         var actions = hlio.loadLocal('hl.' + user + '.actions', secret);
         if (actions) {
-            actions.forEach(function (item) {
-                jsonActionDates(item);
-            });
             updates.onNext(actions);   
         }
     };

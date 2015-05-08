@@ -39,7 +39,7 @@
             /**
               * Upcoming Action
               */ 
-            if (item.nextDate !== null && item.nextDate > new Date()) {
+            if (item.nextDate !== null && new Date(item.nextDate) > new Date()) {
                 return true;
             }
         },
@@ -77,7 +77,7 @@
               * Sort the actions by date and name
               */
             upcomingActions = _.sortBy(upcomingActions, function(action){ 
-                return (action.nextDate.toISOString() + '-' + action.name); 
+                return ((new Date(action.nextDate)).toISOString() + '-' + action.name); 
             })
 
             /**

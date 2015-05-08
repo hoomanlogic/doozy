@@ -103,39 +103,6 @@
             this.setState({windowWidth: window.innerWidth});
         },
 
-        /*************************************************************
-         * CALCULATIONS
-         *************************************************************/
-        calcHoverText: function () {
-            var hoverText = '',
-                minutesTally = 0,
-                earliestDate = null,
-                latestDate = null;
-
-            if (this.props.action.logEntries === void 0) {
-                hoverText = this.props.actionLastPerformed;
-            } else {
-                for (var i = 0; i < this.props.action.logEntries.length; i++) {
-                    var duration = this.props.action.logEntries[i].duration || 0;
-                    minutesTally += duration;
-                    if (this.props.action.logEntries[i].entry === 'performed') {
-                        earliestDate = earliestDate === null ? this.props.action.logEntries[i].date : (earliestDate > this.props.action.logEntries[i].date ? this.props.action.logEntries[i].date : earliestDate);
-                        latestDate = latestDate === null ? this.props.action.logEntries[i].date : (latestDate < this.props.action.logEntries[i].date ? this.props.action.logEntries[i].date : latestDate);
-                    }
-                    hoverText += this.props.action.logEntries[i].entry + (duration ? (' for ' + duration + 'm ') : '') + ' on ' + 
-                        this.props.action.logEntries[i].date.toLocaleDateString() + ' (' + hlapp.calcNaturalDays(this.props.action.logEntries[i].date) + ') ' +
-                        (this.props.action.logEntries[i].details ? ': ' + this.props.action.logEntries[i].details : '') + 
-                        '\n';   
-                }
-                if (minutesTally) {
-                    var numWeeks = babble.durations.dayDiff(earliestDate, latestDate) / 7;
-                    hoverText = 'Average minutes per week: ' + String(minutesTally / numWeeks) + '\n\n' + hoverText;
-                }
-            }
-
-            return hoverText;
-        },
-
         calcIsDone: function () {
             if (typeof this.props.overrideIsDone !== 'undefined' && this.props.overrideIsDone !== null) {
                 return this.props.overrideIsDone;
@@ -149,12 +116,10 @@
          *************************************************************/
         render: function () {
             var details,
-                hoverText,
                 isDone,
                 repeats;
 
             isDone = this.calcIsDone();
-            hoverText = this.calcHoverText();
 
             /**
              * Render icon to signify that there are details attached to this action
@@ -182,7 +147,7 @@
                         {details}
                         {repeats}
                     </td>
-                    <td width="150px" hidden={this.state.windowWidth < 600 ? true : false} title={hoverText}>{this.props.actionLastPerformed ? hlapp.calcNaturalDays(this.props.actionLastPerformed) : ''}</td>
+                    <td width="150px" hidden={this.state.windowWidth < 600 ? true : false}>{this.props.actionLastPerformed ? hlapp.calcNaturalDays(new Date(this.props.actionLastPerformed)) : ''}</td>
                 </tr>
             );
         }

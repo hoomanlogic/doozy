@@ -185,36 +185,39 @@ if (typeof require !== 'undefined') {
     };
     
     // Actions
-    exports.ToDo = function (name, tags) {
-
-        // set instance variables
-        this.ref = hlcommon.uuid();
-        this.id = this.ref;
-        this.kind = 'ToDo';
-        this.name = name || '';
-        this.enlist = new Date();
-        this.retire = null;
-        this.latestEntry = null;
-        this.recurrenceRules = [];
-        this.startAt = null;
-        this.duration = 0;
-        this.items = [];
-        this.tags = [];
-        this.objectives = [];
-        this.content = null;
-        this.created = new Date();
-        this.lastPerformed = null;
-        this.logEntries = [];
-        this.nextDate = null;
+    exports.action = function (name, tags) {
 
         // add tags any were supplied
+        var t = [];
         if (typeof tags !== 'undefined') {
             if (typeof tags === 'string') {
-                this.tags.push(tags);
+                t.push(tags);
             } else if (Object.prototype.toString.call(tags) === '[object Array]') {
-                this.tags = tags;
+                t = tags;
             }
         }
+        
+        // return object literal
+        return {
+            ref: hlcommon.uuid(),
+            id: this.ref,
+            kind: 'Action',
+            name: name || '',
+            enlist: new Date().toISOString(),
+            retire: null,
+            latestEntry: null,
+            recurrenceRules: [],
+            startAt: null,
+            duration: 0,
+            items: [],
+            tags: t,
+            objectives: [],
+            content: null,
+            created: new Date().toISOString(),
+            lastPerformed: null,
+            logEntries: [],
+            nextDate: null,
+        };
     };    
 
     exports.filterActions = function (actions, tags, type) {

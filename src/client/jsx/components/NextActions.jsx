@@ -41,7 +41,7 @@
             /**
               * Next Action has either never been performed or has a Next Date up to today
               */ 
-            if ((item.nextDate === null && item.lastPerformed === null) || (item.nextDate !== null && item.nextDate <= new Date())) {
+            if ((item.nextDate === null && item.lastPerformed === null) || (item.nextDate !== null && new Date(item.nextDate) <= new Date())) {
                 return true;
             }
 

@@ -62,7 +62,7 @@
                 tags.push(this.props.focusTag);
 
                 // create a new action
-                nextProps.action = new hlapp.ToDo('New ToDo', tags);
+                nextProps.action = hlapp.action('New ToDo', tags);
                 nextProps.action.name = null;
                 nextProps.action.enlist = new Date();
             } else {
@@ -78,7 +78,7 @@
                 tags.push(this.props.focusTag);
 
                 // create a new action
-                this.props.action = new hlapp.ToDo('New ToDo', tags);
+                this.props.action = hlapp.action('New ToDo', tags);
                 this.props.action.name = null;
                 this.props.action.enlist = new Date();
             } else {
@@ -142,7 +142,7 @@
             if (action.nextDate === null || String(action.nextDate) === 'NaN') {
                 var date = null;
             } else {
-                var date = action.nextDate.toLocaleDateString();
+                var date = (new Date(action.nextDate)).toLocaleDateString();
             }
 
             // build state
