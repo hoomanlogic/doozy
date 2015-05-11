@@ -109,7 +109,7 @@
                 
                 return (
                     <div style={{ display: 'flex', padding: '2px', backgroundColor: '#444' }}>
-                        <div style={{ flexGrow: '1' }}>
+                        <div style={{ flexGrow: '1', marginRight: '2px' }}>
                             <input ref="workingOn" className="form-control" type="text" placeholder="What are you working on?" onChange={this.handleWorkingOnChange} value={timerStore.updates.value.workingOn} />
                         </div>
                         <div onClick={this.handleDoneTimerClick}>{displayDuration}</div>
