@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using HoomanLogic.Models;
+using HoomanLogic.Server.App_Start;
 
 namespace HoomanLogic.Server.Controllers
 {
@@ -78,6 +79,7 @@ namespace HoomanLogic.Server.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
+        [AntiForgeryHandleError]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
             if (!ModelState.IsValid)
@@ -121,6 +123,7 @@ namespace HoomanLogic.Server.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
+        [AntiForgeryHandleError]
         public async Task<ActionResult> VerifyCode(VerifyCodeViewModel model)
         {
             if (!ModelState.IsValid)
@@ -159,6 +162,7 @@ namespace HoomanLogic.Server.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
+        [AntiForgeryHandleError]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
@@ -210,6 +214,7 @@ namespace HoomanLogic.Server.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
+        [AntiForgeryHandleError]
         public async Task<ActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
             if (ModelState.IsValid)
@@ -254,6 +259,7 @@ namespace HoomanLogic.Server.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
+        [AntiForgeryHandleError]
         public async Task<ActionResult> ResetPassword(ResetPasswordViewModel model)
         {
             if (!ModelState.IsValid)
@@ -288,6 +294,7 @@ namespace HoomanLogic.Server.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
+        [AntiForgeryHandleError]
         public ActionResult ExternalLogin(string provider, string returnUrl)
         {
             // Request a redirect to the external login provider
@@ -314,6 +321,7 @@ namespace HoomanLogic.Server.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
+        [AntiForgeryHandleError]
         public async Task<ActionResult> SendCode(SendCodeViewModel model)
         {
             if (!ModelState.IsValid)
@@ -364,6 +372,7 @@ namespace HoomanLogic.Server.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
+        [AntiForgeryHandleError]
         public async Task<ActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl)
         {
             if (User.Identity.IsAuthenticated)
@@ -401,6 +410,7 @@ namespace HoomanLogic.Server.Controllers
         // POST: /Account/LogOff
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AntiForgeryHandleError]
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut();
