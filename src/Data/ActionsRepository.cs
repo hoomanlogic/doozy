@@ -147,10 +147,9 @@ namespace HoomanLogic.Data
 
                 // persist changes
                 db.SaveChanges();
-                model.Id = row.Id;
 
                 // return a fresh model
-                return Get(userId, model.Id);
+                return Get(userId, row.Id);
             }
         }
 
@@ -490,15 +489,17 @@ namespace HoomanLogic.Data
             SyncRecurrenceRules(db, model, row);
 
             // sync children
-            foreach (var child in model.Items)
-            {
-                if (child.Id == null)
+            if (model.Items != null) { 
+                foreach (var child in model.Items)
                 {
-                    //row.Children.Add(RecursiveAdd(db, row.Id, userId, child));
-                }
-                else
-                {
-                    RecursiveUpdate(db, userId, child);
+                    if (child.Id == null)
+                    {
+                        //row.Children.Add(RecursiveAdd(db, row.Id, userId, child));
+                    }
+                    else
+                    {
+                        RecursiveUpdate(db, userId, child);
+                    }
                 }
             }
         }

@@ -107,7 +107,7 @@
                 <div>
                     <div className="table-title" style={{ color: '#e2ff63', backgroundColor: '#444', paddingBottom: '0' }}>
                         Next Actions
-                        <button type="button" style={{ paddingTop: '3px', paddingBottom: '3px' }} className="btn btn-primary pull-right" onClick={this.handleAddActionClick}>
+                        <button type="button" style={{ paddingTop: '3px', paddingBottom: '3px', backgroundImage: 'none', color: '#444', backgroundColor: '#e2ff63', borderColor: '#e2ff63', fontWeight: 'bold', outlineColor: 'rgb(40, 40, 40)' }} className="btn pull-right" onClick={this.handleAddActionClick}>
                             Add a new action
                         </button>
                     </div>

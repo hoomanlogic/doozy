@@ -110,7 +110,6 @@
                                             actionRef={item.ref} 
                                             actionId={item.id} 
                                             actionName={item.name}
-                                            actionName={item.name}
                                             actionLastPerformed={item.lastPerformed} 
                                             actionNextDate={item.nextDate} />
                                     );

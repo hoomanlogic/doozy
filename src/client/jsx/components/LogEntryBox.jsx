@@ -73,9 +73,9 @@
                              {commentCounter}
                         </div>
                         <div className="log-peanuts-actions">
-                            <button type="button" style={{ paddingTop: '3px', paddingBottom: '3px' }} className="btn btn-primary" onClick={this.handleUpvoteClick}><i className="fa fa-heart"></i> Cheer
+                            <button type="button" style={{ paddingTop: '3px', paddingBottom: '3px', color: '#fff', backgroundImage: 'none', backgroundColor: '#444', borderColor: '#222', fontWeight: 'bold', outlineColor: 'rgb(40, 40, 40)' }} className="btn" onClick={this.handleUpvoteClick}><i className="fa fa-heart" style={{color: 'rgb(250, 133, 133)'}}></i> Cheer
                         </button>
-                            <button type="button" style={{ paddingTop: '3px', paddingBottom: '3px' }} className="btn btn-primary" onClick={this.handleCommentClick}><i className="fa fa-pencil"></i> Comment
+                            <button type="button" style={{ paddingTop: '3px', paddingBottom: '3px', color: '#fff', backgroundImage: 'none', backgroundColor: '#444', borderColor: '#222', borderLeft: '0', fontWeight: 'bold', outlineColor: 'rgb(40, 40, 40)' }} className="btn" onClick={this.handleCommentClick}><i className="fa fa-pencil" style={{color: '#e2ff63'}}></i> Comment
                         </button>
                         </div>
                     </footer>
