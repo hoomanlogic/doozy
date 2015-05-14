@@ -66,6 +66,39 @@
             });
         };
         
+        this.update = function (logEntryToSave) {
+            
+            var logEntries = me.updates.value;
+            var logEntry = _.find(logEntries, {id: logEntryToSave.id});
+            var original = Object.assign({}, logEntry);
+
+            Object.assign(logEntry, logEntryToSave);
+            me.notify();
+        
+            $.ajax({
+                context: this,
+                url: hlapp.HOST_NAME + '/api/logentries',
+                dataType: 'json',
+                headers: {
+                    'Authorization': 'Bearer ' + hlapp.getAccessToken()
+                },
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(logEntryToSave)
+            })
+            .done(function (result) {
+                Object.assign(logEntry, result);
+                me.notify();
+                //hlio.saveLocal('hl.' + user + '.logentries', updates.value, secret);
+                toastr.success('Updated log entry for ' + logEntry.actionName);
+            })
+            .fail(function  (err) {
+                Object.assign(logEntry, original);
+                me.notify();
+                toastr.error(err.responseText);
+            });
+        };
+        
         this.toggleUpvote = function (userName, id) {
             
             $.ajax({

@@ -107,7 +107,7 @@
             if (typeof this.props.overrideIsDone !== 'undefined' && this.props.overrideIsDone !== null) {
                 return this.props.overrideIsDone;
             } else {
-                return this.props.actionLastPerformed !== null && (this.props.actionNextDate === null || this.props.actionNextDate > new Date());
+                return this.props.actionLastPerformed !== null && (this.props.actionNextDate === null || new Date(this.props.actionNextDate) > new Date());
             }
         },
 

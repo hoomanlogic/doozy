@@ -22,6 +22,24 @@
 }(this, function (React) {
     'use strict';
     return React.createClass({
+        componentWillMount: function () {
+            var detailsChange = EventHandler.create();
+            detailsChange
+                .map(function (event) {
+                    return event.target.value;
+                })
+                .throttle(1000)
+                .filter(function (details) {
+                    return details !== this.props.data.details;
+                }.bind(this))
+                .distinctUntilChanged()
+                .subscribe(this.handleDetailsChange);
+
+            this.handlers = {
+                detailsChange: detailsChange
+            };  
+        },
+        
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
@@ -31,6 +49,11 @@
         
         handleCommentClick: function () {
             ui.goTo('Comment', { userName: this.props.data.userName, id: this.props.data.id });
+        },
+        
+        handleDetailsChange: function (details) {
+            this.props.data.details = details;
+            logEntryStore.update(this.props.data);
         },
         
         /*************************************************************
@@ -64,7 +87,7 @@
                             </div>
                         </header>
                         <div>
-                            {data.details}
+                            <ContentEditable html={data.details} onChange={this.handlers.detailsChange} />
                         </div>
                     </div>
                     <footer style={{display: 'flex', flexDirection: 'column'}}>

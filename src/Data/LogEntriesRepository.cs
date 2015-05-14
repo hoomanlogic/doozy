@@ -10,6 +10,53 @@ namespace HoomanLogic.Data
     {
         #region Public API
 
+        public static LogEntryModel Get(string userId, Guid logEntryId)
+        {
+            using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())
+            {
+                var model = db.LogEntries.Where(c => c.Action.UserId == userId && c.Id == logEntryId).Select(row => new LogEntryModel()
+                {
+                    Id = row.Id,
+                    UserId = row.Action.UserId,
+                    UserName = row.Action.AspNetUser.UserName,
+                    KnownAs = row.Action.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs,
+                    ProfileUri = row.Action.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().ProfileUri,
+                    Date = row.Date,
+                    ActionId = row.ActionId,
+                    ActionName = row.Action.Name,
+                    Details = row.Details,
+                    Duration = row.Duration,
+                    Entry = row.Entry,
+                    Upvotes = row.LogEntryPeanuts.Where(a => a.Kind == "Upvote").Select(a => new LogEntryPeanut() { Id = a.Id, UserId = a.UserId, Date = a.Date, Comment = a.Comment, AttachmentUri = a.AttachmentUri, ProfileUri = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().ProfileUri, KnownAs = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs }).ToList(),
+                    Comments = row.LogEntryPeanuts.Where(a => a.Kind == "Comment").Select(a => new LogEntryPeanut() { Id = a.Id, UserId = a.UserId, Date = a.Date, Comment = a.Comment, AttachmentUri = a.AttachmentUri, ProfileUri = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().ProfileUri, KnownAs = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs }).ToList(),
+                    Attachments = row.LogEntryPeanuts.Where(a => a.Kind == "Attachment").Select(a => new LogEntryPeanut() { Id = a.Id, UserId = a.UserId, Date = a.Date, Comment = a.Comment, AttachmentUri = a.AttachmentUri, ProfileUri = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().ProfileUri, KnownAs = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs }).ToList()
+                }).FirstOrDefault();
+
+                return model;
+            }
+        }
+
+        //public static LogEntryModel Get(string userId, Guid id)
+        //{
+        //    using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())
+        //    {
+        //        var model = db.LogEntries.Where(c => c.Id == id).Select(row => new LogEntryModel()
+        //        {
+        //            Id = row.Id,
+        //            Date = row.Date,
+        //            ActionId = row.ActionId,
+        //            ActionName = row.Action.Name,
+        //            Details = row.Details,
+        //            Duration = row.Duration,
+        //            Entry = row.Entry
+
+        //        }).FirstOrDefault();
+
+        //        return model;
+        //    }
+        //}
+
+
         public static List<LogEntryModel> Get(string userId)
         {
             using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())
@@ -59,26 +106,6 @@ namespace HoomanLogic.Data
                 }).ToList();
 
                 return models;
-            }
-        }
-
-        public static LogEntryModel Get(string userId, Guid id)
-        {
-            using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())
-            {
-                var model = db.LogEntries.Where(c => c.Id == id).Select(row => new LogEntryModel()
-                {
-                    Id = row.Id,
-                    Date = row.Date,
-                    ActionId = row.ActionId,
-                    ActionName = row.Action.Name,
-                    Details = row.Details,
-                    Duration = row.Duration,
-                    Entry = row.Entry
-
-                }).FirstOrDefault();
-
-                return model;
             }
         }
 

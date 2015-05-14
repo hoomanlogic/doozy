@@ -32,13 +32,13 @@ namespace HoomanLogic.Server.Controllers
             return ActionsRepository.Get(userId, model.ActionId);
         }
 
-        public ActionModel Put([FromBody] LogEntryModel model)
+        public LogEntryModel Put([FromBody] LogEntryModel model)
         {
             ActionsRepository.UpdateLogEntry(model);
 
             // return latest for this action
             string userId = User.Identity.GetUserId();
-            return ActionsRepository.Get(userId, model.ActionId);
+            return LogEntriesRepository.Get(userId, model.Id);
         }
 
         public ActionModel Delete(Guid id)
