@@ -51,7 +51,7 @@
          *************************************************************/
         render: function () {
             var data = this.props.data;
-            var lastDate = new Date(data.latestEntry ? data.latestEntry.date : data.created);
+            var lastDate = new Date(data.lastPerformed ? data.lastPerformed : data.created);
 
             return (
                 <li key={data.id}>

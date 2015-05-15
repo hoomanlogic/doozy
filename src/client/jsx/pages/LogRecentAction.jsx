@@ -157,7 +157,13 @@
                 existingAction = actionStore.getExistingAction(names[i]);
 
                 if (existingAction) {
-                    actionStore.log(existingAction, { performed: this.state.date, duration: this.state.duration, entry: 'performed', details: this.state.details });
+                    logEntryStore.log({
+                        actionId: existingAction.id,
+                        date: this.state.date, 
+                        duration: this.state.duration, 
+                        entry: 'performed', 
+                        details: this.state.details 
+                    });
                 } else {
                     var tags;
                     if (this.refs.tags) {

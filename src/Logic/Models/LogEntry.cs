@@ -21,6 +21,7 @@ namespace HoomanLogic.Models
         public string KnownAs { get; set; }
         public string ProfileUri { get; set; }
         public DateTime Date { get; set; }
+        public DateTime? NextDate { get; set; }
         public Guid ActionId { get; set; }
         public string ActionName { get; set; }
         public string Entry { get; set; }

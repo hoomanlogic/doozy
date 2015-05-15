@@ -9,7 +9,6 @@ namespace HoomanLogic.Models
     {
         public ActionModel()
         {
-            LatestEntry = new LogEntryModel();
             Items = new List<ActionModel>();
             RecurrenceRules = new List<String>();
         }
@@ -24,7 +23,6 @@ namespace HoomanLogic.Models
         public DateTime? Created { get; set; }
         public DateTime? LastPerformed { get; set; }
         public DateTime? NextDate { get; set; }
-        public LogEntryModel LatestEntry { get; set; }
         public List<ActionModel> Items { get; set; }
         public List<String> RecurrenceRules { get; set; }
     }

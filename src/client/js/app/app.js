@@ -209,7 +209,6 @@ if (typeof require !== 'undefined') {
             nextDate: null,
             isPublic: false,
             lastPerformed: null,
-            latestEntry: null,
             tags: t,
             recurrenceRules: [],
             items: []

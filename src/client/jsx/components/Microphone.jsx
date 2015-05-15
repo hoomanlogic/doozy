@@ -99,11 +99,12 @@
 
 
             if (existingAction) {
-                actionStore.log(existingAction, { 
-                    performed: date, 
+                logEntryStore.log({
+                    actionId: existingAction.id,
+                    date: date, 
                     duration: duration, 
                     entry: 'performed', 
-                    details: null 
+                    details: null
                 });
             } else {
 
@@ -114,11 +115,11 @@
                 var newAction = hlapp.action(commandParts[actionIndex].slice(0,1).toUpperCase() + commandParts[actionIndex].slice(1), tags);
                 newAction.created = date;
 
-                actionStore.lognew(newAction, { 
-                    performed: date, 
+                logEntryStore.lognew(newAction, {
+                    date: date, 
                     duration: duration, 
                     entry: 'performed', 
-                    details: null 
+                    details: null
                 });
             }
         },

@@ -23,31 +23,39 @@ namespace HoomanLogic.Server.Controllers
             return LogEntriesRepository.Get(userId);
         }
 
-        public ActionModel Post([FromBody] LogEntryModel model)
+        public LogEntryModel Post([FromBody] LogEntryModel model)
         {
-            ActionsRepository.AddLogEntry(model);
+            HoomanLogic.Data.LogEntriesRepository.LogEntryChanges result = LogEntriesRepository.Add(model);
 
             // return latest for this action
             string userId = User.Identity.GetUserId();
-            return ActionsRepository.Get(userId, model.ActionId);
+            LogEntryModel returnVal = LogEntriesRepository.Get(userId, result.Id);
+            if (result.NextDate.HasValue)
+            {
+                returnVal.NextDate = result.NextDate.Value;
+            }
+            return returnVal;
         }
 
         public LogEntryModel Put([FromBody] LogEntryModel model)
         {
-            ActionsRepository.UpdateLogEntry(model);
+            HoomanLogic.Data.LogEntriesRepository.LogEntryChanges result = LogEntriesRepository.Update(model);
 
             // return latest for this action
             string userId = User.Identity.GetUserId();
-            return LogEntriesRepository.Get(userId, model.Id);
+
+            LogEntryModel returnVal = LogEntriesRepository.Get(userId, model.Id);
+            if (result.NextDate.HasValue)
+            {
+                returnVal.NextDate = result.NextDate.Value;
+            }
+            return returnVal;
         }
 
-        public ActionModel Delete(Guid id)
+        public HoomanLogic.Data.LogEntriesRepository.LogEntryChanges Delete(Guid id)
         {
-            Guid actionId = ActionsRepository.DeleteLogEntry(id);
-
-            // return latest for this action
-            string userId = User.Identity.GetUserId();
-            return ActionsRepository.Get(userId, actionId);
+            HoomanLogic.Data.LogEntriesRepository.LogEntryChanges result = LogEntriesRepository.Delete(id);
+            return result;
         }
 
         [HttpPost]

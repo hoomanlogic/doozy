@@ -69,11 +69,6 @@
         handleCheck: function(event) {
             if (ui.logAction && event.target.checked) {
                 ui.logAction(this.props.action);
-            } else {
-                var result = prompt('Are you sure?');
-                if (result && result.slice(0,1).toLowerCase() === 'y') {
-                    actionStore.toggle(this.props.action);
-                }
             }
         },
         handleCheckTouch: function () {

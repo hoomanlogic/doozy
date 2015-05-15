@@ -92,7 +92,7 @@
                     <div className={'log-entries ' + (this.props.hidden ? 'hidden' : '')}>
                         {logEntries.map(
                             function(item) {
-                                return (<LogEntryBox data={item} />);
+                                return (<LogEntryBox key={item.id} data={item} />);
                             }.bind(this)
                         )}
                     </div>

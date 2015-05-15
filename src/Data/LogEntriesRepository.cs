@@ -111,6 +111,148 @@ namespace HoomanLogic.Data
                 return models;
             }
         }
+        public class LogEntryChanges
+        {
+            public Guid Id { get; set; }
+            public DateTime? NextDate { get; set; }
+        }
+
+        public static LogEntryChanges Add(LogEntryModel model)
+        {
+            using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())
+            {
+                // create log entry row
+                ef.LogEntry row = new ef.LogEntry();
+                row.Id = Guid.NewGuid();
+                row.ActionId = model.ActionId;
+                row.Date = model.Date;
+                row.Entry = model.Entry;
+                row.Duration = model.Duration;
+                row.Details = model.Details;
+
+                // add row to db table
+                db.LogEntries.Add(row);
+                db.SaveChanges();
+
+                if (model.Entry == "performed")
+                {
+                    // set next date action should be performed
+                    var action = db.Actions.Where(a => a.Id == model.ActionId).FirstOrDefault();
+                    var latestPerformance = db.LogEntries.Where(a => a.Entry == "performed").OrderByDescending(a => a.Date).Select(a => a.Date).FirstOrDefault();
+                    if (latestPerformance == null || latestPerformance == DateTime.MinValue || latestPerformance <= model.Date)
+                    {
+                        List<RecurrenceModel> recurrenceRules = new List<RecurrenceModel>();
+                        foreach (var rule in action.RecurrenceRules)
+                        {
+                            recurrenceRules.Add(RecurrenceModel.GetRecurrence(rule.Rule));
+                        }
+
+                        action.NextDate = Utility.GetNextOccurrence(recurrenceRules, action.Created.Value, model.Date);
+
+                        // persist changes
+                        db.SaveChanges();
+
+                        return new LogEntryChanges() { Id = row.Id, NextDate = action.NextDate.HasValue ? action.NextDate : DateTime.MinValue };
+                    }
+                }
+
+                return new LogEntryChanges() { Id = row.Id, NextDate = null };
+            }
+        }
+
+        public static LogEntryChanges Update(LogEntryModel model)
+        {
+            using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())
+            {
+                // create log entry row
+                ef.LogEntry row = db.LogEntries.Where(a => a.Id == model.Id).First();
+                bool dateChanged = false;
+                if (row.Date != model.Date)
+                {
+                    row.Date = model.Date;
+                    dateChanged = true;
+                }
+                row.Duration = model.Duration;
+                row.Details = model.Details;
+
+                // add row to db table
+                db.SaveChanges();
+
+                if (model.Entry == "performed" && dateChanged)
+                {
+                    // set next date action should be performed
+                    var action = db.Actions.Where(a => a.Id == model.ActionId).FirstOrDefault();
+                    var latestPerformance = db.LogEntries.Where(a => a.Entry == "performed").OrderByDescending(a => a.Date).Select(a => a.Date).FirstOrDefault();
+                    if (latestPerformance == null || latestPerformance == DateTime.MinValue || latestPerformance <= model.Date)
+                    {
+                        List<RecurrenceModel> recurrenceRules = new List<RecurrenceModel>();
+                        foreach (var rule in action.RecurrenceRules)
+                        {
+                            recurrenceRules.Add(RecurrenceModel.GetRecurrence(rule.Rule));
+                        }
+
+                        action.NextDate = Utility.GetNextOccurrence(recurrenceRules, action.Created.Value, model.Date);
+
+                        // persist changes
+                        db.SaveChanges();
+
+                        return new LogEntryChanges() { Id = model.Id, NextDate = action.NextDate };
+                    }
+
+                }
+
+                return new LogEntryChanges() { Id = model.Id, NextDate = null };
+            }
+        }
+
+        public static LogEntryChanges Delete(Guid id)
+        {
+            using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())
+            {
+                Guid actionId = Guid.Empty;
+
+                // find log entry row in db table
+                var row = db.LogEntries.Where(a =>
+                        a.Id == id
+                    ).First();
+
+                // find action assigned to log entry then
+                // save reference to the action id then
+                // remove the retire date if unlogged action is a simple todo
+                var action = db.Actions.Where(a => a.Id == row.ActionId).First();
+                actionId = action.Id;
+
+                // remove the log entry row from db table
+                db.LogEntries.Remove(row);
+
+                // persist changes
+                db.SaveChanges();
+
+                // re-calculate the next date
+                if (row.Entry == "performed")
+                {
+                    // set next date action should be performed
+                    List<RecurrenceModel> recurrenceRules = new List<RecurrenceModel>();
+                    foreach (var rule in action.RecurrenceRules)
+                    {
+                        recurrenceRules.Add(RecurrenceModel.GetRecurrence(rule.Rule));
+                    }
+
+                    var latestOccurrenceMinDefault = db.LogEntries.Where(a => a.ActionId == actionId && a.Entry == "performed").OrderByDescending(a => a.Date).Select(a => a.Date).FirstOrDefault();
+                    DateTime? latestOccurrence = null;
+                    if (latestOccurrenceMinDefault != DateTime.MinValue)
+                    {
+                        latestOccurrence = latestOccurrenceMinDefault;
+                    }
+                    action.NextDate = Utility.GetNextOccurrence(recurrenceRules, action.Created.Value, latestOccurrence);
+                    db.SaveChanges();
+
+                    return new LogEntryChanges() { Id = id, NextDate = action.NextDate };
+                }
+
+                return new LogEntryChanges() { Id = id, NextDate = null };
+            }
+        }
 
         public static LogEntryPeanut ToggleUpvote(string userId, Guid id)
         {
