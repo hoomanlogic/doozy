@@ -242,7 +242,7 @@ var ActionStore = function () {
             if (performed === null) {
                 return;
             }
-            performed = new Date(performed);
+            performed = new Date(performed).toISOString();
             var duration = prompt('How many minutes did it take?', action.duration);
             if (duration === null) {
                 return;   

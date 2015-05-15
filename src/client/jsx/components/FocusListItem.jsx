@@ -51,8 +51,7 @@
          *************************************************************/
         render: function () {
             var data = this.props.data;
-            var lastDate = new Date(data.latestEntry ? data.latestEntry.date : data.created.toISOString());
-            var lastDone = hlapp.calcNaturalDays(new Date(lastDate));
+            var lastDate = new Date(data.latestEntry ? data.latestEntry.date : data.created);
 
             return (
                 <li key={data.id}>
@@ -61,7 +60,7 @@
                             <img style={{display: 'inline', verticalAlign: 'inherit'}} src={data.iconUri} />
                             <div style={{display: 'inline-block', verticalAlign: 'top'}}>
                                 <div>{this.calcFocusTitle(data)}</div>
-                                <div>{'last acted ' + lastDone}</div>
+                                <div>{'last acted '}<RelativeTime accuracy="d" isoTime={lastDate} /></div>
                             </div>
                         </div>
                     </a>

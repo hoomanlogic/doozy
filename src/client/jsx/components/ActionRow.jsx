@@ -147,7 +147,7 @@
                         {details}
                         {repeats}
                     </td>
-                    <td width="150px" hidden={this.state.windowWidth < 600 ? true : false}>{this.props.actionLastPerformed ? hlapp.calcNaturalDays(new Date(this.props.actionLastPerformed)) : ''}</td>
+                    <td width="150px" hidden={this.state.windowWidth < 600 ? true : false}><RelativeTime accuracy="d" isoTime={this.props.actionLastPerformed} /></td>
                 </tr>
             );
         }

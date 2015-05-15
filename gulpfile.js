@@ -57,7 +57,11 @@ var cssAll = [
 
 var jsxFiles = [
     '../react_components/src/**', 
-    
+    'src/client/jsx/components/LayeredComponentMixin.jsx',
+	'src/client/jsx/components/SetIntervalMixin.jsx',
+	
+	'src/client/jsx/components/RelativeTime.jsx',
+	
     'src/client/jsx/components/ActionRow.jsx',
     'src/client/jsx/components/FocusListItem.jsx',
     'src/client/jsx/components/NotificationListItem.jsx',

@@ -22,6 +22,7 @@
 }(this, function (React) {
     'use strict';
     return React.createClass({
+        mixins: [LayeredComponentMixin],
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
@@ -79,17 +80,19 @@
         /*************************************************************
          * RENDERING
          *************************************************************/
-        renderDropDown: function () {
+        renderLayer: function () {
             
             if (!this.state.isDropDownOpen) {
                 return null;
             };
+            
             var style = {
                 position: 'absolute',
                 top: $(this.refs.dropDown.getDOMNode()).offset().top + 22 + 'px',
-                right: '5px',
+                padding: '5px',
                 backgroundColor: '#fff',
-                minWidth: '200px',
+                minWidth: '100%',
+                minHeight: '100px',
                 borderRadius: '4px',
                 border: '2px solid #e0e0e0'
             };
@@ -140,7 +143,7 @@
                                     <span style={{fontWeight: 'bold'}}>{this.props.data.knownAs}</span> {data.entry} <span style={{fontWeight: 'bold'}}>{data.actionName}</span>
                                 </div>
                                 <div>
-                                    <small>{hlapp.calcNaturalDays(new Date(data.date)) + (data.duration ? ' for ' + new babble.Duration(data.duration * 60000).toString() : '')}</small>
+                                    <small><RelativeTime accuracy="d" isoTime={data.date} />{(data.duration ? ' for ' + new babble.Duration(data.duration * 60000).toString() : '')}</small>
                                 </div>
                             </div>
                             <i ref="dropDown" style={{color: '#b2b2b2'}} className="fa fa-chevron-down" onClick={this.handleDropDownClick}></i>
@@ -161,7 +164,6 @@
                         </button>
                         </div>
                     </footer>
-                    {this.renderDropDown()}
                 </article>
             );
         }
