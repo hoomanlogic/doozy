@@ -17,6 +17,7 @@ namespace HoomanLogic.Data
                 var model = db.LogEntries.Where(c => c.Action.UserId == userId && c.Id == logEntryId).Select(row => new LogEntryModel()
                 {
                     Id = row.Id,
+                    Ref = row.Id.ToString(),
                     UserId = row.Action.UserId,
                     UserName = row.Action.AspNetUser.UserName,
                     KnownAs = row.Action.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs,
@@ -64,6 +65,7 @@ namespace HoomanLogic.Data
                 var models = db.LogEntries.Where(c => c.Action.UserId == userId && c.Action.IsPublic).Select(row => new LogEntryModel()
                 {
                     Id = row.Id,
+                    Ref = row.Id.ToString(),
                     UserId = row.Action.UserId,
                     UserName = row.Action.AspNetUser.UserName,
                     KnownAs = row.Action.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs,
@@ -90,6 +92,7 @@ namespace HoomanLogic.Data
                 var models = db.LogEntries.Where(c => c.Action.UserId == userId && (c.Action.IsPublic || isMine)).Select(row => new LogEntryModel()
                 {
                     Id = row.Id,
+                    Ref = row.Id.ToString(),
                     UserId = row.Action.UserId,
                     UserName = row.Action.AspNetUser.UserName,
                     KnownAs = row.Action.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs,

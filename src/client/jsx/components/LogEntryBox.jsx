@@ -22,6 +22,15 @@
 }(this, function (React) {
     'use strict';
     return React.createClass({
+        /*************************************************************
+         * COMPONENT LIFECYCLE
+         *************************************************************/
+        getInitialState: function () {
+            return {
+                isDropDownOpen: false  
+            };
+        },
+        
         componentWillMount: function () {
             var detailsChange = EventHandler.create();
             detailsChange
@@ -39,6 +48,9 @@
                 detailsChange: detailsChange
             };  
         },
+        componentWillUnmount: function () {
+            this.handlers.detailsChange.dispose();
+        },
         
         /*************************************************************
          * EVENT HANDLING
@@ -51,14 +63,60 @@
             ui.goTo('Comment', { userName: this.props.data.userName, id: this.props.data.id });
         },
         
+        handleDeleteClick: function () {
+            logEntryStore.destroy(this.props.data);
+        },
         handleDetailsChange: function (details) {
             this.props.data.details = details;
             logEntryStore.update(this.props.data);
+        },
+        handleDropDownClick: function () {
+            this.setState({
+                isDropDownOpen: !this.state.isDropDownOpen
+            });
         },
         
         /*************************************************************
          * RENDERING
          *************************************************************/
+        renderDropDown: function () {
+            
+            if (!this.state.isDropDownOpen) {
+                return null;
+            };
+            var style = {
+                position: 'absolute',
+                top: $(this.refs.dropDown.getDOMNode()).offset().top + 22 + 'px',
+                right: '5px',
+                backgroundColor: '#fff',
+                minWidth: '200px',
+                borderRadius: '4px',
+                border: '2px solid #e0e0e0'
+            };
+            
+            var listStyle = {
+                listStyle: 'none'  
+            };
+            
+            var options = [];
+            if (userStore.updates.value.userId === this.props.data.userId) {
+                options.push((
+                    <li><a onClick={this.handleDeleteClick}>Delete</a></li>
+                ));
+            }
+            
+            if (options.length === 0) {
+                return null;   
+            }
+            
+            return (
+                <div style={style}>
+                    <ul style={listStyle}>
+                        {options}
+                    </ul>
+                </div>    
+            );
+        },
         render: function () {
             var data = this.props.data;
 
@@ -69,7 +127,7 @@
             }
                                  
             if (data.comments && data.comments.length > 0) {
-                commentCounter = (<span>{(upvoteCounter ? ' - ' : '') + data.comments.length + ' ' + hlapp.formatNoun('Comment', data.comments.length)}</span>);
+                commentCounter = (<span className="clickable" onClick={this.handleCommentClick}>{(upvoteCounter ? ' - ' : '') + data.comments.length + ' ' + hlapp.formatNoun('Comment', data.comments.length)}</span>);
             }
             
             return (
@@ -77,7 +135,7 @@
                     <div>
                         <header style={{display: 'flex', flexDirection: 'row'}}>
                             <div style={{minWidth: '45px', paddingRight: '5px'}}><img style={{maxHeight: '45px', padding: '2px'}} src={this.props.data.profileUri} /></div>
-                            <div>
+                            <div style={{flexGrow: '1'}}>
                                 <div>
                                     <span style={{fontWeight: 'bold'}}>{this.props.data.knownAs}</span> {data.entry} <span style={{fontWeight: 'bold'}}>{data.actionName}</span>
                                 </div>
@@ -85,6 +143,7 @@
                                     <small>{hlapp.calcNaturalDays(new Date(data.date)) + (data.duration ? ' for ' + new babble.Duration(data.duration * 60000).toString() : '')}</small>
                                 </div>
                             </div>
+                            <i ref="dropDown" style={{color: '#b2b2b2'}} className="fa fa-chevron-down" onClick={this.handleDropDownClick}></i>
                         </header>
                         <div>
                             <ContentEditable html={data.details} onChange={this.handlers.detailsChange} />
@@ -102,6 +161,7 @@
                         </button>
                         </div>
                     </footer>
+                    {this.renderDropDown()}
                 </article>
             );
         }

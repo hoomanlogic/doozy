@@ -99,6 +99,33 @@
             });
         };
         
+        this.destroy = function (logEntry) {
+            // optimistic concurrency
+            var filtered = me.updates.value.filter( function (item) { return item.ref !== logEntry.ref; });
+            me.updates.value = filtered;
+            me.notify();
+            
+            $.ajax({
+                context: this,
+                url: hlapp.HOST_NAME + '/api/logentries/' + logEntry.id,
+                dataType: 'json',
+                headers: {
+                    'Authorization': 'Bearer ' + hlapp.getAccessToken()
+                },
+                type: 'DELETE',
+                contentType: 'application/json'
+            })
+            .done( function () {
+                toastr.success('Deleted log entry for ' + logEntry.actionName);
+                //hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
+            })
+            .fail( function (err) {
+                me.updates.value.concat(logEntry);
+                me.notify();
+                toastr.error(err.responseText);
+            });
+        };
+        
         this.toggleUpvote = function (userName, id) {
             
             $.ajax({

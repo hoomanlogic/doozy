@@ -76,7 +76,7 @@
 
             var actionIds = _.pluck(this.props.actions, 'id');
             var logEntries = logEntryStore.updates.value.filter( function (item) {
-                return actionIds.indexOf(item.actionId) > -1;
+                return item.entry !== 'created' && actionIds.indexOf(item.actionId) > -1;
             });
             
             logEntries = _.sortBy(logEntries, function(item){ return hlapp.getComparableLocalDateString(item.date) + '-' + (item.entry === 'performed' ? '1' : '0'); });

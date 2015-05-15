@@ -30,13 +30,29 @@
                 comment: ''
             };
         },
-
+        
         componentWillMount: function () {
             logEntryStore.subscribe(this.handleLogEntryStoreUpdate);
             this.handleLogEntryStoreUpdate(logEntryStore.updates.value);
+            var commentChange = EventHandler.create();
+            commentChange
+                .map(function (event) {
+                    return event.target.value;
+                })
+                .throttle(1000)
+                .filter(function (details) {
+                    return true;//details !== this.props.data.details;
+                }.bind(this))
+                .distinctUntilChanged()
+                .subscribe(this.handleCommentChange);
+
+            this.handlers = {
+                commentChange: commentChange
+            };  
         },
         componentWillUnmount: function () {
             logEntryStore.dispose(this.handleLogEntryStoreUpdate);
+            this.handlers.commentChange.dispose();
         },
 
         /*************************************************************
@@ -48,6 +64,10 @@
         
         handleClose: function () {
             ui.goTo('Log Entries', { userName: this.props.userName });
+        },
+        
+        handleCommentChange: function (comment) {
+            toastr.success('Comment changed');  
         },
         
         handlePostCommentClick: function () {
@@ -87,13 +107,18 @@
                         {comments.map(
                             function(item) {
                                 var duration = new babble.Duration(new Date() - new Date(item.date));
-                                
+                                var commentContent;
+                                if (item.userId === userStore.updates.value.userId) {
+                                    commentContent = (<ContentEditable html={item.comment} onChange={this.handlers.commentChange} />);
+                                } else {
+                                    commentContent = (<div>{item.comment}</div>);
+                                }
                                 return (
                                     <div>
                                         <div><img src={item.profileUri} title={item.knownAs} /></div>
                                         <div>
                                             <div style={{fontWeight: 'bold'}}>{item.knownAs}</div>
-                                            <div>{item.comment}</div>
+                                            {commentContent}
                                             <div style={{fontStyle: 'italic', fontSize: '0.8rem'}}>{duration.toString().split(', ')[0] + ' ago'}</div>
                                         </div>
                                     </div>
