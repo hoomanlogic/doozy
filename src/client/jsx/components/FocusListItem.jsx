@@ -51,7 +51,7 @@
          *************************************************************/
         render: function () {
             var data = this.props.data;
-            var lastDate = new Date(data.lastPerformed ? data.lastPerformed : data.created);
+            var latestDate = new Date(data.latestEntry.date);
 
             return (
                 <li key={data.id}>
@@ -60,7 +60,7 @@
                             <img style={{display: 'inline', verticalAlign: 'inherit'}} src={data.iconUri} />
                             <div style={{display: 'inline-block', verticalAlign: 'top'}}>
                                 <div>{this.calcFocusTitle(data)}</div>
-                                <div>{'last acted '}<RelativeTime accuracy="d" isoTime={lastDate} /></div>
+                                <div>{'last acted '}<RelativeTime accuracy="d" isoTime={latestDate} /></div>
                             </div>
                         </div>
                     </a>
