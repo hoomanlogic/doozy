@@ -7,11 +7,6 @@
 if (typeof require !== 'undefined') {
 	var errl = require('errl');
 	var hlcommon = require('common');
-	var skycons = require('skycons');
-	var jstorage = require('jstorage');
-	var aes = require('aes');
-	var signalr = require('signalr');
-	var selectize = require('selectize');
 	var toastr = require('toastr');
 }
 
