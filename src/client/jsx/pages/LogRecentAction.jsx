@@ -181,7 +181,13 @@
 
                     newAction = hlapp.action(names[i], tags);
                     newAction.created = this.state.date.toISOString();
-                    actionStore.lognew(newAction, { performed: this.state.date, duration: this.state.duration, entry: 'performed', details: this.state.details });
+                    
+                    logEntryStore.createWithNewAction(newAction, { 
+                        date: this.state.date, 
+                        duration: this.state.duration, 
+                        entry: 'performed', 
+                        details: this.state.details
+                    });
                 }
             }
 

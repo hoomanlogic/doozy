@@ -63,7 +63,7 @@ var ActionStore = function () {
     /**
      * Store Methods
      */
-    this.create = function (newAction) {
+    this.create = function (newAction, done, fail) {
         
         // update now for optimistic concurrency
         updates.onNext(updates.value.concat(newAction));
@@ -74,11 +74,17 @@ var ActionStore = function () {
             updates.onNext(updates.value);
             hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
             toastr.success('Added action ' + newAction.name);
+            if (typeof done !== 'undefined' && done !== null) {
+                done(newAction);
+            }
         })
         .fail( function (err) {
             var filtered = updates.value.filter( function (item) { return item !== newAction; });
             updates.onNext(filtered);
             toastr.error(err.responseText);
+            if (typeof fail !== 'undefined' && fail !== null) {
+                fail(err);
+            }
         });
     };
     

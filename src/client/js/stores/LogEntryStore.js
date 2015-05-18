@@ -29,6 +29,19 @@
         var me = this;
         
         var _api = {
+            postAction: function (action) {
+                return $.ajax({
+                    context: this,
+                    url: hlapp.HOST_NAME + '/api/actions',
+                    dataType: 'json',
+                    headers: {
+                        'Authorization': 'Bearer ' + hlapp.getAccessToken()
+                    },
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(action)
+                });
+            },
             getLogEntries: function () {
                 return $.ajax({
                     context: me,
@@ -178,39 +191,11 @@
 
         };
 
-        this.createWithNewAction = function (newAction, log) {
-
-            // update now for optimistic concurrency
-            updates.onNext(updates.value.concat(newAction));
-
-            _api.postAction(newAction)
-            .done(function (postActionResult) {
-                Object.assign(newAction, postActionResult);
-                updates.onNext(updates.value);
-                hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
-
-                var latestEntry = { date: log.performed, actionId: newAction.id, entry: 'performed', duration: log.duration, details: log.details };
-                Object.assign(newAction, { latestEntry: latestEntry });
-                updates.onNext(updates.value);
-
-                _api.postLog(latestEntry)
-                .done(function (postLogResult) {
-                    Object.assign(newAction, postLogResult);
-                    updates.onNext(updates.value);
-                    hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
-                    toastr.success('Logged new action ' + newAction.name);
-                })
-                .fail(function (err) {
-                    Object.assign(newAction, postActionResult);
-                    updates.onNext(updates.value);
-                    toastr.error(err.responseText);
-                });
-
-            })
-            .fail( function (err) {
-                var filtered = updates.value.filter( function (item) { return item !== newAction; });
-                updates.onNext(filtered);
-                toastr.error(err.responseText);
+        this.createWithNewAction = function (newAction, logEntry) {
+            
+            actionStore.create(newAction, function (result) {
+                logEntry.actionId = result.id
+                me.create(logEntry);
             });
 
         };
