@@ -124,7 +124,7 @@ var ActionStore = function () {
         });
     };
     
-    this.getExistingAction = function (name) {
+    this.getActionByName = function (name) {
         var existingAction = _.find(updates.value, function(item) { 
             return cleanActionName(item.name) === cleanActionName(name.toLowerCase()); 
         });

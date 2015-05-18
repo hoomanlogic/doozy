@@ -95,7 +95,7 @@
                 actionIndex = 0;
             }
 
-            var existingAction = actionStore.getExistingAction(commandParts[actionIndex]);
+            var existingAction = actionStore.getActionByName(commandParts[actionIndex]);
 
 
             if (existingAction) {
@@ -162,7 +162,7 @@
                 actionIndex = 0;
             }
 
-            var existingAction = actionStore.getExistingAction(commandParts[actionIndex]);
+            var existingAction = actionStore.getActionByName(commandParts[actionIndex]);
             if (existingAction) {
                 toastr.error('An action by this name already exists');
             } else {

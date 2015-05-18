@@ -154,7 +154,7 @@
 
             for (var i =0; i < names.length; i++) {
 
-                existingAction = actionStore.getExistingAction(names[i]);
+                existingAction = actionStore.getActionByName(names[i]);
 
                 if (existingAction) {
                     logEntryStore.create({
@@ -237,7 +237,7 @@
                 maxItems: 1,
                 openOnFocus: false,
                 onItemAdd: function (value, $item) {
-                    var existingAction = actionStore.getExistingAction(value);
+                    var existingAction = actionStore.getActionByName(value);
                     if (existingAction !== void 0 && existingAction !== null) {
                         var duration = new babble.Duration(existingAction.duration * 60000);
                         this.setState({
@@ -347,7 +347,7 @@
                 actionName = action || '';
             }
             
-            if (!actionStore.getExistingAction(actionName)) {
+            if (!actionStore.getActionByName(actionName)) {
                 state.isNewAction = true;
             }
 
