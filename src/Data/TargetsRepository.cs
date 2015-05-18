@@ -17,7 +17,6 @@ namespace HoomanLogic.Data
                 var models = db.Targets.Where(c => c.UserId == userId).Select(row => new TargetModel()
                 {
                     Id = row.Id,
-                    Ref = row.Id.ToString(),
                     TagName = row.Tag.Name,
                     Kind = row.Kind,
                     Goal = row.Goal,
@@ -37,7 +36,6 @@ namespace HoomanLogic.Data
                 var model = db.Targets.Where(c => c.Id == id).Select(row => new TargetModel()
                 {
                     Id = row.Id,
-                    Ref = row.Id.ToString(),
                     TagName = row.Tag.Name,
                     Kind = row.Kind,
                     Goal = row.Goal,
@@ -73,7 +71,7 @@ namespace HoomanLogic.Data
 
                 model.Id = row.Id;
 
-                return new { Ref = model.Ref, Id = row.Id};
+                return new { Id = row.Id};
             }
         }
 

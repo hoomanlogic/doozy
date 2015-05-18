@@ -96,7 +96,7 @@ var ActionStore = function () {
     
     this.destroy = function (action) {
         // optimistic concurrency
-        var filtered = updates.value.filter( function (item) { return item.ref !== action.ref; });
+        var filtered = updates.value.filter( function (item) { return item.id !== action.id; });
         updates.onNext(filtered);
         
         _api.deleteAction(action)
@@ -110,10 +110,10 @@ var ActionStore = function () {
         });
     };
     
-    this.update = function (updateArgs) {
+    this.update = function (action) {
         
         var actionToSave = _.find(updates.value, function(item) { 
-            return item.ref === updateArgs.actionRef; 
+            return item.id === action.id; 
         });
         var state = updateArgs.state,
             original = Object.assign({}, actionToSave);
@@ -143,9 +143,9 @@ var ActionStore = function () {
         return existingAction;
     };
     
-    this.getActionByRef = function (ref) {
+    this.getActionByRef = function (id) {
         var existingAction = _.find(updates.value, function(item) { 
-            return item.ref.toLowerCase() === ref.toLowerCase() || item.id === ref.toLowerCase(); 
+            return item.id.toLowerCase() === id.toLowerCase(); 
         });
         return existingAction;
     };

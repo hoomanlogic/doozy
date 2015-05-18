@@ -37,7 +37,6 @@
                 this.setState({
                     isNew: nextProps.currentFocus.isNew || false,
                     id: nextProps.currentFocus.id,
-                    ref: nextProps.currentFocus.ref,
                     name: nextProps.currentFocus.name,
                     kind: nextProps.currentFocus.kind,
                     tagName: nextProps.currentFocus.tagName
@@ -72,11 +71,10 @@
         },
         handleSaveClick: function () {
             if (!this.state.isNew) {
-                focusStore.update({ focusRef: this.state.ref, state: this.state });
+                focusStore.update(this.state);
             } else {
                 focusStore.create({
                     id: this.state.id,
-                    ref: this.state.ref,
                     name: this.state.name,
                     kind: this.state.kind,
                     tagName: this.state.tagName

@@ -27,7 +27,6 @@ namespace HoomanLogic.Data
                 ActionModel action = db.Actions.Where(c => c.Id == id).Select(row => new Models.ActionModel()
                 {
                     Id = row.Id,
-                    Ref = row.Id.ToString(),
                     Kind = row.Kind,
                     Name = row.Name,
                     Created = row.Created,
@@ -107,7 +106,6 @@ namespace HoomanLogic.Data
                            select new Models.ActionModel()
                            {
                                Id = row.Id,
-                               Ref = row.Id.ToString(),
                                Kind = row.Kind,
                                Name = row.Name,
                                Created = row.Created,

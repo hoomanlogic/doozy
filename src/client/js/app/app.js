@@ -194,8 +194,7 @@ if (typeof require !== 'undefined') {
         
         // return object literal
         return {
-            ref: hlcommon.uuid(),
-            id: this.ref,
+            id: hlcommon.uuid(),
             kind: 'Action',
             name: name || '',
             created: new Date().toISOString(),

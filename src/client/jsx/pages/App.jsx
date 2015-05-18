@@ -187,7 +187,7 @@
                 var currentFocus = null;
                 if (this.state.currentFocus) {
                     currentFocus = _.find(focuses, function(item) { 
-                        return item.ref === this.state.currentFocus.ref; 
+                        return item.id === this.state.currentFocus.id; 
                     }.bind(this));
                 }
                 this.setState({ currentFocus: currentFocus });
@@ -260,15 +260,15 @@
         },
         
         addAction: function (action) {
-            this.goTo('Manage Action', { actionRef: (action ? (action.ref || action.id) : null), mode: 'Add'});
+            this.goTo('Manage Action', { actionId: (action ? action.id : null), mode: 'Add'});
             //this.refs.addeditaction.add(action);
         },
         editAction: function (action) {
-            this.goTo('Manage Action', { actionRef: (action ? (action.ref || action.id) : null), mode: 'Edit'});
+            this.goTo('Manage Action', { actionId: (action ? action.id : null), mode: 'Edit'});
             //this.refs.addeditaction.edit(action);
         },
         logAction: function (action) {
-            this.goTo('Log Recent Action', { actionRef: (action ? (action.ref || action.id) : null) });
+            this.goTo('Log Recent Action', { actionId: (action ? action.id : null) });
             //this.refs.logaction.log(action);
         },
         goTo: function (page, options) {

@@ -8,7 +8,6 @@ namespace HoomanLogic.Models
     public class TargetModel
     {
         public Guid Id { get; set; }
-        public string Ref { get; set; }
         public string TagName { get; set; }
         public string Kind { get; set; }
         public short Goal { get; set; }

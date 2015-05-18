@@ -67,9 +67,8 @@
                     <tbody>                        
                         {nextActions.map(function(item, index) {
                             return (
-                                <ActionRow key={item.ref || item.id} 
-                                    action={item} 
-                                    actionRef={item.ref} 
+                                <ActionRow key={item.id} 
+                                    action={item}
                                     actionId={item.id} 
                                     actionName={item.name} 
                                     actionLastPerformed={item.lastPerformed} 

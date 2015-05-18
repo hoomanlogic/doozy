@@ -443,7 +443,7 @@
 
             // call method to save the action
             if (this.props.mode === 'Edit') {
-                actionStore.update({ actionRef: this.props.action.ref, state: this.props.action });
+                actionStore.update(this.props.action);
             } else {
                 actionStore.create(this.props.action);
             }

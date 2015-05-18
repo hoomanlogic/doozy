@@ -211,7 +211,7 @@
             });
             
             // optimistic concurrency
-            var filtered = me.updates.value.filter( function (item) { return item.ref !== logEntry.ref; });
+            var filtered = me.updates.value.filter( function (item) { return item.id !== logEntry.id; });
             me.updates.value = filtered;
             me.notify();
             

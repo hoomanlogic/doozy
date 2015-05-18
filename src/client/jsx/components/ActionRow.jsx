@@ -92,7 +92,10 @@
             this.preventTouch = false;
         },
         handleNameChange: function (name) {
-            actionStore.update({ actionRef: this.props.actionRef, state: { name: name } });
+            actionStore.update({ 
+                id: this.props.action.id,
+                name: name 
+            });
         },
         handleResize: function(e) {
             this.setState({windowWidth: window.innerWidth});

@@ -13,7 +13,6 @@ namespace HoomanLogic.Models
             RecurrenceRules = new List<String>();
         }
         public Guid Id { get; set; }
-        public string Ref { get; set; }
         public string Kind { get; set; }
         public string Name { get; set; }
         public bool IsPublic { get; set; }

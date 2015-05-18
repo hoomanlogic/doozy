@@ -39,9 +39,18 @@
             /**
               * Upcoming Action
               */ 
-            if (item.nextDate !== null && new Date(item.nextDate) > new Date()) {
-                return true;
+            
+            if (item.nextDate !== null) {
+                var time = new Date(item.nextDate);
+                var now = new Date();
+                var timeDiff = Math.abs(now.getTime() - time.getTime());
+                var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                if (diffDays < 7) {
+                    return true;
+                }
             }
+            
+            return false;
         },
 
         /*************************************************************
@@ -53,10 +62,9 @@
                     <tbody>                        
                         {upcomingActions.map(function(item, index) {
                             return (
-                                <ActionRow key={item.ref || item.id} 
+                                <ActionRow key={item.id} 
                                     overrideIsDone={false}
                                     action={item} 
-                                    actionRef={item.ref} 
                                     actionId={item.id} 
                                     actionName={item.name}
                                     actionLastPerformed={item.nextDate} 

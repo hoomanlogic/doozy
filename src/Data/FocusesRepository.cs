@@ -16,7 +16,6 @@ namespace HoomanLogic.Data
                 List<FocusModel> models = db.Focuses.Where(c => c.UserId == userId).Select(row => new Models.FocusModel()
                 {
                     Id = row.Id,
-                    Ref = row.Id.ToString(),
                     Kind = row.Kind,
                     Name = row.Name,
                     TagName = row.TagName,
@@ -46,7 +45,6 @@ namespace HoomanLogic.Data
                 FocusModel model = db.Focuses.Where(c => c.Id == id).Select(row => new Models.FocusModel()
                 {
                     Id = row.Id,
-                    Ref = row.Id.ToString(),
                     Kind = row.Kind,
                     Name = row.Name,
                     TagName = row.TagName,
@@ -87,7 +85,7 @@ namespace HoomanLogic.Data
 
                 TagsRepository.Add(userId, focusTag);
 
-                return new { Ref = model.Ref, Id = row.Id, Name = row.Name };
+                return new { Id = row.Id, Name = row.Name };
             }
         }
 

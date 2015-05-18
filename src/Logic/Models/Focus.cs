@@ -8,7 +8,6 @@ namespace HoomanLogic.Models
     public class FocusModel
     {
         public Guid Id { get; set; }
-        public string Ref { get; set; }
         public string Kind { get; set; }
         public string Name { get; set; }
         public DateTime? Enlist { get; set; }

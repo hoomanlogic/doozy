@@ -128,10 +128,10 @@ var FocusStore = function () {
         });
     };
     
-    this.update = function (updateArgs) {
+    this.update = function (focus) {
         
         var focusToSave = _.find(updates.value, function(item) { 
-            return item.ref === updateArgs.focusRef; 
+            return item.id === focus.id; 
         });
         var state = updateArgs.state,
             original = Object.assign({}, focusToSave);
@@ -156,7 +156,7 @@ var FocusStore = function () {
     
     this.updateFromServer = function (focusId, newState) {
         var focusToUpdate = _.find(updates.value, function(item) { 
-            return item.ref === focusId; 
+            return item.id === focusId; 
         });
         Object.assign(focusToUpdate, newState);
         updates.onNext(updates.value);
