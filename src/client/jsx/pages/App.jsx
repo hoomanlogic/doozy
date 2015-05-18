@@ -529,7 +529,7 @@
             window['ui'].page = this.state.page;
             
             var weatherBackdrop = this.renderWeatherBackdrop();
-            var action, actionRef, mode;
+            var action, actionId, mode;
             
             var page = null, hideMain = true, additional;
             if (this.state.page === 'Focus Management') {
@@ -537,16 +537,16 @@
             } else if (this.state.page === 'Preferences') {
                 page = this.renderPreferences();
             } else if (this.state.page === 'Manage Action') {
-                actionRef = (this.state.pageOptions || {}).actionRef || null;
-                if (actionRef) {
-                    action = actionStore.getActionByRef(actionRef);
+                actionId = (this.state.pageOptions || {}).actionId || null;
+                if (actionId) {
+                    action = actionStore.getActionById(actionId);
                 }
                 mode = (this.state.pageOptions || {}).mode || 'Add';
                 page = (<ManageAction action={action} mode={mode} focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : ''} />);
             } else if (this.state.page === 'Log Recent Action') {
-                actionRef = (this.state.pageOptions || {}).actionRef || null;
-                if (actionRef) {
-                    action = actionStore.getActionByRef(actionRef);
+                actionId = (this.state.pageOptions || {}).actionId || null;
+                if (actionId) {
+                    action = actionStore.getActionById(actionId);
                 }
                 page = (<LogRecentAction action={action} focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : ''} />);
             } else if (this.state.page === 'Conversation' && typeof this.state.activeConversation !== 'undefined' && this.state.activeConversation !== null) {

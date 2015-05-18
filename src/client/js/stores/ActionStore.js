@@ -115,7 +115,7 @@ var ActionStore = function () {
         var actionToSave = _.find(updates.value, function(item) { 
             return item.id === action.id; 
         });
-        var state = updateArgs.state,
+        var state = action,
             original = Object.assign({}, actionToSave);
         
         var val = actionToSave;
@@ -143,7 +143,7 @@ var ActionStore = function () {
         return existingAction;
     };
     
-    this.getActionByRef = function (id) {
+    this.getActionById = function (id) {
         var existingAction = _.find(updates.value, function(item) { 
             return item.id.toLowerCase() === id.toLowerCase(); 
         });

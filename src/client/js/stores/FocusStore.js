@@ -133,7 +133,7 @@ var FocusStore = function () {
         var focusToSave = _.find(updates.value, function(item) { 
             return item.id === focus.id; 
         });
-        var state = updateArgs.state,
+        var state = focus,
             original = Object.assign({}, focusToSave);
         
         var val = focusToSave;
