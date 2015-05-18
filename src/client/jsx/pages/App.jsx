@@ -99,8 +99,8 @@
             actionStore.init(this.props.settings.userName, this.props.settings.userId);
             focusStore.init(this.props.settings.userName, this.props.settings.userId);
             weatherStore.init(this.props.settings.userName, this.props.settings.userId);
+            logEntryStore.init(this.props.settings.userName, this.props.settings.userId);
             
-            logEntryStore.getLogEntries();
             connectionStore.getConnections();
 
             /**

@@ -29,6 +29,16 @@
         var me = this;
         
         var _api = {
+            getLogEntries: function () {
+                return $.ajax({
+                    context: me,
+                    url: hlapp.HOST_NAME + '/api/logentries',
+                    dataType: 'json',
+                    headers: {
+                        'Authorization': 'Bearer ' + hlapp.getAccessToken()
+                    }
+                });
+            },
             postLogEntry: function (logEntry) {
                 return $.ajax({
                     context: this,
@@ -108,24 +118,6 @@
             }
         };
 
-        this.getLogEntries = function () {
-            $.ajax({
-                context: me,
-                url: hlapp.HOST_NAME + '/api/logentries',
-                dataType: 'json',
-                headers: {
-                    'Authorization': 'Bearer ' + hlapp.getAccessToken()
-                },
-                success: function(result) {
-                    var logEntries = me.updates.value;
-                    me.updates.value = logEntries.concat(result);
-                    me.notify();
-                },
-                error: function(xhr, status, err) {
-                    toastr.error('Oh no! There was a problem getting log entries.' + status + err);
-                }
-            });
-        };
         
         this.getLogEntriesByUserName = function (userName) {
             $.ajax({
@@ -166,15 +158,7 @@
                         lastPerformed = item.date;   
                     }
                 });
-                
-                //me.updates.value.map(function (item) {
-                //    if (item.actionId === actionToUpdate.id && item.entry === 'performed') {
-                //        if (lastPerformed === null || new Date(item.date) > new Date(lastPerformed)) {
-                //            lastPerformed = item.date;   
-                //        }
-                //    }
-                //});
-                
+            
                 // update action and notify
                 if (actionToUpdate.lastPerformed !== lastPerformed) {
                     actionToUpdate.lastPerformed = lastPerformed;
@@ -278,14 +262,6 @@
                     }
                 });
                 
-                //me.updates.value.map(function (item) {
-                //    if (item.actionId === actionToUpdate.Id && item.entry === 'performed') {
-                //        if (lastPerformed === null || new Date(item.date) > new Date(lastPerformed)) {
-                //            lastPerformed = item.date;   
-                //        }
-                //    }
-                //});
-                
                 // update action and notify
                 if (actionToUpdate.lastPerformed !== lastPerformed) {
                     actionToUpdate.lastPerformed = lastPerformed;
@@ -299,7 +275,7 @@
                 }
                 
                 toastr.success('Deleted log entry for ' + logEntry.actionName);
-                //hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
+                //hlio.saveLocal('hl.' + user + '.logentries', updates.value, secret);
             })
             .fail( function (err) {
                 me.updates.value = me.updates.value.concat(logEntry);
@@ -391,6 +367,33 @@
                     toastr.error('Oh no! There was a problem with the request!' + status + err);
                 }
             });
+        };
+        
+        var user = 'my';
+        var secret = 'hash';
+        
+        this.init = function (userName, userId) {
+
+            user = userName;
+            secret = userId;
+
+            // populate store - call to database
+            _api.getLogEntries()
+            .done( function(result) {
+                var logEntries = me.updates.value;
+                me.updates.value = logEntries.concat(result);
+                hlio.saveLocal('hl.' + user + '.logentries', result, secret);
+                me.notify();
+            })
+            .fail( function(xhr, status, err) {
+                toastr.error(err.responseText);
+            });
+
+            var logentries = hlio.loadLocal('hl.' + user + '.logentries', secret);
+            if (logentries) {
+                me.updates.value = logentries;
+                me.notify();
+            }
         };
     };
     LogEntryStore.prototype = Object.create(hlstore.Store.prototype);
