@@ -117,7 +117,6 @@
                 });
             }
         };
-
         
         this.getLogEntriesByUserName = function (userName) {
             $.ajax({
@@ -354,18 +353,18 @@
             });
         };
         
-        this.deleteComment = function (userName, id) {
+        this.deleteComment = function (userName, logEntryId, id) {
             _api.deleteComment(id)
             .done( function(result) {
-
-                    // find existing logEntry
-//                    var logEntries = me.updates.value;
-//                    var logEntry = _.find(logEntries, {id: id});
-//                    me.notify();
+                
+                var logEntries = me.updates.value;
+                var logEntry = _.find(logEntries, {id: logEntryId});
+                logEntry.comments = _.where(logEntry.comments, function (item) { return item.id !== id; });
+                me.notify();
+                
             })
-            .error( function(xhr, status, err) {
-                    toastr.error('Oh no! There was a problem with the request!' + status + err);
-                }
+            .fail( function(xhr, status, err) {
+                toastr.error('Oh no! There was a problem with the request!' + status + err);
             });
         };
         
