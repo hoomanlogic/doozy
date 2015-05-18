@@ -157,7 +157,7 @@
                 existingAction = actionStore.getExistingAction(names[i]);
 
                 if (existingAction) {
-                    logEntryStore.log({
+                    logEntryStore.create({
                         actionId: existingAction.id,
                         date: this.state.date, 
                         duration: this.state.duration, 

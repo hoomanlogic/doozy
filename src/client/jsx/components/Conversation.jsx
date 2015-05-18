@@ -57,7 +57,7 @@
             this.setState({windowWidth: window.innerWidth});
         },
         handleViewLogEntriesClick: function () {
-            logEntryStore.getLogEntries(this.props.conversation.id);
+            logEntryStore.getLogEntriesByUserName(this.props.conversation.id);
             ui.goTo('Log Entries', { userName: this.props.conversation.id});  
         },
         onClose: function () {

@@ -51,31 +51,6 @@ var FocusStore = function () {
                 type: 'DELETE',
                 contentType: 'application/json'
             });
-        },
-        deleteLog: function (focus, logId) {
-            return $.ajax({
-                context: this,
-                url: hlapp.HOST_NAME + '/api/logentries/' + logId,
-                dataType: 'json',
-                headers: {
-                    'Authorization': 'Bearer ' + hlapp.getAccessToken()
-                },
-                type: 'DELETE',
-                contentType: 'application/json'
-            });
-        },
-        postLog: function (focus, log) {
-            return $.ajax({
-                context: this,
-                url: hlapp.HOST_NAME + '/api/logentries',
-                dataType: 'json',
-                headers: {
-                    'Authorization': 'Bearer ' + hlapp.getAccessToken()
-                },
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(log)
-            });
         }
     };
     

@@ -85,6 +85,20 @@ namespace HoomanLogic.Server.Controllers
             public string Comment { get; set; }
         }
 
+        [HttpPut]
+        [Route("api/comment")]
+        public void PutComment([FromBody] PutCommentRequest request)
+        {
+            string userId = User.Identity.GetUserId();
+            LogEntriesRepository.UpdateComment(userId, request.Id, request.Comment);
+        }
+
+        public class PutCommentRequest
+        {
+            public Guid Id { get; set; }
+            public string Comment { get; set; }
+        }
+
         [HttpDelete]
         [Route("api/comment")]
         public void DeleteComment([FromBody] DeleteCommentRequest request)

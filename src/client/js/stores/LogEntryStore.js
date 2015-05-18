@@ -54,29 +54,61 @@
                     contentType: 'application/json',
                     data: JSON.stringify(logEntry)
                 });
+            },
+            deleteLogEntry: function (logEntry) {
+                return $.ajax({
+                    context: this,
+                    url: hlapp.HOST_NAME + '/api/logentries/' + logEntry.id,
+                    dataType: 'json',
+                    headers: {
+                        'Authorization': 'Bearer ' + hlapp.getAccessToken()
+                    },
+                    type: 'DELETE',
+                    contentType: 'application/json'
+                });
+            },
+            postComment: function (logEntryId, comment) {
+                return $.ajax({
+                    context: me,
+                    url: hlapp.HOST_NAME + '/api/comment',
+                    dataType: 'json',
+                    headers: {
+                        'Authorization': 'Bearer ' + hlapp.getAccessToken()
+                    },
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ id: logEntryId, comment: comment })
+                });
+            },
+            putComment: function (logEntryPeanutId, comment) {
+                return $.ajax({
+                    context: this,
+                    url: hlapp.HOST_NAME + '/api/comment',
+                    dataType: 'json',
+                    headers: {
+                        'Authorization': 'Bearer ' + hlapp.getAccessToken()
+                    },
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ id: logEntryPeanutId, comment: comment })
+                });
+            },
+            deleteComment: function (logEntryPeanutId) {
+                return $.ajax({
+                    context: me,
+                    url: hlapp.HOST_NAME + '/api/comment',
+                    dataType: 'json',
+                    headers: {
+                        'Authorization': 'Bearer ' + hlapp.getAccessToken()
+                    },
+                    type: 'DELETE',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ id: id })
+                });
             }
         };
 
-        this.getLogEntries = function (userName) {
-            $.ajax({
-                context: me,
-                url: hlapp.HOST_NAME + '/api/logentries?userName=' + encodeURIComponent(userName),
-                dataType: 'json',
-                headers: {
-                    'Authorization': 'Bearer ' + hlapp.getAccessToken()
-                },
-                success: function(result) {
-                    var logEntries = me.updates.value;
-                    me.updates.value = logEntries.concat(result);
-                    me.notify();
-                },
-                error: function(xhr, status, err) {
-                    toastr.error('Oh no! There was a problem getting log entries.' + status + err);
-                }
-            });
-        };
-        
-        this.getMyLogEntries = function () {
+        this.getLogEntries = function () {
             $.ajax({
                 context: me,
                 url: hlapp.HOST_NAME + '/api/logentries',
@@ -95,7 +127,26 @@
             });
         };
         
-        this.log = function (logEntry) {
+        this.getLogEntriesByUserName = function (userName) {
+            $.ajax({
+                context: me,
+                url: hlapp.HOST_NAME + '/api/logentries?userName=' + encodeURIComponent(userName),
+                dataType: 'json',
+                headers: {
+                    'Authorization': 'Bearer ' + hlapp.getAccessToken()
+                },
+                success: function(result) {
+                    var logEntries = me.updates.value;
+                    me.updates.value = logEntries.concat(result);
+                    me.notify();
+                },
+                error: function(xhr, status, err) {
+                    toastr.error('Oh no! There was a problem getting log entries.' + status + err);
+                }
+            });
+        };
+        
+        this.create = function (logEntry) {
 
             var actionToUpdate = _.find(actionStore.updates.value, function(item) { 
                 return logEntry.actionId === item.id; 
@@ -144,7 +195,7 @@
 
         };
 
-        this.lognew = function (newAction, log) {
+        this.createWithNewAction = function (newAction, log) {
 
             // update now for optimistic concurrency
             updates.onNext(updates.value.concat(newAction));
@@ -215,16 +266,7 @@
             me.updates.value = filtered;
             me.notify();
             
-            $.ajax({
-                context: this,
-                url: hlapp.HOST_NAME + '/api/logentries/' + logEntry.id,
-                dataType: 'json',
-                headers: {
-                    'Authorization': 'Bearer ' + hlapp.getAccessToken()
-                },
-                type: 'DELETE',
-                contentType: 'application/json'
-            })
+            _api.deleteLogEntry(logEntry)
             .done( function (result) {
                 
                 // find last performed
@@ -304,52 +346,48 @@
         
         this.addComment = function (userName, id, comment) {
             
-            
-            $.ajax({
-                context: me,
-                url: hlapp.HOST_NAME + '/api/comment',
-                dataType: 'json',
-                headers: {
-                    'Authorization': 'Bearer ' + hlapp.getAccessToken()
-                },
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ id: id, comment: comment }),
-                success: function(result) {
+            _api.postComment(id, comment)
+            .done( function(result) {
 
-                    // find existing logEntry
-                    var logEntries = me.updates.value;
-                    var logEntry = _.find(logEntries, {id: id});
-                    logEntry.comments.push(result);
-                    me.notify();
-                },
-                error: function(xhr, status, err) {
-                    toastr.error('Oh no! There was a problem with the request!' + status + err);
-                }
+                // find existing logEntry
+                var logEntries = me.updates.value;
+                var logEntry = _.find(logEntries, {id: id});
+                logEntry.comments.push(result);
+                me.notify();
+            })
+            .fail( function(xhr, status, err) {
+                toastr.error('Oh no! There was a problem with the request!' + status + err);
+            });
+        };
+        
+        this.updateComment = function (userName, logEntryId, id, comment) {
+            
+            _api.postComment(id, comment)
+            .done( function(result) {
+
+                // find existing logEntry
+                var logEntries = me.updates.value;
+                var logEntry = _.find(logEntries, {id: logEntryId});
+                // find comment to update
+                var comment = _.find(logEntry.comments, {id: id});
+                comment.comment = comment;
+                me.notify();
+            })
+            .fail( function(xhr, status, err) {
+                toastr.error('Oh no! There was a problem with the request!' + status + err);
             });
         };
         
         this.deleteComment = function (userName, id) {
-            
-            
-            $.ajax({
-                context: me,
-                url: hlapp.HOST_NAME + '/api/comment',
-                dataType: 'json',
-                headers: {
-                    'Authorization': 'Bearer ' + hlapp.getAccessToken()
-                },
-                type: 'DELETE',
-                contentType: 'application/json',
-                data: JSON.stringify({ id: id }),
-                success: function(result) {
+            _api.deleteComment(id)
+            .done( function(result) {
 
                     // find existing logEntry
 //                    var logEntries = me.updates.value;
 //                    var logEntry = _.find(logEntries, {id: id});
 //                    me.notify();
-                },
-                error: function(xhr, status, err) {
+            })
+            .error( function(xhr, status, err) {
                     toastr.error('Oh no! There was a problem with the request!' + status + err);
                 }
             });

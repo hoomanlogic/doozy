@@ -51,18 +51,6 @@ var ActionStore = function () {
                 type: 'DELETE',
                 contentType: 'application/json'
             });
-        },
-        deleteLog: function (logId) {
-            return $.ajax({
-                context: this,
-                url: hlapp.HOST_NAME + '/api/logentries/' + logId,
-                dataType: 'json',
-                headers: {
-                    'Authorization': 'Bearer ' + hlapp.getAccessToken()
-                },
-                type: 'DELETE',
-                contentType: 'application/json'
-            });
         }
     };
     

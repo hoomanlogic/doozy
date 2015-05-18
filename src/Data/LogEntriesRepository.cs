@@ -317,6 +317,18 @@ namespace HoomanLogic.Data
             }
         }
 
+        public static void UpdateComment(string userId, Guid id, string comment)
+        {
+            using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())
+            {
+
+                var row = db.LogEntryPeanuts.Where(a => a.Id == id).First();
+                row.Comment = comment;
+
+                db.SaveChanges();
+            }
+        }
+
         public static void DeleteComment(string userId, Guid id)
         {
             using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())

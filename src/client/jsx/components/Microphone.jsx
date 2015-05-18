@@ -99,7 +99,7 @@
 
 
             if (existingAction) {
-                logEntryStore.log({
+                logEntryStore.create({
                     actionId: existingAction.id,
                     date: date, 
                     duration: duration, 
@@ -115,7 +115,7 @@
                 var newAction = hlapp.action(commandParts[actionIndex].slice(0,1).toUpperCase() + commandParts[actionIndex].slice(1), tags);
                 newAction.created = date;
 
-                logEntryStore.lognew(newAction, {
+                logEntryStore.createWithNewAction(newAction, {
                     date: date, 
                     duration: duration, 
                     entry: 'performed', 
