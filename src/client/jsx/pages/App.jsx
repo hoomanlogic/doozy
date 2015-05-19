@@ -71,6 +71,7 @@
                 activeConversation: null,
                 page: page,
                 pageOptions: null,
+                requests: []
             };
         },
 
@@ -86,6 +87,7 @@
             window['ui'].goBack = this.goBack;
             window['ui'].openConversation = this.selectConversation;
             window['ui'].getHeightBuffer = this.getHeightBuffer;
+            window['ui'].queueRequest = this.queueRequest;
 
             // let error logger know which user
             errl.config.getUser = function () {
@@ -218,6 +220,34 @@
         /*************************************************************
          * MISC
          *************************************************************/
+        queueRequest: function (msg, fn, fnUndo, ms) {
+            var uuid = hlcommon.uuid();
+            
+            var request = {
+                id: uuid,
+                timeoutId: setTimeout(function () {
+                    this.processRequest(fn, uuid);
+                }.bind(this), ms), 
+                msg: msg,
+                onUndo: fnUndo
+            };
+            
+            this.state.requests.push(request);
+            this.setState({requests: this.state.requests.slice()});
+        },
+        processRequest: function (fn, id) {
+            fn();
+            this.state.requests = this.state.requests.filter( function (item) { return item.id !== id});
+            this.setState({requests: this.state.requests.slice()});
+        },
+        undoRequest: function (timeoutId) {
+            var request = _.find(this.state.requests, {timeoutId: timeoutId});
+            request.onUndo();
+            clearTimeout(timeoutId);
+            this.state.requests = this.state.requests.filter( function (item) { return item.timeoutId !== timeoutId});
+            this.setState({requests: this.state.requests.slice()});
+        },
+        
         getHeightBuffer: function () {
             if (timerStore.updates.value.isOpen) {
                 return 55 + 38;
@@ -561,7 +591,31 @@
             } else { //DO
                 hideMain = false;
             }
-
+                        
+            var requests;
+            if (this.state.requests.length > 0) {
+                requests = (
+                    <div style={{backgroundColor: '#444', padding: '3px'}}>
+                        {this.state.requests.map(function (item) {
+                            var style = {
+                                padding: '3px',
+                                margin: '3px',
+                                backgroundImage: 'none',
+                                color: '#444',
+                                backgroundColor: '#e2ff63',
+                                borderColor: '#e2ff63',
+                                fontWeight: 'bold',
+                                outlineColor: 'rgb(40, 40, 40)',
+                                borderRadius: '4px'
+                            };
+                            return (
+                                <div className="clickable" style={style}><span>{item.msg} </span><span className="clickable pull-right" onClick={this.undoRequest.bind(this, item.timeoutId)}>Undo </span></div>
+                            );
+                        }.bind(this))}
+                    </div>
+                );
+            }
+                    
             return (
                 <div>
                     <PrimaryNavigation 
@@ -570,6 +624,7 @@
                         handleFocusClick={this.handleFocusClick} />
                     <TimerBar />
                     {weatherBackdrop}
+                    {requests}
                     <FocusActions hidden={hideMain} focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : ''} />
                     {page}
                 </div>

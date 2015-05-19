@@ -93,15 +93,22 @@ var ActionStore = function () {
         var filtered = updates.value.filter( function (item) { return item.id !== action.id; });
         updates.onNext(filtered);
         
-        _api.deleteAction(action)
-        .done( function () {
-            toastr.success('Deleted action ' + action.name);
-            hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
-        })
-        .fail( function (err) {
+        ui.queueRequest('Deleted action ' + action.name, function () {
+            _api.deleteAction(action)
+            .done( function () {
+                hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
+            })
+            .fail( function (err) {
+                updates.onNext(updates.value.concat(action));
+                toastr.error(err.responseText);
+            });
+        }, function () {
             updates.onNext(updates.value.concat(action));
-            toastr.error(err.responseText);
-        });
+        }, 30000);
+    };
+    
+    this.undoableRequest = function (fn) {
+        var interval = setTimeout(fn, 30000);
     };
     
     this.update = function (action) {
