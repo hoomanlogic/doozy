@@ -88,6 +88,15 @@
                 return null;        
             }
 
+            /**
+              * Inline Styles
+              */
+            var headerStyle = { 
+                padding: '2px 2px 2px 8px',
+                fontWeight: 'bold',
+                fontSize: '1.5em'
+            };
+
             var boxesDom = null;
             boxesDom = this.state.boxes.map( function(box) {
 
@@ -107,7 +116,6 @@
                                     return (
                                         <ActionRow key={item.id} 
                                             action={item}
-                                            actionId={item.id} 
                                             actionName={item.name}
                                             actionLastPerformed={item.lastPerformed} 
                                             actionNextDate={item.nextDate} />
@@ -120,7 +128,12 @@
 
                 return (
                     <div key={box.box.substring(1)}>
-                        <div className="table-title" onClick={this.handleBoxTitleClick.bind(null, box)}><i className={box.expanded ? 'fa fa-dropbox' : 'fa fa-cube'}></i>{box.box.substring(1)}</div>
+                        <div className="clickable" 
+                            style={headerStyle} 
+                            onClick={this.handleBoxTitleClick.bind(null, box)}>
+                            <i className={box.expanded ? 'fa fa-dropbox' : 'fa fa-cube'}></i>
+                            <span>{box.box.substring(1)}</span>
+                        </div>
                         {list}
                     </div> 
                 );

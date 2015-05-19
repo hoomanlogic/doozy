@@ -4,29 +4,43 @@
 	if (typeof exports === "object") {
 		// CommonJS
 		module.exports = exports = factory(
-            require('react'),
-            require('./TagListItem')
+            require('react')
         );
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
 		define([
-            'react',
-            './TagListItem'
+            'react'
         ], factory);
 	}
 	else {
 		// Global (browser)
-		root.TagListItem = factory(root.React, root.TagListItem);
+		root.TagListItem = factory(root.React);
 	}
-}(this, function (React, TagListItem) {
+}(this, function (React) {
     'use strict';
     return React.createClass({
+        mixins: [React.addons.PureRenderMixin],
+        propTypes: {
+            // required
+            tag: React.PropTypes.string.isRequired,
+            handleClick: React.PropTypes.func.isRequired,
+            onTagUpdated: React.PropTypes.func.isRequired,
+            // optional
+            canEdit: React.PropTypes.bool,
+            canRemove: React.PropTypes.bool,
+            isSelected: React.PropTypes.bool,
+        },
+        
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
         getDefaultProps: function () {
-          return { canRemove: false, canEdit: false };
+          return { 
+              canEdit: false,
+              canRemove: false,
+              isSelected: false
+          };
         },
 
         /*************************************************************

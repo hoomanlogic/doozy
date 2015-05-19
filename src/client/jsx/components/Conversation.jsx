@@ -134,12 +134,12 @@
                         );
                         right = (
                             <div className="col-xs-2">
-                                <div className="w50 pull-right"><img className="img-responsive" src={conversation.myProfileUri} /></div>
+                                <div style={{width: '50px'}} className="pull-right"><img className="img-responsive" src={conversation.myProfileUri} /></div>
                             </div>);
                     } else {
                         left = (
                             <div className="col-xs-2">
-                                <div className="w50"><img className="img-responsive" src={conversation.profileUri} /></div>
+                                <div style={{width: '50px'}}><img className="img-responsive" src={conversation.profileUri} /></div>
                             </div>
                         );
                         right = (

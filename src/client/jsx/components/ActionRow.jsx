@@ -28,6 +28,17 @@
     'use strict';
     return React.createClass({
         mixins: [React.addons.PureRenderMixin],
+        propTypes: {
+            // required
+            action: React.PropTypes.object.isRequired,
+            actionName: React.PropTypes.string.isRequired,
+            actionLastPerformed:  React.PropTypes.string.isRequired,
+            actionNextDate:  React.PropTypes.string.isRequired,
+            
+            // optional
+            overrideIsDone: React.PropTypes.bool,
+        },
+        
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
@@ -45,7 +56,7 @@
                 })
                 .throttle(1000)
                 .filter(function (name) {
-                    return name.length > 2 && name !== this.props.action.name;
+                    return name.length > 2 && name !== this.props.actionName;
                 }.bind(this))
                 .distinctUntilChanged()
                 .subscribe(this.handleNameChange);
@@ -53,11 +64,9 @@
             this.handlers = {
                 nameChange: nameChange
             };
-        },
-        componentDidMount: function() {
             window.addEventListener('resize', this.handleResize);
         },
-
+        
         componentWillUnmount: function () {
             this.handlers.nameChange.dispose();
             window.removeEventListener('resize', this.handleResize);
@@ -101,6 +110,9 @@
             this.setState({windowWidth: window.innerWidth});
         },
 
+        /*************************************************************
+         * CALCULATIONS
+         *************************************************************/
         calcIsDone: function () {
             if (typeof this.props.overrideIsDone !== 'undefined' && this.props.overrideIsDone !== null) {
                 return this.props.overrideIsDone;

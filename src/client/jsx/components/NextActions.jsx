@@ -69,7 +69,6 @@
                             return (
                                 <ActionRow key={item.id} 
                                     action={item}
-                                    actionId={item.id} 
                                     actionName={item.name} 
                                     actionLastPerformed={item.lastPerformed} 
                                     actionNextDate={item.nextDate} />
@@ -85,8 +84,8 @@
                 nextActions = this.props.actions.filter(this.isNextAction);
 
             /**
-              * Sort the actions by completed and name
-              */
+             * Sort the actions by completed and name
+             */
             nextActions = _.sortBy(nextActions, function(action){ 
                 var checked = 
                     (action.lastPerformed !== null && (action.nextDate === null || 
@@ -95,18 +94,40 @@
             })
 
             /**
-              * Render the table if there are any actions
-              */
+             * Render the table if there are any actions
+             */
             if (nextActions.length > 0) {
-                nextActionsTable = this.renderNextActionsTable(nextActions); 
+                nextActionsTable = this.renderNextActionsTable(nextActions);
             }
 
+            /**
+             * Inline Styles
+             */
+            var headerStyle = { 
+                color: '#e2ff63', 
+                backgroundColor: '#444', 
+                padding: '2px 2px 0 8px',
+                fontWeight: 'bold',
+                fontSize: '1.5em'
+            };
+
+            var buttonStyle = { 
+                paddingTop: '3px', 
+                paddingBottom: '3px', 
+                backgroundImage: 'none', 
+                color: '#444', 
+                backgroundColor: '#e2ff63', 
+                borderColor: '#e2ff63', 
+                fontWeight: 'bold', 
+                outlineColor: 'rgb(40, 40, 40)' 
+            };
+        
             // html
             return (
                 <div>
-                    <div className="table-title" style={{ color: '#e2ff63', backgroundColor: '#444', paddingBottom: '0' }}>
-                        Next Actions
-                        <button type="button" style={{ paddingTop: '3px', paddingBottom: '3px', backgroundImage: 'none', color: '#444', backgroundColor: '#e2ff63', borderColor: '#e2ff63', fontWeight: 'bold', outlineColor: 'rgb(40, 40, 40)' }} className="btn pull-right" onClick={this.handleAddActionClick}>
+                    <div style={headerStyle}>
+                        <span>Next Actions</span>
+                        <button type="button" style={buttonStyle} className="btn pull-right" onClick={this.handleAddActionClick}>
                             Add a new action
                         </button>
                     </div>

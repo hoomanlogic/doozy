@@ -27,19 +27,18 @@
         /*************************************************************
          * CALCULATIONS
          *************************************************************/
-        isUpcomingAction: function (item, index) {
+        calcIsUpcomingAction: function (item, index) {
             /**
-              * Exclude boxed actions
-              */ 
+             * Exclude boxed actions
+             */ 
             var boxTags = _.filter(item.tags, function(tag) { return tag.slice(0,1) === '#'; });
             if (boxTags.length > 0) {
                 return false;   
             }
 
             /**
-              * Upcoming Action
-              */ 
-            
+             * Upcoming Action less than 7 days away
+             */
             if (item.nextDate !== null) {
                 var time = new Date(item.nextDate);
                 var now = new Date();
@@ -50,6 +49,9 @@
                 }
             }
             
+            /**
+             * Not an upcoming action
+             */
             return false;
         },
 
@@ -65,7 +67,6 @@
                                 <ActionRow key={item.id} 
                                     overrideIsDone={false}
                                     action={item} 
-                                    actionId={item.id} 
                                     actionName={item.name}
                                     actionLastPerformed={item.nextDate} 
                                     actionNextDate={item.nextDate} />
@@ -77,30 +78,42 @@
         },
         render: function () {
 
-            var upcomingActionsTable = null,
-                upcomingActions = this.props.actions.filter(this.isUpcomingAction);
-
+            var upcomingActions,
+                upcomingActionsTable;
+        
             /**
-              * Sort the actions by date and name
-              */
-            upcomingActions = _.sortBy(upcomingActions, function(action){ 
-                return ((new Date(action.nextDate)).toISOString() + '-' + action.name); 
-            })
-
-            /**
-              * Return null if there are no upcoming actions
-              */
+             * Return null if there are no upcoming actions
+             */
+            upcomingActions = this.props.actions.filter(this.calcIsUpcomingAction);
             if (upcomingActions.length === 0) {
                 return null;
             }
         
+            /**
+             * Sort the actions by next date and name
+             */
+            upcomingActions = _.sortBy(upcomingActions, function(action){ 
+                return (action.nextDate + '-' + action.name); 
+            })
+
             upcomingActionsTable = this.renderUpcomingActionsTable(upcomingActions); 
 
-            // html
+            /**
+             * Inline Styles
+             */
+            var headerStyle = { 
+                padding: '2px 2px 2px 8px',
+                fontWeight: 'bold',
+                fontSize: '1.5em'
+            };
+        
+            /**
+             * HTML
+             */
             return (
                 <div>
-                    <div className="table-title">
-                        Upcoming Actions
+                    <div style={headerStyle}>
+                        <span>Upcoming Actions</span>
                     </div>
                     {upcomingActionsTable}
                 </div>

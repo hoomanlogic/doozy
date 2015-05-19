@@ -156,13 +156,8 @@
             var menuItems = connectionStore.updates.value.map(function (item) {
                 return (
                     <li key={item.userName}>
-                        <a href="javascript:;" 
-                            onClick={ui.openConversation.bind(null, item.userName)} 
-                            title={item.userName}>
-
-                            <div style={{display: 'inline-block'}} 
-                                className="w50">
-
+                        <a href="javascript:;" onClick={ui.openConversation.bind(null, item.userName)} title={item.userName}>
+                            <div style={{}} style={{display: 'inline-block', width: '50px'}}>
                                 <img className="img-responsive" src={item.profileUri} />
                             </div>
                             <span style={{verticalAlign: 'super'}}>{item.name}</span>

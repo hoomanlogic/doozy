@@ -60,7 +60,7 @@
                             <img style={{display: 'inline', verticalAlign: 'inherit'}} src={data.iconUri} />
                             <div style={{display: 'inline-block', verticalAlign: 'top'}}>
                                 <div>{this.calcFocusTitle(data)}</div>
-                                <div>{'last acted '}<RelativeTime accuracy="d" isoTime={latestDate} /></div>
+                                <div style={{fontSize: '14px'}}>{'last acted '}<RelativeTime accuracy="d" isoTime={latestDate} /></div>
                             </div>
                         </div>
                     </a>

@@ -15,7 +15,7 @@
 	}
 	else {
 		// Global (browser)
-		root.RelativeTime = factory(root.React, root.TagListItem);
+		root.RelativeTime = factory(root.React);
 	}
 }(this, function (React) {
     'use strict';
