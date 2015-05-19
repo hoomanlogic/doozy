@@ -133,8 +133,67 @@
                 commentCounter = (<span className="clickable" onClick={this.handleCommentClick}>{(upvoteCounter ? ' - ' : '') + data.comments.length + ' ' + hlapp.formatNoun('Comment', data.comments.length)}</span>);
             }
             
+            /**
+             * Inline Styles
+             */
+            var logEntryBoxStle = {
+                display: 'flex',
+                flexDirection: 'column',
+                backgroundColor: '#fff',
+                padding: '5px',
+                borderRadius: '4px',
+                marginBottom: '5px'
+            }
+            
+            var logEntryActionsStyle = {
+                display: 'flex',
+                flexDirection: 'row',
+                backgroundColor: '#b2b2b2',
+                borderBottomLeftRadius: '4px',
+                borderBottomRightRadius: '4px'
+            }
+            
+            var cheerButtonStyle = {
+                borderRadius: '0',
+                flexGrow: '1',
+                paddingTop: '3px', 
+                paddingBottom: '3px', 
+                color: '#fff', 
+                backgroundImage: 'none', 
+                backgroundColor: '#444', 
+                borderColor: '#222', 
+                fontWeight: 'bold', 
+                outlineColor: 'rgb(40, 40, 40)',
+                
+                borderBottomLeftRadius: '4px'
+            };
+            
+            var heartColorStyle = {
+                color: 'rgb(250, 133, 133)'
+            };
+            
+            var commentButtonStyle = {
+                borderRadius: '0',
+                flexGrow: '1',
+                paddingTop: '3px', 
+                paddingBottom: '3px', 
+                color: '#fff', 
+                backgroundImage: 'none', 
+                backgroundColor: '#444', 
+                borderColor: '#222', 
+                fontWeight: 'bold', 
+                outlineColor: 'rgb(40, 40, 40)',
+                
+                borderLeft: '0',
+                borderBottomRightRadius: '4px'
+            };
+            
+            var pencilColorStyle = {
+                color: '#e2ff63'
+            };
+            
             return (
-                <article key={data.id} className="log-entry-box" style={{display: 'flex', flexDirection: 'column'}}>
+                <article key={data.id} style={logEntryBoxStle}>
                     <div>
                         <header style={{display: 'flex', flexDirection: 'row'}}>
                             <div style={{minWidth: '45px', paddingRight: '5px'}}><img style={{maxHeight: '45px', padding: '2px'}} src={this.props.data.profileUri} /></div>
@@ -146,9 +205,9 @@
                                     <small><RelativeTime accuracy="d" isoTime={data.date} />{(data.duration ? ' for ' + new babble.Duration(data.duration * 60000).toString() : '')}</small>
                                 </div>
                             </div>
-                            <i ref="dropDown" style={{color: '#b2b2b2'}} className="fa fa-chevron-down" onClick={this.handleDropDownClick}></i>
+                            <i ref="dropDown" style={{ color: '#b2b2b2' }} className="fa fa-chevron-down" onClick={this.handleDropDownClick}></i>
                         </header>
-                        <div>
+                        <div style={{ padding: '5px' }}>
                             <ContentEditable html={data.details} onChange={this.handlers.detailsChange} />
                         </div>
                     </div>
@@ -157,10 +216,10 @@
                              {upvoteCounter}
                              {commentCounter}
                         </div>
-                        <div className="log-peanuts-actions">
-                            <button type="button" style={{ paddingTop: '3px', paddingBottom: '3px', color: '#fff', backgroundImage: 'none', backgroundColor: '#444', borderColor: '#222', fontWeight: 'bold', outlineColor: 'rgb(40, 40, 40)' }} className="btn" onClick={this.handleUpvoteClick}><i className="fa fa-heart" style={{color: 'rgb(250, 133, 133)'}}></i> Cheer
+                        <div style={logEntryActionsStyle}>
+                            <button type="button" className="btn" style={cheerButtonStyle} onClick={this.handleUpvoteClick}><i className="fa fa-heart" style={heartColorStyle}></i> Cheer
                         </button>
-                            <button type="button" style={{ paddingTop: '3px', paddingBottom: '3px', color: '#fff', backgroundImage: 'none', backgroundColor: '#444', borderColor: '#222', borderLeft: '0', fontWeight: 'bold', outlineColor: 'rgb(40, 40, 40)' }} className="btn" onClick={this.handleCommentClick}><i className="fa fa-pencil" style={{color: '#e2ff63'}}></i> Comment
+                            <button type="button" className="btn" style={commentButtonStyle} onClick={this.handleCommentClick}><i className="fa fa-pencil" style={pencilColorStyle}></i> Comment
                         </button>
                         </div>
                     </footer>

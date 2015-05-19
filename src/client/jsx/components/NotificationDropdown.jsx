@@ -33,6 +33,10 @@
 }(this, function (React, notificationStore, DropDownMenu, NotificationListItem) {
     'use strict';
     return React.createClass({
+        propTypes: {
+            isOpen: React.PropTypes.bool  
+        },
+        
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
@@ -51,8 +55,23 @@
         render: function () {
             var badge,
                 unreadCount = _.where(notificationStore.updates.value, {readAt: null}).length;
+            
+            var badgeStyle = {
+                display: 'inline',
+                position: 'relative',
+                top: '-10px',
+                left: '-25px',
+                fontSize: '75%',
+                fontWeight: '700',
+                lineHeight: '1',
+                textAlign: 'center',
+                whiteSpace: 'nowrap',
+                verticalAlign: 'baseline',
+                marginRight: '-10px'
+            }
+            
             if (unreadCount > 0) {
-                badge = (<span className="notify-badge">{unreadCount}</span>);
+                badge = (<span style={badgeStyle}>{unreadCount}</span>);
             }
 
             return (

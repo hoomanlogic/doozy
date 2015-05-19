@@ -65,7 +65,7 @@
             logEntries = logEntries.slice(0, this.state.maxReturn);
             
             return (
-                <div className={'log-entries ' + (this.props.hidden ? 'hidden' : '')} style={{padding: '5px'}}>
+                <div className={this.props.hidden ? 'hidden' : ''} style={{ backgroundColor: '#444', padding: '5px' }}>
                     {logEntries.map(
                         function(item) {
                             return (<LogEntryBox data={item} />);

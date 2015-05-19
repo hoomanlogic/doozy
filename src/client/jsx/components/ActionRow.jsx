@@ -127,10 +127,18 @@
         render: function () {
             var details,
                 isDone,
-                repeats;
+                repeats,
+                actionNameStyle;
 
             isDone = this.calcIsDone();
-
+            
+            if (isDone) {
+                actionNameStyle = {
+                    color: '#8e8e8e',
+                    textDecoration: 'line-through'      
+                };
+            }
+            
             /**
              * Render icon to signify that there are details attached to this action
              */
@@ -148,12 +156,13 @@
                     <span> <i className="fa fa-repeat" title={hlapp.getRecurrenceSummary(this.props.action.recurrenceRules)}></i></span>
                 );
             }
-
+    
+                             
             return (
-                <tr className={'highlight-hover' + (isDone ? ' done' : '')} onDoubleClick={this.handleClick} onTouchStart={this.handleTouchStart} onTouchMove={this.handleTouchMove} onTouchEnd={this.handleTouchEnd}>
+                <tr className={'highlight-hover'} onDoubleClick={this.handleClick} onTouchStart={this.handleTouchStart} onTouchMove={this.handleTouchMove} onTouchEnd={this.handleTouchEnd}>
                     <td width="5px" style={{padding: '0 0 0 5px'}}><input style={{height: '18px', width: '18px'}} type="checkbox" onChange={this.handleCheck} onTouchStart={this.handleCheckTouch} checked={isDone} /></td>
                     <td>
-                        <ContentEditable html={this.props.actionName} onChange={this.handlers.nameChange} />
+                        <ContentEditable style={actionNameStyle} html={this.props.actionName} onChange={this.handlers.nameChange} />
                         {details}
                         {repeats}
                     </td>

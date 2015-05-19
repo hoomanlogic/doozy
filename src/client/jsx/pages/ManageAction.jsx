@@ -603,7 +603,7 @@
             return (
                 <div>
                     <h2 style={{ margin: '0 0 5px 5px'}}>Action History Log</h2>
-                    <div className={'log-entries ' + (this.props.hidden ? 'hidden' : '')} style={{padding: '5px', marginLeft: '-5px', marginRight: '-5px'}}>
+                    <div className={this.props.hidden ? 'hidden' : ''} style={{backgroundColor: '#444', padding: '5px', marginLeft: '-5px', marginRight: '-5px'}}>
                         {logEntries.map(
                             function(item) {
                                 return (<LogEntryBox data={item} />);

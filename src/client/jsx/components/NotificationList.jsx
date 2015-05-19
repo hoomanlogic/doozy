@@ -85,11 +85,17 @@
                 );
             }
             
+            var notificationsStyle = {
+                listStyle: 'none',
+                padding: '0'
+            };
+
+
             if (readNotifications.length > 0) {
                 domRead = (
                     <div>
                         <h2 style={{margin: '0.2rem'}}>Recent Notifications</h2>
-                        <ul className="notifications">
+                        <ul style={notificationsStyle}>
                             {readNotifications.map( 
                                 function(item) {
                                     return (<NotificationListItem key={item.id} data={item} handleNotificationClicked={this.handleNotificationClicked} />);

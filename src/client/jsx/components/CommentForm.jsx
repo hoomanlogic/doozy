@@ -95,17 +95,42 @@
             
             var comments = _.sortBy(logEntry.comments, function (item) { return item.date; });
             
+            var headerStyle = {
+                display: 'flex',
+                flexDirection: 'row',
+                marginBottom: '5px'
+            };
+            
+            var containerStyle = {
+                display: 'flex',
+                flexDirection: 'column',
+                border: '1px solid #e0e0e0'
+            };
+            
+            var commentStyle = {
+                display: 'flex',
+                flexDirection: 'row'
+            };
+            
+            var imgContainerStyle = {
+                marginRight: '5px'
+            };
+
+            var imgStyle = {
+                maxWidth: '45px',
+                maxHeight: '45px'
+            };
+            
             return (
                 <div className="comments" style={{padding: '5px'}}>
-                    <div className="comments-header">
+                    <div style={headerStyle}>
                         <button style={{paddingRight: '10px'}} type="button" className="close" onClick={this.handleClose}><span aria-hidden="true">&times;</span></button>
                         <textarea ref="comment" className="form-control" placeholder="comment to post..." />
                         <button style={{ minWidth: '65px'}} className="btn btn-default btn-primary" type="button" onClick={this.handlePostCommentClick}>Post</button>
-                        
                     </div>
-                    <div className="comments-content">
+                    <div style={containerStyle}>
                         {comments.map(
-                            function(item) {
+                            function(item, index) {
                                 var duration = new babble.Duration(new Date() - new Date(item.date));
                                 var commentContent;
                                 if (item.userId === userStore.updates.value.userId) {
@@ -114,8 +139,8 @@
                                     commentContent = (<div>{item.comment}</div>);
                                 }
                                 return (
-                                    <div>
-                                        <div><img src={item.profileUri} title={item.knownAs} /></div>
+                                    <div style={commentStyle}>
+                                        <div style={imgContainerStyle}><img src={item.profileUri} style={imgStyle} title={item.knownAs} /></div>
                                         <div>
                                             <div style={{fontWeight: 'bold'}}>{item.knownAs}</div>
                                             {commentContent}
