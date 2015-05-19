@@ -22,15 +22,14 @@
 }(this, function (React) {
     'use strict';
     return React.createClass({
+        propTypes: {
+            userName: React.PropTypes.string.isRequired,  
+            articleId: React.PropTypes.number.isRequired,
+        },
+        
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
-        getInitialState: function () {
-            return {
-                comment: ''
-            };
-        },
-        
         componentWillMount: function () {
             logEntryStore.subscribe(this.handleLogEntryStoreUpdate);
             this.handleLogEntryStoreUpdate(logEntryStore.updates.value);
@@ -41,7 +40,7 @@
                 })
                 .throttle(1000)
                 .filter(function (details) {
-                    return true;//details !== this.props.data.details;
+                    return details.trim().length > 0;//details !== this.props.data.details;
                 }.bind(this))
                 .distinctUntilChanged()
                 .subscribe(this.handleCommentChange);
@@ -131,7 +130,6 @@
                     <div style={containerStyle}>
                         {comments.map(
                             function(item, index) {
-                                var duration = new babble.Duration(new Date() - new Date(item.date));
                                 var commentContent;
                                 if (item.userId === userStore.updates.value.userId) {
                                     commentContent = (<ContentEditable html={item.comment} onChange={this.handlers.commentChange} />);
@@ -144,7 +142,7 @@
                                         <div>
                                             <div style={{fontWeight: 'bold'}}>{item.knownAs}</div>
                                             {commentContent}
-                                            <div style={{fontStyle: 'italic', fontSize: '0.8rem'}}>{duration.toString().split(', ')[0] + ' ago'}</div>
+                                            <div style={{fontStyle: 'italic', fontSize: '0.8rem'}}><RelativeTime isoTime={item.date} /></div>
                                         </div>
                                     </div>
                                 );

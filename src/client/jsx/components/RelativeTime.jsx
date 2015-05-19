@@ -68,6 +68,13 @@
                         return 'in ' + diffDays + ' day' + (diffDays > 1 ? 's' : '');
                     }
                 }
+            } else {
+                var duration = new babble.Duration(new Date() - new Date(this.props.isoTime));
+                if (time < now) {
+                    return duration.toString().split(', ')[0] + ' ago';
+                } else {
+                    return 'in ' + duration.toString().split(', ')[0];
+                }
             }
         },
 

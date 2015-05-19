@@ -53,6 +53,28 @@
             this.handlers.detailsChange.dispose();
         },
         
+        componentDidUpdate: function () {
+            if (this.state.isDropDownOpen) {
+                
+                var component = this;
+                var $win = $(window);
+                var $box = $('#dropdown-' + this.props.data.id);
+                var $toggle = $(this.refs.dropDown.getDOMNode());
+
+                var handler = function(event) {	
+                    // handle click outside of the dropdown
+                    if ($box.has(event.target).length == 0 && !$toggle.is(event.target) && !$box.is(event.target)) {
+                        component.setState({
+                            isDropDownOpen: false
+                        });
+                        $win.off("click.Bst", handler);
+                    }
+                };
+
+                $win.on("click.Bst", handler);  
+            }
+        },
+        
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
@@ -92,28 +114,43 @@
                 padding: '5px',
                 backgroundColor: '#fff',
                 minWidth: '100%',
-                minHeight: '100px',
                 borderRadius: '4px',
-                border: '2px solid #e0e0e0'
+                border: '2px solid #e0e0e0',
+                boxShadow: '0 0 10px #000000'
             };
             
             var listStyle = {
-                listStyle: 'none'  
+                listStyle: 'none',
+                margin: '0',
+                padding: '0'
             };
             
             var options = [];
+            
+            var aStyle = {
+                fontSize: '20px',
+                display: 'block',
+                padding: '3px 20px',
+                clear: 'both',
+                fontWeight: '400',
+                lineHeight: '1.42857143',
+                color: '#333',
+                whiteSpace: 'nowrap'
+            }
+            
             if (userStore.updates.value.userId === this.props.data.userId) {
                 options.push((
-                    <li><a onClick={this.handleDeleteClick}>Delete</a></li>
+                    <li><a className="clickable hoverable" style={aStyle} onClick={this.handleDeleteClick}><i className="fa fa-trash"></i> Delete</a></li>
                 ));
             }
             
             if (options.length === 0) {
                 return null;   
             }
+            var data = this.props.data;
             
             return (
-                <div style={style}>
+                <div id={"dropdown-" + data.id} style={style}>
                     <ul style={listStyle}>
                         {options}
                     </ul>
