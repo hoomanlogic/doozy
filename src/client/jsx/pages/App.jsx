@@ -102,6 +102,7 @@
             focusStore.init(this.props.settings.userName, this.props.settings.userId);
             weatherStore.init(this.props.settings.userName, this.props.settings.userId);
             logEntryStore.init(this.props.settings.userName, this.props.settings.userId);
+            tagStore.init(this.props.settings.userName, this.props.settings.userId);
             
             connectionStore.getConnections();
 
@@ -606,6 +607,8 @@
             } else if (this.state.page === 'Comment' && this.state.pageOptions && this.state.pageOptions.userName && this.state.pageOptions.id) {
                 page = (<CommentForm userName={this.state.pageOptions.userName} articleId={this.state.pageOptions.id} />);
                 additional = (<LogEntries userName={this.state.pageOptions.userName} />);
+            } else if (this.state.page === 'Manage Tags') {
+                page = (<ManageTags />);
             } else { //DO
                 hideMain = false;
             }
@@ -618,7 +621,7 @@
                     backgroundColor: '#444', 
                     padding: '1px'
                 };
-                    
+
                 requests = (
                     <div style={containerStyle}>
                         {this.state.requests.map(function (item) {

@@ -95,6 +95,7 @@ var jsxFiles = [
 	'src/client/jsx/pages/LogRecentAction.jsx',
     'src/client/jsx/pages/ManageAction.jsx',
     'src/client/jsx/pages/ManageFocus.jsx',
+	'src/client/jsx/pages/ManageTags.jsx',
     'src/client/jsx/pages/PrimaryNavigation.jsx',
     
     'src/client/jsx/pages/App.jsx',
