@@ -200,26 +200,30 @@
 
         };
         
-        this.update = function (logEntryToSave) {
+        this.update = function (logEntry) {
             
-            var logEntries = me.updates.value;
-            var logEntry = _.find(logEntries, {id: logEntryToSave.id});
+            var logEntryToUpdate = _.find(me.updates.value, {id: logEntry.id});
             var original = Object.assign({}, logEntry);
 
-            Object.assign(logEntry, logEntryToSave);
+            // optimistic concurrency
+            Object.assign(logEntryToUpdate, logEntry);
             me.notify();
         
-            _api.putLogEntry(logEntryToSave)
-            .done(function (result) {
-                Object.assign(logEntry, result);
+            ui.queueRequest('Updated log entry for ' + logEntryToUpdate.actionName, function () {
+                _api.putLogEntry(logEntry)
+                .done(function (result) {
+                    Object.assign(logEntryToUpdate, result);
+                    me.notify();
+                    hlio.saveLocal('hl.' + user + '.logentries', me.updates.value, secret);
+                })
+                .fail(function  (err) {
+                    Object.assign(logEntryToUpdate, original);
+                    me.notify();
+                    toastr.error(err.responseText);
+                });
+            }, function () {
+                Object.assign(logEntryToUpdate, original);
                 me.notify();
-                //hlio.saveLocal('hl.' + user + '.logentries', updates.value, secret);
-                toastr.success('Updated log entry for ' + logEntry.actionName);
-            })
-            .fail(function  (err) {
-                Object.assign(logEntry, original);
-                me.notify();
-                toastr.error(err.responseText);
             });
         };
         
@@ -234,37 +238,41 @@
             me.updates.value = filtered;
             me.notify();
             
-            _api.deleteLogEntry(logEntry)
-            .done( function (result) {
-                
-                // find last performed
-                var lastPerformed = null;
-                
-                _.where(me.updates.value, {actionId: actionToUpdate.id, entry: "performed"}).map( function (item) {
-                    if (lastPerformed === null || new Date(item.date) > new Date(lastPerformed)) {
-                        lastPerformed = item.date;   
+            ui.queueRequest('Deleted log entry for ' + logEntry.actionName, function () {
+                _api.deleteLogEntry(logEntry)
+                .done( function (result) {
+
+                    // find last performed
+                    var lastPerformed = null;
+
+                    _.where(me.updates.value, {actionId: actionToUpdate.id, entry: "performed"}).map( function (item) {
+                        if (lastPerformed === null || new Date(item.date) > new Date(lastPerformed)) {
+                            lastPerformed = item.date;   
+                        }
+                    });
+
+                    // update action and notify
+                    if (actionToUpdate.lastPerformed !== lastPerformed) {
+                        actionToUpdate.lastPerformed = lastPerformed;
+                        if (result.nextDate === "0001-01-01T00:00:00") {
+                            result.nextDate = null;   
+                        }
+                        if (actionToUpdate.nextDate !== result.nextDate) {
+                            actionToUpdate.nextDate = result.nextDate;
+                        }
+                        actionStore.updates.onNext(actionStore.updates.value);
                     }
+
+                    hlio.saveLocal('hl.' + user + '.logentries', me.updates.value, secret);
+                })
+                .fail( function (err) {
+                    me.updates.value = me.updates.value.concat(logEntry);
+                    me.notify();
+                    toastr.error(err.responseText);
                 });
-                
-                // update action and notify
-                if (actionToUpdate.lastPerformed !== lastPerformed) {
-                    actionToUpdate.lastPerformed = lastPerformed;
-                    if (result.nextDate === "0001-01-01T00:00:00") {
-                        result.nextDate = null;   
-                    }
-                    if (actionToUpdate.nextDate !== result.nextDate) {
-                        actionToUpdate.nextDate = result.nextDate;
-                    }
-                    actionStore.updates.onNext(actionStore.updates.value);
-                }
-                
-                toastr.success('Deleted log entry for ' + logEntry.actionName);
-                //hlio.saveLocal('hl.' + user + '.logentries', updates.value, secret);
-            })
-            .fail( function (err) {
+            }, function () {
                 me.updates.value = me.updates.value.concat(logEntry);
                 me.notify();
-                toastr.error(err.responseText);
             });
         };
         

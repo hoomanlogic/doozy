@@ -261,7 +261,6 @@
         forceRequest: function (timeoutId) {
             var request = _.find(this.state.requests, {timeoutId: timeoutId});
             request.fn();
-            request.onUndo();
             clearTimeout(timeoutId);
             this.state.requests = this.state.requests.filter( function (item) { return item.timeoutId !== timeoutId});
             this.setState({requests: this.state.requests.slice()});
@@ -610,7 +609,7 @@
             } else { //DO
                 hideMain = false;
             }
-                        
+
             var requests;
             if (this.state.requests.length > 0) {
                 var containerStyle = {
@@ -625,7 +624,7 @@
                         {this.state.requests.map(function (item) {
                             var style = {
                                 display: 'flex',
-                                flexDirection: 'row',
+                                width: '100%',
                                 padding: '3px 6px',
                                 margin: '1px',
                                 backgroundImage: 'none',
@@ -639,13 +638,13 @@
                             return (
                                 <div style={style}>
                                     <div style={{flexGrow: '1'}}>
-                                        <span>{item.msg} </span>
+                                        <span>{item.msg}</span>
                                     </div>
-                                    <div>
+                                    <div style={{minWidth: '45px'}}>
                                         <a className="clickable" onClick={this.undoRequest.bind(this, item.timeoutId)}>Undo</a>
                                     </div>
-                                    <div>
-                                        <button style={{paddingRight: '10px'}} type="button" className="close" onClick={this.forceRequest.bind(this, item.timeoutId)}><span aria-hidden="true">&times;</span></button>
+                                    <div style={{minWidth: '8px'}}>
+                                        <a className="clickable" onClick={this.forceRequest.bind(this, item.timeoutId)}>&times;</a>
                                     </div>
                                 </div>
                             );

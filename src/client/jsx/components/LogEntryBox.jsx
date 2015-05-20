@@ -44,13 +44,33 @@
                 }.bind(this))
                 .distinctUntilChanged()
                 .subscribe(this.handleDetailsChange);
+            
+            var durationChange = EventHandler.create();
+            durationChange
+                .throttle(2000)
+                .distinctUntilChanged()
+                .map(function (event) {
+                    var duration = 0;
+                    var durationParseResult = babble.get('durations').translate(event.target.value);
+                    if (durationParseResult.tokens.length > 0) {
+                        duration = durationParseResult.tokens[0].value.toMinutes();
+                    }
+                
+                    return duration;
+                })
+                .filter(function (duration) {
+                    return duration !== this.props.data.duration;
+                }.bind(this))
+                .subscribe(this.handleDurationChange);
 
             this.handlers = {
-                detailsChange: detailsChange
+                detailsChange: detailsChange,
+                durationChange: durationChange
             };  
         },
         componentWillUnmount: function () {
             this.handlers.detailsChange.dispose();
+            this.handlers.durationChange.dispose();
         },
         
         componentDidUpdate: function () {
@@ -89,8 +109,24 @@
         handleDeleteClick: function () {
             logEntryStore.destroy(this.props.data);
         },
+        handleEditDetailsClick: function () {
+            this.refs.logdetails.getDOMNode().focus();
+            this.setState({
+                isDropDownOpen: false
+            });
+        },
+        handleEditDurationClick: function () {
+            this.refs.logduration.getDOMNode().focus();
+            this.setState({
+                isDropDownOpen: false
+            });
+        },
         handleDetailsChange: function (details) {
             this.props.data.details = details;
+            logEntryStore.update(this.props.data);
+        },
+        handleDurationChange: function (duration) {
+            this.props.data.duration = duration;
             logEntryStore.update(this.props.data);
         },
         handleDropDownClick: function () {
@@ -140,7 +176,13 @@
             
             if (userStore.updates.value.userId === this.props.data.userId) {
                 options.push((
-                    <li><a className="clickable hoverable" style={aStyle} onClick={this.handleDeleteClick}><i className="fa fa-trash"></i> Delete</a></li>
+                    <li><a className="clickable hoverable" style={aStyle} onClick={this.handleDeleteClick}><i className="fa fa-trash"></i> Delete Log Entry</a></li>
+                ));
+                options.push((
+                    <li><a className="clickable hoverable" style={aStyle} onClick={this.handleEditDetailsClick}><i className="fa fa-pencil"></i> Edit Details</a></li>
+                ));
+                options.push((
+                    <li><a className="clickable hoverable" style={aStyle} onClick={this.handleEditDurationClick}><i className="fa fa-pencil"></i> Edit Duration</a></li>
                 ));
             }
             
@@ -229,6 +271,11 @@
                 color: '#e2ff63'
             };
             
+            var duration;
+            if (data.duration) {
+                duration = new babble.Duration(data.duration * 60000).toString();   
+            }
+            
             return (
                 <article key={data.id} style={logEntryBoxStle}>
                     <div>
@@ -239,13 +286,17 @@
                                     <span style={{fontWeight: 'bold'}}>{this.props.data.knownAs}</span> {data.entry} <span style={{fontWeight: 'bold'}}>{data.actionName}</span>
                                 </div>
                                 <div>
-                                    <small><RelativeTime accuracy="d" isoTime={data.date} />{(data.duration ? ' for ' + new babble.Duration(data.duration * 60000).toString() : '')}</small>
+                                    <small>
+                                        <RelativeTime accuracy="d" isoTime={data.date} />
+                                        <span>{(data.duration ? ' for ' : '')}</span>
+                                        <ContentEditable ref="logduration" html={duration} onChange={this.handlers.durationChange} />
+                                    </small>
                                 </div>
                             </div>
                             <i ref="dropDown" style={{ color: '#b2b2b2' }} className="fa fa-chevron-down" onClick={this.handleDropDownClick}></i>
                         </header>
                         <div style={{ padding: '5px' }}>
-                            <ContentEditable html={data.details} onChange={this.handlers.detailsChange} />
+                            <ContentEditable ref="logdetails" html={data.details} onChange={this.handlers.detailsChange} />
                         </div>
                     </div>
                     <footer style={{display: 'flex', flexDirection: 'column'}}>
