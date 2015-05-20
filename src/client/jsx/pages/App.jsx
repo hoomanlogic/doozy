@@ -151,6 +151,8 @@
                 window.history.replaceState({ page: this.state.page, pageOptions: this.state.pageOptions });
                 window.onpopstate = this.handleBrowserStateChange;
             }
+            
+            window.addEventListener("beforeunload", this.handleBeforeUnload);
         },
         componentDidUpdate: function () {
             // save state of application
@@ -165,7 +167,12 @@
 
         /*************************************************************
          * EVENT HANDLING
-         *************************************************************/    
+         *************************************************************/
+        handleBeforeUnload: function () {
+            this.state.requests.forEach(function (item) {
+                this.forceRequest(item.timeoutId);
+            }.bind(this));
+        },
         handleBrowserStateChange: function (event) {
             if (event.state && event.state.page) {
                 this.setState({ page: event.state.page, pageOptions: event.state.pageOptions || null });   
@@ -222,18 +229,22 @@
          *************************************************************/
         queueRequest: function (msg, fn, fnUndo, ms) {
             var uuid = hlcommon.uuid();
-            
+            if (typeof ms === 'undefined') {
+                ms = 30000;   
+            }
             var request = {
                 id: uuid,
                 timeoutId: setTimeout(function () {
                     this.processRequest(fn, uuid);
                 }.bind(this), ms), 
                 msg: msg,
+                fn: fn,
                 onUndo: fnUndo
             };
             
             this.state.requests.push(request);
             this.setState({requests: this.state.requests.slice()});
+            toastr.info(msg);
         },
         processRequest: function (fn, id) {
             fn();
@@ -242,6 +253,14 @@
         },
         undoRequest: function (timeoutId) {
             var request = _.find(this.state.requests, {timeoutId: timeoutId});
+            request.onUndo();
+            clearTimeout(timeoutId);
+            this.state.requests = this.state.requests.filter( function (item) { return item.timeoutId !== timeoutId});
+            this.setState({requests: this.state.requests.slice()});
+        },
+        forceRequest: function (timeoutId) {
+            var request = _.find(this.state.requests, {timeoutId: timeoutId});
+            request.fn();
             request.onUndo();
             clearTimeout(timeoutId);
             this.state.requests = this.state.requests.filter( function (item) { return item.timeoutId !== timeoutId});
@@ -594,12 +613,21 @@
                         
             var requests;
             if (this.state.requests.length > 0) {
+                var containerStyle = {
+                    display: 'flex',
+                    flexDirection: 'column',
+                    backgroundColor: '#444', 
+                    padding: '1px'
+                };
+                    
                 requests = (
-                    <div style={{backgroundColor: '#444', padding: '3px'}}>
+                    <div style={containerStyle}>
                         {this.state.requests.map(function (item) {
                             var style = {
-                                padding: '3px',
-                                margin: '3px',
+                                display: 'flex',
+                                flexDirection: 'row',
+                                padding: '3px 6px',
+                                margin: '1px',
                                 backgroundImage: 'none',
                                 color: '#444',
                                 backgroundColor: '#e2ff63',
@@ -609,7 +637,17 @@
                                 borderRadius: '4px'
                             };
                             return (
-                                <div className="clickable" style={style}><span>{item.msg} </span><span className="clickable pull-right" onClick={this.undoRequest.bind(this, item.timeoutId)}>Undo </span></div>
+                                <div style={style}>
+                                    <div style={{flexGrow: '1'}}>
+                                        <span>{item.msg} </span>
+                                    </div>
+                                    <div>
+                                        <a className="clickable" onClick={this.undoRequest.bind(this, item.timeoutId)}>Undo</a>
+                                    </div>
+                                    <div>
+                                        <button style={{paddingRight: '10px'}} type="button" className="close" onClick={this.forceRequest.bind(this, item.timeoutId)}><span aria-hidden="true">&times;</span></button>
+                                    </div>
+                                </div>
                             );
                         }.bind(this))}
                     </div>

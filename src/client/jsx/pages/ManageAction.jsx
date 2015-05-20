@@ -439,7 +439,9 @@
             this.props.action.recurrenceRules = recurrenceRules;
 
             // build next date
-            this.props.action.nextDate = babble.moments.parseLocalDate(this.props.action.nextDate);
+            if (this.props.action.nextDate !== null) {
+                this.props.action.nextDate = babble.moments.parseLocalDate(this.props.action.nextDate).toISOString();
+            }
 
             // call method to save the action
             if (this.props.mode === 'Edit') {

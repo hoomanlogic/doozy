@@ -104,36 +104,38 @@ var ActionStore = function () {
             });
         }, function () {
             updates.onNext(updates.value.concat(action));
-        }, 30000);
-    };
-    
-    this.undoableRequest = function (fn) {
-        var interval = setTimeout(fn, 30000);
+        });
     };
     
     this.update = function (action) {
         
+        // get object reference to action in store
         var actionToSave = _.find(updates.value, function(item) { 
             return item.id === action.id; 
         });
-        var state = action,
-            original = Object.assign({}, actionToSave);
         
-        var val = actionToSave;
-        Object.assign(val, state);
+        // keep copy of original for undo
+        var original = Object.assign({}, actionToSave);
+        
+        // optimistic concurrency
+        Object.assign(actionToSave, action);
         updates.onNext(updates.value);
         
-        _api.putAction(val)
-        .done(function (result) {
-            Object.assign(val, result);
+        ui.queueRequest('Updated action ' + actionToSave.name, function () {
+            _api.putAction(actionToSave)
+            .done(function (result) {
+                Object.assign(actionToSave, result);
+                updates.onNext(updates.value);
+                hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
+            })
+            .fail(function  (err) {
+                Object.assign(actionToSave, original);
+                updates.onNext(updates.value);
+                toastr.error(err.responseText);
+            });
+        }, function () {
+            Object.assign(actionToSave, original);
             updates.onNext(updates.value);
-            hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
-            toastr.success('Updated action ' + val.name);
-        })
-        .fail(function  (err) {
-            Object.assign(val, original);
-            updates.onNext(updates.value);
-            toastr.error(err.responseText);
         });
     };
     

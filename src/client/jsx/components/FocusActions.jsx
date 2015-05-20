@@ -178,26 +178,27 @@
         /*************************************************************
          * RENDERING
          *************************************************************/
-        render: function () {
-
-            var tagFilterTypeDom,
-                tagListDom;
+        renderTagFilter: function () {
+            var tagFilter;
             
             if (this.state.tags && this.state.tags.length > 0) {
-                tagFilterTypeDom = (
-                    <ul style={{ marginLeft: '2px'}} className="toggle-switch">
-                        <li className={'clickable' + (this.state.tagsFilterType === 'any' ? ' selected' : '')} onClick={this.handleTagsFilterTypeClick.bind(null, 'any')}>Any</li>
-                        <li className={'clickable' + (this.state.tagsFilterType === 'all' ? ' selected' : '')} onClick={this.handleTagsFilterTypeClick.bind(null, 'all')}>All</li>
-                        <li className={'clickable' + (this.state.tagsFilterType === 'not' ? ' selected' : '')} onClick={this.handleTagsFilterTypeClick.bind(null, 'not')}>Not</li>
-                    </ul>
-                );
-                tagListDom = (
-                    <TagList tags={this.state.tags} 
+                tagFilter = (
+                    <div style={{marginTop: '2px'}}>
+                        <ul style={{ marginLeft: '2px'}} className="toggle-switch">
+                            <li className={'clickable' + (this.state.tagsFilterType === 'any' ? ' selected' : '')} onClick={this.handleTagsFilterTypeClick.bind(null, 'any')}>Any</li>
+                            <li className={'clickable' + (this.state.tagsFilterType === 'all' ? ' selected' : '')} onClick={this.handleTagsFilterTypeClick.bind(null, 'all')}>All</li>
+                            <li className={'clickable' + (this.state.tagsFilterType === 'not' ? ' selected' : '')} onClick={this.handleTagsFilterTypeClick.bind(null, 'not')}>Not</li>
+                        </ul>
+                        <TagList tags={this.state.tags} 
                           selectedTags={this.state.tagsFilter} 
                           selectionChanged={this.handleTagFilterClick} />
+                    </div>
                 );
             }
-            
+        
+            return tagFilter
+        },
+        render: function () {
             /**
              * Filter focus actions by the tags filter to pass filtered list to children
              */
@@ -205,10 +206,7 @@
 
             return (
                 <div className={this.props.hidden ? 'hidden' : ''}>
-                    <div style={{marginTop: '2px'}}>
-                        {tagFilterTypeDom}
-                        {tagListDom}
-                    </div>
+                    {this.renderTagFilter()}
                     <NextActions actions={tagsFilteredFocusActions} />
                     <UpcomingActions actions={tagsFilteredFocusActions} />
                     <BoxedActions actions={tagsFilteredFocusActions} />
