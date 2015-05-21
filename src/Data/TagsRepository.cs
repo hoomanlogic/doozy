@@ -20,7 +20,7 @@ namespace HoomanLogic.Data
                     Name = row.Name,
                     Kind = row.Kind,
                     Path = row.Path,
-                    IsFocus = row.IsFocus || row.Kind == "Focus"
+                    Content = row.Content
                 }).ToList();
 
                 return models;
@@ -37,7 +37,7 @@ namespace HoomanLogic.Data
                     Name = row.Name,
                     Kind = row.Kind,
                     Path = row.Path,
-                    IsFocus = row.IsFocus || row.Kind == "Focus"
+                    Content = row.Content
 
                 }).FirstOrDefault();
 
@@ -55,7 +55,7 @@ namespace HoomanLogic.Data
                     Name = row.Name,
                     Kind = row.Kind,
                     Path = row.Path,
-                    IsFocus = row.IsFocus || row.Kind == "Focus"
+                    Content = row.Content
                 }).FirstOrDefault();
 
                 return model;
@@ -73,7 +73,7 @@ namespace HoomanLogic.Data
                     Name = model.Name,
                     Kind = model.Kind,
                     Path = model.Path,
-                    IsFocus = model.IsFocus || model.Kind == "Focus"
+                    Content = model.Content
                 };
                 db.Tags.Add(row);
                 db.SaveChanges();
@@ -91,7 +91,7 @@ namespace HoomanLogic.Data
                 row.Name = model.Name;
                 row.Kind = model.Kind;
                 row.Path = model.Path;
-                row.IsFocus = model.IsFocus || model.Kind == "Focus";
+                row.Content = model.Content;
 
                 // persist changes
                 db.SaveChanges();

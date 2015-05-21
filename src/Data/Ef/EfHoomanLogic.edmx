@@ -27,8 +27,8 @@
           <Property Name="NextDate" Type="datetime" />
           <Property Name="Content" Type="varchar(max)" />
           <Property Name="IsPublic" Type="bit" Nullable="false" />
-          <Property Name="IsArchive" Type="bit" />
           <Property Name="Created" Type="datetime" />
+          <Property Name="IsArchive" Type="bit" />
         </EntityType>
         <EntityType Name="ActionsAttachments">
           <Key>
@@ -127,7 +127,7 @@
           <Property Name="LogEntryId" Type="uniqueidentifier" Nullable="false" />
           <Property Name="Date" Type="datetime" Nullable="false" />
           <Property Name="Kind" Type="varchar" MaxLength="10" Nullable="false" />
-          <Property Name="Comment" Type="varchar" MaxLength="50" />
+          <Property Name="Comment" Type="varchar" MaxLength="1000" />
           <Property Name="AttachmentUri" Type="varchar" MaxLength="256" />
         </EntityType>
         <EntityType Name="Messages">
@@ -191,6 +191,7 @@
           <Property Name="Kind" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="Path" Type="varchar" MaxLength="200" Nullable="false" />
           <Property Name="IsFocus" Type="bit" Nullable="false" />
+          <Property Name="Content" Type="varchar(max)" />
         </EntityType>
         <EntityType Name="Targets">
           <Key>
@@ -1015,6 +1016,7 @@
           <NavigationProperty Name="Targets" Relationship="hoomanlogicModel.FK_Targets_Tags" FromRole="Tag" ToRole="Target" />
           <Property Name="IsFocus" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="Actions" Relationship="hoomanlogicModel.ActionsTags" FromRole="Tag" ToRole="Action" />
+          <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
         <Association Name="FK_Tags_Users">
           <End Type="hoomanlogicModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
@@ -1144,7 +1146,7 @@
           <Property Name="LogEntryId" Type="Guid" Nullable="false" />
           <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="Kind" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="Comment" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Comment" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
           <Property Name="AttachmentUri" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="AspNetUser" Relationship="hoomanlogicModel.FK_LogEntryPeanuts_Users" FromRole="LogEntryPeanut" ToRole="AspNetUser" />
           <NavigationProperty Name="LogEntry" Relationship="hoomanlogicModel.FK_LogEntryPeanuts_LogEntries" FromRole="LogEntryPeanut" ToRole="LogEntry" />
@@ -1373,6 +1375,7 @@
           <EntitySetMapping Name="Tags">
             <EntityTypeMapping TypeName="hoomanlogicModel.Tag">
               <MappingFragment StoreEntitySet="Tags">
+                <ScalarProperty Name="Content" ColumnName="Content" />
                 <ScalarProperty Name="IsFocus" ColumnName="IsFocus" />
                 <ScalarProperty Name="Path" ColumnName="Path" />
                 <ScalarProperty Name="Kind" ColumnName="Kind" />

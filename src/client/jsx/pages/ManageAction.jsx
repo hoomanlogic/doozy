@@ -347,7 +347,7 @@
             });
         },
         handleCancelClick: function(event) {
-            window.ui.goBack();
+            ui.goBack();
         },
         handleDeleteClick: function() {
             actionStore.destroy(this.props.action);
@@ -635,14 +635,14 @@
              */
             var buttons;
             var buttonStyle = {
-              display: 'block',
-              width: '100%',
-              marginBottom: '5px',
-              fontSize: '1.1rem'
+                display: 'block',
+                width: '100%',
+                marginBottom: '5px',
+                fontSize: '1.1rem'
             };
             
             var deleteButtonStyle = Object.assign({}, buttonStyle, {
-              marginTop: '3rem'
+                marginTop: '3rem'
             });
             
             if (this.props.mode === 'Add') {

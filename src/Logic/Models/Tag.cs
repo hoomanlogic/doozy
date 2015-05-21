@@ -16,7 +16,7 @@ namespace HoomanLogic.Models
         public string Kind { get; set; }
         public string Name { get; set; }
         public string Path { get; set; }
-        public bool IsFocus { get; set; }
+        public string Content { get; set; }
         public TagModel Parent { get; set; }
         public List<TagModel> Items { get; set; }
     }

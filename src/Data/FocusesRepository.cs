@@ -77,7 +77,6 @@ namespace HoomanLogic.Data
                 // add the tag
                 TagModel focusTag = new TagModel();
                 focusTag.Id = Guid.NewGuid();
-                focusTag.IsFocus = true;
                 focusTag.Kind = "Focus";
                 focusTag.Name = model.TagName;
                 focusTag.Parent = null;

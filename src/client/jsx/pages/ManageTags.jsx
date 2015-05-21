@@ -49,12 +49,14 @@
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
+        handleCloseClick: function () {
+            ui.goBack();
+        },
+        handleTagClick: function (tag) {
+            ui.goTo('Manage Tag', {tagId: tag.id});
+        },
         handleTagStoreUpdate: function (tags) {
             this.setState({ tagsLastUpdated: (new Date()).toISOString() });
-        },
-        
-        handleTagClick: function (tag) {
-            alert(tag.name);  
         },
         
         /*************************************************************
@@ -86,13 +88,15 @@
              * Sort the actions by completed and name
              */
             tags = _.sortBy(tags, function(tag){ 
-                return tag.name.toLowerCase();
+                return tag.kind + '-' + tag.name.toLowerCase();
             })
 
             /**
              * Inline Styles
              */
-            var headerStyle = { 
+            var headerStyle = {
+                display: 'flex',
+                flexDirection: 'row',
                 color: '#e2ff63', 
                 backgroundColor: '#444', 
                 padding: '2px 2px 0 8px',
@@ -110,7 +114,8 @@
             return (
                 <div>
                     <div style={headerStyle}>
-                        <span>Tags</span>
+                        <div style={{flexGrow: '1'}}>Tags</div>
+                        <div style={{paddingRight: '5px'}}><button type="button" className="close" onClick={this.handleCloseClick}><span aria-hidden="true">&times;</span></button></div>
                     </div>
                     <div style={{display: 'flex', flexDirection: 'column'}}>                    
                         {tags.map(function(item, index) {

@@ -26,6 +26,7 @@ namespace HoomanLogic.Data.Ef
         public string Kind { get; set; }
         public string Path { get; set; }
         public bool IsFocus { get; set; }
+        public string Content { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
         public virtual ICollection<Target> Targets { get; set; }

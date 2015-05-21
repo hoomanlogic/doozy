@@ -609,6 +609,9 @@
                 additional = (<LogEntries userName={this.state.pageOptions.userName} />);
             } else if (this.state.page === 'Manage Tags') {
                 page = (<ManageTags />);
+            } else if (this.state.page === 'Manage Tag') {
+                var tagId = (this.state.pageOptions || {}).tagId || null;
+                page = (<ManageTag tagId={tagId} />);
             } else { //DO
                 hideMain = false;
             }
