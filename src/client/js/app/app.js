@@ -207,7 +207,38 @@ if (typeof require !== 'undefined') {
             recurrenceRules: [],
             items: []
         };
-    };    
+    };
+    
+    exports.project = function (name) {
+        // return object literal
+        return {
+            id: hlcommon.uuid(),
+            kind: 'Goal',
+            name: name || '',
+            created: new Date().toISOString(),
+            duration: 0,
+            tagName: null,
+            content: null,
+            tagName: null,
+            iconUri: null
+        };
+    }; 
+    
+    exports.projectStep = function (projectId) {
+        // return object literal
+        return {
+            id: hlcommon.uuid(),
+            kind: 'Step',
+            name:'',
+            created: new Date().toISOString(),
+            duration: 0,
+            content: null,
+            tagName: null,
+            level: null,
+            parent: null,
+            ordinal: null
+        };
+    }; 
 
     exports.filterActions = function (actions, tags, type) {
         // no filter, return all

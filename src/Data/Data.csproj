@@ -119,6 +119,7 @@
     <Compile Include="Ef\Target.cs">
       <DependentUpon>EfHoomanLogic.tt</DependentUpon>
     </Compile>
+    <Compile Include="ProjectStepsRepository.cs" />
     <Compile Include="ProjectsRepository.cs" />
     <Compile Include="FocusesRepository.cs" />
     <Compile Include="MessagesRepository.cs" />

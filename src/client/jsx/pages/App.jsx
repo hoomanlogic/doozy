@@ -103,6 +103,8 @@
             weatherStore.init(this.props.settings.userName, this.props.settings.userId);
             logEntryStore.init(this.props.settings.userName, this.props.settings.userId);
             tagStore.init(this.props.settings.userName, this.props.settings.userId);
+            projectStore.init(this.props.settings.userName, this.props.settings.userId);
+            projectStepStore.init(this.props.settings.userName, this.props.settings.userId);
             
             connectionStore.getConnections();
 

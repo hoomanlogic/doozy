@@ -189,6 +189,7 @@
     <Compile Include="AuthenticationHandler.cs" />
     <Compile Include="ChatHub.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\ProjectStepsController.cs" />
     <Compile Include="Controllers\ProjectsController.cs" />
     <Compile Include="Controllers\TagsController.cs" />
     <Compile Include="Controllers\FocusesController.cs" />

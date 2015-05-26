@@ -72,7 +72,7 @@ var ProjectStepStore = function () {
         .done(function (result) {
             Object.assign(newProjectStep, result);
             updates.onNext(updates.value);
-            hlio.saveLocal('hl.' + user + '.projectSteps', updates.value, secret);
+            hlio.saveLocal('hl.' + user + '.projectsteps', updates.value, secret);
             toastr.success('Added project step ' + newProjectStep.name);
             if (typeof done !== 'undefined' && done !== null) {
                 done(newProjectStep);
@@ -96,7 +96,7 @@ var ProjectStepStore = function () {
         ui.queueRequest('Deleted project step ' + projectStep.name, function () {
             _api.deleteProjectStep(projectStep)
             .done( function () {
-                hlio.saveLocal('hl.' + user + '.projectSteps', updates.value, secret);
+                hlio.saveLocal('hl.' + user + '.projectsteps', updates.value, secret);
             })
             .fail( function (err) {
                 updates.onNext(updates.value.concat(projectStep));
@@ -126,7 +126,7 @@ var ProjectStepStore = function () {
             .done(function (result) {
                 Object.assign(projectStepToSave, result);
                 updates.onNext(updates.value);
-                hlio.saveLocal('hl.' + user + '.projectSteps', updates.value, secret);
+                hlio.saveLocal('hl.' + user + '.projectsteps', updates.value, secret);
             })
             .fail(function  (err) {
                 Object.assign(projectStepToSave, original);
@@ -168,14 +168,14 @@ var ProjectStepStore = function () {
         // populate store - call to database
         _api.getProjectSteps()
         .done(function (result) {
-            hlio.saveLocal('hl.' + user + '.projectSteps', result, secret);
+            hlio.saveLocal('hl.' + user + '.projectsteps', result, secret);
             updates.onNext(result);
         })
         .fail(function (err) {
             toastr.error(err.responseText);
         });
 
-        var projectSteps = hlio.loadLocal('hl.' + user + '.projectSteps', secret);
+        var projectSteps = hlio.loadLocal('hl.' + user + '.projectsteps', secret);
         if (projectSteps) {
             updates.onNext(projectSteps);   
         }
