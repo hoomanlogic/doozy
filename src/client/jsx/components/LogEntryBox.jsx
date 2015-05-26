@@ -109,6 +109,12 @@
         handleDeleteClick: function () {
             logEntryStore.destroy(this.props.data);
         },
+        handleEditActionClick: function () {
+            this.setState({
+                isDropDownOpen: false
+            });
+            ui.editAction(actionStore.getActionById(this.props.data.actionId));
+        },
         handleEditDetailsClick: function () {
             this.refs.logdetails.getDOMNode().focus();
             this.setState({
@@ -177,6 +183,9 @@
             if (userStore.updates.value.userId === this.props.data.userId) {
                 options.push((
                     <li><a className="clickable hoverable" style={aStyle} onClick={this.handleDeleteClick}><i className="fa fa-trash"></i> Delete Log Entry</a></li>
+                ));
+                options.push((
+                    <li><a className="clickable hoverable" style={aStyle} onClick={this.handleEditActionClick}><i className="fa fa-pencil"></i> Edit Action</a></li>
                 ));
                 options.push((
                     <li><a className="clickable hoverable" style={aStyle} onClick={this.handleEditDetailsClick}><i className="fa fa-pencil"></i> Edit Details</a></li>

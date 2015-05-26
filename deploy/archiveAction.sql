@@ -64,7 +64,9 @@ begin
 		[Duration],
 		[NextDate],
 		[Content],
-		[IsPublic]
+		[IsPublic],
+		[ProjectStepId],
+		[Ordinal]
 	)
 	select
 		[Id],
@@ -75,7 +77,9 @@ begin
 		[Duration],
 		[NextDate],
 		[Content],
-		[IsPublic]
+		[IsPublic],
+		[ProjectStepId],
+		[Ordinal]
 	from Actions 
 	where Id = @ActionId
 

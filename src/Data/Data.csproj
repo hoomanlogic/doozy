@@ -104,6 +104,12 @@
     <Compile Include="Ef\Preference.cs">
       <DependentUpon>EfHoomanLogic.tt</DependentUpon>
     </Compile>
+    <Compile Include="Ef\Project.cs">
+      <DependentUpon>EfHoomanLogic.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Ef\ProjectStep.cs">
+      <DependentUpon>EfHoomanLogic.tt</DependentUpon>
+    </Compile>
     <Compile Include="Ef\RecurrenceRule.cs">
       <DependentUpon>EfHoomanLogic.tt</DependentUpon>
     </Compile>
@@ -113,6 +119,7 @@
     <Compile Include="Ef\Target.cs">
       <DependentUpon>EfHoomanLogic.tt</DependentUpon>
     </Compile>
+    <Compile Include="ProjectsRepository.cs" />
     <Compile Include="FocusesRepository.cs" />
     <Compile Include="MessagesRepository.cs" />
     <Compile Include="NotificationsRepository.cs" />

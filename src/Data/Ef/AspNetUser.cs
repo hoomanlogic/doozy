@@ -29,6 +29,8 @@ namespace HoomanLogic.Data.Ef
             this.Attachments = new HashSet<Attachment>();
             this.LogEntryPeanuts = new HashSet<LogEntryPeanut>();
             this.Actions = new HashSet<Action>();
+            this.Projects = new HashSet<Project>();
+            this.ProjectSteps = new HashSet<ProjectStep>();
         }
     
         public string Id { get; set; }
@@ -59,5 +61,7 @@ namespace HoomanLogic.Data.Ef
         public virtual ICollection<Attachment> Attachments { get; set; }
         public virtual ICollection<LogEntryPeanut> LogEntryPeanuts { get; set; }
         public virtual ICollection<Action> Actions { get; set; }
+        public virtual ICollection<Project> Projects { get; set; }
+        public virtual ICollection<ProjectStep> ProjectSteps { get; set; }
     }
 }

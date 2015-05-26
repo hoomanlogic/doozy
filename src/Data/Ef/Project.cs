@@ -12,23 +12,25 @@ namespace HoomanLogic.Data.Ef
     using System;
     using System.Collections.Generic;
     
-    public partial class Focus
+    public partial class Project
     {
-        public Focus()
+        public Project()
         {
-            this.Projects = new HashSet<Project>();
+            this.ProjectSteps = new HashSet<ProjectStep>();
         }
     
         public System.Guid Id { get; set; }
+        public System.Guid FocusId { get; set; }
         public string UserId { get; set; }
         public string Name { get; set; }
         public string Kind { get; set; }
+        public string TagName { get; set; }
         public Nullable<System.DateTime> Enlist { get; set; }
         public Nullable<System.DateTime> Retire { get; set; }
         public string IconUri { get; set; }
-        public string TagName { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
-        public virtual ICollection<Project> Projects { get; set; }
+        public virtual Focus Focus { get; set; }
+        public virtual ICollection<ProjectStep> ProjectSteps { get; set; }
     }
 }

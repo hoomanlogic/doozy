@@ -12,33 +12,29 @@ namespace HoomanLogic.Data.Ef
     using System;
     using System.Collections.Generic;
     
-    public partial class Action
+    public partial class ProjectStep
     {
-        public Action()
+        public ProjectStep()
         {
-            this.LogEntries = new HashSet<LogEntry>();
-            this.RecurrenceRules = new HashSet<RecurrenceRule>();
-            this.Attachments = new HashSet<Attachment>();
-            this.Tags = new HashSet<Tag>();
+            this.Actions = new HashSet<Action>();
         }
     
         public System.Guid Id { get; set; }
+        public System.Guid ProjectId { get; set; }
         public string UserId { get; set; }
         public string Name { get; set; }
         public string Kind { get; set; }
-        public Nullable<short> Duration { get; set; }
-        public Nullable<System.DateTime> NextDate { get; set; }
-        public string Content { get; set; }
-        public bool IsPublic { get; set; }
         public Nullable<System.DateTime> Created { get; set; }
+        public Nullable<short> Duration { get; set; }
+        public string Status { get; set; }
+        public string TagName { get; set; }
+        public Nullable<short> Level { get; set; }
+        public Nullable<short> Parent { get; set; }
         public Nullable<short> Ordinal { get; set; }
-        public Nullable<System.Guid> ProjectStepId { get; set; }
+        public string Content { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
-        public virtual ICollection<LogEntry> LogEntries { get; set; }
-        public virtual ICollection<RecurrenceRule> RecurrenceRules { get; set; }
-        public virtual ICollection<Attachment> Attachments { get; set; }
-        public virtual ICollection<Tag> Tags { get; set; }
-        public virtual ProjectStep ProjectStep { get; set; }
+        public virtual Project Project { get; set; }
+        public virtual ICollection<Action> Actions { get; set; }
     }
 }
