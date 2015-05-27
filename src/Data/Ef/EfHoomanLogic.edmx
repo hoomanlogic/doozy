@@ -203,10 +203,9 @@
           <Property Name="Duration" Type="smallint" />
           <Property Name="Status" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="TagName" Type="varchar" MaxLength="20" />
-          <Property Name="Level" Type="smallint" />
-          <Property Name="Parent" Type="smallint" />
-          <Property Name="Ordinal" Type="smallint" />
           <Property Name="Content" Type="varchar(max)" />
+          <Property Name="ParentId" Type="uniqueidentifier" />
+          <Property Name="Ordinal" Type="smallint" />
         </EntityType>
         <EntityType Name="RecurrenceRules">
           <Key>
@@ -519,6 +518,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ProjectSteps_Parent">
+          <End Role="ProjectSteps" Type="Self.ProjectSteps" Multiplicity="0..1" />
+          <End Role="ProjectSteps1" Type="Self.ProjectSteps" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProjectSteps">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProjectSteps1">
+              <PropertyRef Name="ParentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ProjectSteps_Projects">
           <End Role="Projects" Type="Self.Projects" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -730,6 +741,10 @@
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="Projects" EntitySet="Projects" />
           </AssociationSet>
+          <AssociationSet Name="FK_ProjectSteps_Parent" Association="Self.FK_ProjectSteps_Parent">
+            <End Role="ProjectSteps" EntitySet="ProjectSteps" />
+            <End Role="ProjectSteps1" EntitySet="ProjectSteps" />
+          </AssociationSet>
           <AssociationSet Name="FK_ProjectSteps_Projects" Association="Self.FK_ProjectSteps_Projects">
             <End Role="Projects" EntitySet="Projects" />
             <End Role="ProjectSteps" EntitySet="ProjectSteps" />
@@ -873,26 +888,30 @@
             <End Role="Tag" EntitySet="Tags" />
           </AssociationSet>
           <EntitySet Name="Projects" EntityType="hoomanlogicModel.Project" />
-          <EntitySet Name="ProjectSteps" EntityType="hoomanlogicModel.ProjectStep" />
           <AssociationSet Name="FK_Projects_Users" Association="hoomanlogicModel.FK_Projects_Users">
             <End Role="AspNetUser" EntitySet="AspNetUsers" />
             <End Role="Project" EntitySet="Projects" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ProjectSteps_Users" Association="hoomanlogicModel.FK_ProjectSteps_Users">
-            <End Role="AspNetUser" EntitySet="AspNetUsers" />
-            <End Role="ProjectStep" EntitySet="ProjectSteps" />
           </AssociationSet>
           <AssociationSet Name="FK_Projects_Focuses" Association="hoomanlogicModel.FK_Projects_Focuses">
             <End Role="Focus" EntitySet="Focuses" />
             <End Role="Project" EntitySet="Projects" />
           </AssociationSet>
+          <EntitySet Name="ProjectSteps" EntityType="hoomanlogicModel.ProjectStep" />
+          <AssociationSet Name="FK_Actions_ProjectSteps" Association="hoomanlogicModel.FK_Actions_ProjectSteps">
+            <End Role="ProjectStep" EntitySet="ProjectSteps" />
+            <End Role="Action" EntitySet="Actions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProjectSteps_Users" Association="hoomanlogicModel.FK_ProjectSteps_Users">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="ProjectStep" EntitySet="ProjectSteps" />
+          </AssociationSet>
           <AssociationSet Name="FK_ProjectSteps_Projects" Association="hoomanlogicModel.FK_ProjectSteps_Projects">
             <End Role="Project" EntitySet="Projects" />
             <End Role="ProjectStep" EntitySet="ProjectSteps" />
           </AssociationSet>
-          <AssociationSet Name="FK_Actions_ProjectSteps" Association="hoomanlogicModel.FK_Actions_ProjectSteps">
+          <AssociationSet Name="FK_ProjectSteps_Parent" Association="hoomanlogicModel.FK_ProjectSteps_Parent">
             <End Role="ProjectStep" EntitySet="ProjectSteps" />
-            <End Role="Action" EntitySet="Actions" />
+            <End Role="ProjectStep1" EntitySet="ProjectSteps" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="AspNetUser">
@@ -1424,29 +1443,8 @@
           <Property Name="IconUri" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="AspNetUser" Relationship="hoomanlogicModel.FK_Projects_Users" FromRole="Project" ToRole="AspNetUser" />
           <NavigationProperty Name="Focus" Relationship="hoomanlogicModel.FK_Projects_Focuses" FromRole="Project" ToRole="Focus" />
+          <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="ProjectSteps" Relationship="hoomanlogicModel.FK_ProjectSteps_Projects" FromRole="Project" ToRole="ProjectStep" />
-          <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="ProjectStep">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Guid" Nullable="false" />
-          <Property Name="ProjectId" Type="Guid" Nullable="false" />
-          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="Kind" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="Created" Type="DateTime" Precision="3" />
-          <Property Name="Duration" Type="Int16" />
-          <Property Name="Status" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="TagName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="Level" Type="Int16" />
-          <Property Name="Parent" Type="Int16" />
-          <Property Name="Ordinal" Type="Int16" />
-          <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="AspNetUser" Relationship="hoomanlogicModel.FK_ProjectSteps_Users" FromRole="ProjectStep" ToRole="AspNetUser" />
-          <NavigationProperty Name="Project" Relationship="hoomanlogicModel.FK_ProjectSteps_Projects" FromRole="ProjectStep" ToRole="Project" />
-          <NavigationProperty Name="Actions" Relationship="hoomanlogicModel.FK_Actions_ProjectSteps" FromRole="ProjectStep" ToRole="Action" />
         </EntityType>
         <Association Name="FK_Projects_Users">
           <End Type="hoomanlogicModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
@@ -1462,18 +1460,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_ProjectSteps_Users">
-          <End Type="hoomanlogicModel.AspNetUser" Role="AspNetUser" Multiplicity="1" />
-          <End Type="hoomanlogicModel.ProjectStep" Role="ProjectStep" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUser">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="ProjectStep">
-              <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Projects_Focuses">
           <End Type="hoomanlogicModel.Focus" Role="Focus" Multiplicity="1" />
           <End Type="hoomanlogicModel.Project" Role="Project" Multiplicity="*" />
@@ -1483,6 +1469,52 @@
             </Principal>
             <Dependent Role="Project">
               <PropertyRef Name="FocusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ProjectStep">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="ProjectId" Type="Guid" Nullable="false" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Kind" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Created" Type="DateTime" Precision="3" />
+          <Property Name="Duration" Type="Int16" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="TagName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ParentId" Type="Guid" />
+          <Property Name="Ordinal" Type="Int16" />
+          <NavigationProperty Name="Actions" Relationship="hoomanlogicModel.FK_Actions_ProjectSteps" FromRole="ProjectStep" ToRole="Action" />
+          <NavigationProperty Name="AspNetUser" Relationship="hoomanlogicModel.FK_ProjectSteps_Users" FromRole="ProjectStep" ToRole="AspNetUser" />
+          <NavigationProperty Name="Project" Relationship="hoomanlogicModel.FK_ProjectSteps_Projects" FromRole="ProjectStep" ToRole="Project" />
+          <NavigationProperty Name="Children" Relationship="hoomanlogicModel.FK_ProjectSteps_Parent" FromRole="ProjectStep" ToRole="ProjectStep1" />
+          <NavigationProperty Name="Parent" Relationship="hoomanlogicModel.FK_ProjectSteps_Parent" FromRole="ProjectStep1" ToRole="ProjectStep" />
+        </EntityType>
+        <Association Name="FK_Actions_ProjectSteps">
+          <End Type="hoomanlogicModel.ProjectStep" Role="ProjectStep" Multiplicity="0..1" />
+          <End Type="hoomanlogicModel.Action" Role="Action" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProjectStep">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Action">
+              <PropertyRef Name="ProjectStepId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProjectSteps_Users">
+          <End Type="hoomanlogicModel.AspNetUser" Role="AspNetUser" Multiplicity="1" />
+          <End Type="hoomanlogicModel.ProjectStep" Role="ProjectStep" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProjectStep">
+              <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1500,15 +1532,15 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Actions_ProjectSteps">
+        <Association Name="FK_ProjectSteps_Parent">
           <End Type="hoomanlogicModel.ProjectStep" Role="ProjectStep" Multiplicity="0..1" />
-          <End Type="hoomanlogicModel.Action" Role="Action" Multiplicity="*" />
+          <End Type="hoomanlogicModel.ProjectStep" Role="ProjectStep1" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ProjectStep">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="Action">
-              <PropertyRef Name="ProjectStepId" />
+            <Dependent Role="ProjectStep1">
+              <PropertyRef Name="ParentId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1751,10 +1783,9 @@
           <EntitySetMapping Name="ProjectSteps">
             <EntityTypeMapping TypeName="hoomanlogicModel.ProjectStep">
               <MappingFragment StoreEntitySet="ProjectSteps">
-                <ScalarProperty Name="Content" ColumnName="Content" />
                 <ScalarProperty Name="Ordinal" ColumnName="Ordinal" />
-                <ScalarProperty Name="Parent" ColumnName="Parent" />
-                <ScalarProperty Name="Level" ColumnName="Level" />
+                <ScalarProperty Name="ParentId" ColumnName="ParentId" />
+                <ScalarProperty Name="Content" ColumnName="Content" />
                 <ScalarProperty Name="TagName" ColumnName="TagName" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="Duration" ColumnName="Duration" />

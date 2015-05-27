@@ -50,18 +50,30 @@
          *************************************************************/
         handleAddStepClick: function () {
             var stepName = prompt('What is the name of the step?', '');
+            if (!stepName) {
+                return false;   
+            }
+            
+            var steps = _.where(projectStepStore.updates.value, { projectId: this.props.projectId, parentId: this.props.data.id });
+            var nextOrdinal = 1;
+            if (steps.length > 0) {
+                steps = _.sortBy(steps, function (item) {
+                    return item.ordinal;
+                });
+                steps.reverse();
+                nextOrdinal = steps[0].ordinal + 1;
+            }
             
             projectStepStore.create({
                 id: hlcommon.uuid(),
                 projectId: this.props.projectId,
+                parentId: this.props.data.id,
                 name: stepName,
                 kind: 'Step',
                 status: 'Todo',
                 created: (new Date()).toISOString(),
                 content: null,
-                level: this.props.data.level + 1,
-                parent: this.props.data.ordinal,
-                ordinal: 1
+                ordinal: nextOrdinal
             });
 
             return false;
@@ -89,8 +101,8 @@
              */
             var listItemStyle = {
                 fontSize: 'large',
-                padding: '5px',
-                borderBottom: 'solid 1px #e0e0e0'
+                //padding: '5px',
+                //borderBottom: 'solid 1px #e0e0e0'
             };
             
             var buttonStyle = { 
@@ -104,21 +116,73 @@
                 outlineColor: 'rgb(40, 40, 40)'
             };
             
-            var steps = _.where(projectStepStore.updates.value, { projectId: this.props.projectId, parent: this.props.data.ordinal, level: this.props.data.level + 1 });
-
+            var childStepsStyles = [
+                {
+                    
+                },
+                {
+                    display: 'flex',
+                    flexDirection: 'row'
+                },
+                {
+                    display: 'flex',
+                    flexDirection: 'column'
+                }
+            ];
+            
+            var stepStyles = [
+                {
+                  
+                },
+                {
+                    background: '#aed9e9',
+                    border: 'solid 1px #8fcbe3',
+                    color: '#274e5b',
+                    width: '180px',
+                    minWidth: '180px',
+                    height: '120px'
+                },
+                {
+                    background: '#f4e459',
+                    border: 'solid 1px #e8cf01',
+                    color: '#635207',
+                    width: '180px',
+                    minWidth: '180px',
+                    height: '120px',
+                    overflow: 'auto'
+                },
+                {
+                    background: '##fff',
+                    border: 'solid 1px #cecece',
+                    color: '#4f4f4f',
+                    width: '180px',
+                    minWidth: '180px',
+                    height: '120px'
+                },
+            ];
+            
+            var steps = _.where(projectStepStore.updates.value, { projectId: this.props.projectId, parentId: this.props.data.id });
+            steps = _.sortBy(steps, function (item) {
+                return item.ordinal;
+            });
+            
             var stepsDom = steps.map( function (step) {
                 return (
-                    <ProjectStep projectId={this.props.projectId} data={step} />
+                    <ProjectStep projectId={this.props.projectId} data={step} level={this.props.level + 1} />
                 );
             }.bind(this));
 
             return (
-                <div key={this.props.data.id} className="clickable" style={listItemStyle}>
+                <div key={this.props.data.id} style={listItemStyle}>
                     <div>
-                        <span>{this.props.data.name}</span>
-                        <button type="button" style={buttonStyle} className="btn pull-right" onClick={this.handleAddStepClick}>+</button>
+                        <div style={Object.assign({}, stepStyles[this.props.level], {padding: '5px', margin: '5px'})}>
+                            <span>{this.props.data.name}</span>
+                            <button type="button" style={buttonStyle} className="btn pull-right" onClick={this.handleAddStepClick}>+</button>
+                        </div>
                     </div>
-                    {stepsDom}
+                    <div style={childStepsStyles[this.props.level]}>
+                        {stepsDom}
+                    </div>
                 </div>
             );
         }

@@ -91,7 +91,8 @@ var jsxFiles = [
 	
     'src/client/jsx/components/FocusActions.jsx',
 	'src/client/jsx/components/ProjectStep.jsx',
-    
+	
+	'src/client/jsx/components/ProjectSteps.jsx',
 	'src/client/jsx/components/TimerBar.jsx',
 	'src/client/jsx/pages/LogRecentAction.jsx',
     'src/client/jsx/pages/ManageAction.jsx',

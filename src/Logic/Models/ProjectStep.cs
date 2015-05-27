@@ -9,6 +9,7 @@ namespace HoomanLogic.Models
     {
         public Guid Id { get; set; }
         public Guid ProjectId { get; set; }
+        public Guid? ParentId { get; set; }
         public string Kind { get; set; }
         public string Name { get; set; }
         public string Content { get; set; }
@@ -16,8 +17,6 @@ namespace HoomanLogic.Models
         public string TagName { get; set; }
         public string Status { get; set; }
         public DateTime? Created { get; set; }
-        public short? Level { get; set; }
-        public short? Parent { get; set; }
         public short? Ordinal { get; set; }
     }
 }

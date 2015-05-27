@@ -44,12 +44,13 @@
         <AssociationConnector Association="hoomanlogicModel.ActionsAttachments" />
         <AssociationConnector Association="hoomanlogicModel.ActionsTags" />
         <EntityTypeShape EntityType="hoomanlogicModel.Project" Width="1.5" PointX="8.75" PointY="13.25" />
-        <EntityTypeShape EntityType="hoomanlogicModel.ProjectStep" Width="1.5" PointX="11" PointY="13.25" />
         <AssociationConnector Association="hoomanlogicModel.FK_Projects_Users" />
-        <AssociationConnector Association="hoomanlogicModel.FK_ProjectSteps_Users" />
         <AssociationConnector Association="hoomanlogicModel.FK_Projects_Focuses" />
-        <AssociationConnector Association="hoomanlogicModel.FK_ProjectSteps_Projects" />
+        <EntityTypeShape EntityType="hoomanlogicModel.ProjectStep" Width="1.5" PointX="11.375" PointY="13.25" />
         <AssociationConnector Association="hoomanlogicModel.FK_Actions_ProjectSteps" />
+        <AssociationConnector Association="hoomanlogicModel.FK_ProjectSteps_Users" />
+        <AssociationConnector Association="hoomanlogicModel.FK_ProjectSteps_Projects" />
+        <AssociationConnector Association="hoomanlogicModel.FK_ProjectSteps_Parent" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

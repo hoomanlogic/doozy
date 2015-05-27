@@ -17,12 +17,11 @@ namespace HoomanLogic.Data
                 {
                     Id = row.Id,
                     ProjectId = row.ProjectId,
+                    ParentId = row.ParentId,
                     Kind = row.Kind,
                     Name = row.Name,
                     Duration = row.Duration,
                     TagName = row.TagName,
-                    Level = row.Level,
-                    Parent = row.Parent,
                     Ordinal = row.Ordinal
                 }).ToList();
 
@@ -38,12 +37,11 @@ namespace HoomanLogic.Data
                 {
                     Id = row.Id,
                     ProjectId = row.ProjectId,
+                    ParentId = row.ParentId,
                     Kind = row.Kind,
                     Name = row.Name,
                     Duration = row.Duration,
                     TagName = row.TagName,
-                    Level = row.Level,
-                    Parent = row.Parent,
                     Ordinal = row.Ordinal
                 }).FirstOrDefault();
 
@@ -58,6 +56,7 @@ namespace HoomanLogic.Data
                 ef.ProjectStep row = new ef.ProjectStep();
                 row.Id = Guid.NewGuid();
                 row.ProjectId = model.ProjectId;
+                row.ParentId = model.ParentId;
                 row.UserId = userId;
                 row.Kind = model.Kind;
                 row.Name = model.Name;
@@ -65,8 +64,6 @@ namespace HoomanLogic.Data
                 row.Status = model.Status;
                 row.TagName = model.TagName;
                 row.Duration = model.Duration;
-                row.Level = model.Level;
-                row.Parent = model.Parent;
                 row.Ordinal = model.Ordinal;
                 db.ProjectSteps.Add(row);
                 db.SaveChanges();
@@ -86,14 +83,13 @@ namespace HoomanLogic.Data
                     ).First();
 
                 row.ProjectId = model.ProjectId;
+                row.ParentId = model.ParentId;
                 row.Kind = model.Kind;
                 row.Name = model.Name;
                 row.Created = model.Created;
                 row.Status = model.Status;
                 row.TagName = model.TagName;
                 row.Duration = model.Duration;
-                row.Level = model.Level;
-                row.Parent = model.Parent;
                 row.Ordinal = model.Ordinal;
 
                 // persist changes
