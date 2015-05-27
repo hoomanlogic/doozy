@@ -14,12 +14,6 @@ namespace HoomanLogic.Data.Ef
     
     public partial class ProjectStep
     {
-        public ProjectStep()
-        {
-            this.Actions = new HashSet<Action>();
-            this.Children = new HashSet<ProjectStep>();
-        }
-    
         public System.Guid Id { get; set; }
         public System.Guid ProjectId { get; set; }
         public string UserId { get; set; }
@@ -32,11 +26,5 @@ namespace HoomanLogic.Data.Ef
         public string Content { get; set; }
         public Nullable<System.Guid> ParentId { get; set; }
         public Nullable<short> Ordinal { get; set; }
-    
-        public virtual ICollection<Action> Actions { get; set; }
-        public virtual AspNetUser AspNetUser { get; set; }
-        public virtual Project Project { get; set; }
-        public virtual ICollection<ProjectStep> Children { get; set; }
-        public virtual ProjectStep Parent { get; set; }
     }
 }

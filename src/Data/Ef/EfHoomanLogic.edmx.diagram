@@ -17,13 +17,13 @@
         <EntityTypeShape EntityType="hoomanlogicModel.Message" Width="1.5" PointX="5.875" PointY="0.75" />
         <AssociationConnector Association="hoomanlogicModel.FK_UserMessages_Users_From" />
         <AssociationConnector Association="hoomanlogicModel.FK_UserMessages_Users_To" />
-        <EntityTypeShape EntityType="hoomanlogicModel.ConnectionRequest" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="hoomanlogicModel.ConnectionRequest" Width="1.5" PointX="1.25" PointY="0.5" />
         <EntityTypeShape EntityType="hoomanlogicModel.Connection" Width="1.5" PointX="11" PointY="3.25" />
         <AssociationConnector Association="hoomanlogicModel.FK_Connections_Users_User1" />
         <AssociationConnector Association="hoomanlogicModel.FK_Connections_Users_User2" />
         <AssociationConnector Association="hoomanlogicModel.FK_Connections_Personas1" />
         <AssociationConnector Association="hoomanlogicModel.FK_Connections_Personas2" />
-        <EntityTypeShape EntityType="hoomanlogicModel.Tag" Width="1.5" PointX="5.875" PointY="5.125" />
+        <EntityTypeShape EntityType="hoomanlogicModel.Tag" Width="1.5" PointX="5.875" PointY="5" />
         <AssociationConnector Association="hoomanlogicModel.FK_Tags_Users" />
         <EntityTypeShape EntityType="hoomanlogicModel.Target" Width="1.5" PointX="8.125" PointY="4.625" />
         <AssociationConnector Association="hoomanlogicModel.FK_Targets_Users" />
@@ -37,20 +37,16 @@
         <AssociationConnector Association="hoomanlogicModel.FK_Attachments_Users" />
         <AssociationConnector Association="hoomanlogicModel.FK_LogEntryPeanuts_Users" />
         <AssociationConnector Association="hoomanlogicModel.FK_LogEntryPeanuts_LogEntries" />
-        <EntityTypeShape EntityType="hoomanlogicModel.Action" Width="1.5" PointX="5.875" PointY="21" />
+        <EntityTypeShape EntityType="hoomanlogicModel.Project" Width="1.5" PointX="8.75" PointY="13.25" />
+        <AssociationConnector Association="hoomanlogicModel.FK_Projects_Users" />
+        <AssociationConnector Association="hoomanlogicModel.FK_Projects_Focuses" />
+        <EntityTypeShape EntityType="hoomanlogicModel.Action" Width="1.5" PointX="5.875" PointY="20.5" />
         <AssociationConnector Association="hoomanlogicModel.FK_Action_User" />
         <AssociationConnector Association="hoomanlogicModel.FK_LogEntries_Actions" />
         <AssociationConnector Association="hoomanlogicModel.FK_RecurrenceRules_Actions" />
         <AssociationConnector Association="hoomanlogicModel.ActionsAttachments" />
         <AssociationConnector Association="hoomanlogicModel.ActionsTags" />
-        <EntityTypeShape EntityType="hoomanlogicModel.Project" Width="1.5" PointX="8.75" PointY="13.25" />
-        <AssociationConnector Association="hoomanlogicModel.FK_Projects_Users" />
-        <AssociationConnector Association="hoomanlogicModel.FK_Projects_Focuses" />
-        <EntityTypeShape EntityType="hoomanlogicModel.ProjectStep" Width="1.5" PointX="11.375" PointY="13.25" />
-        <AssociationConnector Association="hoomanlogicModel.FK_Actions_ProjectSteps" />
-        <AssociationConnector Association="hoomanlogicModel.FK_ProjectSteps_Users" />
-        <AssociationConnector Association="hoomanlogicModel.FK_ProjectSteps_Projects" />
-        <AssociationConnector Association="hoomanlogicModel.FK_ProjectSteps_Parent" />
+        <EntityTypeShape EntityType="hoomanlogicModel.ProjectStep" Width="1.5" PointX="10.875" PointY="13.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

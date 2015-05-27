@@ -31,6 +31,7 @@ namespace HoomanLogic.Data.Ef
         public string Content { get; set; }
         public bool IsPublic { get; set; }
         public Nullable<System.DateTime> Created { get; set; }
+        public Nullable<bool> IsArchive { get; set; }
         public Nullable<short> Ordinal { get; set; }
         public Nullable<System.Guid> ProjectStepId { get; set; }
     
@@ -39,6 +40,5 @@ namespace HoomanLogic.Data.Ef
         public virtual ICollection<RecurrenceRule> RecurrenceRules { get; set; }
         public virtual ICollection<Attachment> Attachments { get; set; }
         public virtual ICollection<Tag> Tags { get; set; }
-        public virtual ProjectStep ProjectStep { get; set; }
     }
 }

@@ -579,7 +579,7 @@
             // let other components know what page we're on
             window['ui'].page = this.state.page;
             
-            var weatherBackdrop = this.renderWeatherBackdrop();
+            //var weatherBackdrop = this.renderWeatherBackdrop();
             var action, actionId, mode, projectId;
             
             var page = null, hideMain = true, additional;
@@ -622,10 +622,13 @@
             } else if (this.state.page === 'Project View') {
                 projectId = (this.state.pageOptions || {}).projectId || null;
                 page = (<ProjectSteps projectId={projectId} />);
+            } else if (this.state.page === 'Manage Project Step') {
+                var mpsArgs = (this.state.pageOptions || {});
+                page = (<ManageProjectStep isNew={mpsArgs.isNew} projectId={mpsArgs.projectId} projectStepId={mpsArgs.projectStepId} parentId={mpsArgs.parentId} />);
             } else { //DO
                 hideMain = false;
             }
-
+                        
             var requests;
             if (this.state.requests.length > 0) {
                 var containerStyle = {
@@ -676,7 +679,6 @@
                         currentFocus={this.state.currentFocus} 
                         handleFocusClick={this.handleFocusClick} />
                     <TimerBar />
-                    {weatherBackdrop}
                     {requests}
                     <FocusActions hidden={hideMain} focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : ''} />
                     {page}

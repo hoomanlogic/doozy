@@ -14,11 +14,6 @@ namespace HoomanLogic.Data.Ef
     
     public partial class Project
     {
-        public Project()
-        {
-            this.ProjectSteps = new HashSet<ProjectStep>();
-        }
-    
         public System.Guid Id { get; set; }
         public System.Guid FocusId { get; set; }
         public string UserId { get; set; }
@@ -32,6 +27,5 @@ namespace HoomanLogic.Data.Ef
     
         public virtual AspNetUser AspNetUser { get; set; }
         public virtual Focus Focus { get; set; }
-        public virtual ICollection<ProjectStep> ProjectSteps { get; set; }
     }
 }

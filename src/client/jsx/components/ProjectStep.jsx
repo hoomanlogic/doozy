@@ -48,53 +48,30 @@
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
-        handleAddStepClick: function () {
-            var stepName = prompt('What is the name of the step?', '');
-            
-            if (!stepName) {
-                return;   
-            }
-
-            var steps = _.where(projectStepStore.updates.value, { projectId: this.props.projectId, parentId: this.props.data.id });
-            var nextOrdinal = 1;
-            if (steps.length > 0) {
-                steps = _.sortBy(steps, function (item) {
-                    return item.ordinal;
-                });
-                steps.reverse();
-                nextOrdinal = steps[0].ordinal + 1;
-            }
-            
-            projectStepStore.create({
-                id: hlcommon.uuid(),
-                projectId: this.props.projectId,
-                parentId: this.props.data.id,
-                name: stepName,
-                kind: 'Step',
-                status: 'Todo',
-                created: (new Date()).toISOString(),
-                content: null,
-                ordinal: nextOrdinal
-            });
-            
-            this.setState({ projectStepsLastUpdated: (new Date()).toISOString() });
-        },
         handleProjectStepStoreUpdate: function (projects) {
             this.setState({ projectStepsLastUpdated: (new Date()).toISOString() });
         },
         handleCardClick: function () {
-            if (this.props.data.hasOwnProperty('isNew') && this.props.data.isNew) {
-                var stepName = prompt('What is the name of the step?', '');
+            
+            ui.goTo('Manage Project Step', {
+                isNew: this.props.data.isNew || false,
+                projectStepId: this.props.data.id, 
+                projectId: this.props.data.projectId, 
+                parentId: this.props.data.parentId
+            });
+            
+            //if (this.props.data.hasOwnProperty('isNew') && this.props.data.isNew) {
+            //    var stepName = prompt('What is the name of the step?', '');
 
-                if (!stepName) {
-                    return;   
-                }
+            //    if (!stepName) {
+            //        return;   
+            //    }
 
-                Object.assign(this.props.data, { name: stepName });
-                this.props.data.isNew = void 0;
+            //    Object.assign(this.props.data, { name: stepName });
+            //    this.props.data.isNew = void 0;
 
-                projectStepStore.create(this.props.data);
-            }
+            //    projectStepStore.create(this.props.data);
+            //}
         },
         
         calculateNewStep: function () {
@@ -233,7 +210,7 @@
                     <ProjectStep projectId={this.props.projectId} data={this.calculateNewStep()} level={this.props.level + 1} />
                 ));
             }
-            // <button type="button" style={buttonStyle} className="btn pull-right" onClick={this.handleAddStepClick}>+</button>
+
             return (
                 <li key={this.props.data.id} style={Object.assign({}, listItemStyle, childStepsStyles[this.props.level])}>
                     <div className="clickable" onClick={this.handleCardClick}>
