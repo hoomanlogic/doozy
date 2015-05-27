@@ -48,37 +48,6 @@
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
-        handleAddStepClick: function () {
-            var stepName = prompt('What is the name of the step?', '');
-            
-            if (!stepName) {
-                return;   
-            }
-            
-            var steps = _.where(projectStepStore.updates.value, { projectId: this.props.projectId, parentId: null });
-            var nextOrdinal = 1;
-            if (steps.length > 0) {
-                steps = _.sortBy(steps, function (item) {
-                    return item.ordinal;
-                });
-                steps.reverse();
-                nextOrdinal = steps[0].ordinal + 1;
-            }
-            
-            projectStepStore.create({
-                id: hlcommon.uuid(),
-                projectId: this.props.projectId,
-                parentId: null,
-                name: stepName,
-                kind: 'Step',
-                status: 'Todo',
-                created: (new Date()).toISOString(),
-                content: null,
-                ordinal: nextOrdinal
-            });
-            
-            this.setState({ projectStepsLastUpdated: (new Date()).toISOString() });
-        },
         handleProjectStepStoreUpdate: function (projectSteps) {
             this.setState({ projectStepsLastUpdated: (new Date()).toISOString() });
         },
@@ -167,7 +136,7 @@
             stepsDom.push((
                 <ProjectStep projectId={this.props.projectId} data={this.calculateNewStep()} level={1} />
             ));
-            // <button type="button" style={buttonStyle} className="btn" onClick={this.handleAddStepClick}>+</button>
+
             return (
                 <div>
                     <div style={headerStyle}>

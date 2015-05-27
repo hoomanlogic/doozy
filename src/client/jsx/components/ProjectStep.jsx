@@ -90,10 +90,10 @@
                     return;   
                 }
 
-                var newStep = Object.assign({}, this.props.data, { name: stepName });
-                newStep.isNew = void 0;
+                Object.assign(this.props.data, { name: stepName });
+                this.props.data.isNew = void 0;
 
-                projectStepStore.create(newStep);
+                projectStepStore.create(this.props.data);
             }
         },
         
@@ -237,7 +237,7 @@
             return (
                 <li key={this.props.data.id} style={Object.assign({}, listItemStyle, childStepsStyles[this.props.level])}>
                     <div className="clickable" onClick={this.handleCardClick}>
-                        <div style={Object.assign({}, stepStyles[this.props.level], {padding: '5px', margin: '5px'}, (this.props.data.hasOwnProperty('isNew') ? newStepStyle : null))}>
+                        <div style={Object.assign({}, stepStyles[this.props.level], {padding: '5px', margin: '5px'}, (this.props.data.hasOwnProperty('isNew') && this.props.data.isNew ? newStepStyle : null))}>
                             <span>{this.props.data.name}</span>
                         </div>
                     </div>
