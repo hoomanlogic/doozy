@@ -580,7 +580,7 @@
             window['ui'].page = this.state.page;
             
             var weatherBackdrop = this.renderWeatherBackdrop();
-            var action, actionId, mode;
+            var action, actionId, mode, projectId;
             
             var page = null, hideMain = true, additional;
             if (this.state.page === 'Focus Management') {
@@ -617,8 +617,11 @@
             } else if (this.state.page === 'Manage Projects') {
                 page = (<ManageProjects />);
             } else if (this.state.page === 'Manage Project') {
-                var projectId = (this.state.pageOptions || {}).projectId || null;
+                projectId = (this.state.pageOptions || {}).projectId || null;
                 page = (<ManageProject projectId={projectId} />);
+            } else if (this.state.page === 'Project View') {
+                projectId = (this.state.pageOptions || {}).projectId || null;
+                page = (<ProjectSteps projectId={projectId} />);
             } else { //DO
                 hideMain = false;
             }

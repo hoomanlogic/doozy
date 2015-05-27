@@ -48,43 +48,11 @@
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
-        handleAddStepClick: function (project) {
-            var stepName = prompt('What is the name of the step?', '');
-            if (!stepName) {
-                return false;   
-            }
-            
-            var steps = _.where(projectStepStore.updates.value, { projectId: project.id, parentId: null });
-            var nextOrdinal = 1;
-            if (steps.length > 0) {
-                steps = _.sortBy(steps, function (item) {
-                    return item.ordinal;
-                });
-                steps.reverse();
-                nextOrdinal = steps[0].ordinal + 1;
-            }
-            
-            projectStepStore.create({
-                id: hlcommon.uuid(),
-                projectId: project.id,
-                parentId: null,
-                name: stepName,
-                kind: 'Step',
-                status: 'Todo',
-                created: (new Date()).toISOString(),
-                content: null,
-                ordinal: nextOrdinal
-            });
-            
-            this.setState({ projectsLastUpdated: (new Date()).toISOString() });
-            
-            return false;
-        },
         handleCloseClick: function () {
             ui.goBack();
         },
         handleProjectClick: function (project) {
-            ui.goTo('Manage Project', {projectId: project.id});
+            ui.goTo('Project View', {projectId: project.id});
         },
         handleProjectStoreUpdate: function (projects) {
             this.setState({ projectsLastUpdated: (new Date()).toISOString() });
@@ -122,17 +90,6 @@
                 padding: '5px',
                 borderBottom: 'solid 1px #e0e0e0'
             };
-            
-            var buttonStyle = { 
-                paddingTop: '3px', 
-                paddingBottom: '3px', 
-                backgroundImage: 'none', 
-                color: '#444', 
-                backgroundColor: '#e2ff63', 
-                borderColor: '#e2ff63', 
-                fontWeight: 'bold', 
-                outlineColor: 'rgb(40, 40, 40)'
-            };
 
             // html
             return (
@@ -147,9 +104,7 @@
                                 <div key={item.id} style={listItemStyle}>
                                     <div>
                                         <span className="clickable" onClick={this.handleProjectClick.bind(null, item)}>{item.name}</span>
-                                        <button type="button" style={buttonStyle} className="btn pull-right" onClick={this.handleAddStepClick.bind(null, item)}>+</button>
                                     </div>
-                                    <ProjectSteps projectId={item.id} />
                                 </div>
                             );
                         }.bind(this))}

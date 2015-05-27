@@ -101,6 +101,7 @@
              */
             var listItemStyle = {
                 fontSize: 'large',
+                verticalAlign: 'top'
                 //padding: '5px',
                 //borderBottom: 'solid 1px #e0e0e0'
             };
@@ -116,24 +117,8 @@
                 outlineColor: 'rgb(40, 40, 40)'
             };
             
-            var childStepsStyles = [
-                {
-                    
-                },
-                {
-                    display: 'flex',
-                    flexDirection: 'row'
-                },
-                {
-                    display: 'flex',
-                    flexDirection: 'column'
-                }
-            ];
-            
             var stepStyles = [
-                {
-                  
-                },
+                {},
                 {
                     background: '#aed9e9',
                     border: 'solid 1px #8fcbe3',
@@ -161,6 +146,20 @@
                 },
             ];
             
+            
+            var childStepsStyles = [
+                {},
+                {
+                    display: 'inline-block'
+                },
+                {
+                    display: 'inline-block'
+                },
+                {
+                    display: 'block'
+                }
+            ];
+            
             var steps = _.where(projectStepStore.updates.value, { projectId: this.props.projectId, parentId: this.props.data.id });
             steps = _.sortBy(steps, function (item) {
                 return item.ordinal;
@@ -173,17 +172,17 @@
             }.bind(this));
 
             return (
-                <div key={this.props.data.id} style={listItemStyle}>
+                <li key={this.props.data.id} style={Object.assign({}, listItemStyle, childStepsStyles[this.props.level])}>
                     <div>
                         <div style={Object.assign({}, stepStyles[this.props.level], {padding: '5px', margin: '5px'})}>
                             <span>{this.props.data.name}</span>
                             <button type="button" style={buttonStyle} className="btn pull-right" onClick={this.handleAddStepClick}>+</button>
                         </div>
                     </div>
-                    <div style={childStepsStyles[this.props.level]}>
+                    <ul style={{listStyle: 'none', padding: '0', margin: '0'}}>
                         {stepsDom}
-                    </div>
-                </div>
+                    </ul>
+                </li>
             );
         }
     });
