@@ -25,7 +25,7 @@
 
         getInitialState: function () {
             return {
-                projectsLastUpdated: (new Date()).toISOString()  
+                projectStepsLastUpdated: (new Date()).toISOString()  
             };
         },
         
@@ -34,15 +34,15 @@
              * Subscribe to Tag Store to be 
              * notified of updates to the store
              */
-            //this.projectsObserver = projectStore.updates
-            //    .subscribe(this.handleProjectStoreUpdate);
+            this.projectStepsObserver = projectStepStore.updates
+                .subscribe(this.handleProjectStepStoreUpdate);
             
         },
         componentWillUnmount: function () {
             /**
              * Clean up objects and bindings
              */
-            //this.projectsObserver.dispose();
+            this.projectStepsObserver.dispose();
         },
         
         /*************************************************************
@@ -50,10 +50,11 @@
          *************************************************************/
         handleAddStepClick: function () {
             var stepName = prompt('What is the name of the step?', '');
-            if (!stepName) {
-                return false;   
-            }
             
+            if (!stepName) {
+                return;   
+            }
+
             var steps = _.where(projectStepStore.updates.value, { projectId: this.props.projectId, parentId: this.props.data.id });
             var nextOrdinal = 1;
             if (steps.length > 0) {
@@ -75,11 +76,50 @@
                 content: null,
                 ordinal: nextOrdinal
             });
-
-            return false;
+            
+            this.setState({ projectStepsLastUpdated: (new Date()).toISOString() });
         },
-        handleProjectStoreUpdate: function (projects) {
-            this.setState({ projectsLastUpdated: (new Date()).toISOString() });
+        handleProjectStepStoreUpdate: function (projects) {
+            this.setState({ projectStepsLastUpdated: (new Date()).toISOString() });
+        },
+        handleCardClick: function () {
+            if (this.props.data.hasOwnProperty('isNew') && this.props.data.isNew) {
+                var stepName = prompt('What is the name of the step?', '');
+
+                if (!stepName) {
+                    return;   
+                }
+
+                var newStep = Object.assign({}, this.props.data, { name: stepName });
+                newStep.isNew = void 0;
+
+                projectStepStore.create(newStep);
+            }
+        },
+        
+        calculateNewStep: function () {
+            var steps = _.where(projectStepStore.updates.value, { projectId: this.props.projectId, parentId: this.props.data.id });
+            var nextOrdinal = 1;
+            if (steps.length > 0) {
+                steps = _.sortBy(steps, function (item) {
+                    return item.ordinal;
+                });
+                steps.reverse();
+                nextOrdinal = steps[0].ordinal + 1;
+            }
+            
+            return {
+                id: hlcommon.uuid(),
+                projectId: this.props.projectId,
+                parentId: this.props.data.id,
+                name: '+',
+                kind: 'Step',
+                status: 'Todo',
+                created: (new Date()).toISOString(),
+                content: null,
+                ordinal: nextOrdinal,
+                isNew: true
+            };
         },
         
         /*************************************************************
@@ -146,6 +186,23 @@
                 },
             ];
             
+            var newStepStyle = {
+                opacity: '0.5',
+                borderStyle: 'dashed',
+                textAlign: 'center',
+                verticalAlign: 'middle'
+            }
+            if (this.props.level > 2) {
+                Object.assign(newStepStyle, {
+                    height: '40px'
+                });
+            } else {
+                Object.assign(newStepStyle, {
+                    width: '40px',
+                    minWidth: '40px',
+                    paddingTop: '45px'
+                });
+            }
             
             var childStepsStyles = [
                 {},
@@ -170,13 +227,18 @@
                     <ProjectStep projectId={this.props.projectId} data={step} level={this.props.level + 1} />
                 );
             }.bind(this));
-
+            
+            if ((!this.props.data.hasOwnProperty('isNew') || !this.props.data.isNew) && this.props.level < 3) {
+                stepsDom.push((
+                    <ProjectStep projectId={this.props.projectId} data={this.calculateNewStep()} level={this.props.level + 1} />
+                ));
+            }
+            // <button type="button" style={buttonStyle} className="btn pull-right" onClick={this.handleAddStepClick}>+</button>
             return (
                 <li key={this.props.data.id} style={Object.assign({}, listItemStyle, childStepsStyles[this.props.level])}>
-                    <div>
-                        <div style={Object.assign({}, stepStyles[this.props.level], {padding: '5px', margin: '5px'})}>
+                    <div className="clickable" onClick={this.handleCardClick}>
+                        <div style={Object.assign({}, stepStyles[this.props.level], {padding: '5px', margin: '5px'}, (this.props.data.hasOwnProperty('isNew') ? newStepStyle : null))}>
                             <span>{this.props.data.name}</span>
-                            <button type="button" style={buttonStyle} className="btn pull-right" onClick={this.handleAddStepClick}>+</button>
                         </div>
                     </div>
                     <ul style={{listStyle: 'none', padding: '0', margin: '0'}}>

@@ -50,8 +50,9 @@
          *************************************************************/
         handleAddStepClick: function () {
             var stepName = prompt('What is the name of the step?', '');
+            
             if (!stepName) {
-                return false;   
+                return;   
             }
             
             var steps = _.where(projectStepStore.updates.value, { projectId: this.props.projectId, parentId: null });
@@ -76,15 +77,38 @@
                 ordinal: nextOrdinal
             });
             
-            this.setState({ projectsLastUpdated: (new Date()).toISOString() });
-            
-            return false;
+            this.setState({ projectStepsLastUpdated: (new Date()).toISOString() });
         },
         handleProjectStepStoreUpdate: function (projectSteps) {
             this.setState({ projectStepsLastUpdated: (new Date()).toISOString() });
         },
         handleCloseClick: function () {
             ui.goBack();
+        },
+        
+        calculateNewStep: function () {
+            var steps = _.where(projectStepStore.updates.value, { projectId: this.props.projectId, parentId: null });
+            var nextOrdinal = 1;
+            if (steps.length > 0) {
+                steps = _.sortBy(steps, function (item) {
+                    return item.ordinal;
+                });
+                steps.reverse();
+                nextOrdinal = steps[0].ordinal + 1;
+            }
+            
+            return {
+                id: hlcommon.uuid(),
+                projectId: this.props.projectId,
+                parentId: null,
+                name: '+',
+                kind: 'Step',
+                status: 'Todo',
+                created: (new Date()).toISOString(),
+                content: null,
+                ordinal: nextOrdinal,
+                isNew: true
+            };
         },
         
         /*************************************************************
@@ -94,12 +118,12 @@
             
             // get root level steps for this project
             var steps = _.where(projectStepStore.updates.value, { projectId: this.props.projectId, parentId: null });
-            var childrenCount = 0;
+            var childrenCount = 1;
             
             steps = _.sortBy(steps, function (item) {
                 
                 var children = _.where(projectStepStore.updates.value, { projectId: item.projectId, parentId: item.id });
-                childrenCount += children.length || 1;
+                childrenCount += children.length + 1;
                 return item.ordinal;
             });
             
@@ -122,8 +146,10 @@
             };
             
             var buttonStyle = { 
-                paddingTop: '3px', 
-                paddingBottom: '3px', 
+                paddingTop: '1px', 
+                paddingBottom: '1px',
+                height: '25px',
+                margin: '1px 8px 0 0',
                 backgroundImage: 'none', 
                 color: '#444', 
                 backgroundColor: '#e2ff63', 
@@ -132,21 +158,26 @@
                 outlineColor: 'rgb(40, 40, 40)'
             };
             
+            var stepsDom = steps.map( function (step) {
+                return (
+                    <ProjectStep projectId={this.props.projectId} data={step} level={1} />
+                );
+            }.bind(this))
+            
+            stepsDom.push((
+                <ProjectStep projectId={this.props.projectId} data={this.calculateNewStep()} level={1} />
+            ));
+            // <button type="button" style={buttonStyle} className="btn" onClick={this.handleAddStepClick}>+</button>
             return (
                 <div>
                     <div style={headerStyle}>
                         <div style={{flexGrow: '1'}}>{project.name}</div>
-                        <button type="button" style={buttonStyle} className="btn" onClick={this.handleAddStepClick}>+</button>
                         <div style={{paddingRight: '5px'}}><button type="button" className="close" onClick={this.handleCloseClick}><span aria-hidden="true">&times;</span></button></div>
                     </div>
                     <div style={{ overflowX: 'auto', paddingBottom: '5px' }}>
                         <div style={{ width: (childrenCount * 190) + 'px' }}>
                             <ul style={{listStyle: 'none', padding: '0', margin: '0', overflow: 'hidden', width: '100%'}}>
-                                {steps.map( function (step) {
-                                    return (
-                                        <ProjectStep projectId={this.props.projectId} data={step} level={1} />
-                                    );
-                                }.bind(this))}
+                                {stepsDom}
                             </ul>
                         </div>
                     </div>
