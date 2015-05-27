@@ -14,6 +14,7 @@ namespace HoomanLogic.Models
         public string Content { get; set; }
         public short? Duration { get; set; }
         public string TagName { get; set; }
+        public string Status { get; set; }
         public DateTime? Created { get; set; }
         public short? Level { get; set; }
         public short? Parent { get; set; }

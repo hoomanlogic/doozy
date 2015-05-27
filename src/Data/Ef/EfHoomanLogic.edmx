@@ -188,6 +188,7 @@
           <Property Name="Enlist" Type="datetime" />
           <Property Name="Retire" Type="datetime" />
           <Property Name="IconUri" Type="varchar" MaxLength="256" />
+          <Property Name="Content" Type="varchar(max)" />
         </EntityType>
         <EntityType Name="ProjectSteps">
           <Key>
@@ -1424,6 +1425,7 @@
           <NavigationProperty Name="AspNetUser" Relationship="hoomanlogicModel.FK_Projects_Users" FromRole="Project" ToRole="AspNetUser" />
           <NavigationProperty Name="Focus" Relationship="hoomanlogicModel.FK_Projects_Focuses" FromRole="Project" ToRole="Focus" />
           <NavigationProperty Name="ProjectSteps" Relationship="hoomanlogicModel.FK_ProjectSteps_Projects" FromRole="Project" ToRole="ProjectStep" />
+          <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="ProjectStep">
           <Key>
@@ -1733,6 +1735,7 @@
           <EntitySetMapping Name="Projects">
             <EntityTypeMapping TypeName="hoomanlogicModel.Project">
               <MappingFragment StoreEntitySet="Projects">
+                <ScalarProperty Name="Content" ColumnName="Content" />
                 <ScalarProperty Name="IconUri" ColumnName="IconUri" />
                 <ScalarProperty Name="Retire" ColumnName="Retire" />
                 <ScalarProperty Name="Enlist" ColumnName="Enlist" />

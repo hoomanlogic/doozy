@@ -28,6 +28,7 @@ namespace HoomanLogic.Data.Ef
         public Nullable<System.DateTime> Enlist { get; set; }
         public Nullable<System.DateTime> Retire { get; set; }
         public string IconUri { get; set; }
+        public string Content { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
         public virtual Focus Focus { get; set; }

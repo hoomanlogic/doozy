@@ -61,6 +61,8 @@ namespace HoomanLogic.Data
                 row.UserId = userId;
                 row.Kind = model.Kind;
                 row.Name = model.Name;
+                row.Created = model.Created;
+                row.Status = model.Status;
                 row.TagName = model.TagName;
                 row.Duration = model.Duration;
                 row.Level = model.Level;
@@ -86,6 +88,8 @@ namespace HoomanLogic.Data
                 row.ProjectId = model.ProjectId;
                 row.Kind = model.Kind;
                 row.Name = model.Name;
+                row.Created = model.Created;
+                row.Status = model.Status;
                 row.TagName = model.TagName;
                 row.Duration = model.Duration;
                 row.Level = model.Level;

@@ -11,7 +11,7 @@ namespace HoomanLogic.Models
         public Guid FocusId { get; set; }
         public string Kind { get; set; }
         public string Name { get; set; }
-        public DateTime? Enlist { get; set; }
+        public DateTime? Created { get; set; }
         public DateTime? Retire { get; set; }
         public string IconUri { get; set; }
         public string Content { get; set; }

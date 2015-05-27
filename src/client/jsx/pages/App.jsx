@@ -614,6 +614,11 @@
             } else if (this.state.page === 'Manage Tag') {
                 var tagId = (this.state.pageOptions || {}).tagId || null;
                 page = (<ManageTag tagId={tagId} />);
+            } else if (this.state.page === 'Manage Projects') {
+                page = (<ManageProjects />);
+            } else if (this.state.page === 'Manage Project') {
+                var projectId = (this.state.pageOptions || {}).projectId || null;
+                page = (<ManageProject projectId={projectId} />);
             } else { //DO
                 hideMain = false;
             }

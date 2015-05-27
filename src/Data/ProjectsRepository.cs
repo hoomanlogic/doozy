@@ -20,8 +20,9 @@ namespace HoomanLogic.Data
                     Kind = row.Kind,
                     Name = row.Name,
                     TagName = row.TagName,
-                    Enlist = row.Enlist,
+                    Created = row.Enlist,
                     Retire = row.Retire,
+                    Content = row.Content,
                     IconUri = row.IconUri
                 }).ToList();
 
@@ -50,8 +51,9 @@ namespace HoomanLogic.Data
                     Kind = row.Kind,
                     Name = row.Name,
                     TagName = row.TagName,
-                    Enlist = row.Enlist,
+                    Created = row.Enlist,
                     Retire = row.Retire,
+                    Content = row.Content,
                     IconUri = row.IconUri
                 }).FirstOrDefault();
 
@@ -70,8 +72,9 @@ namespace HoomanLogic.Data
                 row.Kind = model.Kind;
                 row.Name = model.Name;
                 row.TagName = model.TagName;
-                row.Enlist = model.Enlist;
+                row.Enlist = model.Created;
                 row.Retire = model.Retire;
+                row.Content = model.Content;
                 row.IconUri = model.IconUri;
                 db.Projects.Add(row);
                 db.SaveChanges();
@@ -113,8 +116,9 @@ namespace HoomanLogic.Data
                 row.Kind = model.Kind;
                 row.Name = model.Name;
                 row.TagName = model.TagName;
-                row.Enlist = model.Enlist;
+                row.Enlist = model.Created;
                 row.Retire = model.Retire;
+                row.Content = model.Content;
                 row.IconUri = model.IconUri;
 
                 // persist changes

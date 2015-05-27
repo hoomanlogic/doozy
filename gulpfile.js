@@ -90,11 +90,14 @@ var jsxFiles = [
 	'src/client/jsx/components/CommentForm.jsx',
 	
     'src/client/jsx/components/FocusActions.jsx',
+	'src/client/jsx/components/ProjectStep.jsx',
     
 	'src/client/jsx/components/TimerBar.jsx',
 	'src/client/jsx/pages/LogRecentAction.jsx',
     'src/client/jsx/pages/ManageAction.jsx',
     'src/client/jsx/pages/ManageFocus.jsx',
+	'src/client/jsx/pages/ManageProject.jsx',
+	'src/client/jsx/pages/ManageProjects.jsx',
 	'src/client/jsx/pages/ManageTag.jsx',
 	'src/client/jsx/pages/ManageTags.jsx',
     'src/client/jsx/pages/PrimaryNavigation.jsx',
