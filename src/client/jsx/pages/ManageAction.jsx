@@ -37,7 +37,7 @@
         getInitialState: function () {
             return {
                 viewMode: 'general',
-                durationValue: null,
+                durationInput: null,
                 durationDisplay: null,
                 dateInput: null, 
                 dateDisplay: null,
@@ -134,9 +134,9 @@
 
             var durationParse = babble.get('durations').translate(editableCopy.duration + ' min');
             if (durationParse.tokens.length === 0) {
-                var durationValue = null;
+                var durationInput = null;
             } else {
-                var durationValue = durationParse.tokens[0].value.toString();
+                var durationInput = durationParse.tokens[0].value.toString();
             }
 
             if (action.nextDate === null || String(action.nextDate) === 'NaN') {
@@ -147,7 +147,7 @@
 
             // build state
             var state = {
-                durationValue: durationValue,
+                durationInput: durationInput,
                 durationDisplay: null,
                 dateInput: date, 
                 dateDisplay: null,
@@ -282,7 +282,7 @@
                 }
 
                 this.props.action.duration = duration;
-                this.state.durationValue = this.refs.duration.getDOMNode().value;
+                this.state.durationInput = this.refs.duration.getDOMNode().value;
                 this.state.durationDisplay = durationDisplay;
             } else if (event.target === this.refs.repeat.getDOMNode()) {
                 this.state.repeat = event.target.value;
@@ -333,7 +333,7 @@
             }
             this.setState({ 
                 action: this.props.action,
-                durationValue: this.state.durationValue,
+                durationInput: this.state.durationInput,
                 durationDisplay: this.state.durationDisplay,
                 repeat: this.state.repeat,
                 repeatInterval: this.state.repeatInterval,
@@ -524,7 +524,7 @@
             var isPublic = action.isPublic;
             var name = action.name || '';
             var content = action.content || '';
-            var durationValue = this.state.durationValue;
+            var durationInput = this.state.durationInput;
             var dateInput = this.state.dateInput;
 
             /**
@@ -547,7 +547,7 @@
                     </div>
                     <div className="form-group">
                         <label htmlFor="action-duration">How long do you think it will take?</label>
-                        <input id="action-duration" ref="duration" type="text" className="form-control" value={durationValue} onChange={this.handleChange} />
+                        <input id="action-duration" ref="duration" type="text" className="form-control" value={durationInput} onChange={this.handleChange} />
                         <span>{this.state.durationDisplay}</span>
                     </div>
                     <div className="form-group">

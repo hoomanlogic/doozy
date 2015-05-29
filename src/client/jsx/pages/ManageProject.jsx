@@ -119,8 +119,10 @@
                         <div className="form-group">
                             <label htmlFor="f2">What kind of project is this?</label>
                             <select id="f2" ref="kind" className="form-control" value={this.state.kind} onChange={this.handleChange}>
+                                <option value="Project">Simple</option>
+                                <option value="Business">Business</option>
                                 <option value="Goal">Goal</option>
-                                <option value="Project">Project</option>
+                                <option value="Software">Software</option>
                             </select>
                         </div>
                         <div className="form-group">

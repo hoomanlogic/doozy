@@ -76,6 +76,7 @@ var jsxFiles = [
     'src/client/jsx/components/LogAction.jsx',
     'src/client/jsx/components/Microphone.jsx',
     'src/client/jsx/components/NextActions.jsx',
+	'src/client/jsx/components/ActiveProjects.jsx',
     'src/client/jsx/components/NotificationDropdown.jsx',
 	'src/client/jsx/components/NotificationList.jsx',
     'src/client/jsx/components/ProfilePic.jsx',
@@ -88,6 +89,7 @@ var jsxFiles = [
 	'src/client/jsx/components/LogEntryBox.jsx',
 	'src/client/jsx/components/LogEntries.jsx',
 	'src/client/jsx/components/CommentForm.jsx',
+	
 	
     'src/client/jsx/components/FocusActions.jsx',
 	'src/client/jsx/components/ProjectStep.jsx',

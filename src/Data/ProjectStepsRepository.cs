@@ -77,6 +77,22 @@ namespace HoomanLogic.Data
                 db.SaveChanges();
                 model.Id = row.Id;
 
+                //if (model.Kind == "Action")
+                //{
+                //    ef.Action actionRow = new ef.Action();
+                //    actionRow.Id = row.Id;
+                //    actionRow.ProjectStepId = row.Id;
+                //    actionRow.UserId = userId;
+                //    actionRow.Kind = "Action";
+                //    actionRow.Name = model.Name;
+                //    actionRow.Ordinal = model.Ordinal;
+                //    actionRow.Duration = model.Duration;
+                //    actionRow.Content = model.Content;
+                //    actionRow.Created = model.Created;
+                //    db.Actions.Add(actionRow);
+                //    db.SaveChanges();
+                //}
+
                 return new { Id = row.Id, Name = row.Name };
             }
         }

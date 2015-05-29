@@ -52,7 +52,7 @@
             this.setState({ projectStepsLastUpdated: (new Date()).toISOString() });
         },
         handleCloseClick: function () {
-            ui.goBack();
+            ui.goTo('Manage Projects');
         },
         
         calculateNewStep: function () {

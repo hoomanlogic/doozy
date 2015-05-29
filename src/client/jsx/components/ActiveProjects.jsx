@@ -17,48 +17,28 @@
 	}
 	else {
 		// Global (browser)
-		root.ManageProjects = factory(root.React);
+		root.ActiveProjects = factory(root.React);
 	}
 }(this, function (React) {
     'use strict';
     return React.createClass({
-
-        getInitialState: function () {
-            return {
-                projectsLastUpdated: (new Date()).toISOString()  
-            };
-        },
-        
-        componentWillMount: function () {
-            /**
-             * Subscribe to Tag Store to be 
-             * notified of updates to the store
-             */
-            this.projectsObserver = projectStore.updates
-                .subscribe(this.handleProjectStoreUpdate);
-            
-        },
-        componentWillUnmount: function () {
-            /**
-             * Clean up objects and bindings
-             */
-            this.projectsObserver.dispose();
+        /*************************************************************
+         * CALCULATIONS
+         *************************************************************/
+        getActiveProjects: function () {
+            var focusTag = this.props.focusTag.slice(1);
+            var focus = _.find(focusStore.updates.value, function (item) {
+                return item.tagName === focusTag;
+            });
+            var projects = _.where(projectStore.updates.value, { focusId: focus.id });
+            return projects;
         },
         
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
-        handleCloseClick: function () {
-            ui.goBack();
-        },
         handleProjectClick: function (project) {
             ui.goTo('Project View', {projectId: project.id});
-        },
-        handleEditProjectDetailsClick: function (project) {
-            ui.goTo('Manage Project', {projectId: project.id});
-        },
-        handleProjectStoreUpdate: function (projects) {
-            this.setState({ projectsLastUpdated: (new Date()).toISOString() });
         },
         
         /*************************************************************
@@ -66,14 +46,21 @@
          *************************************************************/
         render: function () {
 
-            var projects = projectStore.updates.value;
-            
+            var activeProjects = this.getActiveProjects()
+
             /**
              * Sort the actions by completed and name
              */
-            projects = _.sortBy(projects, function(project){ 
-                return project.name.toLowerCase();
+            activeProjects = _.sortBy(activeProjects, function(project){ 
+                return project.name.toLowerCase(); 
             })
+
+            /**
+             * Return null if there are no active projects for this focus
+             */
+            if (activeProjects.length === 0) {
+                return null;
+            }
 
             /**
              * Inline Styles
@@ -95,7 +82,7 @@
                 padding: '5px',
                 borderBottom: 'solid 1px #e0e0e0'
             };
-            
+
             var buttonStyle = { 
                 paddingTop: '3px', 
                 paddingBottom: '3px', 
@@ -106,23 +93,19 @@
                 fontWeight: 'bold', 
                 outlineColor: 'rgb(40, 40, 40)' 
             };
-
+        
             // html
             return (
                 <div>
                     <div style={headerStyle}>
-                        <div style={{flexGrow: '1'}}>Projects</div>
-                        <div style={{paddingRight: '5px'}}><button type="button" className="close" onClick={this.handleCloseClick}><span aria-hidden="true">&times;</span></button></div>
+                        <div>Active Projects</div>
                     </div>
                     <div style={{display: 'flex', flexDirection: 'column'}}>                    
-                        {projects.map(function(item, index) {
+                        {activeProjects.map(function(item, index) {
                             return (
                                 <div key={item.id} style={listItemStyle}>
                                     <div style={{flexGrow: '1'}}>
                                         <span className="clickable" onClick={this.handleProjectClick.bind(null, item)}>{item.name}</span>
-                                    </div>
-                                    <div>
-                                        <button type="button" style={buttonStyle} className="btn" onClick={this.handleEditProjectDetailsClick.bind(null, item)}><i className="fa fa-pencil"></i></button>
                                     </div>
                                 </div>
                             );

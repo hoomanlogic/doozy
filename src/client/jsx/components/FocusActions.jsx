@@ -150,7 +150,7 @@
             window['ui'] = window['ui'] || {};
             window['ui'].tags = [];
         },
-
+        
         /*************************************************************
          * HELPERS
          *************************************************************/
@@ -195,7 +195,7 @@
                     </div>
                 );
             }
-        
+
             return tagFilter
         },
         render: function () {
@@ -208,6 +208,7 @@
                 <div className={this.props.hidden ? 'hidden' : ''}>
                     {this.renderTagFilter()}
                     <NextActions actions={tagsFilteredFocusActions} />
+                    <ActiveProjects focusTag={this.props.focusTag} />
                     <UpcomingActions actions={tagsFilteredFocusActions} />
                     <BoxedActions actions={tagsFilteredFocusActions} />
                     <RecentActivity actions={tagsFilteredFocusActions} />
