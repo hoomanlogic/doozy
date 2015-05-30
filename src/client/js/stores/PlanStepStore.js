@@ -1,49 +1,49 @@
-var ProjectStepStore = function () {
+var PlanStepStore = function () {
 
     /**
      * REST API
      */
     var _api = {
-        getProjectSteps: function () {
+        getPlanSteps: function () {
             return $.ajax({
                 context: this,
-                url: hlapp.HOST_NAME + '/api/projectsteps',
+                url: hlapp.HOST_NAME + '/api/plansteps',
                 dataType: 'json',
                 headers: {
                     'Authorization': 'Bearer ' + hlapp.getAccessToken()
                 }
             });
         },
-        postProjectStep: function (projectStep) {
+        postPlanStep: function (planStep) {
             return $.ajax({
                 context: this,
-                url: hlapp.HOST_NAME + '/api/projectsteps',
+                url: hlapp.HOST_NAME + '/api/plansteps',
                 dataType: 'json',
                 headers: {
                     'Authorization': 'Bearer ' + hlapp.getAccessToken()
                 },
                 type: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify(projectStep)
+                data: JSON.stringify(planStep)
             });
         },
-        putProjectStep: function (projectStep) {
+        putPlanStep: function (planStep) {
             return $.ajax({
                 context: this,
-                url: hlapp.HOST_NAME + '/api/projectsteps',
+                url: hlapp.HOST_NAME + '/api/plansteps',
                 dataType: 'json',
                 headers: {
                     'Authorization': 'Bearer ' + hlapp.getAccessToken()
                 },
                 type: 'PUT',
                 contentType: 'application/json',
-                data: JSON.stringify(projectStep)
+                data: JSON.stringify(planStep)
             });
         },
-        deleteProjectStep: function (projectStep) {
+        deletePlanStep: function (planStep) {
             return $.ajax({
                 context: this,
-                url: hlapp.HOST_NAME + '/api/projectsteps/' + encodeURIComponent(projectStep.id),
+                url: hlapp.HOST_NAME + '/api/plansteps/' + encodeURIComponent(planStep.id),
                 dataType: 'json',
                 headers: {
                     'Authorization': 'Bearer ' + hlapp.getAccessToken()
@@ -63,23 +63,23 @@ var ProjectStepStore = function () {
     /**
      * Store Methods
      */
-    this.create = function (newProjectStep, done, fail) {
+    this.create = function (newPlanStep, done, fail) {
         
         // update now for optimistic concurrency
-        updates.onNext(updates.value.concat(newProjectStep));
+        updates.onNext(updates.value.concat(newPlanStep));
         
-        _api.postProjectStep(newProjectStep)
+        _api.postPlanStep(newPlanStep)
         .done(function (result) {
-            Object.assign(newProjectStep, result);
+            Object.assign(newPlanStep, result);
             updates.onNext(updates.value);
-            hlio.saveLocal('hl.' + user + '.projectsteps', updates.value, secret);
-            toastr.success('Added project step ' + newProjectStep.name);
+            hlio.saveLocal('hl.' + user + '.plansteps', updates.value, secret);
+            toastr.success('Added plan step ' + newPlanStep.name);
             if (typeof done !== 'undefined' && done !== null) {
-                done(newProjectStep);
+                done(newPlanStep);
             }
         })
         .fail( function (err) {
-            var filtered = updates.value.filter( function (item) { return item !== newProjectStep; });
+            var filtered = updates.value.filter( function (item) { return item !== newPlanStep; });
             updates.onNext(filtered);
             toastr.error(err.responseText);
             if (typeof fail !== 'undefined' && fail !== null) {
@@ -88,75 +88,75 @@ var ProjectStepStore = function () {
         });
     };
     
-    this.destroy = function (projectStep) {
+    this.destroy = function (planStep) {
         // optimistic concurrency
-        var filtered = updates.value.filter( function (item) { return item.id !== projectStep.id; });
+        var filtered = updates.value.filter( function (item) { return item.id !== planStep.id; });
         updates.onNext(filtered);
         
-        ui.queueRequest('Deleted project step ' + projectStep.name, function () {
-            _api.deleteProjectStep(projectStep)
+        ui.queueRequest('Deleted plan step ' + planStep.name, function () {
+            _api.deletePlanStep(planStep)
             .done( function () {
-                hlio.saveLocal('hl.' + user + '.projectsteps', updates.value, secret);
+                hlio.saveLocal('hl.' + user + '.plansteps', updates.value, secret);
             })
             .fail( function (err) {
-                updates.onNext(updates.value.concat(projectStep));
+                updates.onNext(updates.value.concat(planStep));
                 toastr.error(err.responseText);
             });
         }, function () {
-            updates.onNext(updates.value.concat(projectStep));
+            updates.onNext(updates.value.concat(planStep));
         });
     };
     
-    this.update = function (projectStep) {
+    this.update = function (planStep) {
         
-        // get object reference to projectStep in store
-        var projectStepToSave = _.find(updates.value, function(item) { 
-            return item.id === projectStep.id; 
+        // get object reference to planStep in store
+        var planStepToSave = _.find(updates.value, function(item) { 
+            return item.id === planStep.id; 
         });
         
         // keep copy of original for undo
-        var original = Object.assign({}, projectStepToSave);
+        var original = Object.assign({}, planStepToSave);
         
         // optimistic concurrency
-        Object.assign(projectStepToSave, projectStep);
+        Object.assign(planStepToSave, planStep);
         updates.onNext(updates.value);
         
-        ui.queueRequest('Updated project step ' + projectStepToSave.name, function () {
-            _api.putProjectStep(projectStepToSave)
+        ui.queueRequest('Updated plan step ' + planStepToSave.name, function () {
+            _api.putPlanStep(planStepToSave)
             .done(function (result) {
-                Object.assign(projectStepToSave, result);
+                Object.assign(planStepToSave, result);
                 updates.onNext(updates.value);
-                hlio.saveLocal('hl.' + user + '.projectsteps', updates.value, secret);
+                hlio.saveLocal('hl.' + user + '.plansteps', updates.value, secret);
             })
             .fail(function  (err) {
-                Object.assign(projectStepToSave, original);
+                Object.assign(planStepToSave, original);
                 updates.onNext(updates.value);
                 toastr.error(err.responseText);
             });
         }, function () {
-            Object.assign(projectStepToSave, original);
+            Object.assign(planStepToSave, original);
             updates.onNext(updates.value);
         });
     };
     
-    this.getProjectStepByName = function (name) {
-        var existingProjectStep = _.find(updates.value, function(item) { 
-            return cleanProjectStepName(item.name) === cleanProjectStepName(name.toLowerCase()); 
+    this.getPlanStepByName = function (name) {
+        var existingPlanStep = _.find(updates.value, function(item) { 
+            return cleanPlanStepName(item.name) === cleanPlanStepName(name.toLowerCase()); 
         });
-        return existingProjectStep;
+        return existingPlanStep;
     };
     
-    this.getProjectStepById = function (id) {
-        var existingProjectStep = _.find(updates.value, function(item) { 
+    this.getPlanStepById = function (id) {
+        var existingPlanStep = _.find(updates.value, function(item) { 
             return item.id.toLowerCase() === id.toLowerCase(); 
         });
-        return existingProjectStep;
+        return existingPlanStep;
     };
     
     var user = 'my';
     var secret = 'hash';
     
-    var cleanProjectStepName = function (name) {
+    var cleanPlanStepName = function (name) {
         return name.replace(/:/g, '').replace(/  /g, ' ').trim().toLowerCase();
     };
     
@@ -166,20 +166,20 @@ var ProjectStepStore = function () {
         secret = userId;
         
         // populate store - call to database
-        _api.getProjectSteps()
+        _api.getPlanSteps()
         .done(function (result) {
-            hlio.saveLocal('hl.' + user + '.projectsteps', result, secret);
+            hlio.saveLocal('hl.' + user + '.plansteps', result, secret);
             updates.onNext(result);
         })
         .fail(function (err) {
             toastr.error(err.responseText);
         });
 
-        var projectSteps = hlio.loadLocal('hl.' + user + '.projectsteps', secret);
-        if (projectSteps) {
-            updates.onNext(projectSteps);   
+        var planSteps = hlio.loadLocal('hl.' + user + '.plansteps', secret);
+        if (planSteps) {
+            updates.onNext(planSteps);   
         }
     };
 };
 
-var projectStepStore = new ProjectStepStore();
+var planStepStore = new PlanStepStore();

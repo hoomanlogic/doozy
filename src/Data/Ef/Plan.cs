@@ -12,7 +12,7 @@ namespace HoomanLogic.Data.Ef
     using System;
     using System.Collections.Generic;
     
-    public partial class Project
+    public partial class Plan
     {
         public System.Guid Id { get; set; }
         public System.Guid FocusId { get; set; }

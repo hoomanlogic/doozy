@@ -166,16 +166,7 @@
           <Property Name="KnownAs" Type="varchar" MaxLength="50" />
           <Property Name="ProfileUri" Type="varchar" MaxLength="256" />
         </EntityType>
-        <EntityType Name="Preferences">
-          <Key>
-            <PropertyRef Name="UserId" />
-          </Key>
-          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
-          <Property Name="WeekStarts" Type="tinyint" Nullable="false" />
-          <Property Name="Location" Type="varchar" MaxLength="100" />
-          <Property Name="EmailNotifications" Type="bit" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Projects">
+        <EntityType Name="Plans">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
@@ -190,7 +181,7 @@
           <Property Name="IconUri" Type="varchar" MaxLength="256" />
           <Property Name="Content" Type="varchar(max)" />
         </EntityType>
-        <EntityType Name="ProjectSteps">
+        <EntityType Name="PlanSteps">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
@@ -206,6 +197,15 @@
           <Property Name="Content" Type="varchar(max)" />
           <Property Name="ParentId" Type="uniqueidentifier" />
           <Property Name="Ordinal" Type="smallint" />
+        </EntityType>
+        <EntityType Name="Preferences">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="WeekStarts" Type="tinyint" Nullable="false" />
+          <Property Name="Location" Type="varchar" MaxLength="100" />
+          <Property Name="EmailNotifications" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="RecurrenceRules">
           <Key>
@@ -466,6 +466,32 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Plans_Focuses">
+          <End Role="Focuses" Type="Self.Focuses" Multiplicity="1" />
+          <End Role="Plans" Type="Self.Plans" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Focuses">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Plans">
+              <PropertyRef Name="FocusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Plans_Users">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Plans" Type="Self.Plans" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Plans">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Preferences_User">
           <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -476,32 +502,6 @@
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="Preferences">
-              <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Projects_Focuses">
-          <End Role="Focuses" Type="Self.Focuses" Multiplicity="1" />
-          <End Role="Projects" Type="Self.Projects" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Focuses">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Projects">
-              <PropertyRef Name="FocusId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Projects_Users">
-          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="Projects" Type="Self.Projects" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Projects">
               <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
@@ -601,9 +601,9 @@
           <EntitySet Name="Messages" EntityType="Self.Messages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Notifications" EntityType="Self.Notifications" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Personas" EntityType="Self.Personas" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Plans" EntityType="Self.Plans" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PlanSteps" EntityType="Self.PlanSteps" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Preferences" EntityType="Self.Preferences" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Projects" EntityType="Self.Projects" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="ProjectSteps" EntityType="Self.ProjectSteps" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RecurrenceRules" EntityType="Self.RecurrenceRules" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tags" EntityType="Self.Tags" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Targets" EntityType="Self.Targets" Schema="dbo" store:Type="Tables" />
@@ -675,17 +675,17 @@
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="Personas" EntitySet="Personas" />
           </AssociationSet>
+          <AssociationSet Name="FK_Plans_Focuses" Association="Self.FK_Plans_Focuses">
+            <End Role="Focuses" EntitySet="Focuses" />
+            <End Role="Plans" EntitySet="Plans" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Plans_Users" Association="Self.FK_Plans_Users">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Plans" EntitySet="Plans" />
+          </AssociationSet>
           <AssociationSet Name="FK_Preferences_User" Association="Self.FK_Preferences_User">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="Preferences" EntitySet="Preferences" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Projects_Focuses" Association="Self.FK_Projects_Focuses">
-            <End Role="Focuses" EntitySet="Focuses" />
-            <End Role="Projects" EntitySet="Projects" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Projects_Users" Association="Self.FK_Projects_Users">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="Projects" EntitySet="Projects" />
           </AssociationSet>
           <AssociationSet Name="FK_RecurrenceRules_Actions" Association="Self.FK_RecurrenceRules_Actions">
             <End Role="Actions" EntitySet="Actions" />
@@ -800,15 +800,6 @@
             <End Role="LogEntry" EntitySet="LogEntries" />
             <End Role="LogEntryPeanut" EntitySet="LogEntryPeanuts" />
           </AssociationSet>
-          <EntitySet Name="Projects" EntityType="hoomanlogicModel.Project" />
-          <AssociationSet Name="FK_Projects_Users" Association="hoomanlogicModel.FK_Projects_Users">
-            <End Role="AspNetUser" EntitySet="AspNetUsers" />
-            <End Role="Project" EntitySet="Projects" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Projects_Focuses" Association="hoomanlogicModel.FK_Projects_Focuses">
-            <End Role="Focus" EntitySet="Focuses" />
-            <End Role="Project" EntitySet="Projects" />
-          </AssociationSet>
           <EntitySet Name="Actions" EntityType="hoomanlogicModel.Action" />
           <AssociationSet Name="FK_Action_User" Association="hoomanlogicModel.FK_Action_User">
             <End Role="AspNetUser" EntitySet="AspNetUsers" />
@@ -830,7 +821,16 @@
             <End Role="Action" EntitySet="Actions" />
             <End Role="Tag" EntitySet="Tags" />
           </AssociationSet>
-          <EntitySet Name="ProjectSteps" EntityType="hoomanlogicModel.ProjectStep" />
+          <EntitySet Name="Plans" EntityType="hoomanlogicModel.Plan" />
+          <EntitySet Name="PlanSteps" EntityType="hoomanlogicModel.PlanStep" />
+          <AssociationSet Name="FK_Plans_Users" Association="hoomanlogicModel.FK_Plans_Users">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="Plan" EntitySet="Plans" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Plans_Focuses" Association="hoomanlogicModel.FK_Plans_Focuses">
+            <End Role="Focus" EntitySet="Focuses" />
+            <End Role="Plan" EntitySet="Plans" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="AspNetUser">
           <Key>
@@ -862,8 +862,8 @@
           <NavigationProperty Name="Preference" Relationship="hoomanlogicModel.FK_Preferences_User" FromRole="AspNetUser" ToRole="Preference" />
           <NavigationProperty Name="Attachments" Relationship="hoomanlogicModel.FK_Attachments_Users" FromRole="AspNetUser" ToRole="Attachment" />
           <NavigationProperty Name="LogEntryPeanuts" Relationship="hoomanlogicModel.FK_LogEntryPeanuts_Users" FromRole="AspNetUser" ToRole="LogEntryPeanut" />
-          <NavigationProperty Name="Projects" Relationship="hoomanlogicModel.FK_Projects_Users" FromRole="AspNetUser" ToRole="Project" />
           <NavigationProperty Name="Actions" Relationship="hoomanlogicModel.FK_Action_User" FromRole="AspNetUser" ToRole="Action" />
+          <NavigationProperty Name="Plans" Relationship="hoomanlogicModel.FK_Plans_Users" FromRole="AspNetUser" ToRole="Plan" />
           </EntityType>
         <EntityType Name="LogEntry">
           <Key>
@@ -1167,7 +1167,7 @@
           <NavigationProperty Name="AspNetUser" Relationship="hoomanlogicModel.FK_Focuses_User" FromRole="Focus" ToRole="AspNetUser" />
           <Property Name="IconUri" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
           <Property Name="TagName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Projects" Relationship="hoomanlogicModel.FK_Projects_Focuses" FromRole="Focus" ToRole="Project" />
+          <NavigationProperty Name="Plans" Relationship="hoomanlogicModel.FK_Plans_Focuses" FromRole="Focus" ToRole="Plan" />
         </EntityType>
         <Association Name="FK_Focuses_User">
           <End Type="hoomanlogicModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
@@ -1275,49 +1275,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="Project">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Guid" Nullable="false" />
-          <Property Name="FocusId" Type="Guid" Nullable="false" />
-          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="Kind" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="TagName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="Enlist" Type="DateTime" Precision="3" />
-          <Property Name="Retire" Type="DateTime" Precision="3" />
-          <Property Name="IconUri" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="AspNetUser" Relationship="hoomanlogicModel.FK_Projects_Users" FromRole="Project" ToRole="AspNetUser" />
-          <NavigationProperty Name="Focus" Relationship="hoomanlogicModel.FK_Projects_Focuses" FromRole="Project" ToRole="Focus" />
-          <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <Association Name="FK_Projects_Users">
-          <End Type="hoomanlogicModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Type="hoomanlogicModel.Project" Role="Project" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUser">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Project">
-              <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Projects_Focuses">
-          <End Type="hoomanlogicModel.Focus" Role="Focus" Multiplicity="1" />
-          <End Type="hoomanlogicModel.Project" Role="Project" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Focus">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Project">
-              <PropertyRef Name="FocusId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="Action">
           <Key>
             <PropertyRef Name="Id" />
@@ -1388,7 +1345,24 @@
           <End Type="hoomanlogicModel.Action" Role="Action" Multiplicity="*" />
           <End Type="hoomanlogicModel.Tag" Role="Tag" Multiplicity="*" />
         </Association>
-        <EntityType Name="ProjectStep">
+        <EntityType Name="Plan">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="FocusId" Type="Guid" Nullable="false" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Kind" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="TagName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Enlist" Type="DateTime" Precision="3" />
+          <Property Name="Retire" Type="DateTime" Precision="3" />
+          <Property Name="IconUri" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+          <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="AspNetUser" Relationship="hoomanlogicModel.FK_Plans_Users" FromRole="Plan" ToRole="AspNetUser" />
+          <NavigationProperty Name="Focus" Relationship="hoomanlogicModel.FK_Plans_Focuses" FromRole="Plan" ToRole="Focus" />
+        </EntityType>
+        <EntityType Name="PlanStep">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
@@ -1405,6 +1379,32 @@
           <Property Name="ParentId" Type="Guid" />
           <Property Name="Ordinal" Type="Int16" />
         </EntityType>
+        <Association Name="FK_Plans_Users">
+          <End Type="hoomanlogicModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="hoomanlogicModel.Plan" Role="Plan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Plan">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Plans_Focuses">
+          <End Type="hoomanlogicModel.Focus" Role="Focus" Multiplicity="1" />
+          <End Type="hoomanlogicModel.Plan" Role="Plan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Focus">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Plan">
+              <PropertyRef Name="FocusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1592,22 +1592,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Projects">
-            <EntityTypeMapping TypeName="hoomanlogicModel.Project">
-              <MappingFragment StoreEntitySet="Projects">
-                <ScalarProperty Name="Content" ColumnName="Content" />
-                <ScalarProperty Name="IconUri" ColumnName="IconUri" />
-                <ScalarProperty Name="Retire" ColumnName="Retire" />
-                <ScalarProperty Name="Enlist" ColumnName="Enlist" />
-                <ScalarProperty Name="TagName" ColumnName="TagName" />
-                <ScalarProperty Name="Kind" ColumnName="Kind" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="FocusId" ColumnName="FocusId" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Actions">
             <EntityTypeMapping TypeName="hoomanlogicModel.Action">
               <MappingFragment StoreEntitySet="Actions">
@@ -1642,9 +1626,25 @@
               <ScalarProperty Name="Id" ColumnName="ActionId" />
             </EndProperty>
           </AssociationSetMapping>
-          <EntitySetMapping Name="ProjectSteps">
-            <EntityTypeMapping TypeName="hoomanlogicModel.ProjectStep">
-              <MappingFragment StoreEntitySet="ProjectSteps">
+          <EntitySetMapping Name="Plans">
+            <EntityTypeMapping TypeName="hoomanlogicModel.Plan">
+              <MappingFragment StoreEntitySet="Plans">
+                <ScalarProperty Name="Content" ColumnName="Content" />
+                <ScalarProperty Name="IconUri" ColumnName="IconUri" />
+                <ScalarProperty Name="Retire" ColumnName="Retire" />
+                <ScalarProperty Name="Enlist" ColumnName="Enlist" />
+                <ScalarProperty Name="TagName" ColumnName="TagName" />
+                <ScalarProperty Name="Kind" ColumnName="Kind" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="FocusId" ColumnName="FocusId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PlanSteps">
+            <EntityTypeMapping TypeName="hoomanlogicModel.PlanStep">
+              <MappingFragment StoreEntitySet="PlanSteps">
                 <ScalarProperty Name="Ordinal" ColumnName="Ordinal" />
                 <ScalarProperty Name="ParentId" ColumnName="ParentId" />
                 <ScalarProperty Name="Content" ColumnName="Content" />

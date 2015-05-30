@@ -103,8 +103,8 @@
             weatherStore.init(this.props.settings.userName, this.props.settings.userId);
             logEntryStore.init(this.props.settings.userName, this.props.settings.userId);
             tagStore.init(this.props.settings.userName, this.props.settings.userId);
-            projectStore.init(this.props.settings.userName, this.props.settings.userId);
-            projectStepStore.init(this.props.settings.userName, this.props.settings.userId);
+            planStore.init(this.props.settings.userName, this.props.settings.userId);
+            planStepStore.init(this.props.settings.userName, this.props.settings.userId);
             
             connectionStore.getConnections();
 
@@ -580,7 +580,7 @@
             window['ui'].page = this.state.page;
             
             //var weatherBackdrop = this.renderWeatherBackdrop();
-            var action, actionId, mode, projectId;
+            var action, actionId, mode, planId;
             
             var page = null, hideMain = true, additional;
             if (this.state.page === 'Focus Management') {
@@ -614,17 +614,17 @@
             } else if (this.state.page === 'Manage Tag') {
                 var tagId = (this.state.pageOptions || {}).tagId || null;
                 page = (<ManageTag tagId={tagId} />);
-            } else if (this.state.page === 'Manage Projects') {
-                page = (<ManageProjects />);
-            } else if (this.state.page === 'Manage Project') {
-                projectId = (this.state.pageOptions || {}).projectId || null;
-                page = (<ManageProject projectId={projectId} />);
-            } else if (this.state.page === 'Project View') {
-                projectId = (this.state.pageOptions || {}).projectId || null;
-                page = (<ProjectSteps projectId={projectId} />);
-            } else if (this.state.page === 'Manage Project Step') {
+            } else if (this.state.page === 'Manage Plans') {
+                page = (<ManagePlans />);
+            } else if (this.state.page === 'Manage Plan') {
+                planId = (this.state.pageOptions || {}).planId || null;
+                page = (<ManagePlan planId={planId} />);
+            } else if (this.state.page === 'Plan View') {
+                planId = (this.state.pageOptions || {}).planId || null;
+                page = (<PlanSteps planId={planId} />);
+            } else if (this.state.page === 'Manage Plan Step') {
                 var mpsArgs = (this.state.pageOptions || {});
-                page = (<ManageProjectStep isNew={mpsArgs.isNew} projectId={mpsArgs.projectId} projectStepId={mpsArgs.projectStepId} parentId={mpsArgs.parentId} />);
+                page = (<ManagePlanStep isNew={mpsArgs.isNew} planId={mpsArgs.planId} planStepId={mpsArgs.planStepId} parentId={mpsArgs.parentId} />);
             } else { //DO
                 hideMain = false;
             }

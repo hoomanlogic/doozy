@@ -17,7 +17,7 @@
 	}
 	else {
 		// Global (browser)
-		root.ManageProjects = factory(root.React);
+		root.ManagePlans = factory(root.React);
 	}
 }(this, function (React) {
     'use strict';
@@ -25,7 +25,7 @@
 
         getInitialState: function () {
             return {
-                projectsLastUpdated: (new Date()).toISOString()  
+                plansLastUpdated: (new Date()).toISOString()  
             };
         },
         
@@ -34,15 +34,15 @@
              * Subscribe to Tag Store to be 
              * notified of updates to the store
              */
-            this.projectsObserver = projectStore.updates
-                .subscribe(this.handleProjectStoreUpdate);
+            this.plansObserver = planStore.updates
+                .subscribe(this.handlePlanStoreUpdate);
             
         },
         componentWillUnmount: function () {
             /**
              * Clean up objects and bindings
              */
-            this.projectsObserver.dispose();
+            this.plansObserver.dispose();
         },
         
         /*************************************************************
@@ -51,14 +51,14 @@
         handleCloseClick: function () {
             ui.goBack();
         },
-        handleProjectClick: function (project) {
-            ui.goTo('Project View', {projectId: project.id});
+        handlePlanClick: function (plan) {
+            ui.goTo('Plan View', {planId: plan.id});
         },
-        handleEditProjectDetailsClick: function (project) {
-            ui.goTo('Manage Project', {projectId: project.id});
+        handleEditPlanDetailsClick: function (plan) {
+            ui.goTo('Manage Plan', {planId: plan.id});
         },
-        handleProjectStoreUpdate: function (projects) {
-            this.setState({ projectsLastUpdated: (new Date()).toISOString() });
+        handlePlanStoreUpdate: function (plans) {
+            this.setState({ plansLastUpdated: (new Date()).toISOString() });
         },
         
         /*************************************************************
@@ -66,13 +66,13 @@
          *************************************************************/
         render: function () {
 
-            var projects = projectStore.updates.value;
+            var plans = planStore.updates.value;
             
             /**
              * Sort the actions by completed and name
              */
-            projects = _.sortBy(projects, function(project){ 
-                return project.name.toLowerCase();
+            plans = _.sortBy(plans, function(plan){ 
+                return plan.name.toLowerCase();
             })
 
             /**
@@ -111,18 +111,18 @@
             return (
                 <div>
                     <div style={headerStyle}>
-                        <div style={{flexGrow: '1'}}>Projects</div>
+                        <div style={{flexGrow: '1'}}>Plans</div>
                         <div style={{paddingRight: '5px'}}><button type="button" className="close" onClick={this.handleCloseClick}><span aria-hidden="true">&times;</span></button></div>
                     </div>
                     <div style={{display: 'flex', flexDirection: 'column'}}>                    
-                        {projects.map(function(item, index) {
+                        {plans.map(function(item, index) {
                             return (
                                 <div key={item.id} style={listItemStyle}>
                                     <div style={{flexGrow: '1'}}>
-                                        <span className="clickable" onClick={this.handleProjectClick.bind(null, item)}>{item.name}</span>
+                                        <span className="clickable" onClick={this.handlePlanClick.bind(null, item)}>{item.name}</span>
                                     </div>
                                     <div>
-                                        <button type="button" style={buttonStyle} className="btn" onClick={this.handleEditProjectDetailsClick.bind(null, item)}><i className="fa fa-pencil"></i></button>
+                                        <button type="button" style={buttonStyle} className="btn" onClick={this.handleEditPlanDetailsClick.bind(null, item)}><i className="fa fa-pencil"></i></button>
                                     </div>
                                 </div>
                             );

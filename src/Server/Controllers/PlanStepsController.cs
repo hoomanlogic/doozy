@@ -7,35 +7,35 @@ using System.Web.Http;
 namespace HoomanLogic.Server.Controllers
 {
     [Authorize]
-    public class ProjectsController : ApiController
+    public class PlanStepsController : ApiController
     {
-        public List<Models.ProjectModel> Get()
+        public List<Models.PlanStepModel> Get()
         {
             string userId = User.Identity.GetUserId();
-            return ProjectsRepository.Get(userId);
+            return PlanStepsRepository.Get(userId);
         }
 
-        public Models.ProjectModel Get(Guid id)
+        public Models.PlanStepModel Get(Guid id)
         {
             string userId = User.Identity.GetUserId();
-            return ProjectsRepository.Get(userId, id);
+            return PlanStepsRepository.Get(userId, id);
         }
 
-        public dynamic Post([FromBody] Models.ProjectModel model)
+        public dynamic Post([FromBody] Models.PlanStepModel model)
         {
             string userId = User.Identity.GetUserId();
-            return ProjectsRepository.Add(userId, model);
+            return PlanStepsRepository.Add(userId, model);
         }
 
-        public dynamic Put([FromBody] Models.ProjectModel model)
+        public dynamic Put([FromBody] Models.PlanStepModel model)
         {
             string userId = User.Identity.GetUserId();
-            return ProjectsRepository.Update(userId, model);
+            return PlanStepsRepository.Update(userId, model);
         }
 
         public void Delete(Guid id)
         {
-            ProjectsRepository.Delete(id);
+            PlanStepsRepository.Delete(id);
         }
     }
 }

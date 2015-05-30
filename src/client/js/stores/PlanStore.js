@@ -1,49 +1,49 @@
-var ProjectStore = function () {
+var PlanStore = function () {
 
     /**
      * REST API
      */
     var _api = {
-        getProjects: function () {
+        getPlans: function () {
             return $.ajax({
                 context: this,
-                url: hlapp.HOST_NAME + '/api/projects',
+                url: hlapp.HOST_NAME + '/api/plans',
                 dataType: 'json',
                 headers: {
                     'Authorization': 'Bearer ' + hlapp.getAccessToken()
                 }
             });
         },
-        postProject: function (project) {
+        postPlan: function (plan) {
             return $.ajax({
                 context: this,
-                url: hlapp.HOST_NAME + '/api/projects',
+                url: hlapp.HOST_NAME + '/api/plans',
                 dataType: 'json',
                 headers: {
                     'Authorization': 'Bearer ' + hlapp.getAccessToken()
                 },
                 type: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify(project)
+                data: JSON.stringify(plan)
             });
         },
-        putProject: function (project) {
+        putPlan: function (plan) {
             return $.ajax({
                 context: this,
-                url: hlapp.HOST_NAME + '/api/projects',
+                url: hlapp.HOST_NAME + '/api/plans',
                 dataType: 'json',
                 headers: {
                     'Authorization': 'Bearer ' + hlapp.getAccessToken()
                 },
                 type: 'PUT',
                 contentType: 'application/json',
-                data: JSON.stringify(project)
+                data: JSON.stringify(plan)
             });
         },
-        deleteProject: function (project) {
+        deletePlan: function (plan) {
             return $.ajax({
                 context: this,
-                url: hlapp.HOST_NAME + '/api/projects/' + encodeURIComponent(project.id),
+                url: hlapp.HOST_NAME + '/api/plans/' + encodeURIComponent(plan.id),
                 dataType: 'json',
                 headers: {
                     'Authorization': 'Bearer ' + hlapp.getAccessToken()
@@ -63,64 +63,64 @@ var ProjectStore = function () {
     /**
      * Store Methods
      */
-    this.create = function (newProject) {
+    this.create = function (newPlan) {
         
         // update now for optimistic concurrency
-        updates.onNext(updates.value.concat(newProject));
+        updates.onNext(updates.value.concat(newPlan));
         
-        _api.postProject(newProject)
+        _api.postPlan(newPlan)
         .done(function (result) {
             updates.value.forEach(function (item) { 
-                if (item === newProject) {
+                if (item === newPlan) {
                     Object.assign(item, result);
-                    newProject = item;
+                    newPlan = item;
                 }
             });
             updates.onNext(updates.value);
-            hlio.saveLocal('hl.' + user + '.projects', updates.value, secret);
-            toastr.success('Added project ' + newProject.name);
+            hlio.saveLocal('hl.' + user + '.plans', updates.value, secret);
+            toastr.success('Added plan ' + newPlan.name);
         })
         .fail( function (err) {
-            var filtered = updates.value.filter( function (item) { return item !== newProject; });
+            var filtered = updates.value.filter( function (item) { return item !== newPlan; });
             updates.onNext(filtered);
             toastr.error(err.responseText);
         });
     };
     
-    this.destroy = function (project) {
+    this.destroy = function (plan) {
         // optimistic concurrency
-        var filtered = updates.value.filter( function (item) { return item !== project; });
+        var filtered = updates.value.filter( function (item) { return item !== plan; });
         updates.onNext(filtered);
         
-        _api.deleteProject(project)
+        _api.deletePlan(plan)
         .done( function () {
-            toastr.success('Deleted project ' + project.name);
-            hlio.saveLocal('hl.' + user + '.projects', updates.value, secret);
+            toastr.success('Deleted plan ' + plan.name);
+            hlio.saveLocal('hl.' + user + '.plans', updates.value, secret);
         })
         .fail( function (err) {
-            updates.onNext(updates.value.concat(project));
+            updates.onNext(updates.value.concat(plan));
             toastr.error(err.responseText);
         });
     };
     
-    this.update = function (project) {
+    this.update = function (plan) {
         
-        var projectToSave = _.find(updates.value, function(item) { 
-            return item.id === project.id; 
+        var planToSave = _.find(updates.value, function(item) { 
+            return item.id === plan.id; 
         });
-        var state = project,
-            original = Object.assign({}, projectToSave);
+        var state = plan,
+            original = Object.assign({}, planToSave);
         
-        var val = projectToSave;
+        var val = planToSave;
         Object.assign(val, state);
         updates.onNext(updates.value);
         
-        _api.putProject(val)
+        _api.putPlan(val)
         .done(function (result) {
             Object.assign(val, result);
             updates.onNext(updates.value);
-            hlio.saveLocal('hl.' + user + '.projects', updates.value, secret);
-            toastr.success('Updated project ' + val.name);
+            hlio.saveLocal('hl.' + user + '.plans', updates.value, secret);
+            toastr.success('Updated plan ' + val.name);
         })
         .fail(function  (err) {
             Object.assign(val, original);
@@ -129,11 +129,11 @@ var ProjectStore = function () {
         });
     };
     
-    this.updateFromServer = function (projectId, newState) {
-        var projectToUpdate = _.find(updates.value, function(item) { 
-            return item.id === projectId; 
+    this.updateFromServer = function (planId, newState) {
+        var planToUpdate = _.find(updates.value, function(item) { 
+            return item.id === planId; 
         });
-        Object.assign(projectToUpdate, newState);
+        Object.assign(planToUpdate, newState);
         updates.onNext(updates.value);
     };
 
@@ -146,21 +146,21 @@ var ProjectStore = function () {
         secret = userId;
         
         // populate store - call to database
-        _api.getProjects()
+        _api.getPlans()
         .done(function (result) {
             updates.onNext(result);
-            hlio.saveLocal('hl.' + user + '.projects', updates.value, secret);
+            hlio.saveLocal('hl.' + user + '.plans', updates.value, secret);
         })
         .fail(function (err) {
             toastr.error(err.responseText);
         });
 
-        var projects = hlio.loadLocal('hl.' + user + '.projects', secret);
-        if (projects) {
-            updates.onNext(projects);   
+        var plans = hlio.loadLocal('hl.' + user + '.plans', secret);
+        if (plans) {
+            updates.onNext(plans);   
         }
     }
     
 };
 
-var projectStore = new ProjectStore();
+var planStore = new PlanStore();

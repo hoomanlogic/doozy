@@ -6,14 +6,14 @@ using System.Linq;
 
 namespace HoomanLogic.Data
 {
-    public static class ProjectsRepository
+    public static class PlansRepository
     {
         #region Public API
-        public static List<ProjectModel> Get(string userId)
+        public static List<PlanModel> Get(string userId)
         {
             using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())
             {
-                List<ProjectModel> models = db.Projects.Where(c => c.UserId == userId).Select(row => new Models.ProjectModel()
+                List<PlanModel> models = db.Plans.Where(c => c.UserId == userId).Select(row => new Models.PlanModel()
                 {
                     Id = row.Id,
                     FocusId = row.FocusId,
@@ -40,11 +40,11 @@ namespace HoomanLogic.Data
             }
         }
 
-        public static ProjectModel Get(string userId, Guid id)
+        public static PlanModel Get(string userId, Guid id)
         {
             using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())
             {
-                ProjectModel model = db.Projects.Where(c => c.Id == id).Select(row => new Models.ProjectModel()
+                PlanModel model = db.Plans.Where(c => c.Id == id).Select(row => new Models.PlanModel()
                 {
                     Id = row.Id,
                     FocusId = row.FocusId,
@@ -61,11 +61,11 @@ namespace HoomanLogic.Data
             }
         }
 
-        public static dynamic Add(string userId, ProjectModel model)
+        public static dynamic Add(string userId, PlanModel model)
         {
             using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())
             {
-                ef.Project row = new ef.Project();
+                ef.Plan row = new ef.Plan();
                 row.Id = Guid.NewGuid();
                 row.FocusId = model.FocusId;
                 row.UserId = userId;
@@ -76,7 +76,7 @@ namespace HoomanLogic.Data
                 row.Retire = model.Retire;
                 row.Content = model.Content;
                 row.IconUri = model.IconUri;
-                db.Projects.Add(row);
+                db.Plans.Add(row);
                 db.SaveChanges();
                 model.Id = row.Id;
 
@@ -94,12 +94,12 @@ namespace HoomanLogic.Data
             }
         }
 
-        public static dynamic Update(string userId, ProjectModel model)
+        public static dynamic Update(string userId, PlanModel model)
         {
             using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())
             {
                 // sync this model along with all children and related 
-                ef.Project row = db.Projects.Where(a =>
+                ef.Plan row = db.Plans.Where(a =>
                         a.Id == model.Id
                     ).First();
 
@@ -133,11 +133,11 @@ namespace HoomanLogic.Data
         {
             using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())
             {
-                var row = db.Projects.Where(a =>
+                var row = db.Plans.Where(a =>
                         a.Id == id
                     ).First();
 
-                db.Projects.Remove(
+                db.Plans.Remove(
                     row
                 );
 
@@ -151,7 +151,7 @@ namespace HoomanLogic.Data
             {
                 Guid projectGuid = Guid.Parse(projectId);
                 // sync this model along with all children and related 
-                ef.Project row = db.Projects.Where(r => r.UserId == userId && r.Id == projectGuid).First();
+                ef.Plan row = db.Plans.Where(r => r.UserId == userId && r.Id == projectGuid).First();
 
                 row.IconUri = uri;
 

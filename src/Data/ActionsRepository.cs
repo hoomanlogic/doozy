@@ -27,7 +27,7 @@ namespace HoomanLogic.Data
                 ActionModel action = db.Actions.Where(c => c.Id == id).Select(row => new Models.ActionModel()
                 {
                     Id = row.Id,
-                    ProjectStepId = row.ProjectStepId,
+                    PlanStepId = row.ProjectStepId,
                     Ordinal = row.Ordinal,
                     Kind = row.Kind,
                     Name = row.Name,
@@ -108,7 +108,7 @@ namespace HoomanLogic.Data
                            select new Models.ActionModel()
                            {
                                Id = row.Id,
-                               ProjectStepId = row.ProjectStepId,
+                               PlanStepId = row.ProjectStepId,
                                Ordinal = row.Ordinal,
                                Kind = row.Kind,
                                Name = row.Name,
@@ -248,7 +248,7 @@ namespace HoomanLogic.Data
 
             ef.Action row = new ef.Action();
             row.Id = Guid.NewGuid();
-            row.ProjectStepId = model.ProjectStepId;
+            row.ProjectStepId = model.PlanStepId;
             row.Ordinal = model.Ordinal;
             row.UserId = userId;
             row.Kind = model.Kind;
@@ -311,7 +311,7 @@ namespace HoomanLogic.Data
         {
 
             ef.Action row = db.Actions.Where(c => c.Id == model.Id).First();
-            row.ProjectStepId = model.ProjectStepId;
+            row.ProjectStepId = model.PlanStepId;
             row.Ordinal = model.Ordinal;
             row.Kind = model.Kind;
             row.Name = model.Name;

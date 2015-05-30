@@ -209,7 +209,7 @@ if (typeof require !== 'undefined') {
         };
     };
     
-    exports.project = function (name) {
+    exports.plan = function (name) {
         // return object literal
         return {
             id: hlcommon.uuid(),
@@ -224,7 +224,7 @@ if (typeof require !== 'undefined') {
         };
     }; 
     
-    exports.projectStep = function (projectId) {
+    exports.planStep = function (planId) {
         // return object literal
         return {
             id: hlcommon.uuid(),

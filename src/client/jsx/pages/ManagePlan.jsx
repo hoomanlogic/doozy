@@ -13,7 +13,7 @@
 	}
 	else {
 		// Global (browser)
-		root.ManageProject = factory(root.React);
+		root.ManagePlan = factory(root.React);
 	}
 }(this, function (React) {
     'use strict';
@@ -22,7 +22,7 @@
          * COMPONENT LIFECYCLE
          *************************************************************/
         getInitialState: function () {
-            if (!this.props.projectId) {
+            if (!this.props.planId) {
                 return {
                     id: '',
                     name: '', 
@@ -31,23 +31,23 @@
                     content: ''
                 };   
             }
-            var project = _.find(projectStore.updates.value, { id: this.props.projectId });
+            var plan = _.find(planStore.updates.value, { id: this.props.planId });
             return {
-                id: project.id,
-                name: project.name,
-                kind: project.kind,
-                tagName: project.tagName,
-                content: project.content
+                id: plan.id,
+                name: plan.name,
+                kind: plan.kind,
+                tagName: plan.tagName,
+                content: plan.content
             };
         },
         
         componentWillReceiveProps: function (nextProps) {
-            var project = _.find(projectStore.updates.value, { id: nextProps.projectId });
+            var plan = _.find(planStore.updates.value, { id: nextProps.planId });
             this.setState({
-                id: project.id,
-                name: project.name,
-                kind: project.kind,
-                content: project.content
+                id: plan.id,
+                name: plan.name,
+                kind: plan.kind,
+                content: plan.content
             });
         },
 
@@ -55,7 +55,7 @@
          * EVENT HANDLING
          *************************************************************/
         handleCancelClick: function () {
-            ui.goTo('Manage Projects');
+            ui.goTo('Manage Plans');
         },
         handleChange: function (event) {
             if (event.target === this.refs.name.getDOMNode()) {
@@ -69,13 +69,13 @@
             }
         },
         handleDeleteClick: function () {
-            var project = _.find(projectStore.updates.value, { id: this.props.projectId });
-            ui.goTo('Manage Projects');
-            projectStore.destroy(project);
+            var plan = _.find(planStore.updates.value, { id: this.props.planId });
+            ui.goTo('Manage Plans');
+            planStore.destroy(plan);
         },
         handleSaveClick: function () {
-            projectStore.update(this.state);
-            ui.goTo('Manage Projects');
+            planStore.update(this.state);
+            ui.goTo('Manage Plans');
         },
         
         /*************************************************************
@@ -117,9 +117,9 @@
                 <div style={{padding: '5px'}}>
                     <form role="form">
                         <div className="form-group">
-                            <label htmlFor="f2">What kind of project is this?</label>
+                            <label htmlFor="f2">What kind of plan is this?</label>
                             <select id="f2" ref="kind" className="form-control" value={this.state.kind} onChange={this.handleChange}>
-                                <option value="Project">Simple</option>
+                                <option value="Plan">Simple</option>
                                 <option value="Business">Business</option>
                                 <option value="Goal">Goal</option>
                                 <option value="Software">Software</option>

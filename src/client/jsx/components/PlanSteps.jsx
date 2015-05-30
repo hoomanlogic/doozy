@@ -17,7 +17,7 @@
 	}
 	else {
 		// Global (browser)
-		root.ProjectSteps = factory(root.React);
+		root.PlanSteps = factory(root.React);
 	}
 }(this, function (React) {
     'use strict';
@@ -25,7 +25,7 @@
 
         getInitialState: function () {
             return {
-                projectStepsLastUpdated: (new Date()).toISOString()  
+                planStepsLastUpdated: (new Date()).toISOString()  
             };
         },
         
@@ -34,29 +34,29 @@
              * Subscribe to Tag Store to be 
              * notified of updates to the store
              */
-            this.projectStepsObserver = projectStepStore.updates
-                .subscribe(this.handleProjectStepStoreUpdate);
+            this.planStepsObserver = planStepStore.updates
+                .subscribe(this.handlePlanStepStoreUpdate);
             
         },
         componentWillUnmount: function () {
             /**
              * Clean up objects and bindings
              */
-            this.projectStepsObserver.dispose();
+            this.planStepsObserver.dispose();
         },
         
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
-        handleProjectStepStoreUpdate: function (projectSteps) {
-            this.setState({ projectStepsLastUpdated: (new Date()).toISOString() });
+        handlePlanStepStoreUpdate: function (planSteps) {
+            this.setState({ planStepsLastUpdated: (new Date()).toISOString() });
         },
         handleCloseClick: function () {
-            ui.goTo('Manage Projects');
+            ui.goTo('Manage Plans');
         },
         
         calculateNewStep: function () {
-            var steps = _.where(projectStepStore.updates.value, { projectId: this.props.projectId, parentId: null });
+            var steps = _.where(planStepStore.updates.value, { planId: this.props.planId, parentId: null });
             var nextOrdinal = 1;
             if (steps.length > 0) {
                 steps = _.sortBy(steps, function (item) {
@@ -68,7 +68,7 @@
             
             return {
                 id: hlcommon.uuid(),
-                projectId: this.props.projectId,
+                planId: this.props.planId,
                 parentId: null,
                 name: '+',
                 kind: 'Step',
@@ -85,20 +85,20 @@
          *************************************************************/
         render: function () {
             
-            // get root level steps for this project
-            var steps = _.where(projectStepStore.updates.value, { projectId: this.props.projectId, parentId: null });
+            // get root level steps for this plan
+            var steps = _.where(planStepStore.updates.value, { planId: this.props.planId, parentId: null });
             var childrenCount = 1;
             
             steps = _.sortBy(steps, function (item) {
                 
-                var children = _.where(projectStepStore.updates.value, { projectId: item.projectId, parentId: item.id });
+                var children = _.where(planStepStore.updates.value, { planId: item.planId, parentId: item.id });
                 childrenCount += children.length + 1;
                 return item.ordinal;
             });
             
-            var projectId = this.props.projectId;
-            var project = _.find(projectStore.updates.value, function (item) {
-                return item.id === projectId;
+            var planId = this.props.planId;
+            var plan = _.find(planStore.updates.value, function (item) {
+                return item.id === planId;
             });
             
             /**
@@ -129,18 +129,18 @@
             
             var stepsDom = steps.map( function (step) {
                 return (
-                    <ProjectStep projectId={this.props.projectId} data={step} level={1} />
+                    <PlanStep planId={this.props.planId} data={step} level={1} />
                 );
             }.bind(this))
             
             stepsDom.push((
-                <ProjectStep projectId={this.props.projectId} data={this.calculateNewStep()} level={1} />
+                <PlanStep planId={this.props.planId} data={this.calculateNewStep()} level={1} />
             ));
 
             return (
                 <div>
                     <div style={headerStyle}>
-                        <div style={{flexGrow: '1'}}>{project.name}</div>
+                        <div style={{flexGrow: '1'}}>{plan.name}</div>
                         <div style={{paddingRight: '5px'}}><button type="button" className="close" onClick={this.handleCloseClick}><span aria-hidden="true">&times;</span></button></div>
                     </div>
                     <div style={{ overflowX: 'auto', paddingBottom: '5px' }}>

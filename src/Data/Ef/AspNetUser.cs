@@ -28,8 +28,8 @@ namespace HoomanLogic.Data.Ef
             this.Focuses = new HashSet<Focus>();
             this.Attachments = new HashSet<Attachment>();
             this.LogEntryPeanuts = new HashSet<LogEntryPeanut>();
-            this.Projects = new HashSet<Project>();
             this.Actions = new HashSet<Action>();
+            this.Plans = new HashSet<Plan>();
         }
     
         public string Id { get; set; }
@@ -59,7 +59,7 @@ namespace HoomanLogic.Data.Ef
         public virtual Preference Preference { get; set; }
         public virtual ICollection<Attachment> Attachments { get; set; }
         public virtual ICollection<LogEntryPeanut> LogEntryPeanuts { get; set; }
-        public virtual ICollection<Project> Projects { get; set; }
         public virtual ICollection<Action> Actions { get; set; }
+        public virtual ICollection<Plan> Plans { get; set; }
     }
 }

@@ -183,7 +183,7 @@
 
             var menuItems = ([
                 <li key="manage-focuses"><a href="javascript:;" onClick={ui.goTo.bind(null, 'Focus Management')} title="Manage Focuses">Manage Focuses</a></li>,
-                <li key="manage-projects"><a href="javascript:;" onClick={ui.goTo.bind(null, 'Manage Projects')} title="Manage Projects">Manage Projects</a></li>,
+                <li key="manage-plans"><a href="javascript:;" onClick={ui.goTo.bind(null, 'Manage Plans')} title="Manage Plans">Manage Plans</a></li>,
                 <li key="manage-tags"><a href="javascript:;" onClick={ui.goTo.bind(null, 'Manage Tags')} title="Manage Tags">Manage Tags</a></li>,
                 <li key="manage-persona"><a href="javascript:;" onClick={ui.goTo.bind(null, 'Preferences')} title="Preferences">Preferences</a></li>,
                 <li key="manage-account"><a href="/Manage" title="Manage">Account</a></li>,

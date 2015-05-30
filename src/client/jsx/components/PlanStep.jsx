@@ -17,7 +17,7 @@
 	}
 	else {
 		// Global (browser)
-		root.ProjectStep = factory(root.React);
+		root.PlanStep = factory(root.React);
 	}
 }(this, function (React) {
     'use strict';
@@ -25,7 +25,7 @@
 
         getInitialState: function () {
             return {
-                projectStepsLastUpdated: (new Date()).toISOString()  
+                planStepsLastUpdated: (new Date()).toISOString()  
             };
         },
         
@@ -34,29 +34,29 @@
              * Subscribe to Tag Store to be 
              * notified of updates to the store
              */
-            this.projectStepsObserver = projectStepStore.updates
-                .subscribe(this.handleProjectStepStoreUpdate);
+            this.planStepsObserver = planStepStore.updates
+                .subscribe(this.handlePlanStepStoreUpdate);
             
         },
         componentWillUnmount: function () {
             /**
              * Clean up objects and bindings
              */
-            this.projectStepsObserver.dispose();
+            this.planStepsObserver.dispose();
         },
         
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
-        handleProjectStepStoreUpdate: function (projects) {
-            this.setState({ projectStepsLastUpdated: (new Date()).toISOString() });
+        handlePlanStepStoreUpdate: function (plans) {
+            this.setState({ planStepsLastUpdated: (new Date()).toISOString() });
         },
         handleCardClick: function () {
             
-            ui.goTo('Manage Project Step', {
+            ui.goTo('Manage Plan Step', {
                 isNew: this.props.data.isNew || false,
-                projectStepId: this.props.data.id, 
-                projectId: this.props.data.projectId, 
+                planStepId: this.props.data.id, 
+                planId: this.props.data.planId, 
                 parentId: this.props.data.parentId
             });
             
@@ -70,12 +70,12 @@
             //    Object.assign(this.props.data, { name: stepName });
             //    this.props.data.isNew = void 0;
 
-            //    projectStepStore.create(this.props.data);
+            //    planStepStore.create(this.props.data);
             //}
         },
         
         calculateNewStep: function () {
-            var steps = _.where(projectStepStore.updates.value, { projectId: this.props.projectId, parentId: this.props.data.id });
+            var steps = _.where(planStepStore.updates.value, { planId: this.props.planId, parentId: this.props.data.id });
             var nextOrdinal = 1;
             if (steps.length > 0) {
                 steps = _.sortBy(steps, function (item) {
@@ -87,7 +87,7 @@
             
             return {
                 id: hlcommon.uuid(),
-                projectId: this.props.projectId,
+                planId: this.props.planId,
                 parentId: this.props.data.id,
                 name: '+',
                 kind: 'Step',
@@ -104,12 +104,12 @@
          *************************************************************/
         render: function () {
 
-            var projectsteps = projectStore.updates.value;
+            var plansteps = planStore.updates.value;
 
             /**
              * Sort the actions by completed and name
              */
-            projectsteps = _.sortBy(projectsteps, function(step){ 
+            plansteps = _.sortBy(plansteps, function(step){ 
                 return step.name.toLowerCase();
             })
 
@@ -194,20 +194,20 @@
                 }
             ];
             
-            var steps = _.where(projectStepStore.updates.value, { projectId: this.props.projectId, parentId: this.props.data.id });
+            var steps = _.where(planStepStore.updates.value, { planId: this.props.planId, parentId: this.props.data.id });
             steps = _.sortBy(steps, function (item) {
                 return item.ordinal;
             });
             
             var stepsDom = steps.map( function (step) {
                 return (
-                    <ProjectStep projectId={this.props.projectId} data={step} level={this.props.level + 1} />
+                    <PlanStep planId={this.props.planId} data={step} level={this.props.level + 1} />
                 );
             }.bind(this));
             
             if ((!this.props.data.hasOwnProperty('isNew') || !this.props.data.isNew) && this.props.level < 3) {
                 stepsDom.push((
-                    <ProjectStep projectId={this.props.projectId} data={this.calculateNewStep()} level={this.props.level + 1} />
+                    <PlanStep planId={this.props.planId} data={this.calculateNewStep()} level={this.props.level + 1} />
                 ));
             }
 

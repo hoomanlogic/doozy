@@ -16,7 +16,7 @@ namespace HoomanLogic.Data.Ef
     {
         public Focus()
         {
-            this.Projects = new HashSet<Project>();
+            this.Plans = new HashSet<Plan>();
         }
     
         public System.Guid Id { get; set; }
@@ -29,6 +29,6 @@ namespace HoomanLogic.Data.Ef
         public string TagName { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
-        public virtual ICollection<Project> Projects { get; set; }
+        public virtual ICollection<Plan> Plans { get; set; }
     }
 }

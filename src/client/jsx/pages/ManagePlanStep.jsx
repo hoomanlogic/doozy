@@ -13,7 +13,7 @@
 	}
 	else {
 		// Global (browser)
-		root.ManageProjectStep = factory(root.React);
+		root.ManagePlanStep = factory(root.React);
 	}
 }(this, function (React) {
     'use strict';
@@ -24,7 +24,7 @@
         getInitialState: function () {
             if (this.props.isNew) {
                 
-                var steps = _.where(projectStepStore.updates.value, { projectId: this.props.projectId, parentId: this.props.parentId });
+                var steps = _.where(planStepStore.updates.value, { planId: this.props.planId, parentId: this.props.parentId });
                 var nextOrdinal = 1;
                 if (steps.length > 0) {
                     steps = _.sortBy(steps, function (item) {
@@ -36,7 +36,7 @@
                 
                 var state = Object.assign({}, {
                     id: hlcommon.uuid(),
-                    projectId: this.props.projectId,
+                    planId: this.props.planId,
                     parentId: this.props.parentId,
                     name: '',
                     kind: 'Step',
@@ -50,51 +50,51 @@
                 });
                 return state;
             } else {
-                var projectStep = _.find(projectStepStore.updates.value, { id: this.props.projectStepId });
-                var durationParse = babble.get('durations').translate((projectStep.duration || 0) + ' min');
+                var planStep = _.find(planStepStore.updates.value, { id: this.props.planStepId });
+                var durationParse = babble.get('durations').translate((planStep.duration || 0) + ' min');
                 if (durationParse.tokens.length === 0) {
                     var durationInput = null;
                 } else {
                     var durationInput = durationParse.tokens[0].value.toString();
                 }
                 return {
-                    id: projectStep.id,
-                    projectId: projectStep.projectId,
-                    parentId: projectStep.parentId,
-                    name: projectStep.name,
-                    kind: projectStep.kind,
-                    status: projectStep.status,
-                    duration: projectStep.duration,
+                    id: planStep.id,
+                    planId: planStep.planId,
+                    parentId: planStep.parentId,
+                    name: planStep.name,
+                    kind: planStep.kind,
+                    status: planStep.status,
+                    duration: planStep.duration,
                     durationInput: durationInput,
-                    created: projectStep.created,
-                    content: projectStep.content,
-                    ordinal: projectStep.ordinal,
-                    tagName: projectStep.tagName
+                    created: planStep.created,
+                    content: planStep.content,
+                    ordinal: planStep.ordinal,
+                    tagName: planStep.tagName
                 };   
             }
         },
         
         componentWillReceiveProps: function (nextProps) {
-            var projectStep = _.find(projectStepStore.updates.value, { id: nextProps.projectStepId });
-            var durationParse = babble.get('durations').translate((projectStep.duration || 0) + ' min');
+            var planStep = _.find(planStepStore.updates.value, { id: nextProps.planStepId });
+            var durationParse = babble.get('durations').translate((planStep.duration || 0) + ' min');
             if (durationParse.tokens.length === 0) {
                 var durationInput = null;
             } else {
                 var durationInput = durationParse.tokens[0].value.toString();
             }
             this.setState({
-                id: projectStep.id,
-                projectId: projectStep.projectId,
-                parentId: projectStep.parentId,
-                name: projectStep.name,
-                kind: projectStep.kind,
-                status: projectStep.status,
-                duration: projectStep.duration,
-                durationInput: new babble.Duration(projectStep.duration),
-                created: projectStep.created,
-                content: projectStep.content,
-                ordinal: projectStep.ordinal,
-                tagName: projectStep.tagName
+                id: planStep.id,
+                planId: planStep.planId,
+                parentId: planStep.parentId,
+                name: planStep.name,
+                kind: planStep.kind,
+                status: planStep.status,
+                duration: planStep.duration,
+                durationInput: new babble.Duration(planStep.duration),
+                created: planStep.created,
+                content: planStep.content,
+                ordinal: planStep.ordinal,
+                tagName: planStep.tagName
             });
         },
 
@@ -102,7 +102,7 @@
          * EVENT HANDLING
          *************************************************************/
         handleCancelClick: function () {
-            ui.goTo('Project View', { projectId: this.props.projectId });
+            ui.goTo('Plan View', { planId: this.props.planId });
         },
         handleChange: function (event) {
             if (event.target === this.refs.name.getDOMNode()) {
@@ -143,17 +143,17 @@
             }
         },
         handleDeleteClick: function () {
-            var project = _.find(projectStore.updates.value, { id: this.props.projectId });
-            ui.goTo('Project View', { projectId: this.props.projectId });
-            projectStepStore.destroy(this.state);
+            var plan = _.find(planStore.updates.value, { id: this.props.planId });
+            ui.goTo('Plan View', { planId: this.props.planId });
+            planStepStore.destroy(this.state);
         },
         handleSaveClick: function () {
             if (this.props.isNew) {
-                projectStepStore.create(this.state);
+                planStepStore.create(this.state);
             } else {
-                projectStepStore.update(this.state);
+                planStepStore.update(this.state);
             }
-            ui.goTo('Project View', { projectId: this.props.projectId });
+            ui.goTo('Plan View', { planId: this.props.planId });
         },
         
         /*************************************************************
@@ -195,7 +195,7 @@
                 <div style={{padding: '5px'}}>
                     <form role="form">
                         <div className="form-group">
-                            <label htmlFor="f1">What kind of project step is this?</label>
+                            <label htmlFor="f1">What kind of plan step is this?</label>
                             <select id="f1" ref="kind" className="form-control" value={this.state.kind} onChange={this.handleChange}>
                                 <option value="Milestone">Milestone</option>
                                 <option value="Step">Step</option>
@@ -207,8 +207,8 @@
                             <input id="f3" ref="name" type="text" className="form-control" value={this.state.name} onChange={this.handleChange} />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="projectstep-duration">How long do you think it will take?</label>
-                            <input id="projectstep-duration" ref="duration" type="text" className="form-control" value={this.state.durationInput} onChange={this.handleChange} />
+                            <label htmlFor="planstep-duration">How long do you think it will take?</label>
+                            <input id="planstep-duration" ref="duration" type="text" className="form-control" value={this.state.durationInput} onChange={this.handleChange} />
                             <span>{this.state.durationDisplay}</span>
                         </div>
                         <div className="form-group">

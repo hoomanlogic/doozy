@@ -208,7 +208,7 @@
                 <div className={this.props.hidden ? 'hidden' : ''}>
                     {this.renderTagFilter()}
                     <NextActions actions={tagsFilteredFocusActions} />
-                    <ActiveProjects focusTag={this.props.focusTag} />
+                    <ActivePlans focusTag={this.props.focusTag} />
                     <UpcomingActions actions={tagsFilteredFocusActions} />
                     <BoxedActions actions={tagsFilteredFocusActions} />
                     <RecentActivity actions={tagsFilteredFocusActions} />

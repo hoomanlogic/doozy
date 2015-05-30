@@ -6,17 +6,17 @@ using System.Linq;
 
 namespace HoomanLogic.Data
 {
-    public static class ProjectStepsRepository
+    public static class PlanStepsRepository
     {
         #region Public API
-        public static List<ProjectStepModel> Get(string userId)
+        public static List<PlanStepModel> Get(string userId)
         {
             using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())
             {
-                List<ProjectStepModel> models = db.ProjectSteps.Where(c => c.UserId == userId).Select(row => new Models.ProjectStepModel()
+                List<PlanStepModel> models = db.PlanSteps.Where(c => c.UserId == userId).Select(row => new Models.PlanStepModel()
                 {
                     Id = row.Id,
-                    ProjectId = row.ProjectId,
+                    PlanId = row.ProjectId,
                     ParentId = row.ParentId,
                     Kind = row.Kind,
                     Name = row.Name,
@@ -32,14 +32,14 @@ namespace HoomanLogic.Data
             }
         }
 
-        public static ProjectStepModel Get(string userId, Guid id)
+        public static PlanStepModel Get(string userId, Guid id)
         {
             using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())
             {
-                ProjectStepModel model = db.ProjectSteps.Where(c => c.Id == id).Select(row => new Models.ProjectStepModel()
+                PlanStepModel model = db.PlanSteps.Where(c => c.Id == id).Select(row => new Models.PlanStepModel()
                 {
                     Id = row.Id,
-                    ProjectId = row.ProjectId,
+                    PlanId = row.ProjectId,
                     ParentId = row.ParentId,
                     Kind = row.Kind,
                     Name = row.Name,
@@ -55,13 +55,13 @@ namespace HoomanLogic.Data
             }
         }
 
-        public static dynamic Add(string userId, ProjectStepModel model)
+        public static dynamic Add(string userId, PlanStepModel model)
         {
             using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())
             {
-                ef.ProjectStep row = new ef.ProjectStep();
+                ef.PlanStep row = new ef.PlanStep();
                 row.Id = Guid.NewGuid();
-                row.ProjectId = model.ProjectId;
+                row.ProjectId = model.PlanId;
                 row.ParentId = model.ParentId;
                 row.UserId = userId;
 
@@ -73,7 +73,7 @@ namespace HoomanLogic.Data
                 row.Duration = model.Duration;
                 row.Ordinal = model.Ordinal;
                 row.Content = model.Content;
-                db.ProjectSteps.Add(row);
+                db.PlanSteps.Add(row);
                 db.SaveChanges();
                 model.Id = row.Id;
 
@@ -97,12 +97,12 @@ namespace HoomanLogic.Data
             }
         }
 
-        public static dynamic Update(string userId, ProjectStepModel model)
+        public static dynamic Update(string userId, PlanStepModel model)
         {
             using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())
             {
                 // sync this model along with all children and related 
-                ef.ProjectStep row = (from a in db.ProjectSteps
+                ef.PlanStep row = (from a in db.PlanSteps
                                      where a.Id == model.Id
                                      select a).First();
 
@@ -133,11 +133,11 @@ namespace HoomanLogic.Data
         {
             using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())
             {
-                var row = db.ProjectSteps.Where(a =>
+                var row = db.PlanSteps.Where(a =>
                         a.Id == id
                     ).First();
 
-                db.ProjectSteps.Remove(
+                db.PlanSteps.Remove(
                     row
                 );
 

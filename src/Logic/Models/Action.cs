@@ -13,7 +13,7 @@ namespace HoomanLogic.Models
             RecurrenceRules = new List<String>();
         }
         public Guid Id { get; set; }
-        public Guid? ProjectStepId { get; set; }
+        public Guid? PlanStepId { get; set; }
         public short? Ordinal { get; set; }
         public string Kind { get; set; }
         public string Name { get; set; }

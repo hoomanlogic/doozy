@@ -5,18 +5,17 @@ using System.Web;
 
 namespace HoomanLogic.Models
 {
-    public class ProjectStepModel
+    public class PlanModel
     {
         public Guid Id { get; set; }
-        public Guid ProjectId { get; set; }
-        public Guid? ParentId { get; set; }
+        public Guid FocusId { get; set; }
         public string Kind { get; set; }
         public string Name { get; set; }
-        public string Content { get; set; }
-        public short? Duration { get; set; }
-        public string TagName { get; set; }
-        public string Status { get; set; }
         public DateTime? Created { get; set; }
-        public short? Ordinal { get; set; }
+        public DateTime? Retire { get; set; }
+        public string IconUri { get; set; }
+        public string Content { get; set; }
+        public string TagName { get; set; }
+        public LogEntryModel LatestEntry { get; set; }
     }
 }

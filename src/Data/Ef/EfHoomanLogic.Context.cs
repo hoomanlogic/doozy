@@ -40,8 +40,8 @@ namespace HoomanLogic.Data.Ef
         public virtual DbSet<Preference> Preferences { get; set; }
         public virtual DbSet<Attachment> Attachments { get; set; }
         public virtual DbSet<LogEntryPeanut> LogEntryPeanuts { get; set; }
-        public virtual DbSet<Project> Projects { get; set; }
         public virtual DbSet<Action> Actions { get; set; }
-        public virtual DbSet<ProjectStep> ProjectSteps { get; set; }
+        public virtual DbSet<Plan> Plans { get; set; }
+        public virtual DbSet<PlanStep> PlanSteps { get; set; }
     }
 }

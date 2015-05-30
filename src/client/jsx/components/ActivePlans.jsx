@@ -17,7 +17,7 @@
 	}
 	else {
 		// Global (browser)
-		root.ActiveProjects = factory(root.React);
+		root.ActivePlans = factory(root.React);
 	}
 }(this, function (React) {
     'use strict';
@@ -25,20 +25,20 @@
         /*************************************************************
          * CALCULATIONS
          *************************************************************/
-        getActiveProjects: function () {
+        getActivePlans: function () {
             var focusTag = this.props.focusTag.slice(1);
             var focus = _.find(focusStore.updates.value, function (item) {
                 return item.tagName === focusTag;
             });
-            var projects = _.where(projectStore.updates.value, { focusId: focus.id });
-            return projects;
+            var plans = _.where(planStore.updates.value, { focusId: focus.id });
+            return plans;
         },
         
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
-        handleProjectClick: function (project) {
-            ui.goTo('Project View', {projectId: project.id});
+        handlePlanClick: function (plan) {
+            ui.goTo('Plan View', {planId: plan.id});
         },
         
         /*************************************************************
@@ -46,19 +46,19 @@
          *************************************************************/
         render: function () {
 
-            var activeProjects = this.getActiveProjects()
+            var activePlans = this.getActivePlans()
 
             /**
              * Sort the actions by completed and name
              */
-            activeProjects = _.sortBy(activeProjects, function(project){ 
-                return project.name.toLowerCase(); 
+            activePlans = _.sortBy(activePlans, function(plan){ 
+                return plan.name.toLowerCase(); 
             })
 
             /**
-             * Return null if there are no active projects for this focus
+             * Return null if there are no active plans for this focus
              */
-            if (activeProjects.length === 0) {
+            if (activePlans.length === 0) {
                 return null;
             }
 
@@ -98,14 +98,14 @@
             return (
                 <div>
                     <div style={headerStyle}>
-                        <div>Active Projects</div>
+                        <div>Active Plans</div>
                     </div>
                     <div style={{display: 'flex', flexDirection: 'column'}}>                    
-                        {activeProjects.map(function(item, index) {
+                        {activePlans.map(function(item, index) {
                             return (
                                 <div key={item.id} style={listItemStyle}>
                                     <div style={{flexGrow: '1'}}>
-                                        <span className="clickable" onClick={this.handleProjectClick.bind(null, item)}>{item.name}</span>
+                                        <span className="clickable" onClick={this.handlePlanClick.bind(null, item)}>{item.name}</span>
                                     </div>
                                 </div>
                             );
