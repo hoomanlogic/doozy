@@ -165,7 +165,11 @@
                 // find last performed
                 var lastPerformed = null;
                 
-                _.where(me.updates.value, {actionId: actionToUpdate.id, entry: "performed"}).map( function (item) {
+                me.updates.value
+                .filter( function (item) { 
+                    return item.actionId === actionToUpdate.id && ['performed','skipped'].indexOf(item.entry) > -1; 
+                })
+                .forEach( function (item) {
                     if (lastPerformed === null || new Date(item.date) > new Date(lastPerformed)) {
                         lastPerformed = item.date;   
                     }
@@ -245,7 +249,11 @@
                     // find last performed
                     var lastPerformed = null;
 
-                    _.where(me.updates.value, {actionId: actionToUpdate.id, entry: "performed"}).map( function (item) {
+                    me.updates.value
+                    .filter( function (item) { 
+                        return item.actionId === actionToUpdate.id && ['performed','skipped'].indexOf(item.entry) > -1; 
+                    })
+                    .forEach( function (item) {
                         if (lastPerformed === null || new Date(item.date) > new Date(lastPerformed)) {
                             lastPerformed = item.date;   
                         }

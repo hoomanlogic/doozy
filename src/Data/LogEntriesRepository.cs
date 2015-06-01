@@ -134,11 +134,27 @@ namespace HoomanLogic.Data
                 db.LogEntries.Add(row);
                 db.SaveChanges();
 
-                if (model.Entry == "performed")
+                
+                if (new string[] {"performed","skipped"}.Contains(model.Entry))
                 {
-                    // set next date action should be performed
+
                     var action = db.Actions.Where(a => a.Id == model.ActionId).FirstOrDefault();
-                    var latestPerformance = db.LogEntries.Where(a => a.Entry == "performed").OrderByDescending(a => a.Date).Select(a => a.Date).FirstOrDefault();
+
+                    // process queue item and decrement next items in the queue
+                    var tags = action.Tags.Where(a => a.Kind == "Box").Select(a => a.Name).ToList();
+                    if (model.Entry == "performed" && tags.Count > 0 && action.Ordinal != null)
+                    {
+                        // subtract 1 from the ordinal for any 
+                        var actions = db.Actions.Where(a => a.Tags.Select(c => c.Name).Intersect(tags).Count() > 0 && a.Ordinal != null && a.Ordinal > action.Ordinal.Value);
+                        foreach (var a in actions)
+                        {
+                            a.Ordinal -= 1;
+                        }
+                        action.Ordinal = null;
+                    }
+
+                    // set next date action should be performed
+                    var latestPerformance = db.LogEntries.Where(a => a.Entry == "performed" || a.Entry == "skipped").OrderByDescending(a => a.Date).Select(a => a.Date).FirstOrDefault();
                     if (latestPerformance == null || latestPerformance == DateTime.MinValue || latestPerformance <= model.Date)
                     {
                         List<RecurrenceModel> recurrenceRules = new List<RecurrenceModel>();
@@ -148,6 +164,7 @@ namespace HoomanLogic.Data
                         }
 
                         action.NextDate = Utility.GetNextOccurrence(recurrenceRules, action.Created.Value, model.Date);
+                        
 
                         // persist changes
                         db.SaveChanges();
@@ -155,6 +172,9 @@ namespace HoomanLogic.Data
                         return new LogEntryChanges() { Id = row.Id, NextDate = action.NextDate.HasValue ? action.NextDate : DateTime.MinValue };
                     }
                 }
+
+
+                
 
                 return new LogEntryChanges() { Id = row.Id, NextDate = null };
             }
@@ -178,11 +198,11 @@ namespace HoomanLogic.Data
                 // add row to db table
                 db.SaveChanges();
 
-                if (model.Entry == "performed" && dateChanged)
+                if (new string[] { "performed", "skipped" }.Contains(model.Entry) && dateChanged)
                 {
                     // set next date action should be performed
                     var action = db.Actions.Where(a => a.Id == model.ActionId).FirstOrDefault();
-                    var latestPerformance = db.LogEntries.Where(a => a.Entry == "performed").OrderByDescending(a => a.Date).Select(a => a.Date).FirstOrDefault();
+                    var latestPerformance = db.LogEntries.Where(a => a.Entry == "performed" || a.Entry == "skipped").OrderByDescending(a => a.Date).Select(a => a.Date).FirstOrDefault();
                     if (latestPerformance == null || latestPerformance == DateTime.MinValue || latestPerformance <= model.Date)
                     {
                         List<RecurrenceModel> recurrenceRules = new List<RecurrenceModel>();
@@ -229,7 +249,7 @@ namespace HoomanLogic.Data
                 db.SaveChanges();
 
                 // re-calculate the next date
-                if (row.Entry == "performed")
+                if (new string[] { "performed", "skipped" }.Contains(row.Entry))
                 {
                     // set next date action should be performed
                     List<RecurrenceModel> recurrenceRules = new List<RecurrenceModel>();
@@ -238,7 +258,7 @@ namespace HoomanLogic.Data
                         recurrenceRules.Add(RecurrenceModel.GetRecurrence(rule.Rule));
                     }
 
-                    var latestOccurrenceMinDefault = db.LogEntries.Where(a => a.ActionId == actionId && a.Entry == "performed").OrderByDescending(a => a.Date).Select(a => a.Date).FirstOrDefault();
+                    var latestOccurrenceMinDefault = db.LogEntries.Where(a => a.ActionId == actionId && (a.Entry == "performed" || a.Entry == "skipped")).OrderByDescending(a => a.Date).Select(a => a.Date).FirstOrDefault();
                     DateTime? latestOccurrence = null;
                     if (latestOccurrenceMinDefault != DateTime.MinValue)
                     {

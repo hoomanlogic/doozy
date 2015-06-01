@@ -195,16 +195,16 @@
                 <div style={{padding: '5px'}}>
                     <form role="form">
                         <div className="form-group">
-                            <label htmlFor="f1">What kind of plan step is this?</label>
-                            <select id="f1" ref="kind" className="form-control" value={this.state.kind} onChange={this.handleChange}>
+                            <label htmlFor="planstep-kind">What kind of plan step is this?</label>
+                            <select id="planstep-kind" ref="kind" className="form-control" value={this.state.kind} onChange={this.handleChange}>
                                 <option value="Milestone">Milestone</option>
                                 <option value="Step">Step</option>
                                 <option value="Action">Action</option>
                             </select>
                         </div>
                         <div className="form-group">
-                            <label htmlFor="f3">What best titles this {this.state.kind.toLowerCase()}?</label>
-                            <input id="f3" ref="name" type="text" className="form-control" value={this.state.name} onChange={this.handleChange} />
+                            <label htmlFor="planstep-name">What best titles this {this.state.kind.toLowerCase()}?</label>
+                            <input id="planstep-name" ref="name" type="text" className="form-control" value={this.state.name} onChange={this.handleChange} />
                         </div>
                         <div className="form-group">
                             <label htmlFor="planstep-duration">How long do you think it will take?</label>
@@ -212,8 +212,8 @@
                             <span>{this.state.durationDisplay}</span>
                         </div>
                         <div className="form-group">
-                            <label htmlFor="f2">What is the status of this step?</label>
-                            <select id="f2" ref="status" className="form-control" value={this.state.status} onChange={this.handleChange}>
+                            <label htmlFor="planstep-status">What is the status of this step?</label>
+                            <select id="planstep-status" ref="status" className="form-control" value={this.state.status} onChange={this.handleChange}>
                                 <option value="Todo">Todo</option>
                                 <option value="Doing">Doing</option>
                                 <option value="Ready">Ready</option>
@@ -221,16 +221,16 @@
                             </select>
                         </div>
                         <div className="form-group">
-                            <label htmlFor="f4">What tag should be associated with this {this.state.kind.toLowerCase()}?</label>
+                            <label htmlFor="planstep-tagname">What tag should be associated with this {this.state.kind.toLowerCase()}?</label>
                             <input id="f4" ref="tagName" type="text" className="form-control" value={this.state.tagName} onChange={this.handleChange} />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="f5">What ordinal?</label>
-                            <input id="f5" ref="ordinal" type="number" className="form-control" value={this.state.ordinal} onChange={this.handleChange} />
+                            <label htmlFor="planstep-ordinal">What ordinal?</label>
+                            <input id="planstep-ordinal" ref="ordinal" type="number" className="form-control" value={this.state.ordinal} onChange={this.handleChange} />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="f6">Anything else you'd like to add about this {this.state.kind.toLowerCase()}?</label>
-                            <input id="f6" ref="content" type="textarea" className="form-control" value={this.state.content} onChange={this.handleChange} />
+                            <label htmlFor="planstep-content">Anything else you'd like to add about this {this.state.kind.toLowerCase()}?</label>
+                            <input id="planstep-content" ref="content" type="textarea" className="form-control" value={this.state.content} onChange={this.handleChange} />
                         </div>
                     </form>
                     {buttonsDom}

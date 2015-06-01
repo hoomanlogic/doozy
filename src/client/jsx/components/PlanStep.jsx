@@ -59,23 +59,15 @@
                 planId: this.props.data.planId, 
                 parentId: this.props.data.parentId
             });
-            
-            //if (this.props.data.hasOwnProperty('isNew') && this.props.data.isNew) {
-            //    var stepName = prompt('What is the name of the step?', '');
-
-            //    if (!stepName) {
-            //        return;   
-            //    }
-
-            //    Object.assign(this.props.data, { name: stepName });
-            //    this.props.data.isNew = void 0;
-
-            //    planStepStore.create(this.props.data);
-            //}
         },
         
         calculateNewStep: function () {
-            var steps = _.where(planStepStore.updates.value, { planId: this.props.planId, parentId: this.props.data.id });
+            
+            var steps = _.where(planStepStore.updates.value, { 
+                planId: this.props.planId, 
+                parentId: this.props.data.id 
+            });
+            
             var nextOrdinal = 1;
             if (steps.length > 0) {
                 steps = _.sortBy(steps, function (item) {
@@ -103,15 +95,6 @@
          * RENDERING
          *************************************************************/
         render: function () {
-
-            var plansteps = planStore.updates.value;
-
-            /**
-             * Sort the actions by completed and name
-             */
-            plansteps = _.sortBy(plansteps, function(step){ 
-                return step.name.toLowerCase();
-            })
 
             /**
              * Inline Styles
@@ -196,7 +179,17 @@
             
             var steps = _.where(planStepStore.updates.value, { planId: this.props.planId, parentId: this.props.data.id });
             steps = _.sortBy(steps, function (item) {
-                return item.ordinal;
+                var type = 0;
+                if (item.status === 'Doing') {
+                    type = 1;
+                } else if (item.status === 'Ready') {
+                    type = 2;
+                } else if (item.status === 'Todo') {
+                    type = 3;
+                } else if (item.status === 'Done') {
+                    type = 4;
+                }
+                return type + '-' + item.ordinal;
             });
             
             var stepsDom = steps.map( function (step) {

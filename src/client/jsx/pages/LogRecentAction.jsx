@@ -36,6 +36,7 @@
                 durationInput: '',
                 durationFeedback: '',
                 details: '',
+                kind: 'performed'
             };
         },
         
@@ -110,7 +111,10 @@
                     dateInput: event.target.value,
                     dateFeedback: dateFeedback
                 });
-
+            } else if (event.target === this.refs.kind.getDOMNode()) {
+                this.setState({
+                    kind: event.target.value
+                });
             } else if (event.target === this.refs.actualduration.getDOMNode()) {
                 var duration = 0;
                 var durationParseResult = babble.get('durations').translate(this.refs.actualduration.getDOMNode().value.trim());
@@ -161,8 +165,8 @@
                         actionId: existingAction.id,
                         date: this.state.date, 
                         duration: this.state.duration, 
-                        entry: 'performed', 
-                        details: this.state.details 
+                        entry: this.state.kind, 
+                        details: this.state.details
                     });
                 } else {
                     var tags;
@@ -411,19 +415,26 @@
                             <input id="f1" ref="name" type="text" />
                         </div>
                         {tags}
+                        <div className="form-group">
+                            <label htmlFor="logentry-kind">What kind of log entry?</label>
+                            <select id="logentry-kind" ref="kind" className="form-control" value={this.state.kind} onChange={this.handleChange}>
+                                <option value="performed">Performed</option>
+                                <option value="skipped">Skipped</option>
+                            </select>
+                        </div>
                         <div style={forceHeightStyle} className="form-group">
-                            <label htmlFor="f2">When did you do this?</label>
-                            <input id="f2" ref="performedat" type="text" className="form-control" onChange={this.handleChange} value={this.state.dateInput} />
+                            <label htmlFor="logentry-date">When did you do this?</label>
+                            <input id="logentry-date" ref="performedat" type="text" className="form-control" onChange={this.handleChange} value={this.state.dateInput} />
                             <span style={feedbackStyle}>{this.state.dateFeedback}</span>
                         </div>
                         <div style={forceHeightStyle} className="form-group">
-                            <label htmlFor="f3">How long did it take?</label>
-                            <input id="f3" ref="actualduration" type="text" className="form-control" onChange={this.handleChange} value={this.state.durationInput} />
+                            <label htmlFor="logentry-duration">How long did it take?</label>
+                            <input id="logentry-duration" ref="actualduration" type="text" className="form-control" onChange={this.handleChange} value={this.state.durationInput} />
                             <span style={feedbackStyle}>{this.state.durationFeedback}</span>
                         </div>
                         <div className="form-group">
-                            <label htmlFor="f4">Anything else?</label>
-                            <textarea id="f4" ref="details" type="text" className="form-control" onChange={this.handleChange} value={this.state.details} />
+                            <label htmlFor="logentry-details">Anything else?</label>
+                            <textarea id="logentry-details" ref="details" type="text" className="form-control" onChange={this.handleChange} value={this.state.details} />
                         </div>
                     </form>
                     {buttonsDom}

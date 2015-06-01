@@ -79,7 +79,7 @@
                 return item.entry !== 'created' && actionIds.indexOf(item.actionId) > -1;
             });
             
-            logEntries = _.sortBy(logEntries, function(item){ return item.date.split('T')[0] + '-' + (item.entry === 'performed' ? '1' : '0'); });
+            logEntries = _.sortBy(logEntries, function(item){ return item.date.split('T')[0] + '-' + (['performed','skipped'].indexOf(item.entry) ? '1' : '0'); });
             logEntries.reverse();
 
             logEntries = logEntries.slice(0, this.state.maxReturn);

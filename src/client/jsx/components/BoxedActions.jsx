@@ -69,7 +69,7 @@
         },
         getBoxes: function (boxTags, actions) {
             return boxTags.map( function (boxTag) {
-                var boxActions = _.filter(actions, function(action) { return action.tags.indexOf(boxTag) > -1; });
+                var boxActions = _.filter(actions, function(action) { return action.tags.indexOf(boxTag) > -1 && action.lastPerformed === null; });
 
                 return { 
                     box: boxTag, 
@@ -101,7 +101,9 @@
             boxesDom = this.state.boxes.map( function(box) {
 
                 var boxActions = box.actions;
-                boxActions = _.sortBy(boxActions, function(action){ return action.name.toLowerCase(); })
+                boxActions = _.sortBy(boxActions, function(action){ 
+                    return (action.ordinal === null ? '' : action.ordinal + '-') + action.name.toLowerCase(); 
+                });
 
                 if (boxActions.length === 0) {
                     return null;   

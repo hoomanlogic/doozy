@@ -34,8 +34,8 @@
               * Exclude boxed actions
               */ 
             var boxTags = _.filter(item.tags, function(tag) { return tag.slice(0,1) === '#'; });
-            if (boxTags.length > 0) {
-                return false;   
+            if (boxTags.length > 0 && item.ordinal !== 1) {
+                return false;
             }
 
             /**
@@ -90,7 +90,7 @@
                 var checked = 
                     (action.lastPerformed !== null && (action.nextDate === null || 
                                                        new Date(action.nextDate) > new Date()));
-                return (checked ? '1' : '0') + '-' + action.name.toLowerCase(); 
+                return (checked ? '1' : '0') + '-' + (action.ordinal === null ? '' : action.ordinal + '-') + action.name.toLowerCase(); 
             })
 
             /**

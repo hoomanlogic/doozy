@@ -41,6 +41,7 @@
                 durationDisplay: null,
                 dateInput: null, 
                 dateDisplay: null,
+                ordinal: null,
                 repeat: 'o',
                 repeatInterval: 1,
                 repeatSun: false,
@@ -151,6 +152,7 @@
                 durationDisplay: null,
                 dateInput: date, 
                 dateDisplay: null,
+                ordinal: editableCopy.ordinal,
                 mode: 'Edit',
                 repeat: 'o',
                 repeatInterval: 1,
@@ -330,11 +332,20 @@
                 this.state.repeatSat = event.target.checked;
             } else if (event.target === this.refs.ispublic.getDOMNode()) {
                 this.props.action.isPublic = event.target.checked;
+            } else if (event.target === this.refs.ordinal.getDOMNode()) {
+                var ord = null;
+                try {
+                    ord = parseInt(event.target.value);
+                } catch (e) {
+                    
+                }
+                this.setState({ordinal: ord});
             }
             this.setState({ 
                 action: this.props.action,
                 durationInput: this.state.durationInput,
                 durationDisplay: this.state.durationDisplay,
+                ordinal: ord,
                 repeat: this.state.repeat,
                 repeatInterval: this.state.repeatInterval,
                 repeatSun: this.state.repeatSun,
@@ -437,6 +448,7 @@
                 recurrenceRules.push(yearlyRule);
             }
             this.props.action.recurrenceRules = recurrenceRules;
+            this.props.action.ordinal = this.state.ordinal;
 
             // build next date
             if (this.props.action.nextDate !== null) {
@@ -571,6 +583,10 @@
                         <span>{this.state.dateDisplay}</span>
                     </div>
                     <div className="form-group">
+                        <label htmlFor="action-ordinal">What ordinal?</label>
+                        <input id="action-ordinal" ref="ordinal" type="number" className="form-control" value={this.state.ordinal} onChange={this.handleChange} />
+                    </div>
+                    <div className="form-group">
                         <label htmlFor="action-ispublic">Allow others to see this action?</label>
                         <input id="action-ispublic" ref="ispublic" type="checkbox" className="form-control" checked={isPublic} onChange={this.handleChange} />
                     </div>
@@ -583,7 +599,7 @@
                 return item.actionId === actionId;
             });
             
-            logEntries = _.sortBy(logEntries, function(item){ return item.date.split('T')[0] + '-' + (item.entry === 'performed' ? '1' : '0'); });
+            logEntries = _.sortBy(logEntries, function(item){ return item.date.split('T')[0] + '-' + (['performed','skipped'].indexOf(item.entry) > -1 ? '1' : '0'); });
             logEntries.reverse();
             
             return (
