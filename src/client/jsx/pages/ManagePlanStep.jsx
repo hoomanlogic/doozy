@@ -23,7 +23,7 @@
          *************************************************************/
         getInitialState: function () {
             if (this.props.isNew) {
-                
+
                 var steps = _.where(planStepStore.updates.value, { planId: this.props.planId, parentId: this.props.parentId });
                 var nextOrdinal = 1;
                 if (steps.length > 0) {

@@ -60,7 +60,7 @@
             
             // find log entries for this user
             var logEntries = _.where(logEntryStore.updates.value, {userName: userName});
-            logEntries = _.sortBy(logEntries, function (item) { return hlapp.getComparableLocalDateString(item.date) + '-' + (item.entry === 'performed' ? '1' : '0')});
+            logEntries = _.sortBy(logEntries, function (item) { return item.date.split('T')[0] + '-' + (item.entry === 'performed' ? '1' : '0')});
             logEntries.reverse();
             logEntries = logEntries.slice(0, this.state.maxReturn);
             

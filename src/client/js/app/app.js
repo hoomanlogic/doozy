@@ -1,7 +1,6 @@
 /**
  * 2015, HoomanLogic, Geoff Manning
  * Namespace: hlapp
- * Dependencies: toastr
  */
  
 if (typeof require !== 'undefined') {
@@ -32,24 +31,10 @@ if (typeof require !== 'undefined') {
         GOAL: '>',
         NEED: '$',
         BOX: '#'
-    }
+    };
     
     exports.TAG_PREFIX = TAG_PREFIX;
     exports.getFrequencyNoun = getFrequencyNoun;
-
-    exports.getComparableLocalDateString = function (jsonDate) {
-        var date = new Date(jsonDate);
-        var year = String(date.getYear() + 1900);
-        var month = String(date.getMonth() + 1);
-        var day = String(date.getDate());
-        if (month.length === 1) {
-            month = '0' + month;   
-        }
-        if (day.length === 1) {
-            day = '0' + day;   
-        }
-        return year + '-' + month + '-' + day;
-    };
 
     /**
      * Parses a tag string to an object
@@ -143,10 +128,15 @@ if (typeof require !== 'undefined') {
         if (!date) {
             return '';   
         }
-        var date1 = new Date(date.toLocaleDateString());
-        var date2 = new Date((new Date()).toLocaleDateString());
+        var date1 = date;
+        var date2 = new Date();
+        
+        date1.setHours(0,0,0,0);
+        date2.setHours(0,0,0,0);
+        
         var timeDiff = Math.abs(date2.getTime() - date1.getTime());
-        var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+        var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); // milliseconds in a second * seconds in an hour * hours in a day
+        
         if (date1 < date2) {
             if (diffDays === 0) {
                 return 'Today';

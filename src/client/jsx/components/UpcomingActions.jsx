@@ -42,13 +42,15 @@
             if (item.nextDate !== null) {
                 var time = new Date(item.nextDate);
                 var now = new Date();
+                time.setHours(0,0,0,0);
+                now.setHours(0,0,0,0);
                 var timeDiff = Math.abs(now.getTime() - time.getTime());
                 var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-                if (diffDays < 7) {
+                if (diffDays > 0 && diffDays < 7) {
                     return true;
                 }
             }
-            
+
             /**
              * Not an upcoming action
              */

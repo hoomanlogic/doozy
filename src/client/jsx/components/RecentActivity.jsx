@@ -79,7 +79,7 @@
                 return item.entry !== 'created' && actionIds.indexOf(item.actionId) > -1;
             });
             
-            logEntries = _.sortBy(logEntries, function(item){ return hlapp.getComparableLocalDateString(item.date) + '-' + (item.entry === 'performed' ? '1' : '0'); });
+            logEntries = _.sortBy(logEntries, function(item){ return item.date.split('T')[0] + '-' + (item.entry === 'performed' ? '1' : '0'); });
             logEntries.reverse();
 
             logEntries = logEntries.slice(0, this.state.maxReturn);
@@ -95,11 +95,24 @@
                 backgroundColor: '#444'
             };
             
+            var buttonStyle = {
+                paddingTop: '3px', 
+                paddingBottom: '3px', 
+                backgroundImage: 'none', 
+                color: '#444', 
+                backgroundColor: '#e2ff63', 
+                borderColor: '#e2ff63', 
+                fontWeight: 'bold', 
+                outlineColor: 'rgb(40, 40, 40)'  
+            };
+            
             // html
             return (
                 <div style={{ marginTop: '5px' }}>
-                    <div style={headerStyle}><span>Recent Activity</span><button type="button" style={{paddingTop: '3px', paddingBottom: '3px', backgroundImage: 'none', color: '#444', backgroundColor: '#e2ff63', borderColor: '#e2ff63', fontWeight: 'bold', outlineColor: 'rgb(40, 40, 40)' }} className="btn pull-right" onClick={ui.logAction}>Log a recent action</button></div>
-                    
+                    <div style={headerStyle}>
+                        <span>Recent Activity</span>
+                        <button type="button" style={buttonStyle} className="btn pull-right" onClick={ui.logAction}>Log a recent action</button>
+                    </div>
                     <div className={this.props.hidden ? 'hidden' : ''} style={{ backgroundColor: '#444' }}>
                         {logEntries.map(
                             function(item) {

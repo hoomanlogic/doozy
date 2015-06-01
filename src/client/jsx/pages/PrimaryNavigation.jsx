@@ -131,10 +131,22 @@
                     iconUri: null
                 };
                 
+                var menuItemStyle = {
+                    display: 'block',
+                    padding: '3px 5px',
+                    borderBottom: '1px solid #e0e0e0', 
+                    clear: 'both',
+                    fontWeight: '400',
+                    lineHeight: '1.42857143',
+                    color: '#333',
+                    whiteSpace: 'nowrap',
+                    cursor: 'pointer'
+                };
+                
                 menuItems.push((
                     <li key="newfocus" >
-                        <a onClick={this.handleFocusClick.bind(null, f)} style={{borderBottom: '1px solid #e0e0e0', paddingTop: '3px', paddingBottom: '3px'}}>
-                            <div className="focus">
+                        <a onClick={this.handleFocusClick.bind(null, f)} style={menuItemStyle}>
+                            <div>
                                 <div style={{display: 'inline', verticalAlign: 'inherit'}}>
                                     <i className="fa fa-eye fa-2x" style={{width: '50px'}}></i>
                                 </div>
@@ -146,7 +158,7 @@
             }
 
             return (
-                <DropdownMenu className="focus" style={{padding: '2px'}} buttonContent={button} menuItems={menuItems} />  
+                <DropdownMenu style={{padding: '2px', width: '50px'}} buttonContent={button} menuItems={menuItems} />  
             );
         },
         renderConnectionsDropDownMenu: function () {

@@ -583,24 +583,8 @@
                 return item.actionId === actionId;
             });
             
-            logEntries = _.sortBy(logEntries, function(item){ return hlapp.getComparableLocalDateString(item.date) + '-' + (item.entry === 'performed' ? '1' : '0'); });
+            logEntries = _.sortBy(logEntries, function(item){ return item.date.split('T')[0] + '-' + (item.entry === 'performed' ? '1' : '0'); });
             logEntries.reverse();
-            
-            
-//            <table className="table table-striped">
-//                        <tbody>                        
-//                            {this.props.action.logEntries.map(function(item, index) {
-//                                return (
-//                                    <tr key={item.id}>
-//                                        <td width="70px">{item.entry.slice(0,1).toUpperCase() + item.entry.slice(1)}</td>
-//                                        <td width="80px" style={{textAlign: 'right'}} >{item.date.toLocaleDateString()}</td>
-//                                        <td width="40px">{item.duration > 0 ? new babble.Duration(item.duration * 60000).toString(':') : ''}</td>
-//                                        <td><ContentEditable id={item.id} html={item.details} onChange={this.handlers.detailsChange} /></td>
-//                                    </tr>
-//                                );
-//                            }.bind(this))}
-//                        </tbody>
-//                    </table>
             
             return (
                 <div>

@@ -53,11 +53,31 @@
             var data = this.props.data;
             var latestDate = new Date(data.latestEntry.date);
 
+            var menuItemStyle = {
+                display: 'block',
+                padding: '3px 5px',
+                borderBottom: '1px solid #e0e0e0', 
+                clear: 'both',
+                fontWeight: '400',
+                lineHeight: '1.42857143',
+                color: '#333',
+                whiteSpace: 'nowrap',
+                cursor: 'pointer'
+            };
+            
+            var imageStyle = {
+                maxHeight: '50px',
+                width: '50px',
+                paddingRight: '5px',
+                display: 'inline', 
+                verticalAlign: 'inherit'
+            };
+
             return (
                 <li key={data.id}>
-                    <a onClick={this.handleFocusClick.bind(null, data)} style={{borderBottom: '1px solid #e0e0e0', paddingTop: '3px', paddingBottom: '3px'}}>
-                        <div className="focus">
-                            <img style={{display: 'inline', verticalAlign: 'inherit'}} src={data.iconUri} />
+                    <a onClick={this.handleFocusClick.bind(null, data)} style={menuItemStyle}>
+                        <div>
+                            <img style={imageStyle} src={data.iconUri} />
                             <div style={{display: 'inline-block', verticalAlign: 'top'}}>
                                 <div>{this.calcFocusTitle(data)}</div>
                                 <div style={{fontSize: '14px'}}>{'last acted '}<RelativeTime accuracy="d" isoTime={latestDate} /></div>
