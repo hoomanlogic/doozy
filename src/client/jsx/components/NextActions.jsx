@@ -34,7 +34,7 @@
               * Exclude boxed actions
               */ 
             var boxTags = _.filter(item.tags, function(tag) { return tag.slice(0,1) === '#'; });
-            if (boxTags.length > 0 && item.ordinal !== 1) {
+            if (boxTags.length > 0) {
                 return false;
             }
 

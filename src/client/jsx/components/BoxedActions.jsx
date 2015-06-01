@@ -109,7 +109,7 @@
                     return null;   
                 }
 
-                var list = null;
+                var list = null, nextInQueue = '';
                 if (box.expanded) {
                     list = (
                         <table className="table table-striped">
@@ -127,6 +127,10 @@
                         </table>  
                     );
                 }
+                                            
+                if (boxActions[0].ordinal === 1) {
+                    nextInQueue = ': ' + boxActions[0].name;
+                }
 
                 return (
                     <div key={box.box.substring(1)}>
@@ -134,16 +138,28 @@
                             style={headerStyle} 
                             onClick={this.handleBoxTitleClick.bind(null, box)}>
                             <i className={box.expanded ? 'fa fa-dropbox' : 'fa fa-cube'}></i>
-                            <span>{box.box.substring(1)}</span>
+                            <span>{box.box.substring(1) + nextInQueue}</span>
                         </div>
                         {list}
-                    </div> 
+                    </div>
                 );
             }.bind(this));
+
+            var headerStyle = { 
+                color: '#e2ff63', 
+                backgroundColor: '#444', 
+                padding: '2px 2px 0 8px',
+                fontWeight: 'bold',
+                fontSize: '1.5em'
+            };
+
             // html
             return (
                 <div>
-                {boxesDom}
+                    <div style={headerStyle}>
+                        <span>Boxed Actions</span>
+                    </div>
+                    {boxesDom}
                 </div>
             );
         }
