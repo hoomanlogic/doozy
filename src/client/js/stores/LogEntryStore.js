@@ -209,7 +209,7 @@
             Object.assign(logEntryToUpdate, logEntry);
             me.notify();
         
-            ui.queueRequest('Updated log entry for ' + logEntryToUpdate.actionName, function () {
+            ui.queueRequest('Log Entry', logEntry.id, 'Updated log entry for ' + logEntryToUpdate.actionName, function () {
                 _api.putLogEntry(logEntry)
                 .done(function (result) {
                     Object.assign(logEntryToUpdate, result);
@@ -238,7 +238,7 @@
             me.updates.value = filtered;
             me.notify();
             
-            ui.queueRequest('Deleted log entry for ' + logEntry.actionName, function () {
+            ui.queueRequest('Log Entry', logEntry.id, 'Deleted log entry for ' + logEntry.actionName, function () {
                 _api.deleteLogEntry(logEntry)
                 .done( function (result) {
 

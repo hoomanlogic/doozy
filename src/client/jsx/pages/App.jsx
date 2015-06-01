@@ -230,12 +230,25 @@
         /*************************************************************
          * MISC
          *************************************************************/
-        queueRequest: function (msg, fn, fnUndo, ms) {
+        queueRequest: function (entityType, entityId, msg, fn, fnUndo, ms) {
             var uuid = hlcommon.uuid();
             if (typeof ms === 'undefined') {
                 ms = 30000;   
             }
+            
+            var processRequests = _.where(this.state.requests, {entityId: entityId, entityType: entityType});
+            processRequests.forEach(function (item) {
+                item.fn();
+                clearTimeout(item.timeoutId);   
+            });
+            
+            var requests = _.reject(this.state.requests, function (item) {
+                return item.entityId === entityId && item.entityType === entityType;
+            });
+            
             var request = {
+                entityType: entityType, 
+                entityId: entityId,
                 id: uuid,
                 timeoutId: setTimeout(function () {
                     this.processRequest(fn, uuid);
@@ -245,8 +258,8 @@
                 onUndo: fnUndo
             };
             
-            this.state.requests.push(request);
-            this.setState({requests: this.state.requests.slice()});
+            requests.push(request);
+            this.setState({requests: requests});
             toastr.info(msg);
         },
         processRequest: function (fn, id) {

@@ -93,7 +93,7 @@ var PlanStepStore = function () {
         var filtered = updates.value.filter( function (item) { return item.id !== planStep.id; });
         updates.onNext(filtered);
         
-        ui.queueRequest('Deleted plan step ' + planStep.name, function () {
+        ui.queueRequest('Plan Step', planStep.id, 'Deleted plan step ' + planStep.name, function () {
             _api.deletePlanStep(planStep)
             .done( function () {
                 hlio.saveLocal('hl.' + user + '.plansteps', updates.value, secret);
@@ -121,7 +121,7 @@ var PlanStepStore = function () {
         Object.assign(planStepToSave, planStep);
         updates.onNext(updates.value);
         
-        ui.queueRequest('Updated plan step ' + planStepToSave.name, function () {
+        ui.queueRequest('Plan Step', planStep.id, 'Updated plan step ' + planStepToSave.name, function () {
             _api.putPlanStep(planStepToSave)
             .done(function (result) {
                 Object.assign(planStepToSave, result);

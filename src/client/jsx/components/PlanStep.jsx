@@ -210,12 +210,27 @@
                     <PlanStep planId={this.props.planId} data={this.calculateNewStep()} level={this.props.level + 1} />
                 ));
             }
-
+            
+            if (this.props.data.status === 'Done') {
+                var nameStyle = {
+                    textDecoration: 'line-through',
+                    backgroundColor: 'rgb(255, 163, 163)'
+                };
+            } else if (this.props.data.status === 'Doing') {
+                var nameStyle = {
+                    backgroundColor: '#FFF086'
+                };
+            } else if (this.props.data.status === 'Ready') {
+                var nameStyle = {
+                    backgroundColor: '#E2FF63'
+                };
+            }
+                
             return (
                 <li key={this.props.data.id} style={Object.assign({}, listItemStyle, childStepsStyles[this.props.level])}>
                     <div className="clickable" onClick={this.handleCardClick}>
                         <div style={Object.assign({}, stepStyles[this.props.level], {padding: '5px', margin: '5px'}, (this.props.data.hasOwnProperty('isNew') && this.props.data.isNew ? newStepStyle : null))}>
-                            <span>{this.props.data.name}</span>
+                            <span style={nameStyle}>{this.props.data.name}</span>
                         </div>
                     </div>
                     <ul style={{listStyle: 'none', padding: '0', margin: '0'}}>

@@ -93,7 +93,7 @@ var TagStore = function () {
         var filtered = updates.value.filter( function (item) { return item.id !== tag.id; });
         updates.onNext(filtered);
         
-        ui.queueRequest('Deleted tag ' + tag.name, function () {
+        ui.queueRequest('Tag', tag.id, 'Deleted tag ' + tag.name, function () {
             _api.deleteTag(tag)
             .done( function () {
                 hlio.saveLocal('hl.' + user + '.tags', updates.value, secret);
@@ -121,7 +121,7 @@ var TagStore = function () {
         Object.assign(tagToSave, tag);
         updates.onNext(updates.value);
         
-        ui.queueRequest('Updated tag ' + tagToSave.name, function () {
+        ui.queueRequest('Tag', tag.id, 'Updated tag ' + tagToSave.name, function () {
             _api.putTag(tagToSave)
             .done(function (result) {
                 Object.assign(tagToSave, result);

@@ -102,8 +102,14 @@
             var button = null;
             if (typeof currentFocus !== 'undefined' && currentFocus !== null) { 
 
+                var imageStyle = {
+                    width: '50px',
+                    display: 'inline-block',
+                    paddingRight: '5px'
+                };
+                
                 button = (
-                    <div className="focus"><img src={currentFocus.iconUri} title={currentFocus.kind + ': ' + currentFocus.name} /></div>
+                    <div><img style={imageStyle} src={currentFocus.iconUri} title={currentFocus.kind + ': ' + currentFocus.name} /></div>
                 );
             }
 

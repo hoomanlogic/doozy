@@ -93,7 +93,7 @@ var ActionStore = function () {
         var filtered = updates.value.filter( function (item) { return item.id !== action.id; });
         updates.onNext(filtered);
         
-        ui.queueRequest('Deleted action ' + action.name, function () {
+        ui.queueRequest('Action', action.id, 'Deleted action ' + action.name, function () {
             _api.deleteAction(action)
             .done( function () {
                 hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
@@ -121,7 +121,7 @@ var ActionStore = function () {
         Object.assign(actionToSave, action);
         updates.onNext(updates.value);
         
-        ui.queueRequest('Updated action ' + actionToSave.name, function () {
+        ui.queueRequest('Action', action.id, 'Updated action ' + actionToSave.name, function () {
             _api.putAction(actionToSave)
             .done(function (result) {
                 Object.assign(actionToSave, result);

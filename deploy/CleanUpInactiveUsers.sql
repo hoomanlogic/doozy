@@ -1,3 +1,6 @@
+	use hoomanlogic
+	go
+	
 	--Active Users
 	select distinct a.Id, a.UserName from AspNetUsers a inner join Actions t on a.Id = t.UserId
 
@@ -13,5 +16,9 @@
 	delete from dbo.Preferences where UserId not in (select distinct a.Id from AspNetUsers a inner join Actions t on a.Id = t.UserId)
 	go
 	delete from dbo.Tags where UserId not in (select distinct a.Id from AspNetUsers a inner join Actions t on a.Id = t.UserId)
+	go
+	delete from dbo.[Messages] where 
+		UserId_To not in (select distinct a.Id from AspNetUsers a inner join Actions t on a.Id = t.UserId)
+		or UserId_From not in (select distinct a.Id from AspNetUsers a inner join Actions t on a.Id = t.UserId)
 	go
 	delete from dbo.AspNetUsers where Id not in (select distinct a.Id from AspNetUsers a inner join Actions t on a.Id = t.UserId)
