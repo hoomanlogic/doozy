@@ -151,7 +151,7 @@
             this.initializeSignalR();
             
             if (window && window.history) {
-                window.history.replaceState({ page: this.state.page, pageOptions: this.state.pageOptions });
+                window.history.replaceState({ page: this.state.page, pageOptions: this.state.pageOptions }, 'Doozy');
                 window.onpopstate = this.handleBrowserStateChange;
             }
             
@@ -164,21 +164,24 @@
             }, this.props.settings.userId);
 
             if (window && window.history && window.history.state && window.history.state.page && this.state.page !== window.history.state.page) {
-                window.history.pushState({ page: this.state.page, pageOptions: this.state.pageOptions });   
+                window.history.pushState({ page: this.state.page, pageOptions: this.state.pageOptions }, 'Doozy');   
             }
         },
 
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
-        handleBeforeUnload: function () {
+        handleBeforeUnload: function (e) {
             this.state.requests.forEach(function (item) {
                 this.forceRequest(item.timeoutId);
             }.bind(this));
+            
+            (e || window.event).returnValue = null;
+            return null;
         },
-        handleBrowserStateChange: function (event) {
-            if (event.state && event.state.page) {
-                this.setState({ page: event.state.page, pageOptions: event.state.pageOptions || null });   
+        handleBrowserStateChange: function (e) {
+            if (e.state && e.state.page) {
+                this.setState({ page: e.state.page, pageOptions: e.state.pageOptions || null });   
             }
         },
         handleCancelClick: function () {
@@ -344,10 +347,10 @@
             }
         },
         goBack: function (page) {
-//            if (window.history && window.history.back()) {
-//                window.history.back();
-//            }
-            ui.goTo('Do');
+            if (window.history && window.history.back) {
+                window.history.back();
+            }
+            //ui.goTo('Do');
         },
         openConversation: function (userName) {
             var conversations = this.state.conversations;

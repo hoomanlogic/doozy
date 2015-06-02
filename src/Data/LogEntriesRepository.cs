@@ -37,27 +37,6 @@ namespace HoomanLogic.Data
             }
         }
 
-        //public static LogEntryModel Get(string userId, Guid id)
-        //{
-        //    using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())
-        //    {
-        //        var model = db.LogEntries.Where(c => c.Id == id).Select(row => new LogEntryModel()
-        //        {
-        //            Id = row.Id,
-        //            Date = row.Date,
-        //            ActionId = row.ActionId,
-        //            ActionName = row.Action.Name,
-        //            Details = row.Details,
-        //            Duration = row.Duration,
-        //            Entry = row.Entry
-
-        //        }).FirstOrDefault();
-
-        //        return model;
-        //    }
-        //}
-
-
         public static List<LogEntryModel> Get(string userId)
         {
             using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())
@@ -172,9 +151,6 @@ namespace HoomanLogic.Data
                         return new LogEntryChanges() { Id = row.Id, NextDate = action.NextDate.HasValue ? action.NextDate : DateTime.MinValue };
                     }
                 }
-
-
-                
 
                 return new LogEntryChanges() { Id = row.Id, NextDate = null };
             }
@@ -361,7 +337,6 @@ namespace HoomanLogic.Data
                 db.SaveChanges();
             }
         }
-
         #endregion
     }
 }

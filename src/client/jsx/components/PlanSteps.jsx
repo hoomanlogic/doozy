@@ -52,7 +52,7 @@
             this.setState({ planStepsLastUpdated: (new Date()).toISOString() });
         },
         handleCloseClick: function () {
-            ui.goTo('Manage Plans');
+            ui.goBack();
         },
         
         calculateNewStep: function () {

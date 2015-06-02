@@ -49,6 +49,9 @@
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
+        handleCloseClick: function () {
+            ui.goBack();  
+        },
         handleLogEntryStoreUpdate: function (connections) {
             this.setState({logEntriesLastUpdated: new Date().toISOString()});
         },
@@ -64,13 +67,32 @@
             logEntries.reverse();
             logEntries = logEntries.slice(0, this.state.maxReturn);
             
+            /**
+             * Inline Styles
+             */
+            var headerStyle = {
+                display: 'flex',
+                flexDirection: 'row',
+                color: '#e2ff63', 
+                backgroundColor: '#444', 
+                padding: '2px 2px 0 8px',
+                fontWeight: 'bold',
+                fontSize: '1.5em'
+            };
+            
             return (
-                <div className={this.props.hidden ? 'hidden' : ''} style={{ backgroundColor: '#444', padding: '5px' }}>
-                    {logEntries.map(
-                        function(item) {
-                            return (<LogEntryBox data={item} />);
-                        }.bind(this)
-                    )}
+                <div>
+                    <div style={headerStyle}>
+                        <div style={{flexGrow: '1'}}>{userName}</div>
+                        <div style={{paddingRight: '5px'}}><button type="button" className="close" onClick={this.handleCloseClick}><span aria-hidden="true">&times;</span></button></div>
+                    </div>
+                    <div className={this.props.hidden ? 'hidden' : ''} style={{ backgroundColor: '#444', padding: '5px' }}>
+                        {logEntries.map(
+                            function(item) {
+                                return (<LogEntryBox data={item} />);
+                            }.bind(this)
+                        )}
+                    </div>
                 </div>
             );
         }

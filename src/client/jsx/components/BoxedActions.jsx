@@ -42,10 +42,10 @@
             for (var i = 0; i < this.state.boxes.length; i++) {
                 boxTags.push(this.state.boxes[i].box);
             }
-            if (nextBoxTags.sort().join(',') !== boxTags.sort().join(',') || nextProps.actions.length !== this.props.actions.length) {
-                var nextBoxes = this.getBoxes(nextBoxTags, nextProps.actions);
-                this.setState({ boxes: nextBoxes });
-            }
+            //if (nextBoxTags.sort().join(',') !== boxTags.sort().join(',') || nextProps.actions.length !== this.props.actions.length) {
+            var nextBoxes = this.getBoxes(nextBoxTags, nextProps.actions);
+            this.setState({ boxes: nextBoxes });
+            //}
         },
 
         /*************************************************************
@@ -70,7 +70,7 @@
         getBoxes: function (boxTags, actions) {
             return boxTags.map( function (boxTag) {
                 var boxActions = _.filter(actions, function(action) { return action.tags.indexOf(boxTag) > -1 && action.lastPerformed === null; });
-
+                boxActions = _.sortBy(boxActions, function (action) { return action.name.toLowerCase(); });
                 return { 
                     box: boxTag, 
                     actions: boxActions,
