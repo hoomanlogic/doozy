@@ -251,6 +251,7 @@ if (typeof require !== 'undefined') {
         var dateIso = new Date().toISOString();
         
         return {
+            isNew: true,
             id: hlcommon.uuid(),
             created: dateIso,
             name: 'New Target',

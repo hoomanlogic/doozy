@@ -69,7 +69,7 @@
             /**
              * Sort the actions by completed and name
              */
-            targets = _.sortBy(targets, function(tag){ 
+            targets = _.sortBy(targets, function(target){ 
                 return target.name.toLowerCase();
             })
             targets.reverse();

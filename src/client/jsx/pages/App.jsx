@@ -640,7 +640,7 @@
                 page = (<ManageTargets />);
             } else if (this.state.page === 'Manage Target') {
                 targetId = (this.state.pageOptions || {}).targetId || null;
-                page = (<ManageTarget targetId={planId} />);
+                page = (<ManageTarget targetId={targetId} />);
             } else if (this.state.page === 'Plan View') {
                 planId = (this.state.pageOptions || {}).planId || null;
                 page = (<PlanSteps planId={planId} />);

@@ -32,7 +32,9 @@
             
             return {
                 id: target.id,
+                name: target.name,
                 entityType: target.entityType,
+                entityId: target.entityId,
                 period: target.period,
                 measure: target.measure,
                 multiplier: target.multiplier,
@@ -67,7 +69,9 @@
             
             this.setState({
                 id: target.id,
+                name: target.name,
                 entityType: target.entityType,
+                entityId: target.entityId,
                 period: target.period,
                 measure: target.measure,
                 multiplier: target.multiplier,
@@ -82,7 +86,9 @@
             ui.goBack();
         },
         handleChange: function (event) {
-            if (event.target === this.refs.entityType.getDOMNode()) {
+            if (event.target === this.refs.name.getDOMNode()) {
+                this.setState({name: event.target.value});
+            } else if (event.target === this.refs.entityType.getDOMNode()) {
                 this.setState({entityType: event.target.value});
             } else if (event.target === this.refs.measure.getDOMNode()) {
                 this.setState({measure: parseInt(event.target.value)});
@@ -100,7 +106,20 @@
             targetStore.destroy(target);
         },
         handleSaveClick: function () {
-            targetStore.update(this.state);
+            var entity = this.refs.entity.getDOMNode().value;
+            if (this.state.entityType === 'Tag') {
+                entity = _.find(tagStore.updates.value, function (tag) {
+                     return (hlapp.TAG_PREFIX[tag.kind.toUpperCase()] + tag.name) === entity;
+                });
+            } else if (this.state.entityType === 'Action') {
+                entity = actionStore.getActionByName(entity);
+            }
+            this.state.entityId = entity.id;
+            if (this.state.isNew) {
+                targetStore.create(this.state);
+            } else {
+                targetStore.update(this.state);
+            }
             ui.goBack();
         },
         
@@ -125,6 +144,12 @@
                     name: action.name
                 });
             });
+            
+            // set current value
+            if (this.state.entityId) {
+                var action = actionStore.getActionById(this.state.entityId);
+                selectize.setValue(action.name);
+            }
         },
         setOptionsTag: function (selectize) {
             // clear previously set options
@@ -145,6 +170,12 @@
                     value: hlapp.TAG_PREFIX[tag.kind.toUpperCase()] + tag.name,
                 });
             });
+            
+            // set current value
+            if (this.state.entityId) {
+                var tag = tagStore.getTagById(this.state.entityId);
+                selectize.setValue(hlapp.TAG_PREFIX[tag.kind.toUpperCase()] + tag.name);
+            }
         },
         setupActionsControl: function () {
             $(this.refs.entity.getDOMNode()).selectize({
@@ -258,6 +289,10 @@
             return (
                 <div style={{padding: '5px'}}>
                     <form role="form">
+                        <div className="form-group">
+                            <label htmlFor="target-name">Name</label>
+                            <input id="target-name" ref="name" type="text" className="form-control" placeholder="Name of target" value={this.state.name} onChange={this.handleChange} />
+                        </div>
                         <div className="form-group">
                             <label htmlFor="target-entitytype">What kind of target is this?</label>
                             <select id="target-entitytype" ref="entityType" className="form-control" value={this.state.entityType} onChange={this.handleChange}>
