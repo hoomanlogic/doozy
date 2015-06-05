@@ -100,11 +100,12 @@
             userStore.init(this.props.settings.userName, this.props.settings.userId);
             actionStore.init(this.props.settings.userName, this.props.settings.userId);
             focusStore.init(this.props.settings.userName, this.props.settings.userId);
-            weatherStore.init(this.props.settings.userName, this.props.settings.userId);
             logEntryStore.init(this.props.settings.userName, this.props.settings.userId);
-            tagStore.init(this.props.settings.userName, this.props.settings.userId);
             planStore.init(this.props.settings.userName, this.props.settings.userId);
             planStepStore.init(this.props.settings.userName, this.props.settings.userId);
+            tagStore.init(this.props.settings.userName, this.props.settings.userId);
+            targetStore.init(this.props.settings.userName, this.props.settings.userId);
+            weatherStore.init(this.props.settings.userName, this.props.settings.userId);
             
             connectionStore.getConnections();
 
@@ -176,8 +177,8 @@
                 this.forceRequest(item.timeoutId);
             }.bind(this));
             
-            (e || window.event).returnValue = null;
-            return null;
+            //(e || window.event).returnValue = null;
+            //return null;
         },
         handleBrowserStateChange: function (e) {
             if (e.state && e.state.page) {
@@ -596,9 +597,10 @@
             window['ui'].page = this.state.page;
             
             //var weatherBackdrop = this.renderWeatherBackdrop();
-            var action, actionId, mode, planId;
+            var action, mode, actionId, planId, tagId, targetId;
             
-            var page = null, hideMain = true, additional;
+            var page = null,
+                hideMain = true;
             if (this.state.page === 'Focus Management') {
                 page = (<ManageFocus currentFocus={this.state.currentFocus || focusStore.updates.value[0]} />);
             } else if (this.state.page === 'Preferences') {
@@ -624,17 +626,21 @@
                 page = (<LogEntries userName={this.state.pageOptions.userName} />);
             } else if (this.state.page === 'Comment' && this.state.pageOptions && this.state.pageOptions.userName && this.state.pageOptions.id) {
                 page = (<CommentForm userName={this.state.pageOptions.userName} articleId={this.state.pageOptions.id} />);
-                additional = (<LogEntries userName={this.state.pageOptions.userName} />);
             } else if (this.state.page === 'Manage Tags') {
                 page = (<ManageTags />);
             } else if (this.state.page === 'Manage Tag') {
-                var tagId = (this.state.pageOptions || {}).tagId || null;
+                tagId = (this.state.pageOptions || {}).tagId || null;
                 page = (<ManageTag tagId={tagId} />);
             } else if (this.state.page === 'Manage Plans') {
                 page = (<ManagePlans />);
             } else if (this.state.page === 'Manage Plan') {
                 planId = (this.state.pageOptions || {}).planId || null;
                 page = (<ManagePlan planId={planId} />);
+            } else if (this.state.page === 'Manage Targets') {
+                page = (<ManageTargets />);
+            } else if (this.state.page === 'Manage Target') {
+                targetId = (this.state.pageOptions || {}).targetId || null;
+                page = (<ManageTarget targetId={planId} />);
             } else if (this.state.page === 'Plan View') {
                 planId = (this.state.pageOptions || {}).planId || null;
                 page = (<PlanSteps planId={planId} />);

@@ -17,12 +17,17 @@ namespace HoomanLogic.Data
                 var models = db.Targets.Where(c => c.UserId == userId).Select(row => new TargetModel()
                 {
                     Id = row.Id,
-                    TagName = row.Tag.Name,
-                    Kind = row.Kind,
-                    Goal = row.Goal,
-                    Timeline = row.Timeline,
-                    Enlist = row.Enlist,
-                    Retire = row.Retire
+                    Name = row.Name,
+                    EntityType = row.EntityType,
+                    EntityId = row.EntityId.Value,
+                    Measure = row.Measure,
+                    Number = row.Number,
+                    Created = row.Created,
+                    Retire = row.Retire,
+                    Starts = row.Starts,
+                    Period = row.Period,
+                    Multiplier = row.Multiplier,
+                    RetireWhenMet = row.RetireWhenMet
                 }).ToList();
 
                 return models;
@@ -36,12 +41,17 @@ namespace HoomanLogic.Data
                 var model = db.Targets.Where(c => c.Id == id).Select(row => new TargetModel()
                 {
                     Id = row.Id,
-                    TagName = row.Tag.Name,
-                    Kind = row.Kind,
-                    Goal = row.Goal,
-                    Timeline = row.Timeline,
-                    Enlist = row.Enlist,
-                    Retire = row.Retire
+                    Name = row.Name,
+                    EntityType = row.EntityType,
+                    EntityId = row.EntityId.Value,
+                    Measure = row.Measure,
+                    Number = row.Number,
+                    Created = row.Created,
+                    Retire = row.Retire,
+                    Starts = row.Starts,
+                    Period = row.Period,
+                    Multiplier = row.Multiplier,
+                    RetireWhenMet = row.RetireWhenMet
                 }).FirstOrDefault();
 
                 return model;
@@ -50,20 +60,23 @@ namespace HoomanLogic.Data
 
         public static dynamic Add(string userId, Models.TargetModel model)
         {
-            Guid tagId = TagsRepository.Get(userId, model.TagName).Id;
-
             using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())
             {
                 ef.Target row = new ef.Target()
                 {
                     UserId = userId,
                     Id = Guid.NewGuid(),
-                    TagId = tagId,
-                    Kind = model.Kind,
-                    Goal = model.Goal,
-                    Timeline = model.Timeline,
-                    Enlist = model.Enlist,
-                    Retire = model.Retire
+                    Name = model.Name,
+                    EntityType = model.EntityType,
+                    EntityId = model.EntityId,
+                    Measure = model.Measure,
+                    Number = model.Number,
+                    Created = model.Created,
+                    Retire = model.Retire,
+                    Starts = model.Starts,
+                    Period = model.Period,
+                    Multiplier = model.Multiplier,
+                    RetireWhenMet = model.RetireWhenMet
                 };
 
                 db.Targets.Add(row);
@@ -81,13 +94,17 @@ namespace HoomanLogic.Data
             {
                 // sync this model along with all children and related 
                 ef.Target row = db.Targets.Where(r => r.Id == model.Id).First();
-
-                row.TagId = db.Tags.Where(r => r.UserId == userId && r.Name == model.TagName).First().Id;
-                row.Kind = model.Kind;
-                row.Goal = model.Goal;
-                row.Timeline = model.Timeline;
-                row.Enlist = model.Enlist;
+                row.Name = model.Name;
+                row.EntityType = model.EntityType;
+                row.EntityId = model.EntityId;
+                row.Measure = model.Measure;
+                row.Number = model.Number;
+                row.Created = model.Created;
                 row.Retire = model.Retire;
+                row.Starts = model.Starts;
+                row.Period = model.Period;
+                row.Multiplier = model.Multiplier;
+                row.RetireWhenMet = model.RetireWhenMet;
 
                 // persist changes
                 db.SaveChanges();

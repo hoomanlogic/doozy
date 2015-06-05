@@ -25,9 +25,6 @@
         <AssociationConnector Association="hoomanlogicModel.FK_Connections_Personas2" />
         <EntityTypeShape EntityType="hoomanlogicModel.Tag" Width="1.5" PointX="5.875" PointY="5" />
         <AssociationConnector Association="hoomanlogicModel.FK_Tags_Users" />
-        <EntityTypeShape EntityType="hoomanlogicModel.Target" Width="1.5" PointX="8.125" PointY="4.625" />
-        <AssociationConnector Association="hoomanlogicModel.FK_Targets_Users" />
-        <AssociationConnector Association="hoomanlogicModel.FK_Targets_Tags" />
         <EntityTypeShape EntityType="hoomanlogicModel.Focus" Width="1.5" PointX="5.875" PointY="13.25" />
         <AssociationConnector Association="hoomanlogicModel.FK_Focuses_User" />
         <EntityTypeShape EntityType="hoomanlogicModel.Preference" Width="1.5" PointX="5.875" PointY="17.375" />
@@ -47,6 +44,8 @@
         <EntityTypeShape EntityType="hoomanlogicModel.PlanStep" Width="1.5" PointX="11.25" PointY="13.375" />
         <AssociationConnector Association="hoomanlogicModel.FK_Plans_Users" />
         <AssociationConnector Association="hoomanlogicModel.FK_Plans_Focuses" />
+        <EntityTypeShape EntityType="hoomanlogicModel.Target" Width="1.5" PointX="9" PointY="5.375" />
+        <AssociationConnector Association="hoomanlogicModel.FK_Targets_Users" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

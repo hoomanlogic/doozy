@@ -35,7 +35,6 @@ namespace HoomanLogic.Data.Ef
         public virtual DbSet<ConnectionRequest> ConnectionRequests { get; set; }
         public virtual DbSet<Connection> Connections { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
-        public virtual DbSet<Target> Targets { get; set; }
         public virtual DbSet<Focus> Focuses { get; set; }
         public virtual DbSet<Preference> Preferences { get; set; }
         public virtual DbSet<Attachment> Attachments { get; set; }
@@ -43,5 +42,6 @@ namespace HoomanLogic.Data.Ef
         public virtual DbSet<Action> Actions { get; set; }
         public virtual DbSet<Plan> Plans { get; set; }
         public virtual DbSet<PlanStep> PlanSteps { get; set; }
+        public virtual DbSet<Target> Targets { get; set; }
     }
 }

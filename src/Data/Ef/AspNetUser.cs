@@ -24,12 +24,12 @@ namespace HoomanLogic.Data.Ef
             this.Connections = new HashSet<Connection>();
             this.Connections1 = new HashSet<Connection>();
             this.Tags = new HashSet<Tag>();
-            this.Targets = new HashSet<Target>();
             this.Focuses = new HashSet<Focus>();
             this.Attachments = new HashSet<Attachment>();
             this.LogEntryPeanuts = new HashSet<LogEntryPeanut>();
             this.Actions = new HashSet<Action>();
             this.Plans = new HashSet<Plan>();
+            this.Targets = new HashSet<Target>();
         }
     
         public string Id { get; set; }
@@ -54,12 +54,12 @@ namespace HoomanLogic.Data.Ef
         public virtual ICollection<Connection> Connections { get; set; }
         public virtual ICollection<Connection> Connections1 { get; set; }
         public virtual ICollection<Tag> Tags { get; set; }
-        public virtual ICollection<Target> Targets { get; set; }
         public virtual ICollection<Focus> Focuses { get; set; }
         public virtual Preference Preference { get; set; }
         public virtual ICollection<Attachment> Attachments { get; set; }
         public virtual ICollection<LogEntryPeanut> LogEntryPeanuts { get; set; }
         public virtual ICollection<Action> Actions { get; set; }
         public virtual ICollection<Plan> Plans { get; set; }
+        public virtual ICollection<Target> Targets { get; set; }
     }
 }

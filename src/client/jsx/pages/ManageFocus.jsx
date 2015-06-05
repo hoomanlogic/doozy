@@ -48,7 +48,7 @@
          * EVENT HANDLING
          *************************************************************/
         handleCancelClick: function () {
-            ui.goTo('Do');
+            ui.goBack();
         },
         handleChange: function (event) {
             if (event.target === this.refs.name.getDOMNode()) {

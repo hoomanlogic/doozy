@@ -41,6 +41,9 @@
         
         componentWillReceiveProps: function (nextProps) {
             var tag = _.find(tagStore.updates.value, { id: nextProps.tagId });
+            if (!tag) {
+                return;   
+            }
             this.setState({
                 id: tag.id,
                 name: tag.name,
@@ -53,7 +56,7 @@
          * EVENT HANDLING
          *************************************************************/
         handleCancelClick: function () {
-            ui.goTo('Manage Tags');
+            ui.goBack();
         },
         handleChange: function (event) {
             if (event.target === this.refs.name.getDOMNode()) {
@@ -66,12 +69,12 @@
         },
         handleDeleteClick: function () {
             var tag = _.find(tagStore.updates.value, { id: this.props.tagId });
-            ui.goTo('Manage Tags');
+            ui.goBack();
             tagStore.destroy(tag);
         },
         handleSaveClick: function () {
             tagStore.update(this.state);
-            ui.goTo('Manage Tags');
+            ui.goBack();
         },
         
         /*************************************************************

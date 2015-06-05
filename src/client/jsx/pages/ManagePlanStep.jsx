@@ -76,6 +76,9 @@
         
         componentWillReceiveProps: function (nextProps) {
             var planStep = _.find(planStepStore.updates.value, { id: nextProps.planStepId });
+            if (!planStep) {
+                return;   
+            }
             var durationParse = babble.get('durations').translate((planStep.duration || 0) + ' min');
             if (durationParse.tokens.length === 0) {
                 var durationInput = null;
@@ -102,7 +105,7 @@
          * EVENT HANDLING
          *************************************************************/
         handleCancelClick: function () {
-            ui.goTo('Plan View', { planId: this.props.planId });
+            ui.goBack();
         },
         handleChange: function (event) {
             if (event.target === this.refs.name.getDOMNode()) {
@@ -144,7 +147,7 @@
         },
         handleDeleteClick: function () {
             var plan = _.find(planStore.updates.value, { id: this.props.planId });
-            ui.goTo('Plan View', { planId: this.props.planId });
+            ui.goBack();
             planStepStore.destroy(this.state);
         },
         handleSaveClick: function () {
@@ -153,7 +156,7 @@
             } else {
                 planStepStore.update(this.state);
             }
-            ui.goTo('Plan View', { planId: this.props.planId });
+            ui.goBack();
         },
         
         /*************************************************************

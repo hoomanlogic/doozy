@@ -55,7 +55,7 @@
          * EVENT HANDLING
          *************************************************************/
         handleCancelClick: function () {
-            ui.goTo('Manage Plans');
+            ui.goBack();
         },
         handleChange: function (event) {
             if (event.target === this.refs.name.getDOMNode()) {
@@ -70,12 +70,12 @@
         },
         handleDeleteClick: function () {
             var plan = _.find(planStore.updates.value, { id: this.props.planId });
-            ui.goTo('Manage Plans');
+            ui.goBack();
             planStore.destroy(plan);
         },
         handleSaveClick: function () {
             planStore.update(this.state);
-            ui.goTo('Manage Plans');
+            ui.goBack();
         },
         
         /*************************************************************

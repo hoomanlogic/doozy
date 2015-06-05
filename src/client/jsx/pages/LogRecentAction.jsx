@@ -210,7 +210,7 @@
             actions = _.sortBy(actions, function(action){ 
                 action.name;
             });
-            // add tags that user has assigned to other actions
+            // add actions to selection control
             actions.forEach( function (action) { 
                 selectize.addOption({
                     value: action.name,

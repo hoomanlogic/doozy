@@ -30,6 +30,9 @@
             var focus = _.find(focusStore.updates.value, function (item) {
                 return item.tagName === focusTag;
             });
+            if (!focus) {
+                return [];   
+            }
             var plans = _.where(planStore.updates.value, { focusId: focus.id });
             return plans;
         },

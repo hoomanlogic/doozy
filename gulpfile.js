@@ -104,6 +104,8 @@ var jsxFiles = [
 	'src/client/jsx/pages/ManagePlans.jsx',
 	'src/client/jsx/pages/ManageTag.jsx',
 	'src/client/jsx/pages/ManageTags.jsx',
+	'src/client/jsx/pages/ManageTarget.jsx',
+	'src/client/jsx/pages/ManageTargets.jsx',
     'src/client/jsx/pages/PrimaryNavigation.jsx',
     
     'src/client/jsx/pages/App.jsx',

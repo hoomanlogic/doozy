@@ -30,7 +30,8 @@ if (typeof require !== 'undefined') {
         PLACE: '@',
         GOAL: '>',
         NEED: '$',
-        BOX: '#'
+        BOX: '#',
+        TAG: ''
     };
     
     exports.TAG_PREFIX = TAG_PREFIX;
@@ -228,7 +229,43 @@ if (typeof require !== 'undefined') {
             parent: null,
             ordinal: null
         };
-    }; 
+    };
+    
+    exports.TARGET_PERIOD = {
+        YEARS: 0,
+        MONTHS: 1,
+        WEEKS: 2,
+        DAYS: 3
+    };
+
+    exports.TARGET_MEASURE = {
+        EXECUTION: 0,
+        PROGRESS: 1,
+        DURATION: 2
+    };
+    
+    exports.target = function () {
+        //REMEMBER KEYWORD: Timeline
+        
+        // return object literal
+        var dateIso = new Date().toISOString();
+        
+        return {
+            id: hlcommon.uuid(),
+            created: dateIso,
+            name: 'New Target',
+            entityType: 'Tag',
+            entityId: null,
+            measure: null, // BY_EXECUTION = 0, BY_PROGRESS = 1, BY_DURATION = 2
+            target: null, /* Depends on measure: BY_EXECUTION - The target number of executions within a single period.
+                                                 BY_PROGRESS - The target percentage of progress within a single period.
+                                                 BY_DURATION - The target number of minutes spent within a single period. */
+            starts: dateIso,
+            period: null,
+            multiplier: 1,
+            retireWhenMet: false
+        };
+    };
 
     exports.filterActions = function (actions, tags, type) {
         // no filter, return all

@@ -16,7 +16,6 @@ namespace HoomanLogic.Data.Ef
     {
         public Tag()
         {
-            this.Targets = new HashSet<Target>();
             this.Actions = new HashSet<Action>();
         }
     
@@ -29,7 +28,6 @@ namespace HoomanLogic.Data.Ef
         public string Content { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
-        public virtual ICollection<Target> Targets { get; set; }
         public virtual ICollection<Action> Actions { get; set; }
     }
 }

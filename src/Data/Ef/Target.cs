@@ -16,14 +16,18 @@ namespace HoomanLogic.Data.Ef
     {
         public System.Guid Id { get; set; }
         public string UserId { get; set; }
-        public System.Guid TagId { get; set; }
-        public string Kind { get; set; }
-        public string Timeline { get; set; }
-        public short Goal { get; set; }
-        public Nullable<System.DateTime> Enlist { get; set; }
+        public string Name { get; set; }
+        public string EntityType { get; set; }
+        public Nullable<System.Guid> EntityId { get; set; }
+        public System.DateTime Created { get; set; }
         public Nullable<System.DateTime> Retire { get; set; }
+        public byte Measure { get; set; }
+        public short Number { get; set; }
+        public System.DateTime Starts { get; set; }
+        public byte Period { get; set; }
+        public short Multiplier { get; set; }
+        public bool RetireWhenMet { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
-        public virtual Tag Tag { get; set; }
     }
 }
