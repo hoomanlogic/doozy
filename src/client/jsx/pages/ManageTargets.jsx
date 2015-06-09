@@ -62,6 +62,46 @@
         /*************************************************************
          * RENDERING
          *************************************************************/
+        renderPercentChange: function (percent) {
+            if (typeof percent === 'undefined' || percent === '') {
+                return null;
+            }
+            
+            var color = 'rgb(0,0,0)';
+            var prefix = '';
+            var suffix = '%';
+            if (percent < 0) {
+                prefix = '-'
+                color = 'hsl(0,90%,40%)';
+            } else if (percent > 0) {
+                prefix = '+'
+                color = 'hsl(120,90%,40%)';
+            }
+            
+            return (
+                <span style={{ color: color }}>{prefix + percent + suffix}</span>
+            );
+        },
+        
+        renderPercentAccuracy: function (percent) {
+            if (typeof percent === 'undefined' || percent === '') {
+                return null;
+            }
+            
+            var multiplier = 120 / 100;
+            
+            var offBy = 100 - percent;
+            
+            //hsl(120,90%,40%)
+            
+            var color = 'hsl(' + Math.round(offBy * multiplier) + ',90%,40%)';
+            var suffix = '%';
+            
+            return (
+                <span style={{ color: color }}>{percent + suffix}</span>
+            );
+        },
+        
         render: function () {
 
             var targets = targetStore.updates.value.slice();
@@ -90,10 +130,13 @@
             };
         
             var targetStyle = {
+                display: 'flex',
                 fontSize: 'large',
                 padding: '5px',
                 borderBottom: 'solid 1px #e0e0e0'
             };
+            
+            var targetStatistics = hlapp.targetStatistics();
             
             // html
             return (
@@ -104,9 +147,19 @@
                     </div>
                     <div style={{display: 'flex', flexDirection: 'column'}}>                    
                         {targets.map(function(item, index) {
+                            
+                            var stats = _.find(targetStatistics, function (s) { return s.targetId === item.id});
+                            if (typeof stats === 'undefined') {
+                                stats = {
+                                    accuracy: '',   
+                                    change: '',
+                                };
+                            }
                             return (
                                 <div key={item.id} className="clickable" style={targetStyle} onClick={this.handleTargetClick.bind(null, item)}>
-                                    <span>{item.name}</span>
+                                    <div style={{flexGrow: '3'}}>{item.name}</div>
+                                    <div style={{flexGrow: '1'}}>{this.renderPercentAccuracy(stats.accuracy)}</div>
+                                    <div style={{flexGrow: '1'}}>{this.renderPercentChange(stats.change)}</div>
                                 </div>
                             );
                         }.bind(this))}

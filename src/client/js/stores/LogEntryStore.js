@@ -380,8 +380,7 @@
             // populate store - call to database
             _api.getLogEntries()
             .done( function(result) {
-                var logEntries = me.updates.value;
-                me.updates.value = logEntries.concat(result);
+                me.updates.value = result;
                 hlio.saveLocal('hl.' + user + '.logentries', result, secret);
                 me.notify();
             })

@@ -231,18 +231,21 @@ if (typeof require !== 'undefined') {
         };
     };
     
-    exports.TARGET_PERIOD = {
+    var TARGET_PERIOD = {
         YEARS: 0,
         MONTHS: 1,
         WEEKS: 2,
         DAYS: 3
     };
 
-    exports.TARGET_MEASURE = {
+    var TARGET_MEASURE = {
         EXECUTION: 0,
         PROGRESS: 1,
         DURATION: 2
     };
+    
+    exports.TARGET_PERIOD = TARGET_PERIOD;
+    exports.TARGET_MEASURE = TARGET_MEASURE;
     
     exports.target = function () {
         //REMEMBER KEYWORD: Timeline
@@ -264,8 +267,130 @@ if (typeof require !== 'undefined') {
             starts: dateIso,
             period: null,
             multiplier: 1,
+            number: 1,
             retireWhenMet: false
         };
+    };
+    
+    var nextTargetPeriod = function (target, d) {
+        if (target.period === TARGET_PERIOD.YEARS) {
+            d.setFullYear(d.getFullYear() + target.multiplier);
+        } else if (target.period === TARGET_PERIOD.MONTHS) {
+            d.setMonth(d.getMonth() + target.multiplier);   
+        } else if (target.period === TARGET_PERIOD.WEEKS) {
+            d.setDate(d.getDate() + (target.multiplier * 7));   
+        } else if (target.period === TARGET_PERIOD.DAYS) {
+            d.setDate(d.getDate() + target.multiplier);   
+        }
+    };
+    
+    var getTargetPeriodEnding = function (target, start) {
+        var d = new Date(start.toISOString());
+        if (target.period === TARGET_PERIOD.YEARS) {
+            d.setFullYear(d.getFullYear() + target.multiplier);
+        } else if (target.period === TARGET_PERIOD.MONTHS) {
+            d.setMonth(d.getMonth() + target.multiplier);   
+        } else if (target.period === TARGET_PERIOD.WEEKS) {
+            d.setDate(d.getDate() + (target.multiplier * 7));   
+        } else if (target.period === TARGET_PERIOD.DAYS) {
+            d.setDate(d.getDate() + target.multiplier);   
+        }
+        d.setDate(d.getDate() - 1);
+        return d;
+    };
+    
+    exports.targetStatistics = function () {
+        
+        var targetStatistics = [];
+        
+        targetStore.updates.value.forEach( function (target) {
+            
+            var targetPeriods = [];
+            
+            var actionIds = [];
+            if (target.entityType === 'Tag') {
+                var tag = tagStore.getTagById(target.entityId);
+                var actions = actionStore.updates.value.filter(function (item) {
+                    return item.tags.indexOf((TAG_PREFIX[tag.kind.toUpperCase()] + tag.name)) !== -1;
+                });
+                actions.forEach(function (item) {
+                    actionIds.push(item.id);
+                });
+            } else if (target.entityType === 'Action') {
+                actionIds.push(target.entityId);
+            }
+            
+            var activePeriod;
+            
+            var d = new Date(target.starts);
+            d.setHours(0,0,0,0);
+            
+            var today = new Date();
+            today.setHours(0,0,0,0);
+            
+            while (d <= today) {
+                
+                var ends = getTargetPeriodEnding(target, d),
+                    number = 0;
+                
+
+                var performed = logEntryStore.updates.value.filter(function (item) {
+                    var logDate = new Date(item.date);
+                    return item.entry === 'performed' &&
+                        actionIds.indexOf(item.actionId) !== -1 &&
+                        logDate >= d && 
+                        logDate <= ends;
+                });
+
+                if (target.measure === TARGET_MEASURE.EXECUTION) {
+                    number = performed.length;
+                } else if (target.measure === TARGET_MEASURE.DURATION) {
+                    performed.forEach(function (item) {
+                        number += item.duration;
+                    });
+                }
+                
+                if (ends < today) {
+                    // add period tally
+                    targetPeriods.push({
+                        starts: d.toISOString(),
+                        ends: ends.toISOString(),
+                        number: number,
+                        met: target.number <= number
+                    });
+                } else {
+                    activePeriod = {
+                        starts: d.toISOString(),
+                        ends: ends.toISOString(),
+                        number: number,
+                        met: target.number <= number
+                    };
+                }
+                
+                // step to next target period
+                nextTargetPeriod(target, d);
+                
+            }
+            
+            var change = 0,
+                accuracy = Math.round((targetPeriods.filter(function (item) { return item.number > 0; }).length / targetPeriods.length) * 10000) / 100;
+            
+            if (targetPeriods.length > 1) {
+                var allButLatestPeriod = targetPeriods.slice(0, -1);
+                var accuracyBeforeLatestPeriod = Math.round((allButLatestPeriod.filter(function (item) { return item.number > 0; }).length / allButLatestPeriod.length) * 10000) / 100;
+                change = Math.round((accuracy - accuracyBeforeLatestPeriod) * 100) / 100;
+            }
+            
+            targetStatistics.push({
+                targetId: target.id,
+                activePeriod: activePeriod,
+                periods: targetPeriods,
+                accuracy: accuracy,
+                change: change
+            });
+        });
+        
+        return targetStatistics;
     };
 
     exports.filterActions = function (actions, tags, type) {
