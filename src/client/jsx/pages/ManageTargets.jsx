@@ -94,7 +94,7 @@
             
             //hsl(120,90%,40%)
             
-            var color = 'hsl(' + Math.round(offBy * multiplier) + ',90%,40%)';
+            var color = 'hsl(' + (120 - Math.round(offBy * multiplier)) + ',90%,40%)';
             var suffix = '%';
             
             return (
@@ -151,6 +151,12 @@
                             var stats = _.find(targetStatistics, function (s) { return s.targetId === item.id});
                             if (typeof stats === 'undefined') {
                                 stats = {
+                                    activePeriod: {
+                                        streak: ''
+                                    },
+                                    longestStreakPeriod: {
+                                        streak: ''
+                                    },
                                     accuracy: '',   
                                     change: '',
                                 };
@@ -160,6 +166,8 @@
                                     <div style={{flexGrow: '3'}}>{item.name}</div>
                                     <div style={{flexGrow: '1'}}>{this.renderPercentAccuracy(stats.accuracy)}</div>
                                     <div style={{flexGrow: '1'}}>{this.renderPercentChange(stats.change)}</div>
+                                    <div style={{flexGrow: '1'}}>{stats.activePeriod.streak}</div>
+                                    <div style={{flexGrow: '1'}}>{stats.longestStreakPeriod.streak}</div>
                                 </div>
                             );
                         }.bind(this))}

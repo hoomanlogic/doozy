@@ -351,19 +351,34 @@ if (typeof require !== 'undefined') {
                 }
                 
                 if (ends < today) {
+                    
+                    // calculate period streak
+                    var streak = 0;
+                    if (target.number <= number) {
+                        if (targetPeriods.length > 0) {
+                            streak = targetPeriods[targetPeriods.length - 1].streak + 1;
+                        } else {
+                            streak += 1;
+                        }
+                    } 
+                    
                     // add period tally
                     targetPeriods.push({
                         starts: d.toISOString(),
                         ends: ends.toISOString(),
                         number: number,
-                        met: target.number <= number
+                        met: target.number <= number,
+                        streak: streak,
+                        distance: number - target.number
                     });
                 } else {
                     activePeriod = {
                         starts: d.toISOString(),
                         ends: ends.toISOString(),
                         number: number,
-                        met: target.number <= number
+                        met: target.number <= number,
+                        streak: (targetPeriods.length > 0) ? targetPeriods[targetPeriods.length - 1].streak : 0,
+                        distance: number - target.number
                     };
                 }
                 
@@ -373,20 +388,23 @@ if (typeof require !== 'undefined') {
             }
             
             var change = 0,
-                accuracy = Math.round((targetPeriods.filter(function (item) { return item.number > 0; }).length / targetPeriods.length) * 10000) / 100;
+                accuracy = Math.round((targetPeriods.filter(function (item) { return item.met; }).length / targetPeriods.length) * 10000) / 100;
             
             if (targetPeriods.length > 1) {
                 var allButLatestPeriod = targetPeriods.slice(0, -1);
-                var accuracyBeforeLatestPeriod = Math.round((allButLatestPeriod.filter(function (item) { return item.number > 0; }).length / allButLatestPeriod.length) * 10000) / 100;
+                var accuracyBeforeLatestPeriod = Math.round((allButLatestPeriod.filter(function (item) { return item.met; }).length / allButLatestPeriod.length) * 10000) / 100;
                 change = Math.round((accuracy - accuracyBeforeLatestPeriod) * 100) / 100;
             }
+            
+            var longestStreakPeriod = _.max(targetPeriods, 'streak');
             
             targetStatistics.push({
                 targetId: target.id,
                 activePeriod: activePeriod,
+                longestStreakPeriod: longestStreakPeriod,
                 periods: targetPeriods,
                 accuracy: accuracy,
-                change: change
+                change: change,
             });
         });
         
