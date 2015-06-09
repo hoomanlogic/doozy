@@ -299,6 +299,9 @@ if (typeof require !== 'undefined') {
         return d;
     };
     
+    /**
+     * Gather target statistics
+     */
     exports.targetStatistics = function () {
         
         var targetStatistics = [];
@@ -369,7 +372,8 @@ if (typeof require !== 'undefined') {
                         number: number,
                         met: target.number <= number,
                         streak: streak,
-                        distance: number - target.number
+                        distance: number - target.number,
+                        logEntries: performed
                     });
                 } else {
                     activePeriod = {
@@ -378,7 +382,8 @@ if (typeof require !== 'undefined') {
                         number: number,
                         met: target.number <= number,
                         streak: (targetPeriods.length > 0) ? targetPeriods[targetPeriods.length - 1].streak : 0,
-                        distance: number - target.number
+                        distance: number - target.number,
+                        logEntries: performed
                     };
                 }
                 
