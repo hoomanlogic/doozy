@@ -33,8 +33,7 @@
         /**
          * Configure client app (hostname and access token)
          */
-        clientApp = clientApp || {};
-        Object.assign(errl.config, {
+        var clientApp = {
             HOST_NAME: window.location.href.split('/').slice(0, 3).join('/'),
             setAccessToken: function (accessToken) {
                 sessionStorage.setItem('accessToken', accessToken);
@@ -42,7 +41,7 @@
             getAccessToken: function () {
                 return sessionStorage.getItem('accessToken');
             }
-        });
+        };
         
     </script>
 
@@ -56,7 +55,7 @@
             errl.log(arguments);
         };
 
-        if (!doozy.getAccessToken()) {
+        if (!clientApp.getAccessToken()) {
             // The following code looks for a fragment in the URL to get the access token which will be
             // used to call the protected Web API resource
             var fragment = hluri.getHashToken();

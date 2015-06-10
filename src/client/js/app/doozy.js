@@ -490,7 +490,7 @@
              * Return tag object
              */
             return {
-                value: tag,
+                value: tagValue,
                 kind: kind,
                 name: name,
                 className: className
