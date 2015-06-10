@@ -151,10 +151,10 @@
                             var stats = _.find(targetStatistics, function (s) { return s.targetId === item.id});
                             if (typeof stats === 'undefined') {
                                 stats = {
-                                    activePeriod: {
+                                    periodActive: {
                                         streak: ''
                                     },
-                                    longestStreakPeriod: {
+                                    periodLongestStreak: {
                                         streak: ''
                                     },
                                     accuracy: '',   
@@ -166,8 +166,8 @@
                                     <div style={{flexGrow: '3'}}>{item.name}</div>
                                     <div style={{flexGrow: '1'}}>{this.renderPercentAccuracy(stats.accuracy)}</div>
                                     <div style={{flexGrow: '1'}}>{this.renderPercentChange(stats.change)}</div>
-                                    <div style={{flexGrow: '1'}}>{stats.activePeriod.streak}</div>
-                                    <div style={{flexGrow: '1'}}>{stats.longestStreakPeriod.streak}</div>
+                                    <div style={{flexGrow: '1'}}>{stats.periodActive.streak}</div>
+                                    <div style={{flexGrow: '1'}}>{stats.periodLongestStreak.streak}</div>
                                 </div>
                             );
                         }.bind(this))}

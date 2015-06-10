@@ -284,7 +284,7 @@ if (typeof require !== 'undefined') {
         }
     };
     
-    var getTargetPeriodEnding = function (target, start) {
+    var targetPeriodEnds = function (target, start) {
         var d = new Date(start.toISOString());
         if (target.period === TARGET_PERIOD.YEARS) {
             d.setFullYear(d.getFullYear() + target.multiplier);
@@ -299,6 +299,52 @@ if (typeof require !== 'undefined') {
         return d;
     };
     
+    var targetPeriodStats = function (target, periodStarts, periodEnds, prevPeriodStats, isActive) {
+        var number, performed, streak;
+        
+        // get performed log entries relevant to the target period
+        performed = logEntryStore.updates.value.filter(function (item) {
+            var logDate = new Date(item.date);
+            return item.entry === 'performed' &&
+                actionIds.indexOf(item.actionId) !== -1 &&
+                logDate >= periodStarts && 
+                logDate <= periodEnds;
+        });
+
+        // calculate number based on log history
+        if (target.measure === TARGET_MEASURE.EXECUTION) {
+            number = performed.length;
+        } else if (target.measure === TARGET_MEASURE.DURATION) {
+            performed.forEach(function (item) {
+                number += item.duration;
+            });
+        }
+        
+        // calculate period streak
+        if (target.number <= number) { // is target met?
+            if (typeof prevPeriodStats !== 'undefined' && prevPeriodStats !== null) {
+                streak = prevPeriodStats.streak + 1;
+            } else {
+                streak += 1;
+            }
+        } else if (isActive && typeof prevPeriodStats !== 'undefined' && prevPeriodStats !== null) {
+            streak = prevPeriodStats.streak;
+        } else {
+            streak = 0;
+        }
+        
+        // return period stats
+        return {
+            starts: periodStarts.toISOString(),
+            ends: periodEnds.toISOString(),
+            number: number,
+            met: target.number <= number,
+            streak: streak,
+            distance: number - target.number,
+            logEntries: performed
+        };
+    };
+    
     /**
      * Gather target statistics
      */
@@ -308,7 +354,7 @@ if (typeof require !== 'undefined') {
         
         targetStore.updates.value.forEach( function (target) {
             
-            var targetPeriods = [];
+            var periodsStats = [];
             
             var actionIds = [];
             if (target.entityType === 'Tag') {
@@ -325,89 +371,55 @@ if (typeof require !== 'undefined') {
             
             var activePeriod;
             
-            var d = new Date(target.starts);
-            d.setHours(0,0,0,0);
+            var periodStarts = new Date(target.starts);
+            periodStarts.setHours(0,0,0,0);
             
             var today = new Date();
             today.setHours(0,0,0,0);
             
-            while (d <= today) {
+            while (periodStarts <= today) {
                 
-                var ends = getTargetPeriodEnding(target, d),
-                    number = 0;
-                
-
-                var performed = logEntryStore.updates.value.filter(function (item) {
-                    var logDate = new Date(item.date);
-                    return item.entry === 'performed' &&
-                        actionIds.indexOf(item.actionId) !== -1 &&
-                        logDate >= d && 
-                        logDate <= ends;
-                });
-
-                if (target.measure === TARGET_MEASURE.EXECUTION) {
-                    number = performed.length;
-                } else if (target.measure === TARGET_MEASURE.DURATION) {
-                    performed.forEach(function (item) {
-                        number += item.duration;
-                    });
-                }
+                var periodEnds = targetPeriodEnds(target, periodStarts);
+                var prevPeriodStats = periodsStats.length > 0 ? periodsStats[periodsStats.length - 1] : null;
                 
                 if (ends < today) {
-                    
-                    // calculate period streak
-                    var streak = 0;
-                    if (target.number <= number) {
-                        if (targetPeriods.length > 0) {
-                            streak = targetPeriods[targetPeriods.length - 1].streak + 1;
-                        } else {
-                            streak += 1;
-                        }
-                    } 
-                    
                     // add period tally
-                    targetPeriods.push({
-                        starts: d.toISOString(),
-                        ends: ends.toISOString(),
-                        number: number,
-                        met: target.number <= number,
-                        streak: streak,
-                        distance: number - target.number,
-                        logEntries: performed
-                    });
+                    periodsStats.push(
+                        targetPeriodStats(target, 
+                                          periodStarts, 
+                                          periodEnds, 
+                                          prevPeriodStats,
+                                          false)
+                    );
                 } else {
-                    activePeriod = {
-                        starts: d.toISOString(),
-                        ends: ends.toISOString(),
-                        number: number,
-                        met: target.number <= number,
-                        streak: (targetPeriods.length > 0) ? targetPeriods[targetPeriods.length - 1].streak : 0,
-                        distance: number - target.number,
-                        logEntries: performed
-                    };
+                    activePeriod = targetPeriodStats(target, 
+                                                     periodStarts, 
+                                                     periodEnds, 
+                                                     prevPeriodStats,
+                                                     true);
                 }
                 
                 // step to next target period
-                nextTargetPeriod(target, d);
+                nextTargetPeriod(target, periodStarts);
                 
             }
             
             var change = 0,
-                accuracy = Math.round((targetPeriods.filter(function (item) { return item.met; }).length / targetPeriods.length) * 10000) / 100;
+                accuracy = Math.round((periodsStats.filter(function (item) { return item.met; }).length / periodsStats.length) * 10000) / 100;
             
-            if (targetPeriods.length > 1) {
-                var allButLatestPeriod = targetPeriods.slice(0, -1);
+            if (periodsStats.length > 1) {
+                var allButLatestPeriod = periodsStats.slice(0, -1);
                 var accuracyBeforeLatestPeriod = Math.round((allButLatestPeriod.filter(function (item) { return item.met; }).length / allButLatestPeriod.length) * 10000) / 100;
                 change = Math.round((accuracy - accuracyBeforeLatestPeriod) * 100) / 100;
             }
             
-            var longestStreakPeriod = _.max(targetPeriods, 'streak');
+            var longestStreakPeriod = _.max(periodsStats, 'streak');
             
             targetStatistics.push({
                 targetId: target.id,
-                activePeriod: activePeriod,
-                longestStreakPeriod: longestStreakPeriod,
-                periods: targetPeriods,
+                periodActive: activePeriod,
+                periodLongestStreak: longestStreakPeriod,
+                periods: periodsStats,
                 accuracy: accuracy,
                 change: change,
             });
