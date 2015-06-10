@@ -36,10 +36,10 @@
          *************************************************************/
         calcFocusTitle: function (focus) {
             if (focus.kind === 'Role') {
-                if (hlapp.hasPossessiveNoun(focus.name)) {
+                if (doozy.hasPossessiveNoun(focus.name)) {
                     return 'You\'re ' + focus.name;
                 } else {
-                    return 'You\'re ' + (hlapp.startsWithAVowel(focus.name) ? 'an' : 'a') + ' ' + focus.name;
+                    return 'You\'re ' + (doozy.startsWithAVowel(focus.name) ? 'an' : 'a') + ' ' + focus.name;
                 }
             } else if (focus.kind === 'Path') {
                 return 'You\'re on a path of ' + focus.name;

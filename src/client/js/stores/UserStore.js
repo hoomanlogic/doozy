@@ -13,20 +13,20 @@ var UserStore = function () {
         getPreferences: function () {
             return $.ajax({
                 context: this,
-                url: hlapp.HOST_NAME + '/api/settings',
+                url: doozy.HOST_NAME + '/api/settings',
                 dataType: 'json',
                 headers: {
-                    'Authorization': 'Bearer ' + hlapp.getAccessToken()
+                    'Authorization': 'Bearer ' + doozy.getAccessToken()
                 }
             });
         },
         putPreference: function (model) {
             return $.ajax({
                 context: this,
-                url: hlapp.HOST_NAME + '/api/settings',
+                url: doozy.HOST_NAME + '/api/settings',
                 dataType: 'json',
                 headers: {
-                    'Authorization': 'Bearer ' + hlapp.getAccessToken()
+                    'Authorization': 'Bearer ' + doozy.getAccessToken()
                 },
                 type: 'PUT',
                 contentType: 'application/json',

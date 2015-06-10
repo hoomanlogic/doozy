@@ -7,20 +7,20 @@ var ActionStore = function () {
         getActions: function () {
             return $.ajax({
                 context: this,
-                url: hlapp.HOST_NAME + '/api/actions',
+                url: doozy.HOST_NAME + '/api/actions',
                 dataType: 'json',
                 headers: {
-                    'Authorization': 'Bearer ' + hlapp.getAccessToken()
+                    'Authorization': 'Bearer ' + doozy.getAccessToken()
                 }
             });
         },
         postAction: function (action) {
             return $.ajax({
                 context: this,
-                url: hlapp.HOST_NAME + '/api/actions',
+                url: doozy.HOST_NAME + '/api/actions',
                 dataType: 'json',
                 headers: {
-                    'Authorization': 'Bearer ' + hlapp.getAccessToken()
+                    'Authorization': 'Bearer ' + doozy.getAccessToken()
                 },
                 type: 'POST',
                 contentType: 'application/json',
@@ -30,10 +30,10 @@ var ActionStore = function () {
         putAction: function (action) {
             return $.ajax({
                 context: this,
-                url: hlapp.HOST_NAME + '/api/actions',
+                url: doozy.HOST_NAME + '/api/actions',
                 dataType: 'json',
                 headers: {
-                    'Authorization': 'Bearer ' + hlapp.getAccessToken()
+                    'Authorization': 'Bearer ' + doozy.getAccessToken()
                 },
                 type: 'PUT',
                 contentType: 'application/json',
@@ -43,10 +43,10 @@ var ActionStore = function () {
         deleteAction: function (action) {
             return $.ajax({
                 context: this,
-                url: hlapp.HOST_NAME + '/api/actions/' + encodeURIComponent(action.id),
+                url: doozy.HOST_NAME + '/api/actions/' + encodeURIComponent(action.id),
                 dataType: 'json',
                 headers: {
-                    'Authorization': 'Bearer ' + hlapp.getAccessToken()
+                    'Authorization': 'Bearer ' + doozy.getAccessToken()
                 },
                 type: 'DELETE',
                 contentType: 'application/json'

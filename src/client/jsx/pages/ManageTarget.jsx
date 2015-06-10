@@ -23,11 +23,11 @@
          *************************************************************/
         getInitialState: function () {
             if (!this.props.targetId) {
-                return hlapp.target();   
+                return doozy.target();   
             }
             var target = _.find(targetStore.updates.value, { id: this.props.targetId });
             if (!target) {
-                return hlapp.target();   
+                return doozy.target();   
             }
             
             return {
@@ -109,7 +109,7 @@
             var entity = this.refs.entity.getDOMNode().value;
             if (this.state.entityType === 'Tag') {
                 entity = _.find(tagStore.updates.value, function (tag) {
-                     return (hlapp.TAG_PREFIX[tag.kind.toUpperCase()] + tag.name) === entity;
+                     return (doozy.TAG_PREFIX[tag.kind.toUpperCase()] + tag.name) === entity;
                 });
             } else if (this.state.entityType === 'Action') {
                 entity = actionStore.getActionByName(entity);
@@ -167,14 +167,14 @@
                     id: tag.id,
                     name: tag.name,
                     kind: tag.kind,
-                    value: hlapp.TAG_PREFIX[tag.kind.toUpperCase()] + tag.name,
+                    value: doozy.TAG_PREFIX[tag.kind.toUpperCase()] + tag.name,
                 });
             });
             
             // set current value
             if (this.state.entityId) {
                 var tag = tagStore.getTagById(this.state.entityId);
-                selectize.setValue(hlapp.TAG_PREFIX[tag.kind.toUpperCase()] + tag.name);
+                selectize.setValue(doozy.TAG_PREFIX[tag.kind.toUpperCase()] + tag.name);
             }
         },
         setupActionsControl: function () {

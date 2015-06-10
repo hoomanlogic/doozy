@@ -113,7 +113,7 @@
                 return target.name.toLowerCase();
             })
             targets.reverse();
-            targets.push(hlapp.target());
+            targets.push(doozy.target());
             targets.reverse();
             
             /**
@@ -136,7 +136,7 @@
                 borderBottom: 'solid 1px #e0e0e0'
             };
             
-            var targetStatistics = hlapp.targetStatistics();
+            var targetStatistics = doozy.targetStatistics();
             
             // html
             return (

@@ -112,7 +112,7 @@
                 tags = tags.slice();
                 tags.push(this.props.focusTag);
 
-                var newAction = hlapp.action(commandParts[actionIndex].slice(0,1).toUpperCase() + commandParts[actionIndex].slice(1), tags);
+                var newAction = doozy.action(commandParts[actionIndex].slice(0,1).toUpperCase() + commandParts[actionIndex].slice(1), tags);
                 newAction.created = date;
 
                 logEntryStore.createWithNewAction(newAction, {
@@ -170,7 +170,7 @@
                 tags = tags.slice();
                 tags.push(this.props.focusTag);
                 var actionName = commandParts[actionIndex].slice(0,1).toUpperCase() + commandParts[actionIndex].slice(1);
-                var newAction = hlapp.action(actionName, tags);
+                var newAction = doozy.action(actionName, tags);
                 newAction.created = date;
                 newAction.nextDate = date;
                 newAction.duration = duration;

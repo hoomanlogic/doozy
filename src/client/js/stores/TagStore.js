@@ -7,20 +7,20 @@ var TagStore = function () {
         getTags: function () {
             return $.ajax({
                 context: this,
-                url: hlapp.HOST_NAME + '/api/tags',
+                url: doozy.HOST_NAME + '/api/tags',
                 dataType: 'json',
                 headers: {
-                    'Authorization': 'Bearer ' + hlapp.getAccessToken()
+                    'Authorization': 'Bearer ' + doozy.getAccessToken()
                 }
             });
         },
         postTag: function (tag) {
             return $.ajax({
                 context: this,
-                url: hlapp.HOST_NAME + '/api/tags',
+                url: doozy.HOST_NAME + '/api/tags',
                 dataType: 'json',
                 headers: {
-                    'Authorization': 'Bearer ' + hlapp.getAccessToken()
+                    'Authorization': 'Bearer ' + doozy.getAccessToken()
                 },
                 type: 'POST',
                 contentType: 'application/json',
@@ -30,10 +30,10 @@ var TagStore = function () {
         putTag: function (tag) {
             return $.ajax({
                 context: this,
-                url: hlapp.HOST_NAME + '/api/tags',
+                url: doozy.HOST_NAME + '/api/tags',
                 dataType: 'json',
                 headers: {
-                    'Authorization': 'Bearer ' + hlapp.getAccessToken()
+                    'Authorization': 'Bearer ' + doozy.getAccessToken()
                 },
                 type: 'PUT',
                 contentType: 'application/json',
@@ -43,10 +43,10 @@ var TagStore = function () {
         deleteTag: function (tag) {
             return $.ajax({
                 context: this,
-                url: hlapp.HOST_NAME + '/api/tags/' + encodeURIComponent(tag.id),
+                url: doozy.HOST_NAME + '/api/tags/' + encodeURIComponent(tag.id),
                 dataType: 'json',
                 headers: {
-                    'Authorization': 'Bearer ' + hlapp.getAccessToken()
+                    'Authorization': 'Bearer ' + doozy.getAccessToken()
                 },
                 type: 'DELETE',
                 contentType: 'application/json'

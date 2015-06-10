@@ -7,20 +7,20 @@ var PlanStepStore = function () {
         getPlanSteps: function () {
             return $.ajax({
                 context: this,
-                url: hlapp.HOST_NAME + '/api/plansteps',
+                url: doozy.HOST_NAME + '/api/plansteps',
                 dataType: 'json',
                 headers: {
-                    'Authorization': 'Bearer ' + hlapp.getAccessToken()
+                    'Authorization': 'Bearer ' + doozy.getAccessToken()
                 }
             });
         },
         postPlanStep: function (planStep) {
             return $.ajax({
                 context: this,
-                url: hlapp.HOST_NAME + '/api/plansteps',
+                url: doozy.HOST_NAME + '/api/plansteps',
                 dataType: 'json',
                 headers: {
-                    'Authorization': 'Bearer ' + hlapp.getAccessToken()
+                    'Authorization': 'Bearer ' + doozy.getAccessToken()
                 },
                 type: 'POST',
                 contentType: 'application/json',
@@ -30,10 +30,10 @@ var PlanStepStore = function () {
         putPlanStep: function (planStep) {
             return $.ajax({
                 context: this,
-                url: hlapp.HOST_NAME + '/api/plansteps',
+                url: doozy.HOST_NAME + '/api/plansteps',
                 dataType: 'json',
                 headers: {
-                    'Authorization': 'Bearer ' + hlapp.getAccessToken()
+                    'Authorization': 'Bearer ' + doozy.getAccessToken()
                 },
                 type: 'PUT',
                 contentType: 'application/json',
@@ -43,10 +43,10 @@ var PlanStepStore = function () {
         deletePlanStep: function (planStep) {
             return $.ajax({
                 context: this,
-                url: hlapp.HOST_NAME + '/api/plansteps/' + encodeURIComponent(planStep.id),
+                url: doozy.HOST_NAME + '/api/plansteps/' + encodeURIComponent(planStep.id),
                 dataType: 'json',
                 headers: {
-                    'Authorization': 'Bearer ' + hlapp.getAccessToken()
+                    'Authorization': 'Bearer ' + doozy.getAccessToken()
                 },
                 type: 'DELETE',
                 contentType: 'application/json'

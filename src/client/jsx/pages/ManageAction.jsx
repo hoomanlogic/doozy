@@ -63,7 +63,7 @@
                 tags.push(this.props.focusTag);
 
                 // create a new action
-                nextProps.action = hlapp.action('New ToDo', tags);
+                nextProps.action = doozy.action('New ToDo', tags);
                 nextProps.action.name = null;
                 nextProps.action.created = new Date().toISOString();
             } else {
@@ -79,7 +79,7 @@
                 tags.push(this.props.focusTag);
 
                 // create a new action
-                this.props.action = hlapp.action('New ToDo', tags);
+                this.props.action = doozy.action('New ToDo', tags);
                 this.props.action.name = null;
                 this.props.action.created = new Date().toISOString();
             } else {
@@ -166,7 +166,7 @@
             };
 
             if (action.recurrenceRules.length > 0) {
-                var recurrenceObj = hlapp.getRecurrenceObj(action.recurrenceRules[0]);
+                var recurrenceObj = doozy.getRecurrenceObj(action.recurrenceRules[0]);
                 state.repeat = recurrenceObj.freq.slice(0,1).toLowerCase();
                 state.repeatInterval = recurrenceObj.interval;
                 if (recurrenceObj.byday) {
@@ -219,7 +219,7 @@
             // add tags that user has assigned to other actions
             distinctTags.forEach( function (tag) {
 
-                selectize.addOption(hlapp.parseTag(tag));
+                selectize.addOption(doozy.parseTag(tag));
             });
         },
         setupTagsControl: function () {
@@ -245,7 +245,7 @@
                         }
                     },
                     create: function(input) {
-                        return hlapp.parseTag(input);
+                        return doozy.parseTag(input);
                     }
                 });
 
@@ -520,7 +520,7 @@
                     <div className="form-group">
                         <label htmlFor="action-repeat-interval">Every</label>
                         <input id="action-repeat-interval" ref="repeatInterval" type="number" className="form-control" value={this.state.repeatInterval} onChange={this.handleChange} />
-                        <label>{hlapp.getFrequencyNoun(this.state.repeat) + '(s)'}</label>
+                        <label>{doozy.getFrequencyNoun(this.state.repeat) + '(s)'}</label>
                     </div>
                 );
             } else {

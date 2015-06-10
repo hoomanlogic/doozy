@@ -18,9 +18,9 @@
 	}
 	else {
 		// Global (browser)
-		root.connectionStore = factory(root.hlstore, root.hlapp, root.$);
+		root.connectionStore = factory(root.hlstore, root.doozy, root.$);
 	}
-}(this, function (hlstore, hlapp, $) {
+}(this, function (hlstore, doozy, $) {
     'use strict';
     
     var ConnectionStore = function () {
@@ -31,10 +31,10 @@
         this.getConnections = function () {
             $.ajax({
                 context: me,
-                url: hlapp.HOST_NAME + '/api/connections',
+                url: doozy.HOST_NAME + '/api/connections',
                 dataType: 'json',
                 headers: {
-                    'Authorization': 'Bearer ' + hlapp.getAccessToken()
+                    'Authorization': 'Bearer ' + doozy.getAccessToken()
                 },
                 success: function(result) {
                     me.updates.value = result;
@@ -49,10 +49,10 @@
         this.requestConnection = function (userName) {
             $.ajax({
                 context: me,
-                url: hlapp.HOST_NAME + '/api/requestconnection',
+                url: doozy.HOST_NAME + '/api/requestconnection',
                 dataType: 'json',
                 headers: {
-                    'Authorization': 'Bearer ' + hlapp.getAccessToken()
+                    'Authorization': 'Bearer ' + doozy.getAccessToken()
                 },
                 type: 'POST',
                 contentType: 'application/json',
@@ -69,10 +69,10 @@
         this.acceptConnection = function (userName) {
             $.ajax({
                 context: me,
-                url: hlapp.HOST_NAME + '/api/acceptconnection',
+                url: doozy.HOST_NAME + '/api/acceptconnection',
                 dataType: 'json',
                 headers: {
-                    'Authorization': 'Bearer ' + hlapp.getAccessToken()
+                    'Authorization': 'Bearer ' + doozy.getAccessToken()
                 },
                 type: 'POST',
                 contentType: 'application/json',
@@ -95,10 +95,10 @@
         this.rejectConnection = function (userName) {
             $.ajax({
                 context: me,
-                url: hlapp.HOST_NAME + '/api/rejectconnection',
+                url: doozy.HOST_NAME + '/api/rejectconnection',
                 dataType: 'json',
                 headers: {
-                    'Authorization': 'Bearer ' + hlapp.getAccessToken()
+                    'Authorization': 'Bearer ' + doozy.getAccessToken()
                 },
                 type: 'POST',
                 contentType: 'application/json',

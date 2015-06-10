@@ -20,7 +20,7 @@
             errl.log(arguments);
         };
 
-        if (!hlapp.getAccessToken()) {
+        if (!doozy.getAccessToken()) {
             // The following code looks for a fragment in the URL to get the access token which will be
             // used to call the protected Web API resource
             var fragment = hluri.getHashToken();
@@ -28,7 +28,7 @@
             if (fragment.access_token) {
                 // returning with access token, restore old hash, or at least hide token
                 window.location.hash = fragment.state || '';
-                hlapp.setAccessToken(fragment.access_token);
+                doozy.setAccessToken(fragment.access_token);
             } else {
                 // no token - so bounce to Authorize endpoint in AccountController to sign in or register
                 window.location = "/Account/Authorize?client_id=web&response_type=token&state=" + encodeURIComponent(window.location.hash);
@@ -37,13 +37,13 @@
 
         $(document).ready(function () {
             $.ajax({
-                url: hlapp.HOST_NAME + '/api/settings',
+                url: doozy.HOST_NAME + '/api/settings',
                 dataType: 'json',
                 headers: {
-                    'Authorization': 'Bearer ' + hlapp.getAccessToken()
+                    'Authorization': 'Bearer ' + doozy.getAccessToken()
                 },
                 success: function (data) {
-                    React.render(React.createElement(HoomanLogicApp, { settings: data }), document.getElementById('hooman-logic'));
+                    React.render(React.createElement(HoomanLogicApp, { settings: data }), document.getElementById('doozy'));
                 }.bind(this),
                 error: function (xhr, status, err) {
                     console.error('settings.json', status, err.toString());

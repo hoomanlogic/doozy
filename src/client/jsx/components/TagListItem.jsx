@@ -88,7 +88,7 @@
          * RENDERING
          *************************************************************/
         render: function () {
-            var tag = hlapp.parseTag(this.props.tag);
+            var tag = doozy.parseTag(this.props.tag);
             
             var isSelected = this.props.isSelected ? ' selected' : '';
 

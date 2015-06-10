@@ -383,10 +383,10 @@
                 // get message history
                 $.ajax({
                     context: this,
-                    url: hlapp.HOST_NAME + '/api/messages',
+                    url: doozy.HOST_NAME + '/api/messages',
                     dataType: 'json',
                     headers: {
-                        'Authorization': 'Bearer ' + hlapp.getAccessToken()
+                        'Authorization': 'Bearer ' + doozy.getAccessToken()
                     },
                     data: JSON.stringify({ userName: userName }),
                     type: 'POST',

@@ -183,7 +183,7 @@
                         tags.push(this.props.focusTag);
                     }
 
-                    newAction = hlapp.action(names[i], tags);
+                    newAction = doozy.action(names[i], tags);
                     newAction.created = this.state.date.toISOString();
                     
                     logEntryStore.createWithNewAction(newAction, { 
@@ -231,7 +231,7 @@
             // { kind: 'Tag', name: tag }
             // add tags that user has assigned to other actions
             distinctTags.forEach( function (tag) {
-                selectize.addOption(hlapp.parseTag(tag));
+                selectize.addOption(doozy.parseTag(tag));
             });
         },
         setupActionsControl: function () {

@@ -1,6 +1,6 @@
 /**
  * 2015, HoomanLogic, Geoff Manning
- * Namespace: hlapp
+ * Namespace: doozy
  */
  
 if (typeof require !== 'undefined') {
@@ -428,31 +428,6 @@ if (typeof require !== 'undefined') {
         return targetStatistics;
     };
 
-    exports.filterActions = function (actions, tags, type) {
-        // no filter, return all
-        if (typeof tags === 'undefined' || tags === null|| tags.length === 0) {
-            return actions;
-        }
-
-        if (typeof type !== 'string') {
-            type = 'any';
-        }
-
-        // filter is a string, convert to array
-        if (typeof tags === 'string') {
-            tags = [tags];
-        }
-
-        // get actions that match at least one of the filter tags
-        if (type === 'any') {
-            return actions.filter(function (item) { return _.intersection(tags, item.tags).length > 0; });
-        } else if (type === 'all') {
-            return actions.filter(function (item) { return _.intersection(tags, item.tags).length === tags.length; });
-        }  else if (type === 'not') {
-            return actions.filter(function (item) { return _.intersection(tags, item.tags).length === 0; });
-        }
-    };
-
     exports.getRecurrenceObj = function (item) {
 
         var kind = item.split(':');
@@ -599,4 +574,4 @@ if (typeof require !== 'undefined') {
     // configure host name
     exports.HOST_NAME = window.location.href.split('/').slice(0, 3).join('/');
 	
-}(typeof exports === 'undefined' ? this['hlapp'] = {}: exports));
+}(typeof exports === 'undefined' ? this['doozy'] = {}: exports));

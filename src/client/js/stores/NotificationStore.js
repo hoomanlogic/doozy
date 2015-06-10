@@ -18,9 +18,9 @@
 	}
 	else {
 		// Global (browser)
-		root.notificationStore = factory(root.hlstore, root.hlapp, root.$);
+		root.notificationStore = factory(root.hlstore, root.doozy, root.$);
 	}
-}(this, function (hlstore, hlapp, $) {
+}(this, function (hlstore, doozy, $) {
     'use strict';
     
     var NotificationStore = function () {
@@ -65,13 +65,13 @@
         this.acknowledgeNotification = function (notification) {
             $.ajax({
                 context: me,
-                url: hlapp.HOST_NAME + '/api/acknowledgenotification/' + notification.id,
+                url: doozy.HOST_NAME + '/api/acknowledgenotification/' + notification.id,
                 dataType: 'json',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({ userName: 'dummy' }),
                 headers: {
-                    'Authorization': 'Bearer ' + hlapp.getAccessToken()
+                    'Authorization': 'Bearer ' + doozy.getAccessToken()
                 },
                 success: function(result) {
                     // find notification

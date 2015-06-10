@@ -153,7 +153,7 @@
              */
             if (this.props.action.recurrenceRules && this.props.action.recurrenceRules.length > 0) {
                 repeats = (
-                    <span> <i className="fa fa-repeat" title={hlapp.getRecurrenceSummary(this.props.action.recurrenceRules)}></i></span>
+                    <span> <i className="fa fa-repeat" title={doozy.getRecurrenceSummary(this.props.action.recurrenceRules)}></i></span>
                 );
             }
     
