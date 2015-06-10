@@ -5,13 +5,13 @@
 	if (typeof exports === "object") {
 		// CommonJS
 		module.exports = exports = factory(
-            require('common')
+            require('hlcommon')
         );
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
 		define([
-            './common'
+            './hlcommon'
         ], factory);
 	}
 	else {
@@ -124,13 +124,13 @@
 
     var nextTargetPeriod = function (target, starts) {
         if (target.period === TARGET_PERIOD.YEARS) {
-            starts.setFullYear(d.getFullYear() + target.multiplier);
+            starts.setFullYear(starts.getFullYear() + target.multiplier);
         } else if (target.period === TARGET_PERIOD.MONTHS) {
-            starts.setMonth(d.getMonth() + target.multiplier);   
+            starts.setMonth(starts.getMonth() + target.multiplier);   
         } else if (target.period === TARGET_PERIOD.WEEKS) {
-            starts.setDate(d.getDate() + (target.multiplier * 7));   
+            starts.setDate(starts.getDate() + (target.multiplier * 7));   
         } else if (target.period === TARGET_PERIOD.DAYS) {
-            starts.setDate(d.getDate() + target.multiplier);   
+            starts.setDate(starts.getDate() + target.multiplier);   
         }
     };
     
@@ -149,7 +149,7 @@
         return d;
     };
     
-    var targetPeriodStats = function (target, periodStarts, periodEnds, prevPeriodStats, isActive) {
+    var targetPeriodStats = function (target, actionIds, periodStarts, periodEnds, prevPeriodStats, isActive) {
         var number, performed, streak;
         
         // get performed log entries relevant to the target period
@@ -367,8 +367,10 @@
             targets.forEach( function (target) {
 
                 var accuracy,
+                    accuracyBeforeLatestPeriod,
                     actionIds = [],
                     activePeriod,
+                    allButLatestPeriod,
                     change = 0,
                     longestStreakPeriod,
                     periodStarts,
@@ -402,19 +404,21 @@
                     var periodEnds = targetPeriodEnds(target, periodStarts);
                     var prevPeriodStats = periodsStats.length > 0 ? periodsStats[periodsStats.length - 1] : null;
 
-                    if (ends < today) {
+                    if (periodEnds < today) {
                         // add period tally
                         periodsStats.push(
-                            targetPeriodStats(target, 
-                                              periodStarts, 
-                                              periodEnds, 
+                            targetPeriodStats(target,
+                                              actionIds,
+                                              periodStarts,
+                                              periodEnds,
                                               prevPeriodStats,
                                               false)
                         );
                     } else {
-                        activePeriod = targetPeriodStats(target, 
-                                                         periodStarts, 
-                                                         periodEnds, 
+                        activePeriod = targetPeriodStats(target,
+                                                         actionIds,
+                                                         periodStarts,
+                                                         periodEnds,
                                                          prevPeriodStats,
                                                          true);
                     }
@@ -428,8 +432,8 @@
                 accuracy = Math.round((periodsStats.filter(function (item) { return item.met; }).length / periodsStats.length) * 10000) / 100;
 
                 if (periodsStats.length > 1) {
-                    var allButLatestPeriod = periodsStats.slice(0, -1);
-                    var accuracyBeforeLatestPeriod = Math.round((allButLatestPeriod.filter(function (item) { return item.met; }).length / allButLatestPeriod.length) * 10000) / 100;
+                    allButLatestPeriod = periodsStats.slice(0, -1);
+                    accuracyBeforeLatestPeriod = Math.round((allButLatestPeriod.filter(function (item) { return item.met; }).length / allButLatestPeriod.length) * 10000) / 100;
                     change = Math.round((accuracy - accuracyBeforeLatestPeriod) * 100) / 100;
                 }
 

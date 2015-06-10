@@ -151,7 +151,7 @@
                             // find statistics object for this target
                             var stats = _.find(targetsStats, function (s) { return s.targetId === item.id});
                 
-                            if (stats === null) {
+                            if (typeof stats === 'undefined') {
                                 // new target has no stats
                                 return (
                                     <div key={item.id} className="clickable" style={targetStyle} onClick={this.handleTargetClick.bind(null, item)}>
