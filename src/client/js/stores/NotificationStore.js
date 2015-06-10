@@ -65,13 +65,13 @@
         this.acknowledgeNotification = function (notification) {
             $.ajax({
                 context: me,
-                url: doozy.HOST_NAME + '/api/acknowledgenotification/' + notification.id,
+                url: clientApp.HOST_NAME + '/api/acknowledgenotification/' + notification.id,
                 dataType: 'json',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({ userName: 'dummy' }),
                 headers: {
-                    'Authorization': 'Bearer ' + doozy.getAccessToken()
+                    'Authorization': 'Bearer ' + clientApp.getAccessToken()
                 },
                 success: function(result) {
                     // find notification

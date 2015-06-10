@@ -5,53 +5,44 @@
 	if (typeof exports === "object") {
 		// CommonJS
 		module.exports = exports = factory(
-            require('common'),
-            require('errl'),
-            require('toastr')
+            require('common')
         );
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
 		define([
-            './common',
-            './errl',
-            './toastr'
+            './common'
         ], factory);
 	}
 	else {
 		// Global (browser)
-		root.doozy = factory(root.hlcommon, root.errl, root.toastr);
+		root.doozy = factory(root.hlcommon);
 	}
-}(this, function (hlcommon, errl, toastr) {
+}(this, function (hlcommon) {
     'use strict';
-    
-    /**
-     * Configure error logger
-     */
-    errl.config = errl.config || {};
-    Object.assign(errl.config, {
-        developer: 'hoomanlogic',
-        key: '54263eb4-6ced-49bf-9bd7-14f0106c2a02',
-        product: 'HoomanLogic',
-        environment: null,
-        getState: null,
-        getUser: function () {
-            return 'anonymous';
-        },
-        onLogged: function (err) {
-            toastr.error("<p><string>Oops!</strong></p><p>We're really sorry about that.</p><p>We'll get this fixed as soon as possible.</p>" + '<a class="btn btn-default btn-link" target="_blank" href="' + errl.getErrorDetailUrl(err.errorId) + '">Show me details</a> ');
-        }
-    });
-    
-    /**
-     * Configure toastr notifications
-     */
-    toastr.options.closeButton = true;
-    toastr.options.timeOut = 2000;
-    toastr.options.positionClass = 'toast-bottom-right';
 
+    var TAG_KIND = {
+        FOCUS: '!',
+        PLACE: '@',
+        GOAL: '>',
+        NEED: '$',
+        BOX: '#',
+        TAG: ''
+    };
     
-	
+    var TARGET_MEASURE = {
+        EXECUTION: 0,
+        PROGRESS: 1,
+        DURATION: 2
+    };
+    
+    var TARGET_PERIOD = {
+        YEARS: 0,
+        MONTHS: 1,
+        WEEKS: 2,
+        DAYS: 3
+    };
+    
     var getFrequencyNoun = function (freq) {
         freq = freq.slice(0,1).toLowerCase();
         if (freq === 'w') {
@@ -64,43 +55,87 @@
             return 'Day';   
         }
     };
-
-    var TAG_PREFIX = {
-        FOCUS: '!',
-        PLACE: '@',
-        GOAL: '>',
-        NEED: '$',
-        BOX: '#',
-        TAG: ''
-    };
     
-    var TARGET_PERIOD = {
-        YEARS: 0,
-        MONTHS: 1,
-        WEEKS: 2,
-        DAYS: 3
+    /**
+     * Parse an iCal RRULE, EXRULE, RDATE, or EXDATE string 
+     * and return a recurrence object
+     */
+    var getRecurrenceObj = function (icalRule) {
+
+        var kind = icalRule.split(':');
+
+        // date lists: RDATE, EXDATE
+        if (kind[0] === 'RDATE' || kind[0] === 'EXDATE') {
+            var dateStrings = kind[1].split(',');
+            var dates = [];
+            // convert to array of datetime integers for easy comparison with underscore
+            dateStrings.map(function (item) {
+                if (item.length === 10) {
+                    // not standard but easier for me
+                    dates.push(babble.moments.getLocalDate(item).getTime());
+                } else {
+                    // standard based
+                    dates.push(new Date(item).getTime());
+                }
+            });
+            return {
+                kind: kind[0],
+                dates: dates
+            };
+        }
+
+        // rules: RRULE, EXRULE
+        var rule = {
+            kind: kind[0],
+            freq: null,
+            count: 365000, // covers daily for 1000 years to avoid null check
+            interval: 1,
+            byday: null
+        };
+
+        var props = kind[1].split(';');
+
+        for (var i = 0; i < props.length; i++) {
+            // split key from value
+            var keyval = props[i].split('=');
+
+            if (keyval[0] === 'BYDAY') {
+                rule.byday = [];
+                var byday = keyval[1].split(',');
+                for (var j = 0; j < byday.length; j++) {
+                    if (byday[j].length === 2) {
+                        rule.byday.push({ day: byday[j], digit: 0 });
+                    } else {
+                        // handle digit
+                        var day = byday[j].slice(-2);
+                        var digit = parseInt(byday[j].slice(0, byday[j].length - 2));
+                        rule.byday.push({ day: day, digit: digit });
+                    }
+                }
+            } else if (keyval[0] === 'INTERVAL') {
+                rule[keyval[0].toLowerCase()] = parseInt(keyval[1]);
+            } else {
+                rule[keyval[0].toLowerCase()] = keyval[1];
+            }
+        }
+
+        return rule;
     };
 
-    var TARGET_MEASURE = {
-        EXECUTION: 0,
-        PROGRESS: 1,
-        DURATION: 2
-    };
-    
-    var nextTargetPeriod = function (target, d) {
+    var nextTargetPeriod = function (target, starts) {
         if (target.period === TARGET_PERIOD.YEARS) {
-            d.setFullYear(d.getFullYear() + target.multiplier);
+            starts.setFullYear(d.getFullYear() + target.multiplier);
         } else if (target.period === TARGET_PERIOD.MONTHS) {
-            d.setMonth(d.getMonth() + target.multiplier);   
+            starts.setMonth(d.getMonth() + target.multiplier);   
         } else if (target.period === TARGET_PERIOD.WEEKS) {
-            d.setDate(d.getDate() + (target.multiplier * 7));   
+            starts.setDate(d.getDate() + (target.multiplier * 7));   
         } else if (target.period === TARGET_PERIOD.DAYS) {
-            d.setDate(d.getDate() + target.multiplier);   
+            starts.setDate(d.getDate() + target.multiplier);   
         }
     };
     
-    var targetPeriodEnds = function (target, start) {
-        var d = new Date(start.toISOString());
+    var targetPeriodEnds = function (target, starts) {
+        var d = new Date(starts.toISOString());
         if (target.period === TARGET_PERIOD.YEARS) {
             d.setFullYear(d.getFullYear() + target.multiplier);
         } else if (target.period === TARGET_PERIOD.MONTHS) {
@@ -160,78 +195,18 @@
         };
     };
     
-    var getRecurrenceObj = function (item) {
-
-        var kind = item.split(':');
-
-        // date lists: RDATE, EXDATE
-        if (kind[0] === 'RDATE' || kind[0] === 'EXDATE') {
-            var dateStrings = kind[1].split(',');
-            var dates = [];
-            // convert to array of datetime integers for easy comparison with underscore
-            dateStrings.map(function (item) {
-                if (item.length === 10) {
-                    // not standard but easier for me
-                    dates.push(babble.moments.getLocalDate(item).getTime());
-                } else {
-                    // standard based
-                    dates.push(new Date(item).getTime());
-                }
-            });
-            return {
-                kind: kind[0],
-                dates: dates
-            };
-        }
-
-        // rules: RRULE, EXRULE
-        var rule = {
-            kind: kind[0],
-            freq: null,
-            count: 365000, // covers daily for 1000 years to avoid null check
-            interval: 1,
-            byday: null
-        };
-
-        var props = kind[1].split(';');
-
-        for (var i = 0; i < props.length; i++) {
-            // split key from value
-            var keyval = props[i].split('=');
-
-            if (keyval[0] === 'BYDAY') {
-                rule.byday = [];
-                var byday = keyval[1].split(',');
-                for (var j = 0; j < byday.length; j++) {
-                    if (byday[j].length === 2) {
-                        rule.byday.push({ day: byday[j], digit: 0 });
-                    } else {
-                        // handle digit
-                        var day = byday[j].slice(-2);
-                        var digit = parseInt(byday[j].slice(0, byday[j].length - 2));
-                        rule.byday.push({ day: day, digit: digit });
-                    }
-                }
-            } else if (keyval[0] === 'INTERVAL') {
-                rule[keyval[0].toLowerCase()] = parseInt(keyval[1]);
-            } else {
-                rule[keyval[0].toLowerCase()] = keyval[1];
-            }
-        }
-
-        return rule;
-    };
-    
     return {
-        /**
-         * Configure host name
-         */
-        HOST_NAME: window.location.href.split('/').slice(0, 3).join('/'),
-        TAG_PREFIX: TAG_PREFIX,
-        TARGET_PERIOD: TARGET_PERIOD,
+        
+        TAG_KIND: TAG_KIND,
+        
         TARGET_MEASURE: TARGET_MEASURE,
+        
+        TARGET_PERIOD: TARGET_PERIOD,
+        
         getFrequencyNoun: getFrequencyNoun,
+        
         getRecurrenceObj: getRecurrenceObj,
+        
         getRecurrenceSummary: function (recurrenceRules) {
             if (!recurrenceRules || recurrenceRules.length === 0) {
                 return null;   
@@ -291,6 +266,7 @@
 
             return summary;
         },
+        
         action: function (name, tags) {
 
             // add tags any were supplied
@@ -319,6 +295,7 @@
                 items: []
             };
         },
+        
         plan: function (name) {
             // return object literal
             return {
@@ -375,19 +352,42 @@
             };
         },
 
-        targetStatistics: function () {
+        targetsStats: function (targetId) {
+            var targets,
+                targetsStats = [];
 
-            var targetStatistics = [];
+            if (typeof targetId === 'undefined' || target === null) {
+                targets = targetStore.updates.value;
+            } else {
+                targets = _.find(targetStore.updates.value, function (target) {
+                    return target.id === targetId;
+                });
+            }
+            
+            targets.forEach( function (target) {
 
-            targetStore.updates.value.forEach( function (target) {
+                var accuracy,
+                    actionIds = [],
+                    activePeriod,
+                    change = 0,
+                    longestStreakPeriod,
+                    periodStarts,
+                    periodsStats = [],
+                    today;
+                
+                // today
+                today = new Date();
+                today.setHours(0,0,0,0);
+                
+                // first period starts
+                periodStarts = new Date(target.starts);
+                periodStarts.setHours(0,0,0,0);
 
-                var periodsStats = [];
-
-                var actionIds = [];
+                // populate array of action ids related to this target
                 if (target.entityType === 'Tag') {
                     var tag = tagStore.getTagById(target.entityId);
                     var actions = actionStore.updates.value.filter(function (item) {
-                        return item.tags.indexOf((TAG_PREFIX[tag.kind.toUpperCase()] + tag.name)) !== -1;
+                        return item.tags.indexOf((TAG_KIND[tag.kind.toUpperCase()] + tag.name)) !== -1;
                     });
                     actions.forEach(function (item) {
                         actionIds.push(item.id);
@@ -396,14 +396,7 @@
                     actionIds.push(target.entityId);
                 }
 
-                var activePeriod;
-
-                var periodStarts = new Date(target.starts);
-                periodStarts.setHours(0,0,0,0);
-
-                var today = new Date();
-                today.setHours(0,0,0,0);
-
+                // steps through all periods for this target
                 while (periodStarts <= today) {
 
                     var periodEnds = targetPeriodEnds(target, periodStarts);
@@ -431,8 +424,8 @@
 
                 }
 
-                var change = 0,
-                    accuracy = Math.round((periodsStats.filter(function (item) { return item.met; }).length / periodsStats.length) * 10000) / 100;
+                // calculate accuracy
+                accuracy = Math.round((periodsStats.filter(function (item) { return item.met; }).length / periodsStats.length) * 10000) / 100;
 
                 if (periodsStats.length > 1) {
                     var allButLatestPeriod = periodsStats.slice(0, -1);
@@ -440,9 +433,9 @@
                     change = Math.round((accuracy - accuracyBeforeLatestPeriod) * 100) / 100;
                 }
 
-                var longestStreakPeriod = _.max(periodsStats, 'streak');
+                longestStreakPeriod = _.max(periodsStats, 'streak');
 
-                targetStatistics.push({
+                targetsStats.push({
                     targetId: target.id,
                     periodActive: activePeriod,
                     periodLongestStreak: longestStreakPeriod,
@@ -452,15 +445,15 @@
                 });
             });
 
-            return targetStatistics;
+            return targetsStats;
         },
         
         /**
-         * Parses a tag string to an object
+         * Parses a tag value string to an object
          */
-        parseTag: function (tag) {
+        parseTag: function (tagValue) {
             var kind = 'Tag',
-                name = tag,
+                name = tagValue,
                 className = 'fa-tag';
 
             /**
@@ -468,19 +461,19 @@
              * determine if it is a special tag
              */
             var firstChar = name.slice(0,1);
-            if (firstChar === TAG_PREFIX.FOCUS) {
+            if (firstChar === TAG_KIND.FOCUS) {
                 kind = 'Focus'; // part of
                 className = 'fa-eye';
-            } else if (firstChar === TAG_PREFIX.PLACE) {
+            } else if (firstChar === TAG_KIND.PLACE) {
                 kind = 'Place'; // where
                 className = 'fa-anchor';
-            } else if (firstChar === TAG_PREFIX.GOAL) {
+            } else if (firstChar === TAG_KIND.GOAL) {
                 kind = 'Goal'; // to what end
                 className = 'fa-trophy';
-            } else if (firstChar === TAG_PREFIX.NEED) {
+            } else if (firstChar === TAG_KIND.NEED) {
                 kind = 'Need'; // why
                 className = 'fa-recycle';
-            } else if (firstChar === TAG_PREFIX.BOX) {
+            } else if (firstChar === TAG_KIND.BOX) {
                 kind = 'Box'; // when
                 className = 'fa-cube';
             }
@@ -502,6 +495,13 @@
                 name: name,
                 className: className
             };
+        },
+        
+        /**
+         * Get raw tag value from a tag object
+         */
+        getTagValue: function (tag) {
+            return TAG_KIND[tag.kind.toUpperCase()] + tag.name;
         },
 
         startsWithAVowel: function (word) {
@@ -577,15 +577,6 @@
                     return 'in ' + diffDays + ' day' + (diffDays > 1 ? 's' : '');
                 }
             }
-        },
-
-        // Data access operations
-        setAccessToken: function (accessToken) {
-            sessionStorage.setItem('accessToken', accessToken);
-        },
-
-        getAccessToken: function () {
-            return sessionStorage.getItem('accessToken');
         },
     };
 	

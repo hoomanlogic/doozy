@@ -7,20 +7,20 @@ var TargetStore = function () {
         getTargets: function () {
             return $.ajax({
                 context: this,
-                url: doozy.HOST_NAME + '/api/targets',
+                url: clientApp.HOST_NAME + '/api/targets',
                 dataType: 'json',
                 headers: {
-                    'Authorization': 'Bearer ' + doozy.getAccessToken()
+                    'Authorization': 'Bearer ' + clientApp.getAccessToken()
                 }
             });
         },
         postTarget: function (target) {
             return $.ajax({
                 context: this,
-                url: doozy.HOST_NAME + '/api/targets',
+                url: clientApp.HOST_NAME + '/api/targets',
                 dataType: 'json',
                 headers: {
-                    'Authorization': 'Bearer ' + doozy.getAccessToken()
+                    'Authorization': 'Bearer ' + clientApp.getAccessToken()
                 },
                 type: 'POST',
                 contentType: 'application/json',
@@ -30,10 +30,10 @@ var TargetStore = function () {
         putTarget: function (target) {
             return $.ajax({
                 context: this,
-                url: doozy.HOST_NAME + '/api/targets',
+                url: clientApp.HOST_NAME + '/api/targets',
                 dataType: 'json',
                 headers: {
-                    'Authorization': 'Bearer ' + doozy.getAccessToken()
+                    'Authorization': 'Bearer ' + clientApp.getAccessToken()
                 },
                 type: 'PUT',
                 contentType: 'application/json',
@@ -43,10 +43,10 @@ var TargetStore = function () {
         deleteTarget: function (target) {
             return $.ajax({
                 context: this,
-                url: doozy.HOST_NAME + '/api/targets/' + encodeURIComponent(target.id),
+                url: clientApp.HOST_NAME + '/api/targets/' + encodeURIComponent(target.id),
                 dataType: 'json',
                 headers: {
-                    'Authorization': 'Bearer ' + doozy.getAccessToken()
+                    'Authorization': 'Bearer ' + clientApp.getAccessToken()
                 },
                 type: 'DELETE',
                 contentType: 'application/json'

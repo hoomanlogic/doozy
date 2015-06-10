@@ -7,20 +7,20 @@ var TagStore = function () {
         getTags: function () {
             return $.ajax({
                 context: this,
-                url: doozy.HOST_NAME + '/api/tags',
+                url: clientApp.HOST_NAME + '/api/tags',
                 dataType: 'json',
                 headers: {
-                    'Authorization': 'Bearer ' + doozy.getAccessToken()
+                    'Authorization': 'Bearer ' + clientApp.getAccessToken()
                 }
             });
         },
         postTag: function (tag) {
             return $.ajax({
                 context: this,
-                url: doozy.HOST_NAME + '/api/tags',
+                url: clientApp.HOST_NAME + '/api/tags',
                 dataType: 'json',
                 headers: {
-                    'Authorization': 'Bearer ' + doozy.getAccessToken()
+                    'Authorization': 'Bearer ' + clientApp.getAccessToken()
                 },
                 type: 'POST',
                 contentType: 'application/json',
@@ -30,10 +30,10 @@ var TagStore = function () {
         putTag: function (tag) {
             return $.ajax({
                 context: this,
-                url: doozy.HOST_NAME + '/api/tags',
+                url: clientApp.HOST_NAME + '/api/tags',
                 dataType: 'json',
                 headers: {
-                    'Authorization': 'Bearer ' + doozy.getAccessToken()
+                    'Authorization': 'Bearer ' + clientApp.getAccessToken()
                 },
                 type: 'PUT',
                 contentType: 'application/json',
@@ -43,10 +43,10 @@ var TagStore = function () {
         deleteTag: function (tag) {
             return $.ajax({
                 context: this,
-                url: doozy.HOST_NAME + '/api/tags/' + encodeURIComponent(tag.id),
+                url: clientApp.HOST_NAME + '/api/tags/' + encodeURIComponent(tag.id),
                 dataType: 'json',
                 headers: {
-                    'Authorization': 'Bearer ' + doozy.getAccessToken()
+                    'Authorization': 'Bearer ' + clientApp.getAccessToken()
                 },
                 type: 'DELETE',
                 contentType: 'application/json'

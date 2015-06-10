@@ -32,10 +32,10 @@
             postAction: function (action) {
                 return $.ajax({
                     context: this,
-                    url: doozy.HOST_NAME + '/api/actions',
+                    url: clientApp.HOST_NAME + '/api/actions',
                     dataType: 'json',
                     headers: {
-                        'Authorization': 'Bearer ' + doozy.getAccessToken()
+                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
                     },
                     type: 'POST',
                     contentType: 'application/json',
@@ -45,20 +45,20 @@
             getLogEntries: function () {
                 return $.ajax({
                     context: me,
-                    url: doozy.HOST_NAME + '/api/logentries',
+                    url: clientApp.HOST_NAME + '/api/logentries',
                     dataType: 'json',
                     headers: {
-                        'Authorization': 'Bearer ' + doozy.getAccessToken()
+                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
                     }
                 });
             },
             postLogEntry: function (logEntry) {
                 return $.ajax({
                     context: this,
-                    url: doozy.HOST_NAME + '/api/logentries',
+                    url: clientApp.HOST_NAME + '/api/logentries',
                     dataType: 'json',
                     headers: {
-                        'Authorization': 'Bearer ' + doozy.getAccessToken()
+                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
                     },
                     type: 'POST',
                     contentType: 'application/json',
@@ -68,10 +68,10 @@
             putLogEntry: function (logEntry) {
                 return $.ajax({
                     context: this,
-                    url: doozy.HOST_NAME + '/api/logentries',
+                    url: clientApp.HOST_NAME + '/api/logentries',
                     dataType: 'json',
                     headers: {
-                        'Authorization': 'Bearer ' + doozy.getAccessToken()
+                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
                     },
                     type: 'PUT',
                     contentType: 'application/json',
@@ -81,10 +81,10 @@
             deleteLogEntry: function (logEntry) {
                 return $.ajax({
                     context: this,
-                    url: doozy.HOST_NAME + '/api/logentries/' + logEntry.id,
+                    url: clientApp.HOST_NAME + '/api/logentries/' + logEntry.id,
                     dataType: 'json',
                     headers: {
-                        'Authorization': 'Bearer ' + doozy.getAccessToken()
+                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
                     },
                     type: 'DELETE',
                     contentType: 'application/json'
@@ -93,10 +93,10 @@
             postComment: function (logEntryId, comment) {
                 return $.ajax({
                     context: me,
-                    url: doozy.HOST_NAME + '/api/comment',
+                    url: clientApp.HOST_NAME + '/api/comment',
                     dataType: 'json',
                     headers: {
-                        'Authorization': 'Bearer ' + doozy.getAccessToken()
+                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
                     },
                     type: 'POST',
                     contentType: 'application/json',
@@ -106,10 +106,10 @@
             putComment: function (logEntryPeanutId, comment) {
                 return $.ajax({
                     context: this,
-                    url: doozy.HOST_NAME + '/api/comment',
+                    url: clientApp.HOST_NAME + '/api/comment',
                     dataType: 'json',
                     headers: {
-                        'Authorization': 'Bearer ' + doozy.getAccessToken()
+                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
                     },
                     type: 'PUT',
                     contentType: 'application/json',
@@ -119,10 +119,10 @@
             deleteComment: function (logEntryPeanutId) {
                 return $.ajax({
                     context: me,
-                    url: doozy.HOST_NAME + '/api/comment',
+                    url: clientApp.HOST_NAME + '/api/comment',
                     dataType: 'json',
                     headers: {
-                        'Authorization': 'Bearer ' + doozy.getAccessToken()
+                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
                     },
                     type: 'DELETE',
                     contentType: 'application/json',
@@ -134,10 +134,10 @@
         this.getLogEntriesByUserName = function (userName) {
             $.ajax({
                 context: me,
-                url: doozy.HOST_NAME + '/api/logentries?userName=' + encodeURIComponent(userName),
+                url: clientApp.HOST_NAME + '/api/logentries?userName=' + encodeURIComponent(userName),
                 dataType: 'json',
                 headers: {
-                    'Authorization': 'Bearer ' + doozy.getAccessToken()
+                    'Authorization': 'Bearer ' + clientApp.getAccessToken()
                 },
                 success: function(result) {
                     var logEntries = me.updates.value;
@@ -288,10 +288,10 @@
             
             $.ajax({
                 context: me,
-                url: doozy.HOST_NAME + '/api/toggleupvote',
+                url: clientApp.HOST_NAME + '/api/toggleupvote',
                 dataType: 'json',
                 headers: {
-                    'Authorization': 'Bearer ' + doozy.getAccessToken()
+                    'Authorization': 'Bearer ' + clientApp.getAccessToken()
                 },
                 type: 'POST',
                 contentType: 'application/json',

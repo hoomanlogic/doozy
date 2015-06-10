@@ -109,7 +109,7 @@
             var entity = this.refs.entity.getDOMNode().value;
             if (this.state.entityType === 'Tag') {
                 entity = _.find(tagStore.updates.value, function (tag) {
-                     return (doozy.TAG_PREFIX[tag.kind.toUpperCase()] + tag.name) === entity;
+                     return doozy.getTagValue(tag) === entity;
                 });
             } else if (this.state.entityType === 'Action') {
                 entity = actionStore.getActionByName(entity);
@@ -167,14 +167,14 @@
                     id: tag.id,
                     name: tag.name,
                     kind: tag.kind,
-                    value: doozy.TAG_PREFIX[tag.kind.toUpperCase()] + tag.name,
+                    value: doozy.getTagValue(tag),
                 });
             });
             
             // set current value
             if (this.state.entityId) {
                 var tag = tagStore.getTagById(this.state.entityId);
-                selectize.setValue(doozy.TAG_PREFIX[tag.kind.toUpperCase()] + tag.name);
+                selectize.setValue(doozy.getTagValue(tag));
             }
         },
         setupActionsControl: function () {

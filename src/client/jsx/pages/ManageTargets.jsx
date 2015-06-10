@@ -136,7 +136,7 @@
                 borderBottom: 'solid 1px #e0e0e0'
             };
             
-            var targetStatistics = doozy.targetStatistics();
+            var targetsStats = doozy.targetsStats();
             
             // html
             return (
@@ -148,28 +148,28 @@
                     <div style={{display: 'flex', flexDirection: 'column'}}>                    
                         {targets.map(function(item, index) {
                             
-                            var stats = _.find(targetStatistics, function (s) { return s.targetId === item.id});
-                            if (typeof stats === 'undefined') {
-                                stats = {
-                                    periodActive: {
-                                        streak: ''
-                                    },
-                                    periodLongestStreak: {
-                                        streak: ''
-                                    },
-                                    accuracy: '',   
-                                    change: '',
-                                };
+                            // find statistics object for this target
+                            var stats = _.find(targetsStats, function (s) { return s.targetId === item.id});
+                
+                            if (stats === null) {
+                                // new target has no stats
+                                return (
+                                    <div key={item.id} className="clickable" style={targetStyle} onClick={this.handleTargetClick.bind(null, item)}>
+                                        <div>{item.name}</div>
+                                    </div>
+                                );
+                            } else {
+                                // existing targets
+                                return (
+                                    <div key={item.id} className="clickable" style={targetStyle} onClick={this.handleTargetClick.bind(null, item)}>
+                                        <div style={{flexGrow: '3'}}>{item.name}</div>
+                                        <div style={{flexGrow: '1'}}>{this.renderPercentAccuracy(stats.accuracy)}</div>
+                                        <div style={{flexGrow: '1'}}>{this.renderPercentChange(stats.change)}</div>
+                                        <div style={{flexGrow: '1'}}>{stats.periodActive.streak}</div>
+                                        <div style={{flexGrow: '1'}}>{stats.periodLongestStreak.streak}</div>
+                                    </div>
+                                );
                             }
-                            return (
-                                <div key={item.id} className="clickable" style={targetStyle} onClick={this.handleTargetClick.bind(null, item)}>
-                                    <div style={{flexGrow: '3'}}>{item.name}</div>
-                                    <div style={{flexGrow: '1'}}>{this.renderPercentAccuracy(stats.accuracy)}</div>
-                                    <div style={{flexGrow: '1'}}>{this.renderPercentChange(stats.change)}</div>
-                                    <div style={{flexGrow: '1'}}>{stats.periodActive.streak}</div>
-                                    <div style={{flexGrow: '1'}}>{stats.periodLongestStreak.streak}</div>
-                                </div>
-                            );
                         }.bind(this))}
                     </div>  
                 </div>

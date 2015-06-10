@@ -90,7 +90,7 @@
             } else {
                 xhr.open("POST", "api/uploadfiles/" + this.props.type);
             }
-            xhr.setRequestHeader('Authorization', 'Bearer ' + doozy.getAccessToken());
+            xhr.setRequestHeader('Authorization', 'Bearer ' + clientApp.getAccessToken());
             xhr.send(fd);
 
         },

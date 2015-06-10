@@ -31,10 +31,10 @@
         this.getConnections = function () {
             $.ajax({
                 context: me,
-                url: doozy.HOST_NAME + '/api/connections',
+                url: clientApp.HOST_NAME + '/api/connections',
                 dataType: 'json',
                 headers: {
-                    'Authorization': 'Bearer ' + doozy.getAccessToken()
+                    'Authorization': 'Bearer ' + clientApp.getAccessToken()
                 },
                 success: function(result) {
                     me.updates.value = result;
@@ -49,10 +49,10 @@
         this.requestConnection = function (userName) {
             $.ajax({
                 context: me,
-                url: doozy.HOST_NAME + '/api/requestconnection',
+                url: clientApp.HOST_NAME + '/api/requestconnection',
                 dataType: 'json',
                 headers: {
-                    'Authorization': 'Bearer ' + doozy.getAccessToken()
+                    'Authorization': 'Bearer ' + clientApp.getAccessToken()
                 },
                 type: 'POST',
                 contentType: 'application/json',
@@ -69,10 +69,10 @@
         this.acceptConnection = function (userName) {
             $.ajax({
                 context: me,
-                url: doozy.HOST_NAME + '/api/acceptconnection',
+                url: clientApp.HOST_NAME + '/api/acceptconnection',
                 dataType: 'json',
                 headers: {
-                    'Authorization': 'Bearer ' + doozy.getAccessToken()
+                    'Authorization': 'Bearer ' + clientApp.getAccessToken()
                 },
                 type: 'POST',
                 contentType: 'application/json',
@@ -95,10 +95,10 @@
         this.rejectConnection = function (userName) {
             $.ajax({
                 context: me,
-                url: doozy.HOST_NAME + '/api/rejectconnection',
+                url: clientApp.HOST_NAME + '/api/rejectconnection',
                 dataType: 'json',
                 headers: {
-                    'Authorization': 'Bearer ' + doozy.getAccessToken()
+                    'Authorization': 'Bearer ' + clientApp.getAccessToken()
                 },
                 type: 'POST',
                 contentType: 'application/json',

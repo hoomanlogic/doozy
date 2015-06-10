@@ -383,10 +383,10 @@
                 // get message history
                 $.ajax({
                     context: this,
-                    url: doozy.HOST_NAME + '/api/messages',
+                    url: clientApp.HOST_NAME + '/api/messages',
                     dataType: 'json',
                     headers: {
-                        'Authorization': 'Bearer ' + doozy.getAccessToken()
+                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
                     },
                     data: JSON.stringify({ userName: userName }),
                     type: 'POST',
