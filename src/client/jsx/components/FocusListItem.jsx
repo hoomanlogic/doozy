@@ -1,5 +1,5 @@
 // CommonJS, AMD, and Global shim
-(function (root, factory) {
+(function (factory) {
     'use strict';
 	if (typeof exports === "object") {
 		// CommonJS
@@ -15,9 +15,9 @@
 	}
 	else {
 		// Global (browser)
-		root.FocusListItem = factory(root.React);
+		window.FocusListItem = factory(window.React);
 	}
-}(this, function (React) {
+}(function (React) {
     'use strict';
     return React.createClass({
         /*************************************************************
@@ -49,7 +49,7 @@
          *************************************************************/
         render: function () {
             var data = this.props.data;
-            var latestDate = new Date(data.latestEntry.date);
+            var latestDate = data.latestEntry.date;
 
             var menuItemStyle = {
                 display: 'block',

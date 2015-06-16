@@ -1,5 +1,5 @@
 // CommonJS, AMD, and Global shim
-(function (root, factory) {
+(function (factory) {
     'use strict';
 	if (typeof exports === "object") {
 		// CommonJS
@@ -17,12 +17,12 @@
 	}
 	else {
 		// Global (browser)
-		root.ActionRow = factory(
-            root.React,
-            root.babble
+		window.ActionRow = factory(
+            window.React,
+            window.babble
         );
 	}
-}(this, function (React, babble) {
+}(function (React, babble) {
     'use strict';
     return React.createClass({
         mixins: [React.addons.PureRenderMixin],

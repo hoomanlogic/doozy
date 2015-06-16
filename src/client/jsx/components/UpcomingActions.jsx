@@ -1,5 +1,5 @@
 // CommonJS, AMD, and Global shim
-(function (root, factory) {
+(function (factory) {
     'use strict';
 	if (typeof exports === "object") {
 		// CommonJS
@@ -17,9 +17,9 @@
 	}
 	else {
 		// Global (browser)
-		root.UpcomingActions = factory(root.React, root.ActionRow);
+		window.UpcomingActions = factory(window.React, window.ActionRow);
 	}
-}(this, function (React, ActionRow) {
+}(function (React, ActionRow) {
     'use strict';
     return React.createClass({
         /*************************************************************
@@ -68,7 +68,9 @@
                                     overrideIsDone={false}
                                     action={item} 
                                     actionName={item.name}
-                                    actionLastPerformed={item.nextDate} 
+                                    actionLastPerformed={item.nextDate} // use next date in last performed place so that it displays 
+                                                                        // when it's coming up instead of when it was last performed
+                                                                        // TODO: ActionRow prop should be named something more suitable and generic
                                     actionNextDate={item.nextDate} />
                             );
                         }.bind(this))}

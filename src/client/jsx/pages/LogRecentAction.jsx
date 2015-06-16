@@ -1,5 +1,5 @@
 // CommonJS, AMD, and Global shim
-(function (root, factory) {
+(function (factory) {
     'use strict';
 	if (typeof exports === "object") {
 		// CommonJS
@@ -15,9 +15,9 @@
 	}
 	else {
 		// Global (browser)
-		root.LogRecentAction = factory(root.React);
+		window.LogRecentAction = factory(window.React);
 	}
-}(this, function (React, Modal) {
+}(function (React, Modal) {
     'use strict';
     return React.createClass({
         /*************************************************************

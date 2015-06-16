@@ -1,5 +1,5 @@
 // CommonJS, AMD, and Global shim
-(function (root, factory) {
+(function (factory) {
     'use strict';
 
 	if (typeof exports === "object") {
@@ -16,9 +16,9 @@
 	}
 	else {
 		// Global (browser)
-		root.doozy = factory(root.hlcommon);
+		window.doozy = factory(window.hlcommon);
 	}
-}(this, function (hlcommon) {
+}(function (hlcommon) {
     'use strict';
 
     var TAG_KIND = {

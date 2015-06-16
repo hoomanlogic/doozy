@@ -1,5 +1,5 @@
 // CommonJS, AMD, and Global shim
-(function (root, factory) {
+(function (factory) {
     'use strict';
 	if (typeof exports === "object") {
 		// CommonJS
@@ -17,9 +17,9 @@
 	}
 	else {
 		// Global (browser)
-		root.weatherStore = factory(root.hlstore, root.$);
+		window.weatherStore = factory(window.hlstore, window.$);
 	}
-}(this, function (hlstore, $) {
+}(function (hlstore, $) {
     'use strict';
     
     var WeatherStore = function () {

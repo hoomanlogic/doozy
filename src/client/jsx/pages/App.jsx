@@ -1,5 +1,5 @@
 // CommonJS, AMD, and Global shim
-(function (root, factory) {
+(function (factory) {
     'use strict';
 	if (typeof exports === "object") {
 		// CommonJS
@@ -30,19 +30,19 @@
 	}
 	else {
 		// Global (browser)
-		root.HoomanLogicApp = factory(
-            root.React, 
-            root.actionStore,
-            root.TimerBar,
-            root.WeatherIcon, 
-            root.FocusActions, 
-            root.ManageFocus,
-            root.AddEditAction,
-            root.LogAction,
-            root.Conversation
+		window.DoozyApp = factory(
+            window.React, 
+            window.actionStore,
+            window.TimerBar,
+            window.WeatherIcon, 
+            window.FocusActions, 
+            window.ManageFocus,
+            window.AddEditAction,
+            window.LogAction,
+            window.Conversation
         );
 	}
-}(this, function (React, actionStore, TimerBar, WeatherIcon, FocusActions, ManageFocus, AddEditAction, LogAction, Conversation) {
+}(function (React, actionStore, TimerBar, WeatherIcon, FocusActions, ManageFocus, AddEditAction, LogAction, Conversation) {
     'use strict';
     return React.createClass({
         /*************************************************************

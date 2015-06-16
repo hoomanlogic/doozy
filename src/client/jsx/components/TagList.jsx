@@ -1,5 +1,5 @@
 // CommonJS, AMD, and Global shim
-(function (root, factory) {
+(function (factory) {
     'use strict';
 	if (typeof exports === "object") {
 		// CommonJS
@@ -17,9 +17,9 @@
 	}
 	else {
 		// Global (browser)
-		root.TagList = factory(root.React, root.TagListItem);
+		window.TagList = factory(window.React, window.TagListItem);
 	}
-}(this, function (React, TagListItem) {
+}(function (React, TagListItem) {
     'use strict';
     return React.createClass({
         /*************************************************************

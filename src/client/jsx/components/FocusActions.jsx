@@ -1,5 +1,5 @@
 // CommonJS, AMD, and Global shim
-(function (root, factory) {
+(function (factory) {
     'use strict';
 	if (typeof exports === "object") {
 		// CommonJS
@@ -27,17 +27,17 @@
 	}
 	else {
 		// Global (browser)
-		root.FocusActions = factory(
-            root.React, 
-            root.actionStore, 
-            root.TagList, 
-            root.NextActions, 
-            root.UpcomingActions, 
-            root.RecentActivity, 
-            root.BoxedActions
+		window.FocusActions = factory(
+            window.React, 
+            window.actionStore, 
+            window.TagList, 
+            window.NextActions, 
+            window.UpcomingActions, 
+            window.RecentActivity, 
+            window.BoxedActions
         );
 	}
-}(this, function (React, actionStore, TagList, NextActions, UpcomingActions, RecentActivity, BoxedActions) {
+}(function (React, actionStore, TagList, NextActions, UpcomingActions, RecentActivity, BoxedActions) {
     'use strict';
     return React.createClass({
         /*************************************************************

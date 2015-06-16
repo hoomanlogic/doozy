@@ -1,5 +1,5 @@
 // CommonJS, AMD, and Global shim
-(function (root, factory) {
+(function (factory) {
     'use strict';
 	if (typeof exports === "object") {
 		// CommonJS
@@ -18,9 +18,9 @@
 	}
 	else {
 		// Global (browser)
-		root.notificationStore = factory(root.hlstore, root.doozy, root.$);
+		window.notificationStore = factory(window.hlstore, window.doozy, window.$);
 	}
-}(this, function (hlstore, doozy, $) {
+}(function (hlstore, doozy, $) {
     'use strict';
     
     var NotificationStore = function () {

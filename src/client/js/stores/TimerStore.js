@@ -1,5 +1,5 @@
 // CommonJS, AMD, and Global shim
-(function (root, factory) {
+(function (factory) {
     'use strict';
 	if (typeof exports === "object") {
 		// CommonJS
@@ -15,9 +15,9 @@
 	}
 	else {
 		// Global (browser)
-		root.timerStore = factory(root.hlstore);
+		window.timerStore = factory(window.hlstore);
 	}
-}(this, function (hlstore) {
+}(function (hlstore) {
     'use strict';
     
     var TimerStore = function () {

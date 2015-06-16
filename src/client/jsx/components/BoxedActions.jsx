@@ -1,5 +1,5 @@
 // CommonJS, AMD, and Global shim
-(function (root, factory) {
+(function (factory) {
     'use strict';
 	if (typeof exports === "object") {
 		// CommonJS
@@ -17,9 +17,9 @@
 	}
 	else {
 		// Global (browser)
-		root.BoxedActions = factory(root.React, root.ActionRow);
+		window.BoxedActions = factory(window.React, window.ActionRow);
 	}
-}(this, function (React, ActionRow) {
+}(function (React, ActionRow) {
     'use strict';
     return React.createClass({
         /*************************************************************

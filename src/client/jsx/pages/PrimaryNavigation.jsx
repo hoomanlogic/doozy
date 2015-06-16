@@ -1,5 +1,5 @@
 // CommonJS, AMD, and Global shim
-(function (root, factory) {
+(function (factory) {
     'use strict';
 	if (typeof exports === "object") {
 		// CommonJS
@@ -29,16 +29,16 @@
 	}
 	else {
 		// Global (browser)
-		root.PrimaryNavigation = factory(
-            root.React,
-            root.connectionStore, 
-            root.notificationStore,
-            root.FocusListItem, 
-            root.DropdownMenu, 
-            root.NotificationDropDown, 
-            root.Timer);
+		window.PrimaryNavigation = factory(
+            window.React,
+            window.connectionStore, 
+            window.notificationStore,
+            window.FocusListItem, 
+            window.DropdownMenu, 
+            window.NotificationDropDown, 
+            window.Timer);
 	}
-}(this, function (React, connectionStore, notificationStore, FocusListItem, DropdownMenu, NotificationDropDown, Timer) {
+}(function (React, connectionStore, notificationStore, FocusListItem, DropdownMenu, NotificationDropDown, Timer) {
     'use strict';
     return React.createClass({
 

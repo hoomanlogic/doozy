@@ -1,5 +1,5 @@
 // CommonJS, AMD, and Global shim
-(function (root, factory) {
+(function (factory) {
     'use strict';
 	if (typeof exports === "object") {
 		// CommonJS
@@ -19,9 +19,9 @@
 	}
 	else {
 		// Global (browser)
-		root.Conversation = factory(root.React, root.babble, root.SendMessage);
+		window.Conversation = factory(window.React, window.babble, window.SendMessage);
 	}
-}(this, function (React, babble, SendMessage) {
+}(function (React, babble, SendMessage) {
     'use strict';
     return React.createClass({
         /*************************************************************

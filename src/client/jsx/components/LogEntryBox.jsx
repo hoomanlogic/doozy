@@ -1,5 +1,5 @@
 // CommonJS, AMD, and Global shim
-(function (root, factory) {
+(function (factory) {
     'use strict';
 	if (typeof exports === "object") {
 		// CommonJS
@@ -15,9 +15,9 @@
 	}
 	else {
 		// Global (browser)
-		root.LogEntryBox = factory(root.React);
+		window.LogEntryBox = factory(window.React);
 	}
-}(this, function (React) {
+}(function (React) {
     'use strict';
     return React.createClass({
         mixins: [LayeredComponentMixin],

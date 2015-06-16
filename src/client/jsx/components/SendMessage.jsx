@@ -1,5 +1,5 @@
 // CommonJS, AMD, and Global shim
-(function (root, factory) {
+(function (factory) {
     'use strict';
 	if (typeof exports === "object") {
 		// CommonJS
@@ -17,9 +17,9 @@
 	}
 	else {
 		// Global (browser)
-		root.SendMessage = factory(root.React, root.hlio);
+		window.SendMessage = factory(window.React, window.hlio);
 	}
-}(this, function (React, hlio) {
+}(function (React, hlio) {
     'use strict';
     return React.createClass({
         /*************************************************************

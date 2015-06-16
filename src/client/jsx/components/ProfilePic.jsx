@@ -1,5 +1,5 @@
 // CommonJS, AMD, and Global shim
-(function (root, factory) {
+(function (factory) {
     'use strict';
 	if (typeof exports === "object") {
 		// CommonJS
@@ -17,9 +17,9 @@
 	}
 	else {
 		// Global (browser)
-		root.ProfilePic = factory(root.React, root.Uploader);
+		window.ProfilePic = factory(window.React, window.Uploader);
 	}
-}(this, function (React, Uploader) {
+}(function (React, Uploader) {
     'use strict';
     return React.createClass({
         /*************************************************************

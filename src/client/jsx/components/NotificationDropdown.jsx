@@ -1,5 +1,5 @@
 // CommonJS, AMD, and Global shim
-(function (root, factory) {
+(function (factory) {
     'use strict';
 	if (typeof exports === "object") {
 		// CommonJS
@@ -21,14 +21,14 @@
 	}
 	else {
 		// Global (browser)
-		root.NotificationDropdown = factory(
-            root.React,
-            root.notificationStore,
-            root.DropDownMenu,
-            root.NotificationListItem
+		window.NotificationDropdown = factory(
+            window.React,
+            window.notificationStore,
+            window.DropDownMenu,
+            window.NotificationListItem
         );
 	}
-}(this, function (React, notificationStore, DropDownMenu, NotificationListItem) {
+}(function (React, notificationStore, DropDownMenu, NotificationListItem) {
     'use strict';
     return React.createClass({
         propTypes: {

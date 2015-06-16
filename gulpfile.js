@@ -58,8 +58,6 @@ var cssAll = [
 var jsxFiles = [
     '../react_components/src/**',
 	'src/client/jsx/mixins/**',
-    'src/client/jsx/components/LayeredComponentMixin.jsx',
-	'src/client/jsx/components/SetIntervalMixin.jsx',
 	
 	'src/client/jsx/components/RelativeTime.jsx',
 	
@@ -124,8 +122,8 @@ gulp.task('compile-jsx', function () {
         .pipe(plumber({
             errorHandler: onError
         }))
-        .pipe(concat('views.js'))
         .pipe(babel())
+		.pipe(concat('views.js'))
         .pipe(gulp.dest('build'));
 });
 
