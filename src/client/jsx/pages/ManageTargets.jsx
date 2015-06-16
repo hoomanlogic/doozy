@@ -71,7 +71,7 @@
             var prefix = '';
             var suffix = '%';
             if (percent < 0) {
-                prefix = '-'
+                prefix = ''
                 color = 'hsl(0,90%,40%)';
             } else if (percent > 0) {
                 prefix = '+'
