@@ -49,7 +49,12 @@
             });
         },
         componentWillReceiveProps: function (nextProps) {
-            if (nextProps.actions && nextProps.actions.length && nextProps.actions[0].tags[0] !== this.props.actions[0].tags[0]) {
+            if (nextProps.actions && 
+                nextProps.actions.length && 
+                this.props.actions.length && 
+                nextProps.actions[0].tags.length && 
+                this.props.actions[0].tags.length && 
+                nextProps.actions[0].tags[0] !== this.props.actions[0].tags[0]) {
                 this.setState({
                     maxReturn: 5
                 });
