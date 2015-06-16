@@ -166,7 +166,7 @@
             };
 
             if (action.recurrenceRules.length > 0) {
-                var recurrenceObj = doozy.getRecurrenceObj(action.recurrenceRules[0]);
+                var recurrenceObj = doozy.parseRecurrenceRule(action.recurrenceRules[0]);
                 state.repeat = recurrenceObj.freq.slice(0,1).toLowerCase();
                 state.repeatInterval = recurrenceObj.interval;
                 if (recurrenceObj.byday) {
@@ -520,7 +520,7 @@
                     <div className="form-group">
                         <label htmlFor="action-repeat-interval">Every</label>
                         <input id="action-repeat-interval" ref="repeatInterval" type="number" className="form-control" value={this.state.repeatInterval} onChange={this.handleChange} />
-                        <label>{doozy.getFrequencyNoun(this.state.repeat) + '(s)'}</label>
+                        <label>{doozy.getFrequencyName(this.state.repeat) + '(s)'}</label>
                     </div>
                 );
             } else {

@@ -43,24 +43,20 @@
         DAYS: 3
     };
     
-    var getFrequencyNoun = function (freq) {
-        freq = freq.slice(0,1).toLowerCase();
-        if (freq === 'w') {
-            return 'Week';   
-        } else if (freq === 'm') {
-            return 'Month';   
-        } else if (freq === 'y') {
-            return 'Year';   
-        } else if (freq === 'd') {
-            return 'Day';   
-        }
+    var getFrequencyName = function (freq) {
+        return {
+            w: 'Week',  
+            m: 'Month',
+            y: 'Year',
+            d: 'Day'
+        }[freq.slice(0,1).toLowerCase()];
     };
-    
+
     /**
      * Parse an iCal RRULE, EXRULE, RDATE, or EXDATE string 
      * and return a recurrence object
      */
-    var getRecurrenceObj = function (icalRule) {
+    var parseRecurrenceRule = function (icalRule) {
 
         var kind = icalRule.split(':');
 
@@ -203,9 +199,9 @@
         
         TARGET_PERIOD: TARGET_PERIOD,
         
-        getFrequencyNoun: getFrequencyNoun,
+        getFrequencyName: getFrequencyName,
         
-        getRecurrenceObj: getRecurrenceObj,
+        parseRecurrenceRule: parseRecurrenceRule,
         
         getRecurrenceSummary: function (recurrenceRules) {
             if (!recurrenceRules || recurrenceRules.length === 0) {
@@ -214,7 +210,7 @@
 
             var summary = '';
             recurrenceRules.forEach(function(item, index, array) {
-                var recurrenceObj = getRecurrenceObj(item);
+                var recurrenceObj = parseRecurrenceRule(item);
 
 
                 if (recurrenceObj.byday) {
@@ -239,11 +235,11 @@
 
                     if (recurrenceObj.interval > 1) {
                         if (days.SU && days.SA && !days.MO && !days.TU && !days.WE && !days.TH && !days.FR) {
-                            summary = 'Every ' + recurrenceObj.interval + ' ' + getFrequencyNoun(recurrenceObj.freq).toLowerCase() + ' on the weekend';
+                            summary = 'Every ' + recurrenceObj.interval + ' ' + getFrequencyName(recurrenceObj.freq).toLowerCase() + ' on the weekend';
                         } else if (!days.SU && !days.SA && days.MO && days.TU && days.WE && days.TH && days.FR) {
-                            summary = 'Every ' + recurrenceObj.interval + ' ' + getFrequencyNoun(recurrenceObj.freq).toLowerCase() + ' on the weekdays';
+                            summary = 'Every ' + recurrenceObj.interval + ' ' + getFrequencyName(recurrenceObj.freq).toLowerCase() + ' on the weekdays';
                         } else {
-                            summary = 'Every ' + recurrenceObj.interval + ' ' + getFrequencyNoun(recurrenceObj.freq).toLowerCase() + ' on ' + fullnameDays.join(', ');
+                            summary = 'Every ' + recurrenceObj.interval + ' ' + getFrequencyName(recurrenceObj.freq).toLowerCase() + ' on ' + fullnameDays.join(', ');
                         }
                     } else {
                         if (days.SU && days.SA && !days.MO && !days.TU && !days.WE && !days.TH && !days.FR) {
@@ -256,9 +252,9 @@
                     }
                 } else {
                     if (recurrenceObj.interval > 1) {
-                        summary = 'Every ' + recurrenceObj.interval + ' ' + getFrequencyNoun(recurrenceObj.freq).toLowerCase() + 's';
+                        summary = 'Every ' + recurrenceObj.interval + ' ' + getFrequencyName(recurrenceObj.freq).toLowerCase() + 's';
                     } else {
-                        summary = 'Every ' + getFrequencyNoun(recurrenceObj.freq).toLowerCase();
+                        summary = 'Every ' + getFrequencyName(recurrenceObj.freq).toLowerCase();
                     }
 
                 }
@@ -517,7 +513,7 @@
         },
 
         hasPossessiveNoun: function (words) {
-            if (words.indexOf('\'s ') > 0) {
+            if (words.indexOf('\'s ') > 0 || words.indexOf('s\' ') > 0) {
                 return true;
             } else {
                 return false;
