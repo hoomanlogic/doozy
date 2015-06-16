@@ -56,7 +56,8 @@ var cssAll = [
 ];
 
 var jsxFiles = [
-    '../react_components/src/**', 
+    '../react_components/src/**',
+	'src/client/jsx/mixins/**',
     'src/client/jsx/components/LayeredComponentMixin.jsx',
 	'src/client/jsx/components/SetIntervalMixin.jsx',
 	
@@ -186,7 +187,7 @@ gulp.task('concat-css-all', ['compile-less'], function () {
 
 gulp.task('watch', function () {
     // Watch JSX source and recompile whenever a change occurs
-    var jsxWatcher = gulp.watch(['../react_components/src/**', 'src/client/jsx/components/**', 'src/client/jsx/pages/**', 'src/client/js/**'], ['compile-jsx', 'concat-js-app']);
+    var jsxWatcher = gulp.watch(['../react_components/src/**', 'src/client/jsx/mixins/**', 'src/client/jsx/components/**', 'src/client/jsx/pages/**', 'src/client/js/**'], ['compile-jsx', 'concat-js-app']);
     jsxWatcher.on('change', function (event) {
         console.log('File ' + event.path + ' was ' + event.type + ', running task...');
     });
