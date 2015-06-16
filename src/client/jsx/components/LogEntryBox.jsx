@@ -1,5 +1,3 @@
-/** @jsx React.DOM */
-
 // CommonJS, AMD, and Global shim
 (function (root, factory) {
     'use strict';

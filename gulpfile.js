@@ -1,5 +1,5 @@
 var gulp = require('gulp');
-var react = require('gulp-react');
+var babel = require('gulp-babel');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
@@ -125,7 +125,7 @@ gulp.task('compile-jsx', function () {
             errorHandler: onError
         }))
         .pipe(concat('views.js'))
-        .pipe(react())
+        .pipe(babel())
         .pipe(gulp.dest('build'));
 });
 
