@@ -27,7 +27,8 @@ namespace HoomanLogic.Data
                             WeekStarts = t.WeekStarts,
                             Email = t.AspNetUser.Email,
                             EmailNotifications = t.EmailNotifications,
-                            Location = t.Location
+                            Location = t.Location,
+                            GcmEndpoint = t.GcmEndpoint
                         }).FirstOrDefault();
             }
         }
@@ -44,6 +45,7 @@ namespace HoomanLogic.Data
                 rowPrefs.WeekStarts = prefs.WeekStarts;
                 rowPrefs.EmailNotifications = prefs.EmailNotifications;
                 rowPrefs.AspNetUser.Email = prefs.Email;
+                rowPrefs.GcmEndpoint = prefs.GcmEndpoint;
 
                 var rowPersona = (from t in db.Personas
                                   where t.UserId == userId && t.Kind == "Public"

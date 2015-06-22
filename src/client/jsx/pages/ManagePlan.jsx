@@ -1,18 +1,18 @@
 // CommonJS, AMD, and Global shim
 (function (factory) {
     'use strict';
-	if (typeof exports === "object") {
-		// CommonJS
-		module.exports = exports = factory(require('react'));
-	}
-	else if (typeof define === "function" && define.amd) {
-		// AMD
-		define(['react'], factory);
-	}
-	else {
-		// Global (browser)
-		window.ManagePlan = factory(window.React);
-	}
+    if (typeof exports === "object") {
+        // CommonJS
+        module.exports = exports = factory(require('react'));
+    }
+    else if (typeof define === "function" && define.amd) {
+        // AMD
+        define(['react'], factory);
+    }
+    else {
+        // Global (browser)
+        window.ManagePlan = factory(window.React);
+    }
 }(function (React) {
     'use strict';
     return React.createClass({

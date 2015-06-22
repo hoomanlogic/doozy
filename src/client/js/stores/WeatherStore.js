@@ -1,24 +1,24 @@
 // CommonJS, AMD, and Global shim
 (function (factory) {
     'use strict';
-	if (typeof exports === "object") {
-		// CommonJS
-		module.exports = exports = factory(
+    if (typeof exports === "object") {
+        // CommonJS
+        module.exports = exports = factory(
             require('../../../../../common_js/src/store'),
             require('jquery')
         );
-	}
-	else if (typeof define === "function" && define.amd) {
-		// AMD
-		define([
+    }
+    else if (typeof define === "function" && define.amd) {
+        // AMD
+        define([
             '../../../../../common_js/src/store',
             'jquery'
         ], factory);
-	}
-	else {
-		// Global (browser)
-		window.weatherStore = factory(window.hlstore, window.$);
-	}
+    }
+    else {
+        // Global (browser)
+        window.weatherStore = factory(window.hlstore, window.$);
+    }
 }(function (hlstore, $) {
     'use strict';
     

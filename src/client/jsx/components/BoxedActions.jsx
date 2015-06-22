@@ -1,24 +1,24 @@
 // CommonJS, AMD, and Global shim
 (function (factory) {
     'use strict';
-	if (typeof exports === "object") {
-		// CommonJS
-		module.exports = exports = factory(
+    if (typeof exports === "object") {
+        // CommonJS
+        module.exports = exports = factory(
             require('react'),
             require('./ActionRow')
         );
-	}
-	else if (typeof define === "function" && define.amd) {
-		// AMD
-		define([
+    }
+    else if (typeof define === "function" && define.amd) {
+        // AMD
+        define([
             'react',
             './ActionRow'
         ], factory);
-	}
-	else {
-		// Global (browser)
-		window.BoxedActions = factory(window.React, window.ActionRow);
-	}
+    }
+    else {
+        // Global (browser)
+        window.BoxedActions = factory(window.React, window.ActionRow);
+    }
 }(function (React, ActionRow) {
     'use strict';
     return React.createClass({

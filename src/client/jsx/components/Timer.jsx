@@ -1,24 +1,24 @@
 // CommonJS, AMD, and Global shim
 (function (factory) {
     'use strict';
-	if (typeof exports === "object") {
-		// CommonJS
-		module.exports = exports = factory(
+    if (typeof exports === "object") {
+        // CommonJS
+        module.exports = exports = factory(
             require('react'),
             require('../../js/stores/TimerStore')
         );
-	}
-	else if (typeof define === "function" && define.amd) {
-		// AMD
-		define([
+    }
+    else if (typeof define === "function" && define.amd) {
+        // AMD
+        define([
             'react',
             '../../js/stores/TimerStore'
         ], factory);
-	}
-	else {
-		// Global (browser)
-		window.Timer = factory(window.React, window.timerStore);
-	}
+    }
+    else {
+        // Global (browser)
+        window.Timer = factory(window.React, window.timerStore);
+    }
 }(function (React, timerStore) {
     'use strict';
     return React.createClass({

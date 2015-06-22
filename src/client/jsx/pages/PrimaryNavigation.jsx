@@ -1,9 +1,9 @@
 // CommonJS, AMD, and Global shim
 (function (factory) {
     'use strict';
-	if (typeof exports === "object") {
-		// CommonJS
-		module.exports = exports = factory(
+    if (typeof exports === "object") {
+        // CommonJS
+        module.exports = exports = factory(
             require('react'),
             require('../../js/stores/ConnectionStore'),
             require('../../js/stores/NotificationStore'),
@@ -13,10 +13,10 @@
             require('../components/NotificationDropDown'),
             require('../components/Timer')
         );
-	}
-	else if (typeof define === "function" && define.amd) {
-		// AMD
-		define([
+    }
+    else if (typeof define === "function" && define.amd) {
+        // AMD
+        define([
             'react',
             '../../js/stores/ConnectionStore',
             '../../js/stores/NotificationStore',
@@ -26,10 +26,10 @@
             '../components/NotificationDropDown',
             '../components/Timer'
         ], factory);
-	}
-	else {
-		// Global (browser)
-		window.PrimaryNavigation = factory(
+    }
+    else {
+        // Global (browser)
+        window.PrimaryNavigation = factory(
             window.React,
             window.connectionStore, 
             window.notificationStore,
@@ -37,7 +37,7 @@
             window.DropdownMenu, 
             window.NotificationDropDown, 
             window.Timer);
-	}
+    }
 }(function (React, connectionStore, notificationStore, FocusListItem, DropdownMenu, NotificationDropDown, Timer) {
     'use strict';
     return React.createClass({
@@ -204,7 +204,7 @@
                 <li key="manage-targets"><a href="javascript:;" onClick={ui.goTo.bind(null, 'Manage Targets')} title="Manage Targets">Manage Targets</a></li>,
                 <li key="manage-persona"><a href="javascript:;" onClick={ui.goTo.bind(null, 'Preferences')} title="Preferences">Preferences</a></li>,
                 <li key="manage-account"><a href="/Manage" title="Manage">Account</a></li>,
-                <li key="logout"><a href="javascript:sessionStorage.removeItem('accessToken');$('#logoutForm').submit();">Log off</a></li>		    
+                <li key="logout"><a href="javascript:sessionStorage.removeItem('accessToken');$('#logoutForm').submit();">Log off</a></li>            
             ]);
 
             return (

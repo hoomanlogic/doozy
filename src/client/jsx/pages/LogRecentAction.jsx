@@ -1,22 +1,22 @@
 // CommonJS, AMD, and Global shim
 (function (factory) {
     'use strict';
-	if (typeof exports === "object") {
-		// CommonJS
-		module.exports = exports = factory(
+    if (typeof exports === "object") {
+        // CommonJS
+        module.exports = exports = factory(
             require('react')
         );
-	}
-	else if (typeof define === "function" && define.amd) {
-		// AMD
-		define([
+    }
+    else if (typeof define === "function" && define.amd) {
+        // AMD
+        define([
             'react'
         ], factory);
-	}
-	else {
-		// Global (browser)
-		window.LogRecentAction = factory(window.React);
-	}
+    }
+    else {
+        // Global (browser)
+        window.LogRecentAction = factory(window.React);
+    }
 }(function (React, Modal) {
     'use strict';
     return React.createClass({

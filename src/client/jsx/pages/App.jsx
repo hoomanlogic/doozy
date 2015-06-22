@@ -1,9 +1,9 @@
 // CommonJS, AMD, and Global shim
 (function (factory) {
     'use strict';
-	if (typeof exports === "object") {
-		// CommonJS
-		module.exports = exports = factory(
+    if (typeof exports === "object") {
+        // CommonJS
+        module.exports = exports = factory(
             require('react'), 
             require('../../js/stores/ActionStore'),
             require('../components/TimerBar'), 
@@ -13,10 +13,10 @@
             require('../components/AddEditAction'),
             require('../components/LogAction'),
             require('../components/Conversation'));
-	}
-	else if (typeof define === "function" && define.amd) {
-		// AMD
-		define([
+    }
+    else if (typeof define === "function" && define.amd) {
+        // AMD
+        define([
             'react', 
             '../../js/stores/ActionStore',
             '../components/TimerBar', 
@@ -27,10 +27,10 @@
             '../components/LogAction',
             '../components/Conversation'
         ], factory);
-	}
-	else {
-		// Global (browser)
-		window.DoozyApp = factory(
+    }
+    else {
+        // Global (browser)
+        window.DoozyApp = factory(
             window.React, 
             window.actionStore,
             window.TimerBar,
@@ -41,7 +41,7 @@
             window.LogAction,
             window.Conversation
         );
-	}
+    }
 }(function (React, actionStore, TimerBar, WeatherIcon, FocusActions, ManageFocus, AddEditAction, LogAction, Conversation) {
     'use strict';
     return React.createClass({
@@ -183,9 +183,6 @@
                 this.setState({ page: e.state.page, pageOptions: e.state.pageOptions || null });   
             }
         },
-        handleCancelClick: function () {
-            this.setState({ page: 'Do' });
-        },
         handleConversationClose: function () {
           this.setState({activeConversation: null, page: 'Do'});
         },
@@ -206,18 +203,6 @@
                 }
                 this.setState({ currentFocus: currentFocus });
             }
-        },
-        handleSavePreferencesClick: function () {
-
-            userStore.updatePrefs({
-                email: this.refs.prefsEmail.getDOMNode().value,
-                emailNotifications: this.refs.prefsEmailNotifications.getDOMNode().value,
-                weekStarts: parseInt(this.refs.prefsWeekStarts.getDOMNode().value),
-                location: this.refs.prefsLocation.getDOMNode().value,
-                knownAs: this.refs.prefsKnownAs.getDOMNode().value
-            });
-
-            this.setState({ page: 'Do' });
         },
         handleUserStoreUpdate: function (prefs) {
             Date.setOptions({ weekStarts: prefs.weekStarts });
@@ -497,51 +482,6 @@
         /*************************************************************
          * RENDERING
          *************************************************************/
-        renderPreferences: function () {
-            var buttonStyle = {
-              display: 'block',
-              width: '100%',
-              marginBottom: '5px',
-              fontSize: '1.1rem'
-            };
-            return (
-                <div style={{padding: '5px'}}>
-                    <form role="form">
-                        <ProfilePic uri={userStore.updates.value.profileUri} />
-                        <div className="form-group">
-                            <label htmlFor="prefs-location">What name should others know you by?</label>
-                            <input id="prefs-location" ref="prefsKnownAs" type="text" className="form-control" placeholder="eg. Smokey the Bear" defaultValue={userStore.updates.value.knownAs} />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="prefs-location">Where do you live?</label>
-                            <input id="prefs-location" ref="prefsLocation" type="text" className="form-control" placeholder="eg. Boulder, CO" defaultValue={userStore.updates.value.location} />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="prefs-email">What's your email address?</label>
-                            <input id="prefs-email" ref="prefsEmail" type="text" className="form-control" placeholder="" defaultValue={userStore.updates.value.email} />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="prefs-week-starts">Which day does your week start on?</label>
-                            <select id="prefs-week-starts" ref="prefsWeekStarts" className="form-control" defaultValue={userStore.updates.value.weekStarts}>
-                                <option value="0">Sunday</option>
-                                <option value="1">Monday</option>
-                                <option value="2">Tuesday</option>
-                                <option value="3">Wednesday</option>
-                                <option value="4">Wednesday</option>
-                                <option value="5">Friday</option>
-                                <option value="6">Saturday</option>
-                            </select>
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="prefs-email-notifications">Receive email notifications?</label>
-                            <input id="prefs-email-notifications" ref="prefsEmailNotifications" type="checkbox" className="form-control" defaultChecked={userStore.updates.value.emailNotifications} />
-                        </div>
-                        <button style={buttonStyle} type="button" className="btn btn-primary" onClick={this.handleSavePreferencesClick}>Save Changes</button>
-                        <button style={buttonStyle} type="button" className="btn btn-default" onClick={this.handleCancelClick}>Cancel</button>
-                    </form>
-                </div>
-            );
-        },
         renderWeatherBackdrop: function () {
             // states
             var weather = weatherStore.updates.value,
@@ -602,7 +542,7 @@
             if (this.state.page === 'Focus Management') {
                 page = (<ManageFocus currentFocus={this.state.currentFocus || focusStore.updates.value[0]} />);
             } else if (this.state.page === 'Preferences') {
-                page = this.renderPreferences();
+                page = (<ManagePreferences />);
             } else if (this.state.page === 'Manage Action') {
                 actionId = (this.state.pageOptions || {}).actionId || null;
                 if (actionId) {

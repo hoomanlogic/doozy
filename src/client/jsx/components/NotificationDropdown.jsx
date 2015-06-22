@@ -1,33 +1,33 @@
 // CommonJS, AMD, and Global shim
 (function (factory) {
     'use strict';
-	if (typeof exports === "object") {
-		// CommonJS
-		module.exports = exports = factory(
+    if (typeof exports === "object") {
+        // CommonJS
+        module.exports = exports = factory(
             require('react'),
             require('../../js/stores/NotificationStore'),
             require('../../../../../react_components/src/DropDownMenu'),
             require('./NotificationListItem')
         );
-	}
-	else if (typeof define === "function" && define.amd) {
-		// AMD
-		define([
+    }
+    else if (typeof define === "function" && define.amd) {
+        // AMD
+        define([
             'react',
             '../../js/stores/NotificationStore',
             '../../../../../react_components/src/DropDownMenu',
             './NotificationListItem'
         ], factory);
-	}
-	else {
-		// Global (browser)
-		window.NotificationDropdown = factory(
+    }
+    else {
+        // Global (browser)
+        window.NotificationDropdown = factory(
             window.React,
             window.notificationStore,
             window.DropDownMenu,
             window.NotificationListItem
         );
-	}
+    }
 }(function (React, notificationStore, DropDownMenu, NotificationListItem) {
     'use strict';
     return React.createClass({

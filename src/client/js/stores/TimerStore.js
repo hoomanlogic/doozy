@@ -1,22 +1,22 @@
 // CommonJS, AMD, and Global shim
 (function (factory) {
     'use strict';
-	if (typeof exports === "object") {
-		// CommonJS
-		module.exports = exports = factory(
+    if (typeof exports === "object") {
+        // CommonJS
+        module.exports = exports = factory(
             require('../../../../../common_js/src/store')
         );
-	}
-	else if (typeof define === "function" && define.amd) {
-		// AMD
-		define([
+    }
+    else if (typeof define === "function" && define.amd) {
+        // AMD
+        define([
             '../../../../../common_js/src/store'
         ], factory);
-	}
-	else {
-		// Global (browser)
-		window.timerStore = factory(window.hlstore);
-	}
+    }
+    else {
+        // Global (browser)
+        window.timerStore = factory(window.hlstore);
+    }
 }(function (hlstore) {
     'use strict';
     

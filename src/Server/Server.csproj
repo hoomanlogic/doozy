@@ -255,6 +255,7 @@
     <Content Include="js\app.min.js" />
     <Content Include="js\libs.js" />
     <Content Include="js\libs.min.js" />
+    <Content Include="js\notifier.js" />
     <Content Include="js\react-with-addons.js" />
     <Content Include="js\react-with-addons.min.js" />
     <Content Include="js\react.js" />

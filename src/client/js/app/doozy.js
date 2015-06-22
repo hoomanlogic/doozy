@@ -2,22 +2,22 @@
 (function (factory) {
     'use strict';
 
-	if (typeof exports === "object") {
-		// CommonJS
-		module.exports = exports = factory(
+    if (typeof exports === "object") {
+        // CommonJS
+        module.exports = exports = factory(
             require('hlcommon')
         );
-	}
-	else if (typeof define === "function" && define.amd) {
-		// AMD
-		define([
+    }
+    else if (typeof define === "function" && define.amd) {
+        // AMD
+        define([
             './hlcommon'
         ], factory);
-	}
-	else {
-		// Global (browser)
-		window.doozy = factory(window.hlcommon);
-	}
+    }
+    else {
+        // Global (browser)
+        window.doozy = factory(window.hlcommon);
+    }
 }(function (hlcommon) {
     'use strict';
 
@@ -579,5 +579,5 @@
             }
         },
     };
-	
+    
 }));

@@ -1,26 +1,26 @@
 // CommonJS, AMD, and Global shim
 (function (factory) {
     'use strict';
-	if (typeof exports === "object") {
-		// CommonJS
-		module.exports = exports = factory(
+    if (typeof exports === "object") {
+        // CommonJS
+        module.exports = exports = factory(
             require('react'),
             require('../../../../../babble/src/moments'),
             require('./SendMessage')
         );
-	}
-	else if (typeof define === "function" && define.amd) {
-		// AMD
-		define([
+    }
+    else if (typeof define === "function" && define.amd) {
+        // AMD
+        define([
             'react',
             '../../../../../babble/src/moments',
             './SendMessage'
         ], factory);
-	}
-	else {
-		// Global (browser)
-		window.Conversation = factory(window.React, window.babble, window.SendMessage);
-	}
+    }
+    else {
+        // Global (browser)
+        window.Conversation = factory(window.React, window.babble, window.SendMessage);
+    }
 }(function (React, babble, SendMessage) {
     'use strict';
     return React.createClass({

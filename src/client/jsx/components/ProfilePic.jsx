@@ -1,24 +1,24 @@
 // CommonJS, AMD, and Global shim
 (function (factory) {
     'use strict';
-	if (typeof exports === "object") {
-		// CommonJS
-		module.exports = exports = factory(
+    if (typeof exports === "object") {
+        // CommonJS
+        module.exports = exports = factory(
             require('react'),
             require('./Uploader')
         );
-	}
-	else if (typeof define === "function" && define.amd) {
-		// AMD
-		define([
+    }
+    else if (typeof define === "function" && define.amd) {
+        // AMD
+        define([
             'react',
             './Uploader'
         ], factory);
-	}
-	else {
-		// Global (browser)
-		window.ProfilePic = factory(window.React, window.Uploader);
-	}
+    }
+    else {
+        // Global (browser)
+        window.ProfilePic = factory(window.React, window.Uploader);
+    }
 }(function (React, Uploader) {
     'use strict';
     return React.createClass({

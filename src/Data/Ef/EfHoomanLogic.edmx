@@ -206,6 +206,7 @@
           <Property Name="WeekStarts" Type="tinyint" Nullable="false" />
           <Property Name="Location" Type="varchar" MaxLength="100" />
           <Property Name="EmailNotifications" Type="bit" Nullable="false" />
+          <Property Name="GcmEndpoint" Type="varchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="RecurrenceRules">
           <Key>
@@ -1135,6 +1136,7 @@
           <Property Name="Location" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="EmailNotifications" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="AspNetUser" Relationship="hoomanlogicModel.FK_Preferences_User" FromRole="Preference" ToRole="AspNetUser" />
+          <Property Name="GcmEndpoint" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
         </EntityType>
         <Association Name="FK_Preferences_User">
           <End Type="hoomanlogicModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
@@ -1523,6 +1525,7 @@
           <EntitySetMapping Name="Preferences">
             <EntityTypeMapping TypeName="hoomanlogicModel.Preference">
               <MappingFragment StoreEntitySet="Preferences">
+                <ScalarProperty Name="GcmEndpoint" ColumnName="GcmEndpoint" />
                 <ScalarProperty Name="EmailNotifications" ColumnName="EmailNotifications" />
                 <ScalarProperty Name="Location" ColumnName="Location" />
                 <ScalarProperty Name="WeekStarts" ColumnName="WeekStarts" />

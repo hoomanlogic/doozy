@@ -1,22 +1,22 @@
 // CommonJS, AMD, and Global shim
 (function (factory) {
     'use strict';
-	if (typeof exports === "object") {
-		// CommonJS
-		module.exports = exports = factory(
+    if (typeof exports === "object") {
+        // CommonJS
+        module.exports = exports = factory(
             require('react')
         );
-	}
-	else if (typeof define === "function" && define.amd) {
-		// AMD
-		define([
+    }
+    else if (typeof define === "function" && define.amd) {
+        // AMD
+        define([
             'react'
         ], factory);
-	}
-	else {
-		// Global (browser)
-		window.LogEntryBox = factory(window.React);
-	}
+    }
+    else {
+        // Global (browser)
+        window.LogEntryBox = factory(window.React);
+    }
 }(function (React) {
     'use strict';
     return React.createClass({
@@ -79,7 +79,7 @@
                 var $box = $('#dropdown-' + this.props.data.id);
                 var $toggle = $(this.refs.dropDown.getDOMNode());
 
-                var handler = function(event) {	
+                var handler = function(event) {    
                     // handle click outside of the dropdown
                     if ($box.has(event.target).length == 0 && !$toggle.is(event.target) && !$box.is(event.target)) {
                         component.setState({

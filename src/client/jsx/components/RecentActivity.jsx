@@ -1,26 +1,26 @@
 // CommonJS, AMD, and Global shim
 (function (factory) {
     'use strict';
-	if (typeof exports === "object") {
-		// CommonJS
-		module.exports = exports = factory(
+    if (typeof exports === "object") {
+        // CommonJS
+        module.exports = exports = factory(
             require('react'),
             require('./ActionRow'),
             require('../../../../../babble/src/durations')
         );
-	}
-	else if (typeof define === "function" && define.amd) {
-		// AMD
-		define([
+    }
+    else if (typeof define === "function" && define.amd) {
+        // AMD
+        define([
             'react',
             './ActionRow',
             '../../../../../babble/src/durations'
         ], factory);
-	}
-	else {
-		// Global (browser)
-		window.RecentActivity = factory(window.React, window.ActionRow, window.babble);
-	}
+    }
+    else {
+        // Global (browser)
+        window.RecentActivity = factory(window.React, window.ActionRow, window.babble);
+    }
 }(function (React, ActionRow, babble) {
     'use strict';
     return React.createClass({

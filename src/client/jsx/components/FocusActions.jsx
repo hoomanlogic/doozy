@@ -1,9 +1,9 @@
 // CommonJS, AMD, and Global shim
 (function (factory) {
     'use strict';
-	if (typeof exports === "object") {
-		// CommonJS
-		module.exports = exports = factory(
+    if (typeof exports === "object") {
+        // CommonJS
+        module.exports = exports = factory(
             require('react'),
             require('../../js/stores/ActionStore'), 
             require('./TagList'),
@@ -12,10 +12,10 @@
             require('./RecentActivity'),
             require('./BoxedActions')
         );
-	}
-	else if (typeof define === "function" && define.amd) {
-		// AMD
-		define([
+    }
+    else if (typeof define === "function" && define.amd) {
+        // AMD
+        define([
             'react', 
             '../../js/stores/ActionStore', 
             './TagList',
@@ -24,10 +24,10 @@
             './RecentActivity',
             './BoxedActions'
         ], factory);
-	}
-	else {
-		// Global (browser)
-		window.FocusActions = factory(
+    }
+    else {
+        // Global (browser)
+        window.FocusActions = factory(
             window.React, 
             window.actionStore, 
             window.TagList, 
@@ -36,7 +36,7 @@
             window.RecentActivity, 
             window.BoxedActions
         );
-	}
+    }
 }(function (React, actionStore, TagList, NextActions, UpcomingActions, RecentActivity, BoxedActions) {
     'use strict';
     return React.createClass({

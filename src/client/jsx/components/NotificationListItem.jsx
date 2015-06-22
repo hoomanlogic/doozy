@@ -1,24 +1,24 @@
 // CommonJS, AMD, and Global shim
 (function (factory) {
     'use strict';
-	if (typeof exports === "object") {
-		// CommonJS
-		module.exports = exports = factory(
+    if (typeof exports === "object") {
+        // CommonJS
+        module.exports = exports = factory(
             require('react')
         );
-	}
-	else if (typeof define === "function" && define.amd) {
-		// AMD
-		define([
+    }
+    else if (typeof define === "function" && define.amd) {
+        // AMD
+        define([
             'react'
         ], factory);
-	}
-	else {
-		// Global (browser)
-		window.NotificationListItem = factory(
+    }
+    else {
+        // Global (browser)
+        window.NotificationListItem = factory(
             window.React
         );
-	}
+    }
 }(function (React, actionStore, TimerBar, WeatherIcon, FocusActions, ManageFocus, AddEditAction, LogAction, Conversation) {
     'use strict';
     return React.createClass({

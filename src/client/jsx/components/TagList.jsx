@@ -1,24 +1,24 @@
 // CommonJS, AMD, and Global shim
 (function (factory) {
     'use strict';
-	if (typeof exports === "object") {
-		// CommonJS
-		module.exports = exports = factory(
+    if (typeof exports === "object") {
+        // CommonJS
+        module.exports = exports = factory(
             require('react'),
             require('./TagListItem')
         );
-	}
-	else if (typeof define === "function" && define.amd) {
-		// AMD
-		define([
+    }
+    else if (typeof define === "function" && define.amd) {
+        // AMD
+        define([
             'react',
             './TagListItem'
         ], factory);
-	}
-	else {
-		// Global (browser)
-		window.TagList = factory(window.React, window.TagListItem);
-	}
+    }
+    else {
+        // Global (browser)
+        window.TagList = factory(window.React, window.TagListItem);
+    }
 }(function (React, TagListItem) {
     'use strict';
     return React.createClass({

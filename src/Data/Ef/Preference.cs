@@ -18,6 +18,7 @@ namespace HoomanLogic.Data.Ef
         public byte WeekStarts { get; set; }
         public string Location { get; set; }
         public bool EmailNotifications { get; set; }
+        public string GcmEndpoint { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
     }
