@@ -255,7 +255,6 @@
     <Content Include="js\app.min.js" />
     <Content Include="js\libs.js" />
     <Content Include="js\libs.min.js" />
-    <Content Include="js\notifier.js" />
     <Content Include="js\react-with-addons.js" />
     <Content Include="js\react-with-addons.min.js" />
     <Content Include="js\react.js" />
@@ -266,8 +265,11 @@
     <Content Include="ms-icon-310x310.png" />
     <Content Include="ms-icon-70x70.png" />
     <Content Include="Properties\PublishProfiles\ArvixeDeploy.pubxml.user" />
-    <Content Include="manifest.json" />
+    <Content Include="manifest.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Properties\PublishProfiles\ArvixeDeploy.pubxml" />
+    <Content Include="service-worker.js" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Account\ConfirmEmail.cshtml" />
     <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
