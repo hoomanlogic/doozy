@@ -20,16 +20,12 @@
 }(function (React) {
     'use strict';
     return React.createClass({
-
-        getInitialState: function () {
-            return {
-                plansLastUpdated: (new Date()).toISOString()  
-            };
-        },
-        
+        /*************************************************************
+         * COMPONENT LIFECYCLE
+         *************************************************************/
         componentWillMount: function () {
             /**
-             * Subscribe to Tag Store to be 
+             * Subscribe to User Store to be 
              * notified of updates to the store
              */
             this.userObserver = userStore.updates

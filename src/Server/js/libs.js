@@ -27483,7 +27483,7 @@ setDateProperties();
  * 2015, HoomanLogic, Geoff Manning
  */
 // CommonJS, AMD, and Global shim
-(function (root, factory) {
+(function (factory) {
     'use strict';
 	if (typeof exports === "object") {
 		// CommonJS
@@ -27495,9 +27495,9 @@ setDateProperties();
 	}
 	else {
 		// Global (browser)
-		root.hlcommon = factory();
+		window.hlcommon = factory();
 	}
-}(this, function () {
+}(function () {
     'use strict';
     
     return {
@@ -27766,7 +27766,7 @@ setDateProperties();
  * 2015, HoomanLogic, Geoff Manning
  */
 // CommonJS, AMD, and Global shim
-(function (root, factory) {
+(function (factory) {
     'use strict';
 	if (typeof exports === "object") {
 		// CommonJS
@@ -27778,9 +27778,9 @@ setDateProperties();
 	}
 	else {
 		// Global (browser)
-		root.hlio = factory(root.CryptoJS.AES);
+		window.hlio = factory(window.CryptoJS.AES);
 	}
-}(this, function (AES) {
+}(function (AES) {
     'use strict';
 
     return {
@@ -27883,7 +27883,7 @@ setDateProperties();
  * 2015, HoomanLogic, Geoff Manning
  */
 // CommonJS, AMD, and Global shim
-(function (root, factory) {
+(function (factory) {
     'use strict';
 	if (typeof exports === "object") {
 		// CommonJS
@@ -27895,9 +27895,9 @@ setDateProperties();
 	}
 	else {
 		// Global (browser)
-		root.hluri = factory();
+		window.hluri = factory();
 	}
-}(this, function () {
+}(function () {
     'use strict';
 
     var parseQueryString = function (queryString) {
@@ -27956,7 +27956,7 @@ setDateProperties();
     
 }));
 // CommonJS, AMD, and Global shim
-(function (root, factory) {
+(function (factory) {
     'use strict';
 
 	if (typeof exports === "object") {
@@ -27973,9 +27973,9 @@ setDateProperties();
 	}
 	else {
 		// Global (browser)
-		root.hlstore = factory(root.hlio);
+		window.hlstore = factory(window.hlio);
 	}
-}(this, function (hlio) {
+}(function (hlio) {
     'use strict';
     
     var Store = function () {
@@ -33517,7 +33517,7 @@ setDateProperties();
 }.call(this));
 
 // CommonJS, AMD, and Global shim
-(function (root, factory) {
+(function (factory) {
     'use strict';
 	if (typeof exports === "object") {
 		// CommonJS
@@ -33529,9 +33529,9 @@ setDateProperties();
 	}
 	else {
 		// Global (browser)
-		root.EventHandler = factory(root.Rx);
+		window.EventHandler = factory(window.Rx);
 	}
-}(this, function (Rx) {
+}(function (Rx) {
     'use strict';
     
     return { 

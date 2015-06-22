@@ -147,7 +147,7 @@
             }
 
             /**
-             * Render icon to signify that the icon is repetitious
+             * Render icon to signify that the action is repetitious
              */
             if (this.props.action.recurrenceRules && this.props.action.recurrenceRules.length > 0) {
                 repeats = (

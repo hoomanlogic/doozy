@@ -54,143 +54,71 @@
             this.recognition.start();
             this.setState({isListening: true});
         },
-        handleLogActionCommand: function (speech) {
-            var date = Date.create('today'),
-                parseDuration = null,
-                duration = 0, 
-                dateSignal = false, 
-                durationSignal = false,
-                actionIndex = 0;
 
-            if (speech.indexOf(' i did ') > -1) {
-                dateSignal = true;
-                speech = speech.replace(' i did ', '|');
-            }
-            if (speech.slice(0, 6) === 'i did ') {
-                speech = speech.replace('i did ', '');
-            }
-            if (speech.indexOf(' for ') > -1) {
-                durationSignal = true;
-                speech = speech.replace(' for ', '|');
-            }
-            var commandParts = speech.split('|');
-
-            if (dateSignal) {
-                date = Date.create(commandParts[0]);
-            }
-            if (durationSignal) {
-                var parseDuration = babble.get('durations').translate(commandParts[commandParts.length - 1]);
-                if (parseDuration.tokens.length > 0) {
-                    duration = parseDuration.tokens[0].value.toMinutes();
-                }
-            }
-
-            if (commandParts.length === 3) {
-                actionIndex = 1;
-            } else if (commandParts.length === 2 && dateSignal) {
-                actionIndex = 1;
-            } else if  (commandParts.length === 2 && durationSignal) {
-                actionIndex = 0;
-            }
-
-            var existingAction = actionStore.getActionByName(commandParts[actionIndex]);
-
-
-            if (existingAction) {
-                logEntryStore.create({
-                    actionId: existingAction.id,
-                    date: date, 
-                    duration: duration, 
-                    entry: 'performed', 
-                    details: null
-                });
-            } else {
-
-                var tags = ui.tags || [];
-                tags = tags.slice();
-                tags.push(this.props.focusTag);
-
-                var newAction = doozy.action(commandParts[actionIndex].slice(0,1).toUpperCase() + commandParts[actionIndex].slice(1), tags);
-                newAction.created = date;
-
-                logEntryStore.createWithNewAction(newAction, {
-                    date: date, 
-                    duration: duration, 
-                    entry: 'performed', 
-                    details: null
-                });
-            }
-        },
-        handleNewActionCommand: function (speech) {
-            var date = Date.create('today'), 
-                parseDuration = null,
-                duration = 0, 
-                dateSignal = false, 
-                durationSignal = false,
-                actionIndex = 0;
-
-            if (speech.indexOf(' i will ') > -1) {
-                dateSignal = true;
-                speech = speech.replace(' i will ', '|');
-            }
-            if (speech.slice(0, 7) === 'i will ') {
-                speech = speech.replace('i will ', '');
-            }
-            if (speech.indexOf(' for ') > -1) {
-                durationSignal = true;
-                speech = speech.replace(' for ', '|');
-            }
-            var commandParts = speech.split('|');
-
-            if (dateSignal) {
-                date = Date.create(commandParts[0]);
-            }
-            if (durationSignal) {
-                var parseDuration = babble.get('durations').translate(commandParts[commandParts.length - 1]);
-                if (parseDuration.tokens.length > 0) {
-                    duration = parseDuration.tokens[0].value.toMinutes();
-                }
-            }
-
-            if (commandParts.length === 3) {
-                actionIndex = 1;
-            } else if (commandParts.length === 2 && dateSignal) {
-                actionIndex = 1;
-            } else if  (commandParts.length === 2 && durationSignal) {
-                actionIndex = 0;
-            }
-
-            var existingAction = actionStore.getActionByName(commandParts[actionIndex]);
-            if (existingAction) {
-                toastr.error('An action by this name already exists');
-            } else {
-                var tags = ui.tags || [];
-                tags = tags.slice();
-                tags.push(this.props.focusTag);
-                var actionName = commandParts[actionIndex].slice(0,1).toUpperCase() + commandParts[actionIndex].slice(1);
-                var newAction = doozy.action(actionName, tags);
-                newAction.created = date;
-                newAction.nextDate = date;
-                newAction.duration = duration;
-                actionStore.create(newAction);
-            }
-        },
         handleSpeech: function (event) {
-            var speech,
-                mode;
+            var context,
+                existingAction,
+                newAction,
+                speech,
+                spokenArgs;
 
             if (event.results.length > 0) {
+                
                 speech = event.results[0][0].transcript.trim().toLowerCase();
+                
                 if (speech.indexOf('i did ') > -1) {
-                    mode = 'log-action';
+                    context = 'log-action';
                 } else if (speech.indexOf('i will ') > -1 || speech.indexOf('i want to ') > -1) {
-                    mode = 'new-action';
+                    context = 'new-action';
                 }
 
-                if (mode === 'log-action') {
-                    this.handleLogActionCommand(speech);
-                } else if (mode === 'new-action') {
-                    this.handleNewActionCommand(speech);
+                if (context === 'log-action') {
+                    spokenArgs = this.parseSpeech(speech, context);
+                    
+                    existingAction = actionStore.getActionByName(commandArgs[actionIndex]);
+
+                    if (existingAction) {
+                        /**
+                         * Create log entry for existing action
+                         */
+                        logEntryStore.create({
+                            actionId: existingAction.id,
+                            date: date, 
+                            duration: duration, 
+                            entry: 'performed', 
+                            details: null
+                        });
+                    } else {
+
+                        newAction = this.createActionObjectLiteral(commandArgs[actionIndex], date);
+
+                        /**
+                         * Call API store function to create and log a new action
+                         */
+                        logEntryStore.createWithNewAction(newAction, {
+                            date: date, 
+                            duration: duration, 
+                            entry: 'performed', 
+                            details: null
+                        });
+                    }
+                    
+                } else if (context === 'new-action') {
+                    spokenArgs = this.parseSpeech(speech, context);
+                    
+                    existingAction = actionStore.getActionByName(spokenArgs.actionName);
+                    
+                    if (existingAction) {
+                        toastr.error('An action by this name already exists');
+                    } else {
+
+                        newAction = this.createActionObjectLiteral(spokenArgs.actionName, date);
+
+                        newAction.duration = spokenArgs.duration;
+                        newAction.nextDate = spokenArgs.date;
+
+                        actionStore.create(newAction);
+                    }
                 } else {
                     toastr.error('Sorry, I did not understand. I heard, "' + event.results[0][0].transcript + '"');
                 }
@@ -198,10 +126,126 @@
 
             this.setState({isListening: false});
         },
+        
         handleNoSpeech: function () {
             this.setState({isListening: false});
         },
 
+        /*************************************************************
+         * HELPERS
+         *************************************************************/
+        createActionObjectLiteral: function (actionName, created) {
+            // Use IIFE for lexical scope
+            var newAction,
+                tags;
+
+            /**
+             * Get current focus and filter tags
+             */
+            tags = ui.tags || [];
+            tags = tags.slice();
+            tags.push(this.props.focusTag);
+
+            /**
+             * Create new action {} object literal
+             */
+            newAction = doozy.action(actionName, tags);
+            newAction.created = created;
+        },
+        
+        parseSpeech: function (speech, context) {
+            var actionIndex = 0,
+                actionName,
+                commandArgs,
+                commandWord,
+                date,
+                dateSignal = false, 
+                duration, 
+                durationSignal = false,
+                parseDuration;
+            
+            if (context === 'new-action') {
+                contextWord = 'will';
+            } else if (context === 'log-action') {
+                contextWord = 'did';
+            }
+            
+            /**
+             * Check for a language signal that a date is referenced
+             */
+            if (speech.indexOf(' i ' + contextWord + ' ') > -1) {
+                dateSignal = true;
+                speech = speech.replace(' i ' + contextWord + ' ', '|');
+            }
+            
+            /**
+             * Check for a language signal that a duration is referenced
+             */
+            if (speech.indexOf(' for ') > -1) {
+                durationSignal = true;
+                speech = speech.replace(' for ', '|');
+            }
+            
+            /**
+             * Remove 'excess' language for clean split of command arguments
+             */
+            if (speech.slice(0, (3 + contextWord.length)) === 'i ' + contextWord + ' ') {
+                speech = speech.replace('i ' + contextWord + ' ', '');
+            }
+            
+            /**
+             * Split command arguments
+             */
+            commandArgs = speech.split('|');
+
+            /**
+             * Parse date argument if supplied, else today
+             */
+            date = Date.create('today');
+            if (dateSignal) {
+                date = Date.create(commandArgs[0]);
+                if (isNaN(date.getTime())) {
+                    console.log('Bad Date Argument: ' + commandArgs[0]);
+                    date = Date.create('today');
+                }
+            }
+            
+            /**
+             * Parse duration argument if supplied, else 0
+             */
+            duration = 0;
+            if (durationSignal) {
+                parseDuration = babble.get('durations')
+                    .translate(commandArgs[commandArgs.length - 1]);
+                
+                if (parseDuration.tokens.length > 0) {
+                    duration = parseDuration.tokens[0].value.toMinutes();
+                }
+            }
+            
+            if (commandArgs.length === 3) {
+                actionIndex = 1;
+            } else if (commandArgs.length === 2 && dateSignal) {
+                actionIndex = 1;
+            } else if  (commandArgs.length === 2 && durationSignal) {
+                actionIndex = 0;
+            }
+            
+            /**
+             * Build a clean action name (begin with uppercase)
+             */
+            actionName = commandArgs[actionIndex].slice(0,1).toUpperCase() + commandArgs[actionIndex].slice(1);
+            
+            /**
+             * Return an object literal of parsed arguments
+             */
+            return {
+                actionName: actionName,
+                date: date,
+                duration: duration
+            };
+        },
+        
         /*************************************************************
          * RENDERING
          *************************************************************/
