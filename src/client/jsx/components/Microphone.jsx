@@ -223,6 +223,9 @@
                 }
             }
             
+            /**
+             * Determine the arg index that contains the name of the action
+             */
             if (commandArgs.length === 3) {
                 actionIndex = 1;
             } else if (commandArgs.length === 2 && dateSignal) {
@@ -262,7 +265,14 @@
             };
 
             return (
-                <li key="mic"><a className={this.state.isListening ? 'active' : ''} style={listItemContentStyle} href="javascript:;" onClick={this.handleSpeakReadyClick}><i style={iconStyle} className="fa fa-2x fa-microphone"></i></a></li>
+                <li key="mic">
+                    <a className={this.state.isListening ? 'active' : ''} 
+                            style={listItemContentStyle} 
+                            href="javascript:;" 
+                            onClick={this.handleSpeakReadyClick}>
+                        <i style={iconStyle} className="fa fa-2x fa-microphone"></i>
+                    </a>
+                </li>
             );
         },
     });
