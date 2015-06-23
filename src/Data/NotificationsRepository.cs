@@ -9,6 +9,15 @@ namespace HoomanLogic.Data
 {
     public static class NotificationsRepository
     {
+        public static ef.Notification GetLatestNotification(string userId)
+        {
+            using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())
+            {
+                return db.Notifications.OrderByDescending(a => a.OccurredAt).FirstOrDefault();
+                //return db.Notifications.Where(row => row.UserId == userId).OrderByDescending(a => a.OccurredAt).FirstOrDefault();
+            }
+        }
+
         public static List<ef.Notification> GetNotifications(string userName)
         {
             using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())

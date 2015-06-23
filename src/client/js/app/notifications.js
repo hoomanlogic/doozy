@@ -14,8 +14,8 @@
     }
 }(function() {
     'use strict';
-
-    var API_KEY = 'lpWtlt_UwX-Ba0D25yqeN6OA'; // '379697648331-f7b2qooh3g6d787l0c1n6s66jh6us2u1.apps.googleusercontent.com';
+                  
+    var API_KEY = 'AIzaSyCJI_tjIhwGCyiyXlPxMtEL2L3CR7ocMU0'; // '379697648331-f7b2qooh3g6d787l0c1n6s66jh6us2u1.apps.googleusercontent.com';
     var GCM_ENDPOINT = 'https://android.googleapis.com/gcm/send';
 
     var curlCommandDiv = document.querySelector('.js-curl-command');
@@ -41,7 +41,7 @@
         }
         return mergedEndpoint;
     }
-
+    
     function sendSubscriptionToServer(subscription) {
         // TODO: Send the subscription.endpoint
         // to your server and save it to send a
@@ -51,9 +51,6 @@
         // endpointWorkaround(subscription)
         //console.log('TODO: Implement sendSubscriptionToServer()');
         console.log(subscription.endpoint);
-        userStore.updatePrefs({
-            gcmEndpoint: subscription.endpoint
-        });
 
         var mergedEndpoint = endpointWorkaround(subscription);
 
@@ -76,12 +73,61 @@
         var endpointSections = mergedEndpoint.split('/');
         var subscriptionId = endpointSections[endpointSections.length - 1];
 
+        if (userStore.updates.value.gcmEndpoint !== subscriptionId) {
+            userStore.updatePrefs({
+                gcmEndpoint: subscriptionId
+            });
+        }
+        
         var curlCommand = 'curl --header "Authorization: key=' + API_KEY +
             '" --header Content-Type:"application/json" ' + GCM_ENDPOINT +
             ' -d "{\\"registration_ids\\":[\\"' + subscriptionId + '\\"]}"';
 
         console.log(curlCommand);
     }
+    
+        // Once the service worker is registered set the initial state
+    function initialiseState () {
+        // Are Notifications supported in the service worker?
+        if (!('showNotification' in ServiceWorkerRegistration.prototype)) {
+            console.log('Notifications aren\'t supported.');
+            return;
+        }
+
+        // Check the current Notification permission.
+        // If its denied, it's a permanent block until the
+        // user changes the permission
+        if (Notification.permission === 'denied') {
+            console.log('The user has blocked notifications.');
+            return;
+        }
+
+        // Check if push messaging is supported
+        if (!('PushManager' in window)) {
+            console.log('Push messaging isn\'t supported.');
+            return;
+        }
+
+        // We need the service worker registration to check for a subscription
+        navigator.serviceWorker.ready.then(function(serviceWorkerRegistration) {
+            // Do we already have a push message subscription?
+            serviceWorkerRegistration.pushManager.getSubscription()
+                .then(function(subscription) {
+
+                    if (!subscription) {
+                        // We aren’t subscribed to push, so set UI
+                        // to allow the user to enable push
+                        return;
+                    }
+
+                    // Keep your server in sync with the latest subscription
+                    sendSubscriptionToServer(subscription);
+                })
+                .catch(function(err) {
+                    console.log('Error during getSubscription()', err);
+                });
+        });
+    };
 
     function unsubscribe() {
 
@@ -150,60 +196,6 @@
                 });
         });
     }
-
-    // Once the service worker is registered set the initial state
-    function initialiseState() {
-        // Are Notifications supported in the service worker?
-        if (!('showNotification' in ServiceWorkerRegistration.prototype)) {
-            console.log('Notifications aren\'t supported.');
-            return;
-        }
-
-        // Check the current Notification permission.
-        // If its denied, it's a permanent block until the
-        // user changes the permission
-        if (Notification.permission === 'denied') {
-            console.log('The user has blocked notifications.');
-            return;
-        }
-
-        // Check if push messaging is supported
-        if (!('PushManager' in window)) {
-            console.log('Push messaging isn\'t supported.');
-            return;
-        }
-
-        // We need the service worker registration to check for a subscription
-        navigator.serviceWorker.ready.then(function(serviceWorkerRegistration) {
-            // Do we already have a push message subscription?
-            serviceWorkerRegistration.pushManager.getSubscription()
-                .then(function(subscription) {
-
-                    if (!subscription) {
-                        // We aren’t subscribed to push, so set UI
-                        // to allow the user to enable push
-                        return;
-                    }
-
-                    // Keep your server in sync with the latest subscription
-                    sendSubscriptionToServer(subscription);
-                })
-                .catch(function(err) {
-                    console.log('Error during getSubscription()', err);
-                });
-        });
-    }
-
-    window.addEventListener('load', function() {
-        // Check that service workers are supported, if so, progressively
-        // enhance and add push messaging support, otherwise continue without it.
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./service-worker.js')
-                .then(initialiseState);
-        } else {
-            console.log('Service workers aren\'t supported in this browser.');
-        }
-    });
 
     return {
         isPushEnabled: isPushEnabled,

@@ -106,7 +106,16 @@
             weatherStore.init(this.props.settings.userName, this.props.settings.userId);
             
             connectionStore.getConnections();
-
+            
+            // Check that service workers are supported, if so, progressively
+            // enhance and add push messaging support, otherwise continue without it.
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('./service-worker.js?v1')
+                    .then(doozyNotifications.initialiseState);
+            } else {
+                console.log('Service workers aren\'t supported in this browser.');
+            }
+            
             /**
              * Work with initial data store values
              */

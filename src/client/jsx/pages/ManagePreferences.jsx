@@ -36,7 +36,7 @@
             /**
              * Clean up objects and bindings
              */
-            this.plansObserver.dispose();
+            this.userObserver.dispose();
         },
         
         /*************************************************************
@@ -119,7 +119,7 @@
                             <label htmlFor="prefs-email-notifications">Receive email notifications?</label>
                             <input id="prefs-email-notifications" ref="prefsEmailNotifications" type="checkbox" className="form-control" defaultChecked={prefs.emailNotifications} />
                         </div>
-                        <button type="button" className="btn btn-primary" onClick={this.handleNotifySubscriptionClick}></button>        
+                        <button type="button" className="btn btn-primary" onClick={this.handleNotifySubscriptionClick}>Subscribe</button>        
                 
                         <button style={buttonStyle} type="button" className="btn btn-primary" onClick={this.handleSavePreferencesClick}>Save Changes</button>
                         <button style={buttonStyle} type="button" className="btn btn-default" onClick={this.handleCancelClick}>Cancel</button>
