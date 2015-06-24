@@ -106,31 +106,6 @@
         /*************************************************************
          * RENDERING
          *************************************************************/
-        renderPercentChange: function (percent) {
-            if (typeof percent === 'undefined' || percent === '') {
-                return null;
-            }
-            
-            var color = 'rgb(68,68,68)';
-            var prefix = '';
-            var suffix = '%';
-            if (percent < 0) {
-                prefix = ''
-                color = 'hsl(0,90%,40%)';
-            } else if (percent > 0) {
-                prefix = '+'
-                color = 'hsl(120,90%,40%)';
-            } else {
-                prefix = '';
-                suffix = '';
-                percent = '-';
-            }
-            
-            return (
-                <span style={{ color: color }}>{prefix + percent + suffix}</span>
-            );
-        },
-        
         render: function () {
 
             var targets = targetStore.updates.value.slice();
