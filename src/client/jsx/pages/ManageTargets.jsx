@@ -141,9 +141,12 @@
             targets = _.sortBy(targets, function(target){ 
                 return target.name.toLowerCase();
             })
-            //targets.reverse();
+            
+            
+            /**
+             * Add 'New Target' to list
+             */
             targets.push(doozy.target());
-            //targets.reverse();
             
             /**
              * Inline Styles
