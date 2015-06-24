@@ -141,9 +141,9 @@
             targets = _.sortBy(targets, function(target){ 
                 return target.name.toLowerCase();
             })
-            targets.reverse();
+            //targets.reverse();
             targets.push(doozy.target());
-            targets.reverse();
+            //targets.reverse();
             
             /**
              * Inline Styles
@@ -195,16 +195,31 @@
                                     change: stats.periodActive.streak > stats.periodLongestStreak.streak ? stats.periodActive.streak - stats.periodLongestStreak.streak : 0
                                 }
                                 
+                                var timeTo = new Date(stats.periodActive.ends);
+                                timeTo.setHours(23,59,59,999);
+                                var timeLeft = new babble.Duration(timeTo - (new Date()).getTime()).toString().split(', ')[0] + ' left in this period';
+                                
                                 // existing targets
                                 return (
                                     <div key={item.id} className="clickable" style={targetStyle} onClick={this.handleTargetClick.bind(null, item)}>
                                         <div style={{width: '100%', fontSize: 'x-large'}}>{item.name}</div>
                                         <div style={{display: 'flex'}}>
-                                            <Indicator kind={'percent'} title={'Accuracy'} backgroundColor={this.calcColor(stats.accuracy)} value={stats.accuracy} change={stats.change} />
-                                            <Indicator kind={progress.kind} title={'Progress'} backgroundColor={progress.backgroundColor} value={progress.value} compareValue={progress.compare} change={progress.change} />
-                                            <Indicator kind={'comparison'} title={'Streak'} backgroundColor={streak.backgroundColor} value={stats.periodActive.streak} compareValue={stats.periodLongestStreak.streak} change={streak.change} />
-
+                                            <Indicator kind={progress.kind} title={'Progress'} 
+                                                    backgroundColor={progress.backgroundColor} 
+                                                    value={progress.value} 
+                                                    compareValue={progress.compare} 
+                                                    change={progress.change} />
+                                            <Indicator kind={'comparison'} title={'Streak'} 
+                                                    backgroundColor={streak.backgroundColor} 
+                                                    value={stats.periodActive.streak} 
+                                                    compareValue={stats.periodLongestStreak.streak} 
+                                                    change={streak.change} />
+                                            <Indicator kind={'percent'} title={'Accuracy'} 
+                                                    backgroundColor={this.calcColor(stats.accuracy)} 
+                                                    value={stats.accuracy} 
+                                                    change={stats.change} />
                                         </div>
+                                        <div style={{textAlign: 'right'}}>{timeLeft}</div>
                                     </div>
                                 );
                             }
