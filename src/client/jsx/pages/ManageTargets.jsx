@@ -58,6 +58,52 @@
         },
         
         /*************************************************************
+         * CALCULATIONS
+         *************************************************************/
+        calcColor: function (percent) {
+            if (typeof percent === 'undefined' || percent === '') {
+                return null;
+            }
+            
+            var multiplier = 120 / 100;
+            var offBy = 100 - percent;
+            
+            var color = 'hsl(' + (120 - Math.round(offBy * multiplier)) + ',90%,40%)';
+            var suffix = '%';
+            
+            return color;
+        },
+        
+        calcProgressProps: function (target, stats) {
+            var progress = {
+                kind: 'comparison',
+                value: stats.periodActive.number,
+                backgroundColor: 'white',
+                compare: target.number,
+                change: stats.periodActive.number > target.number ? stats.periodActive.number - target.number : 0
+            };
+
+            var diff = target.number - stats.periodActive.number;
+            var expectedRate = target.number / stats.periodActive.daysInPeriod;
+            if (diff <= 0) {
+                Object.assign(progress, {
+                    kind: 'simple',
+                    backgroundColor: this.calcColor(100),
+                    value: "MET",
+                    compare: null
+                });
+            } else if (Math.ceil(stats.periodActive.daysLeft * expectedRate) >= diff) {
+                // do nothing
+            } else {
+                Object.assign(progress, {
+                    backgroundColor: this.calcColor(Math.round((Math.ceil(stats.periodActive.daysLeft * expectedRate) / diff) * 100) - 50)
+                });
+            }
+            
+            return progress;
+        },
+        
+        /*************************************************************
          * RENDERING
          *************************************************************/
         renderPercentChange: function (percent) {
@@ -83,41 +129,6 @@
             return (
                 <span style={{ color: color }}>{prefix + percent + suffix}</span>
             );
-        },
-        
-        renderPercentAccuracy: function (percent) {
-            if (typeof percent === 'undefined' || percent === '') {
-                return null;
-            }
-            
-            var multiplier = 120 / 100;
-            
-            var offBy = 100 - percent;
-            
-            //hsl(120,90%,40%)
-            
-            var color = 'hsl(' + (120 - Math.round(offBy * multiplier)) + ',90%,40%)';
-            var suffix = '%';
-            
-            return (
-                <span style={{ color: color }}>{percent + suffix}</span>
-            );
-        },
-        
-        calcPercentColor: function (percent) {
-            if (typeof percent === 'undefined' || percent === '') {
-                return null;
-            }
-            
-            var multiplier = 120 / 100;
-            var offBy = 100 - percent;
-            
-            var color = 'hsl(' + (120 - Math.round(offBy * multiplier)) + ',90%,40%)';
-            var suffix = '%';
-            
-            return { 
-                backgroundColor: color 
-            };
         },
         
         render: function () {
@@ -177,38 +188,11 @@
                                 );
                             } else {
                                 
-                                var progressContent = (
-                                    <div style={ Object.assign({textAlign: 'center'}, this.calcPercentColor(progressPercent))}>
-                                        <div style={{display: 'inline', fontSize: 'x-large'}}>{stats.periodActive.number}</div>
-                                        <div style={{display: 'inline'}}>/{item.number}</div>
-                                    </div>
-                                );
-                                var progressPercent = 0;
-                                var diff = item.number - stats.periodActive.number;
-                                var expectedRate = item.number / stats.periodActive.daysInPeriod;
-                                if (diff === 0) {
-                                    progressPercent = 100;
-                                    progressContent = (
-                                        <div style={ Object.assign({textAlign: 'center'}, this.calcPercentColor(progressPercent))}>
-                                            <div style={{display: 'inline', fontSize: 'x-large'}}>MET</div>
-                                        </div>
-                                    );
-                                } else if (Math.ceil(stats.periodActive.daysLeft * expectedRate) >= diff) {
-                                    progressPercent = 50;
-                                    progressContent = (
-                                        <div style={ Object.assign({textAlign: 'center'}, this.calcPercentColor(progressPercent))}>
-                                            <div style={{display: 'inline', fontSize: 'x-large'}}>{stats.periodActive.number}</div>
-                                            <div style={{display: 'inline'}}>/{item.number}</div>
-                                        </div>
-                                    );
-                                } else {
-                                    progressPercent = Math.round((Math.ceil(stats.periodActive.daysLeft * expectedRate) / diff) * 100) - 50;
-                                    progressContent = (
-                                        <div style={ Object.assign({textAlign: 'center'}, this.calcPercentColor(progressPercent))}>
-                                            <div style={{display: 'inline', fontSize: 'x-large'}}>{stats.periodActive.number}</div>
-                                            <div style={{display: 'inline'}}>/{item.number}</div>
-                                        </div>
-                                    );
+                                var progress = this.calcProgressProps(item, stats);
+                                
+                                var streak = {
+                                    backgroundColor: stats.periodActive.streak >= stats.periodLongestStreak.streak ? 'hsl(120,90%,40%)' : (stats.periodActive.streak === 0 ? 'hsl(0,90%,40%)' : 'white'),
+                                    change: stats.periodActive.streak > stats.periodLongestStreak.streak ? stats.periodActive.streak - stats.periodLongestStreak.streak : 0
                                 }
                                 
                                 // existing targets
@@ -216,24 +200,10 @@
                                     <div key={item.id} className="clickable" style={targetStyle} onClick={this.handleTargetClick.bind(null, item)}>
                                         <div style={{width: '100%', fontSize: 'x-large'}}>{item.name}</div>
                                         <div style={{display: 'flex'}}>
-                                            <div style={{minWidth: '100px', margin: '5px'}}>
-                                                <div style={{textAlign: 'center', borderRadius: '8px 8px 0 0', backgroundColor: 'rgb(68, 68, 68)', color: 'white', marginBottom: '2px'}}>Accuracy</div>
-                                                <div style={ Object.assign({textAlign: 'center', color: 'white', fontSize: 'x-large'}, this.calcPercentColor(stats.accuracy))}>{stats.accuracy}%</div>
-                                                <div style={{textAlign: 'center', borderRadius: '0 0 8px 8px', backgroundColor: 'rgb(68, 68, 68)', marginTop: '2px'}}>{this.renderPercentChange(stats.change)}</div>
-                                            </div>
-                                            <div style={{minWidth: '100px', margin: '5px'}}>
-                                                <div style={{textAlign: 'center', borderRadius: '8px 8px 0 0', backgroundColor: 'rgb(68, 68, 68)', color: 'white', marginBottom: '2px'}}>Progress</div>
-                                                {progressContent}
-                                                <div style={{textAlign: 'center', borderRadius: '0 0 8px 8px', backgroundColor: 'rgb(68, 68, 68)', color: 'rgb(68, 68, 68)', marginTop: '2px'}}>0</div>
-                                            </div>
-                                            <div style={{minWidth: '80px', margin: '5px'}}>
-                                                <div style={{textAlign: 'center', borderRadius: '8px 8px 0 0', backgroundColor: 'rgb(68, 68, 68)', color: 'white', marginBottom: '2px'}}>Streak</div>
-                                                <div style={{textAlign: 'center'}}>
-                                                    <div style={{display: 'inline', fontSize: 'x-large'}}>{stats.periodActive.streak}</div>
-                                                    <div style={{display: 'inline'}}>/{stats.periodLongestStreak.streak}</div>
-                                                </div>
-                                                <div style={{textAlign: 'center', borderRadius: '0 0 8px 8px', backgroundColor: 'rgb(68, 68, 68)', color: 'rgb(68, 68, 68)', marginTop: '2px'}}>0</div>
-                                            </div>
+                                            <Indicator kind={'percent'} title={'Accuracy'} backgroundColor={this.calcColor(stats.accuracy)} value={stats.accuracy} change={stats.change} />
+                                            <Indicator kind={progress.kind} title={'Progress'} backgroundColor={progress.backgroundColor} value={progress.value} compareValue={progress.compare} change={progress.change} />
+                                            <Indicator kind={'comparison'} title={'Streak'} backgroundColor={streak.backgroundColor} value={stats.periodActive.streak} compareValue={stats.periodLongestStreak.streak} change={streak.change} />
+
                                         </div>
                                     </div>
                                 );

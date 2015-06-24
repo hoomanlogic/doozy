@@ -60,6 +60,7 @@ var jsxFiles = [
 	'src/client/jsx/mixins/**',
 	
 	'src/client/jsx/components/RelativeTime.jsx',
+	'src/client/jsx/components/Indicator.jsx',
 	
     'src/client/jsx/components/ActionRow.jsx',
     'src/client/jsx/components/FocusListItem.jsx',
