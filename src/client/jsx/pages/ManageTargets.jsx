@@ -65,7 +65,7 @@
                 return null;
             }
             
-            var color = 'rgb(0,0,0)';
+            var color = 'rgb(68,68,68)';
             var prefix = '';
             var suffix = '%';
             if (percent < 0) {
@@ -74,6 +74,10 @@
             } else if (percent > 0) {
                 prefix = '+'
                 color = 'hsl(120,90%,40%)';
+            } else {
+                prefix = '';
+                suffix = '';
+                percent = '-';
             }
             
             return (
@@ -98,6 +102,22 @@
             return (
                 <span style={{ color: color }}>{percent + suffix}</span>
             );
+        },
+        
+        calcPercentColor: function (percent) {
+            if (typeof percent === 'undefined' || percent === '') {
+                return null;
+            }
+            
+            var multiplier = 120 / 100;
+            var offBy = 100 - percent;
+            
+            var color = 'hsl(' + (120 - Math.round(offBy * multiplier)) + ',90%,40%)';
+            var suffix = '%';
+            
+            return { 
+                backgroundColor: color 
+            };
         },
         
         render: function () {
@@ -160,11 +180,20 @@
                                 // existing targets
                                 return (
                                     <div key={item.id} className="clickable" style={targetStyle} onClick={this.handleTargetClick.bind(null, item)}>
-                                        <div style={{flexGrow: '3'}}>{item.name}</div>
-                                        <div style={{flexGrow: '1'}}>{this.renderPercentAccuracy(stats.accuracy)}</div>
-                                        <div style={{flexGrow: '1'}}>{this.renderPercentChange(stats.change)}</div>
-                                        <div style={{flexGrow: '1'}}>{stats.periodActive.streak}</div>
-                                        <div style={{flexGrow: '1'}}>{stats.periodLongestStreak.streak}</div>
+                                        <div style={{width: '100%', fontSize: 'x-large'}}>{item.name}</div>
+                                        <div style={{minWidth: '100px', margin: '5px'}}>
+                                            <div style={{textAlign: 'center', borderRadius: '8px 8px 0 0', backgroundColor: 'rgb(68, 68, 68)', color: 'white', marginBottom: '2px'}}>Accuracy</div>
+                                            <div style={ Object.assign({textAlign: 'center', color: 'white', fontSize: 'x-large'}, this.calcPercentColor(stats.accuracy))}>{stats.accuracy}%</div>
+                                            <div style={{textAlign: 'center', borderRadius: '0 0 8px 8px', backgroundColor: 'rgb(68, 68, 68)', marginTop: '2px'}}>{this.renderPercentChange(stats.change)}</div>
+                                        </div>
+                                        <div style={{minWidth: '80px', margin: '5px'}}>
+                                            <div style={{textAlign: 'center', borderRadius: '8px 8px 0 0', backgroundColor: 'rgb(68, 68, 68)', color: 'white', marginBottom: '2px'}}>Streak</div>
+                                            <div style={{textAlign: 'center'}}>
+                                                <div style={{display: 'inline', fontSize: 'x-large'}}>{stats.periodActive.streak}</div>
+                                                <div style={{display: 'inline'}}>/{stats.periodLongestStreak.streak}</div>
+                                                <div style={{textAlign: 'center', borderRadius: '0 0 8px 8px', backgroundColor: 'rgb(68, 68, 68)', color: 'rgb(68, 68, 68)', marginTop: '2px'}}>0</div>
+                                            </div>
+                                        </div>
                                     </div>
                                 );
                             }

@@ -146,7 +146,7 @@
     };
     
     var targetPeriodStats = function (target, actionIds, periodStarts, periodEnds, prevPeriodStats, isActive) {
-        var number, performed, streak;
+        var number, performed, streak = 0;
         
         // get performed log entries relevant to the target period
         performed = logEntryStore.updates.value.filter(function (item) {
@@ -175,8 +175,6 @@
             }
         } else if (isActive && typeof prevPeriodStats !== 'undefined' && prevPeriodStats !== null) {
             streak = prevPeriodStats.streak;
-        } else {
-            streak = 0;
         }
         
         // return period stats
