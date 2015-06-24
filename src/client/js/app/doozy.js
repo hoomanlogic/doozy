@@ -177,6 +177,20 @@
             streak = prevPeriodStats.streak;
         }
         
+        // for current period, a few more indicators
+        if (isActive) {
+            var daysInPeriod = (periodEnds.getTime() - periodStarts.getTime()) / 86400000;
+            var today = new Date();
+            today.setHours(0,0,0,0);
+            
+            if (periodEnds.getTime() === today.getTime()) {
+                var daysLeft = ((new Date()).getTime() - periodEnds.getTime()) / (86400000 * 0.7);
+            } else {
+                var daysLeft = (periodEnds.getTime() - today.getTime()) / 86400000;
+            }
+            
+        }
+        
         // return period stats
         return {
             starts: periodStarts.toISOString(),
@@ -185,7 +199,9 @@
             met: target.number <= number,
             streak: streak,
             distance: number - target.number,
-            logEntries: performed
+            logEntries: performed,
+            daysLeft: daysLeft,
+            daysInPeriod: daysInPeriod
         };
     };
     

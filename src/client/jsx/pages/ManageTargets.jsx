@@ -148,7 +148,6 @@
             };
         
             var targetStyle = {
-                display: 'flex',
                 fontSize: 'large',
                 padding: '5px',
                 borderBottom: 'solid 1px #e0e0e0'
@@ -177,20 +176,62 @@
                                     </div>
                                 );
                             } else {
+                                
+                                var progressContent = (
+                                    <div style={ Object.assign({textAlign: 'center'}, this.calcPercentColor(progressPercent))}>
+                                        <div style={{display: 'inline', fontSize: 'x-large'}}>{stats.periodActive.number}</div>
+                                        <div style={{display: 'inline'}}>/{item.number}</div>
+                                    </div>
+                                );
+                                var progressPercent = 0;
+                                var diff = item.number - stats.periodActive.number;
+                                var expectedRate = item.number / stats.periodActive.daysInPeriod;
+                                if (diff === 0) {
+                                    progressPercent = 100;
+                                    progressContent = (
+                                        <div style={ Object.assign({textAlign: 'center'}, this.calcPercentColor(progressPercent))}>
+                                            <div style={{display: 'inline', fontSize: 'x-large'}}>MET</div>
+                                        </div>
+                                    );
+                                } else if (Math.ceil(stats.periodActive.daysLeft * expectedRate) >= diff) {
+                                    progressPercent = 50;
+                                    progressContent = (
+                                        <div style={ Object.assign({textAlign: 'center'}, this.calcPercentColor(progressPercent))}>
+                                            <div style={{display: 'inline', fontSize: 'x-large'}}>{stats.periodActive.number}</div>
+                                            <div style={{display: 'inline'}}>/{item.number}</div>
+                                        </div>
+                                    );
+                                } else {
+                                    progressPercent = Math.round((Math.ceil(stats.periodActive.daysLeft * expectedRate) / diff) * 100) - 50;
+                                    progressContent = (
+                                        <div style={ Object.assign({textAlign: 'center'}, this.calcPercentColor(progressPercent))}>
+                                            <div style={{display: 'inline', fontSize: 'x-large'}}>{stats.periodActive.number}</div>
+                                            <div style={{display: 'inline'}}>/{item.number}</div>
+                                        </div>
+                                    );
+                                }
+                                
                                 // existing targets
                                 return (
                                     <div key={item.id} className="clickable" style={targetStyle} onClick={this.handleTargetClick.bind(null, item)}>
                                         <div style={{width: '100%', fontSize: 'x-large'}}>{item.name}</div>
-                                        <div style={{minWidth: '100px', margin: '5px'}}>
-                                            <div style={{textAlign: 'center', borderRadius: '8px 8px 0 0', backgroundColor: 'rgb(68, 68, 68)', color: 'white', marginBottom: '2px'}}>Accuracy</div>
-                                            <div style={ Object.assign({textAlign: 'center', color: 'white', fontSize: 'x-large'}, this.calcPercentColor(stats.accuracy))}>{stats.accuracy}%</div>
-                                            <div style={{textAlign: 'center', borderRadius: '0 0 8px 8px', backgroundColor: 'rgb(68, 68, 68)', marginTop: '2px'}}>{this.renderPercentChange(stats.change)}</div>
-                                        </div>
-                                        <div style={{minWidth: '80px', margin: '5px'}}>
-                                            <div style={{textAlign: 'center', borderRadius: '8px 8px 0 0', backgroundColor: 'rgb(68, 68, 68)', color: 'white', marginBottom: '2px'}}>Streak</div>
-                                            <div style={{textAlign: 'center'}}>
-                                                <div style={{display: 'inline', fontSize: 'x-large'}}>{stats.periodActive.streak}</div>
-                                                <div style={{display: 'inline'}}>/{stats.periodLongestStreak.streak}</div>
+                                        <div style={{display: 'flex'}}>
+                                            <div style={{minWidth: '100px', margin: '5px'}}>
+                                                <div style={{textAlign: 'center', borderRadius: '8px 8px 0 0', backgroundColor: 'rgb(68, 68, 68)', color: 'white', marginBottom: '2px'}}>Accuracy</div>
+                                                <div style={ Object.assign({textAlign: 'center', color: 'white', fontSize: 'x-large'}, this.calcPercentColor(stats.accuracy))}>{stats.accuracy}%</div>
+                                                <div style={{textAlign: 'center', borderRadius: '0 0 8px 8px', backgroundColor: 'rgb(68, 68, 68)', marginTop: '2px'}}>{this.renderPercentChange(stats.change)}</div>
+                                            </div>
+                                            <div style={{minWidth: '100px', margin: '5px'}}>
+                                                <div style={{textAlign: 'center', borderRadius: '8px 8px 0 0', backgroundColor: 'rgb(68, 68, 68)', color: 'white', marginBottom: '2px'}}>Progress</div>
+                                                {progressContent}
+                                                <div style={{textAlign: 'center', borderRadius: '0 0 8px 8px', backgroundColor: 'rgb(68, 68, 68)', color: 'rgb(68, 68, 68)', marginTop: '2px'}}>0</div>
+                                            </div>
+                                            <div style={{minWidth: '80px', margin: '5px'}}>
+                                                <div style={{textAlign: 'center', borderRadius: '8px 8px 0 0', backgroundColor: 'rgb(68, 68, 68)', color: 'white', marginBottom: '2px'}}>Streak</div>
+                                                <div style={{textAlign: 'center'}}>
+                                                    <div style={{display: 'inline', fontSize: 'x-large'}}>{stats.periodActive.streak}</div>
+                                                    <div style={{display: 'inline'}}>/{stats.periodLongestStreak.streak}</div>
+                                                </div>
                                                 <div style={{textAlign: 'center', borderRadius: '0 0 8px 8px', backgroundColor: 'rgb(68, 68, 68)', color: 'rgb(68, 68, 68)', marginTop: '2px'}}>0</div>
                                             </div>
                                         </div>
