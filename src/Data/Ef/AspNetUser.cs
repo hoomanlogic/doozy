@@ -30,6 +30,7 @@ namespace HoomanLogic.Data.Ef
             this.Actions = new HashSet<Action>();
             this.Plans = new HashSet<Plan>();
             this.Targets = new HashSet<Target>();
+            this.LogEntries = new HashSet<LogEntry>();
         }
     
         public string Id { get; set; }
@@ -61,5 +62,6 @@ namespace HoomanLogic.Data.Ef
         public virtual ICollection<Action> Actions { get; set; }
         public virtual ICollection<Plan> Plans { get; set; }
         public virtual ICollection<Target> Targets { get; set; }
+        public virtual ICollection<LogEntry> LogEntries { get; set; }
     }
 }

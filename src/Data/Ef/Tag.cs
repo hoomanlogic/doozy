@@ -17,6 +17,7 @@ namespace HoomanLogic.Data.Ef
         public Tag()
         {
             this.Actions = new HashSet<Action>();
+            this.LogEntries = new HashSet<LogEntry>();
         }
     
         public System.Guid Id { get; set; }
@@ -29,5 +30,6 @@ namespace HoomanLogic.Data.Ef
     
         public virtual AspNetUser AspNetUser { get; set; }
         public virtual ICollection<Action> Actions { get; set; }
+        public virtual ICollection<LogEntry> LogEntries { get; set; }
     }
 }

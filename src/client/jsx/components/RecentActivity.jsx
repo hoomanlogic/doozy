@@ -79,7 +79,13 @@
 
             var actionIds = _.pluck(this.props.actions, 'id');
             var logEntries = logEntryStore.updates.value.filter( function (item) {
-                return item.entry !== 'created' && actionIds.indexOf(item.actionId) > -1;
+                
+                var isActionIdAssigned = true;
+                if (item.actionId == null || item.actionId == '00000000-0000-0000-0000-000000000000') {
+                    isActionIdAssigned = false;
+                }
+                
+                return item.entry !== 'created' && (!isActionIdAssigned || actionIds.indexOf(item.actionId) > -1 || _.intersection(item.tags, window.ui.tags).length > 0);
             });
             
             logEntries = _.sortBy(logEntries, function(item){ return item.date.split('T')[0] + '-' + (['performed','skipped'].indexOf(item.entry) ? '1' : '0'); });

@@ -20,7 +20,9 @@
 }(function (React) {
     'use strict';
     return React.createClass({
-
+        /*************************************************************
+         * COMPONENT LIFECYCLE
+         *************************************************************/
         getInitialState: function () {
             return {
                 targetsLastUpdated: (new Date()).toISOString()  

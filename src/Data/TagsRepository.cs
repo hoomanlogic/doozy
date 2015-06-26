@@ -113,6 +113,73 @@ namespace HoomanLogic.Data
             }
         }
 
+        public static ef.Tag GetTag(ef.hoomanlogicEntities db, string userId, string tag)
+        {
+            string kind = "Tag";
+            if (tag.StartsWith("!"))
+            {
+                kind = "Focus";
+                tag = tag.Substring(1);
+            }
+            else if (tag.StartsWith("@"))
+            {
+                kind = "Place";
+                tag = tag.Substring(1);
+            }
+            else if (tag.StartsWith(">"))
+            {
+                kind = "Goal";
+                tag = tag.Substring(1);
+            }
+            else if (tag.StartsWith("$"))
+            {
+                kind = "Need";
+                tag = tag.Substring(1);
+            }
+            else if (tag.StartsWith("#"))
+            {
+                kind = "Box";
+                tag = tag.Substring(1);
+            }
+            var tagRow = db.Tags.Where(t => t.UserId == userId && t.Name == tag).FirstOrDefault();
+            if (tagRow == null)
+            {
+                tagRow = new ef.Tag()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = tag,
+                    UserId = userId,
+                    Path = "/" + tag + "/",
+                    Kind = kind,
+                    IsFocus = kind == "Focus"
+                };
+                db.Tags.Add(tagRow);
+            }
+            return tagRow;
+        }
+
+        public static bool IsTagFocus(ef.hoomanlogicEntities db, string userId, string tag)
+        {
+            if (tag.StartsWith("!"))
+            {
+                return true;
+            }
+            else if (new string[] { "@", "#", "$", ">" }.Contains(tag[0].ToString()))
+            {
+                return false;
+            }
+
+            var tagRow = db.Tags.Where(t => t.UserId == userId && t.Name == tag).FirstOrDefault();
+            if (tagRow == null)
+            {
+                return false;
+            }
+            else
+            {
+                return tagRow.Kind == "Focus";
+            }
+        }
+
         #endregion
     }
 }

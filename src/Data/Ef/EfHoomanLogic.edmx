@@ -113,12 +113,21 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="ActionId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ActionId" Type="uniqueidentifier" />
           <Property Name="Date" Type="datetime" Nullable="false" />
           <Property Name="Entry" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="Duration" Type="smallint" />
           <Property Name="RootActionId" Type="uniqueidentifier" />
           <Property Name="Details" Type="varchar(max)" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <EntityType Name="LogEntriesTags">
+          <Key>
+            <PropertyRef Name="LogEntryId" />
+            <PropertyRef Name="TagId" />
+          </Key>
+          <Property Name="LogEntryId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="TagId" Type="uniqueidentifier" Nullable="false" />
         </EntityType>
         <EntityType Name="LogEntryPeanuts">
           <Key>
@@ -405,7 +414,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_LogEntries_Actions">
-          <End Role="Actions" Type="Self.Actions" Multiplicity="1" />
+          <End Role="Actions" Type="Self.Actions" Multiplicity="0..1" />
           <End Role="LogEntries" Type="Self.LogEntries" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Actions">
@@ -413,6 +422,42 @@
             </Principal>
             <Dependent Role="LogEntries">
               <PropertyRef Name="ActionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LogEntries_Users">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="LogEntries" Type="Self.LogEntries" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="LogEntries">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LogEntriesTags_LogEntries">
+          <End Role="LogEntries" Type="Self.LogEntries" Multiplicity="1" />
+          <End Role="LogEntriesTags" Type="Self.LogEntriesTags" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LogEntries">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="LogEntriesTags">
+              <PropertyRef Name="LogEntryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LogEntriesTags_Tags">
+          <End Role="Tags" Type="Self.Tags" Multiplicity="1" />
+          <End Role="LogEntriesTags" Type="Self.LogEntriesTags" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tags">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="LogEntriesTags">
+              <PropertyRef Name="TagId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -591,6 +636,7 @@
           <EntitySet Name="Connections" EntityType="Self.Connections" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Focuses" EntityType="Self.Focuses" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LogEntries" EntityType="Self.LogEntries" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LogEntriesTags" EntityType="Self.LogEntriesTags" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LogEntryPeanuts" EntityType="Self.LogEntryPeanuts" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Messages" EntityType="Self.Messages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Notifications" EntityType="Self.Notifications" Schema="dbo" store:Type="Tables" />
@@ -652,6 +698,18 @@
           <AssociationSet Name="FK_LogEntries_Actions" Association="Self.FK_LogEntries_Actions">
             <End Role="Actions" EntitySet="Actions" />
             <End Role="LogEntries" EntitySet="LogEntries" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LogEntries_Users" Association="Self.FK_LogEntries_Users">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="LogEntries" EntitySet="LogEntries" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LogEntriesTags_LogEntries" Association="Self.FK_LogEntriesTags_LogEntries">
+            <End Role="LogEntries" EntitySet="LogEntries" />
+            <End Role="LogEntriesTags" EntitySet="LogEntriesTags" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LogEntriesTags_Tags" Association="Self.FK_LogEntriesTags_Tags">
+            <End Role="Tags" EntitySet="Tags" />
+            <End Role="LogEntriesTags" EntitySet="LogEntriesTags" />
           </AssociationSet>
           <AssociationSet Name="FK_LogEntryPeanuts_LogEntries" Association="Self.FK_LogEntryPeanuts_LogEntries">
             <End Role="LogEntries" EntitySet="LogEntries" />
@@ -817,6 +875,14 @@
             <End Role="AspNetUser" EntitySet="AspNetUsers" />
             <End Role="Target" EntitySet="Targets" />
           </AssociationSet>
+          <AssociationSet Name="LogEntriesTags" Association="hoomanlogicModel.LogEntriesTags">
+            <End Role="LogEntry" EntitySet="LogEntries" />
+            <End Role="Tag" EntitySet="Tags" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LogEntries_Users" Association="hoomanlogicModel.FK_LogEntries_Users">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="LogEntry" EntitySet="LogEntries" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="AspNetUser">
           <Key>
@@ -850,13 +916,14 @@
           <NavigationProperty Name="Actions" Relationship="hoomanlogicModel.FK_Action_User" FromRole="AspNetUser" ToRole="Action" />
           <NavigationProperty Name="Plans" Relationship="hoomanlogicModel.FK_Plans_Users" FromRole="AspNetUser" ToRole="Plan" />
           <NavigationProperty Name="Targets" Relationship="hoomanlogicModel.FK_Targets_Users" FromRole="AspNetUser" ToRole="Target" />
+          <NavigationProperty Name="LogEntries" Relationship="hoomanlogicModel.FK_LogEntries_Users" FromRole="AspNetUser" ToRole="LogEntry" />
           </EntityType>
         <EntityType Name="LogEntry">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Guid" Nullable="false" />
-          <Property Name="ActionId" Type="Guid" Nullable="false" />
+          <Property Name="ActionId" Type="Guid" />
           <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="Entry" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Duration" Type="Int16" />
@@ -864,6 +931,9 @@
           <Property Name="Details" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="LogEntryPeanuts" Relationship="hoomanlogicModel.FK_LogEntryPeanuts_LogEntries" FromRole="LogEntry" ToRole="LogEntryPeanut" />
           <NavigationProperty Name="Action" Relationship="hoomanlogicModel.FK_LogEntries_Actions" FromRole="LogEntry" ToRole="Action" />
+          <NavigationProperty Name="Tags" Relationship="hoomanlogicModel.LogEntriesTags" FromRole="LogEntry" ToRole="Tag" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AspNetUser" Relationship="hoomanlogicModel.FK_LogEntries_Users" FromRole="LogEntry" ToRole="AspNetUser" />
         </EntityType>
         <EntityType Name="RecurrenceRule">
           <Key>
@@ -1083,6 +1153,7 @@
           <Property Name="IsFocus" Type="Boolean" Nullable="false" />
           <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Actions" Relationship="hoomanlogicModel.ActionsTags" FromRole="Tag" ToRole="Action" />
+          <NavigationProperty Name="LogEntries" Relationship="hoomanlogicModel.LogEntriesTags" FromRole="Tag" ToRole="LogEntry" />
         </EntityType>
         <Association Name="FK_Tags_Users">
           <End Type="hoomanlogicModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
@@ -1257,7 +1328,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_LogEntries_Actions">
-          <End Type="hoomanlogicModel.Action" Role="Action" Multiplicity="1" />
+          <End Type="hoomanlogicModel.Action" Role="Action" Multiplicity="0..1" />
           <End Type="hoomanlogicModel.LogEntry" Role="LogEntry" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Action">
@@ -1383,6 +1454,22 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="LogEntriesTags">
+          <End Type="hoomanlogicModel.LogEntry" Role="LogEntry" Multiplicity="*" />
+          <End Type="hoomanlogicModel.Tag" Role="Tag" Multiplicity="*" />
+        </Association>
+        <Association Name="FK_LogEntries_Users">
+          <End Type="hoomanlogicModel.AspNetUser" Role="AspNetUser" Multiplicity="1" />
+          <End Type="hoomanlogicModel.LogEntry" Role="LogEntry" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="LogEntry">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1411,6 +1498,7 @@
           <EntitySetMapping Name="LogEntries">
             <EntityTypeMapping TypeName="hoomanlogicModel.LogEntry">
               <MappingFragment StoreEntitySet="LogEntries">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="Details" ColumnName="Details" />
                 <ScalarProperty Name="RootActionId" ColumnName="RootActionId" />
                 <ScalarProperty Name="Duration" ColumnName="Duration" />
@@ -1644,6 +1732,14 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <AssociationSetMapping Name="LogEntriesTags" TypeName="hoomanlogicModel.LogEntriesTags" StoreEntitySet="LogEntriesTags">
+            <EndProperty Name="Tag">
+              <ScalarProperty Name="Id" ColumnName="TagId" />
+            </EndProperty>
+            <EndProperty Name="LogEntry">
+              <ScalarProperty Name="Id" ColumnName="LogEntryId" />
+            </EndProperty>
+          </AssociationSetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

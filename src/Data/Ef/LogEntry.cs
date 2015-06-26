@@ -17,17 +17,21 @@ namespace HoomanLogic.Data.Ef
         public LogEntry()
         {
             this.LogEntryPeanuts = new HashSet<LogEntryPeanut>();
+            this.Tags = new HashSet<Tag>();
         }
     
         public System.Guid Id { get; set; }
-        public System.Guid ActionId { get; set; }
+        public Nullable<System.Guid> ActionId { get; set; }
         public System.DateTime Date { get; set; }
         public string Entry { get; set; }
         public Nullable<short> Duration { get; set; }
         public Nullable<System.Guid> RootActionId { get; set; }
         public string Details { get; set; }
+        public string UserId { get; set; }
     
         public virtual ICollection<LogEntryPeanut> LogEntryPeanuts { get; set; }
         public virtual Action Action { get; set; }
+        public virtual ICollection<Tag> Tags { get; set; }
+        public virtual AspNetUser AspNetUser { get; set; }
     }
 }

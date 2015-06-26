@@ -25,10 +25,11 @@ namespace HoomanLogic.Server.Controllers
 
         public LogEntryModel Post([FromBody] LogEntryModel model)
         {
-            HoomanLogic.Data.LogEntriesRepository.LogEntryChanges result = LogEntriesRepository.Add(model);
+            string userId = User.Identity.GetUserId();
+
+            HoomanLogic.Data.LogEntriesRepository.LogEntryChanges result = LogEntriesRepository.Add(userId, model);
 
             // return latest for this action
-            string userId = User.Identity.GetUserId();
             LogEntryModel returnVal = LogEntriesRepository.Get(userId, result.Id);
             if (result.NextDate.HasValue)
             {
@@ -39,11 +40,11 @@ namespace HoomanLogic.Server.Controllers
 
         public LogEntryModel Put([FromBody] LogEntryModel model)
         {
-            HoomanLogic.Data.LogEntriesRepository.LogEntryChanges result = LogEntriesRepository.Update(model);
-
-            // return latest for this action
             string userId = User.Identity.GetUserId();
 
+            HoomanLogic.Data.LogEntriesRepository.LogEntryChanges result = LogEntriesRepository.Update(userId, model);
+
+            // return latest for this action
             LogEntryModel returnVal = LogEntriesRepository.Get(userId, model.Id);
             if (result.NextDate.HasValue)
             {

@@ -31,8 +31,7 @@ namespace HoomanLogic.Data
                     var tag = db.Tags.Where(a => a.UserId == userId && a.Name == model.TagName).FirstOrDefault();
                     if (tag != null && tag.Actions.Count() > 0)
                     {
-                        var actionIds = tag.Actions.Select(a => a.Id).ToList();
-                        model.LatestEntry = db.LogEntries.Where(a => a.Entry == "performed" && actionIds.Contains(a.ActionId)).OrderByDescending(b => b.Date).Select(c => new Models.LogEntryModel() { Id = c.Id, ActionId = c.ActionId, Date = c.Date, Entry = c.Entry, Duration = c.Duration }).FirstOrDefault();
+                        model.LatestEntry = db.LogEntries.Where(a => a.Entry == "performed" && a.Tags.Select(t => t.Id).Contains(tag.Id)).OrderByDescending(b => b.Date).Select(c => new Models.LogEntryModel() { Id = c.Id, ActionId = c.ActionId, Date = c.Date, Entry = c.Entry, Duration = c.Duration }).FirstOrDefault();
                     }
                 }
 

@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="e79e75d1944c4eb4bbec6f486dcad67d" Name="Diagram1" ZoomLevel="99" >
+      <Diagram DiagramId="e79e75d1944c4eb4bbec6f486dcad67d" Name="Diagram1" ZoomLevel="79" >
         <EntityTypeShape EntityType="hoomanlogicModel.AspNetUser" Width="1.5" PointX="3.625" PointY="0.5" />
         <EntityTypeShape EntityType="hoomanlogicModel.LogEntry" Width="1.5" PointX="3.625" PointY="9.625" />
         <EntityTypeShape EntityType="hoomanlogicModel.RecurrenceRule" Width="1.5" PointX="3.625" PointY="7.75" />
@@ -46,6 +46,8 @@
         <AssociationConnector Association="hoomanlogicModel.FK_Plans_Focuses" />
         <EntityTypeShape EntityType="hoomanlogicModel.Target" Width="1.5" PointX="9" PointY="5.375" />
         <AssociationConnector Association="hoomanlogicModel.FK_Targets_Users" />
+        <AssociationConnector Association="hoomanlogicModel.LogEntriesTags" />
+        <AssociationConnector Association="hoomanlogicModel.FK_LogEntries_Users" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

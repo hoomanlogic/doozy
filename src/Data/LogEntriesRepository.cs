@@ -14,20 +14,21 @@ namespace HoomanLogic.Data
         {
             using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())
             {
-                var model = db.LogEntries.Where(c => c.Action.UserId == userId && c.Id == logEntryId).Select(row => new LogEntryModel()
+                var model = db.LogEntries.Where(c => c.UserId == userId && c.Id == logEntryId).Select(row => new LogEntryModel()
                 {
                     Id = row.Id,
                     Ref = row.Id.ToString(),
-                    UserId = row.Action.UserId,
-                    UserName = row.Action.AspNetUser.UserName,
-                    KnownAs = row.Action.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs,
-                    ProfileUri = row.Action.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().ProfileUri,
+                    UserId = row.UserId,
+                    UserName = row.AspNetUser.UserName,
+                    KnownAs = row.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs,
+                    ProfileUri = row.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().ProfileUri,
                     Date = row.Date,
                     ActionId = row.ActionId,
-                    ActionName = row.Action.Name,
+                    ActionName = row.Action == null ? "" : row.Action.Name,
                     Details = row.Details,
                     Duration = row.Duration,
                     Entry = row.Entry,
+                    Tags = row.Tags.Select(tag => (tag.Kind == "Focus" ? "!" : (tag.Kind == "Place" ? "@" : (tag.Kind == "Need" ? "$" : (tag.Kind == "Goal" ? ">" : (tag.Kind == "Box" ? "#" : ""))))) + tag.Name).ToList(),
                     Upvotes = row.LogEntryPeanuts.Where(a => a.Kind == "Upvote").Select(a => new LogEntryPeanut() { Id = a.Id, UserId = a.UserId, Date = a.Date, Comment = a.Comment, AttachmentUri = a.AttachmentUri, ProfileUri = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().ProfileUri, KnownAs = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs }).ToList(),
                     Comments = row.LogEntryPeanuts.Where(a => a.Kind == "Comment").Select(a => new LogEntryPeanut() { Id = a.Id, UserId = a.UserId, Date = a.Date, Comment = a.Comment, AttachmentUri = a.AttachmentUri, ProfileUri = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().ProfileUri, KnownAs = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs }).ToList(),
                     Attachments = row.LogEntryPeanuts.Where(a => a.Kind == "Attachment").Select(a => new LogEntryPeanut() { Id = a.Id, UserId = a.UserId, Date = a.Date, Comment = a.Comment, AttachmentUri = a.AttachmentUri, ProfileUri = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().ProfileUri, KnownAs = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs }).ToList()
@@ -41,20 +42,21 @@ namespace HoomanLogic.Data
         {
             using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())
             {
-                var models = db.LogEntries.Where(c => c.Action.UserId == userId && c.Action.IsPublic).Select(row => new LogEntryModel()
+                var models = db.LogEntries.Where(c => c.UserId == userId && c.Action.IsPublic).Select(row => new LogEntryModel()
                 {
                     Id = row.Id,
                     Ref = row.Id.ToString(),
-                    UserId = row.Action.UserId,
-                    UserName = row.Action.AspNetUser.UserName,
-                    KnownAs = row.Action.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs,
-                    ProfileUri = row.Action.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().ProfileUri, 
+                    UserId = row.UserId,
+                    UserName = row.AspNetUser.UserName,
+                    KnownAs = row.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs,
+                    ProfileUri = row.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().ProfileUri, 
                     Date = row.Date,
                     ActionId = row.ActionId,
-                    ActionName = row.Action.Name,
+                    ActionName = row.Action == null ? "" : row.Action.Name,
                     Details = row.Details,
                     Duration = row.Duration,
                     Entry = row.Entry,
+                    Tags = row.Tags.Select(tag => (tag.Kind == "Focus" ? "!" : (tag.Kind == "Place" ? "@" : (tag.Kind == "Need" ? "$" : (tag.Kind == "Goal" ? ">" : (tag.Kind == "Box" ? "#" : ""))))) + tag.Name).ToList(),
                     Upvotes = row.LogEntryPeanuts.Where(a => a.Kind == "Upvote").Select(a => new LogEntryPeanut() { Id = a.Id, UserId = a.UserId, Date = a.Date, Comment = a.Comment, AttachmentUri = a.AttachmentUri, ProfileUri = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().ProfileUri, KnownAs = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs }).ToList(),
                     Comments = row.LogEntryPeanuts.Where(a => a.Kind == "Comment").Select(a => new LogEntryPeanut() { Id = a.Id, UserId = a.UserId, Date = a.Date, Comment = a.Comment, AttachmentUri = a.AttachmentUri, ProfileUri = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().ProfileUri, KnownAs = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs }).ToList(),
                     Attachments = row.LogEntryPeanuts.Where(a => a.Kind == "Attachment").Select(a => new LogEntryPeanut() { Id = a.Id, UserId = a.UserId, Date = a.Date, Comment = a.Comment, AttachmentUri = a.AttachmentUri, ProfileUri = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().ProfileUri, KnownAs = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs }).ToList()
@@ -68,20 +70,21 @@ namespace HoomanLogic.Data
         {
             using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())
             {
-                var models = db.LogEntries.Where(c => c.Action.UserId == userId && (c.Action.IsPublic || isMine)).Select(row => new LogEntryModel()
+                var models = db.LogEntries.Where(c => c.UserId == userId && ((c.Action != null && c.Action.IsPublic) || isMine)).Select(row => new LogEntryModel()
                 {
                     Id = row.Id,
                     Ref = row.Id.ToString(),
-                    UserId = row.Action.UserId,
-                    UserName = row.Action.AspNetUser.UserName,
-                    KnownAs = row.Action.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs,
-                    ProfileUri = row.Action.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().ProfileUri,
+                    UserId = row.UserId,
+                    UserName = row.AspNetUser.UserName,
+                    KnownAs = row.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs,
+                    ProfileUri = row.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().ProfileUri,
                     Date = row.Date,
                     ActionId = row.ActionId,
-                    ActionName = row.Action.Name,
+                    ActionName = row.Action == null ? "" : row.Action.Name,
                     Details = row.Details,
                     Duration = row.Duration,
                     Entry = row.Entry,
+                    Tags = row.Tags.Select(tag => (tag.Kind == "Focus" ? "!" : (tag.Kind == "Place" ? "@" : (tag.Kind == "Need" ? "$" : (tag.Kind == "Goal" ? ">" : (tag.Kind == "Box" ? "#" : ""))))) + tag.Name).ToList(),
                     Upvotes = row.LogEntryPeanuts.Where(a => a.Kind == "Upvote").Select(a => new LogEntryPeanut() { Id = a.Id, UserId = a.UserId, Date = a.Date, Comment = a.Comment, AttachmentUri = a.AttachmentUri, ProfileUri = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().ProfileUri, KnownAs = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs }).ToList(),
                     Comments = row.LogEntryPeanuts.Where(a => a.Kind == "Comment").Select(a => new LogEntryPeanut() { Id = a.Id, UserId = a.UserId, Date = a.Date, Comment = a.Comment, AttachmentUri = a.AttachmentUri, ProfileUri = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().ProfileUri, KnownAs = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs }).ToList(),
                     Attachments = row.LogEntryPeanuts.Where(a => a.Kind == "Attachment").Select(a => new LogEntryPeanut() { Id = a.Id, UserId = a.UserId, Date = a.Date, Comment = a.Comment, AttachmentUri = a.AttachmentUri, ProfileUri = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().ProfileUri, KnownAs = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs }).ToList()
@@ -96,7 +99,7 @@ namespace HoomanLogic.Data
             public DateTime? NextDate { get; set; }
         }
 
-        public static LogEntryChanges Add(LogEntryModel model)
+        public static LogEntryChanges Add(string userId, LogEntryModel model)
         {
             using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())
             {
@@ -113,8 +116,33 @@ namespace HoomanLogic.Data
                 db.LogEntries.Add(row);
                 db.SaveChanges();
 
-                
-                if (new string[] {"performed","skipped"}.Contains(model.Entry))
+                if (model.ActionId.HasValue && model.ActionId.Value != Guid.Empty) {
+                    var action = db.Actions.Where(a => a.Id == model.ActionId).FirstOrDefault();
+                    if (action != null)
+                    {
+                        var tags = action.Tags.Select(tag => (tag.Kind == "Focus" ? "!" : (tag.Kind == "Place" ? "@" : (tag.Kind == "Need" ? "$" : (tag.Kind == "Goal" ? ">" : (tag.Kind == "Box" ? "#" : ""))))) + tag.Name).ToList();
+                        if (model.Tags == null)
+                        {
+                            model.Tags = tags;
+                        }
+                        else
+                        {
+                            model.Tags = model.Tags.Concat(tags).Distinct().ToList();
+                        }
+                    }
+                }
+
+                // add tags
+                if (model.Tags != null)
+                {
+                    foreach (var tag in model.Tags)
+                    {
+                        row.Tags.Add(TagsRepository.GetTag(db, userId, tag));
+                    }
+                }
+                db.SaveChanges();
+
+                if (model.ActionId.HasValue && model.ActionId.Value != Guid.Empty && new string[] { "performed", "skipped" }.Contains(model.Entry))
                 {
 
                     var action = db.Actions.Where(a => a.Id == model.ActionId).FirstOrDefault();
@@ -144,7 +172,6 @@ namespace HoomanLogic.Data
 
                         action.NextDate = Utility.GetNextOccurrence(recurrenceRules, action.Created.Value, model.Date);
                         
-
                         // persist changes
                         db.SaveChanges();
 
@@ -156,7 +183,7 @@ namespace HoomanLogic.Data
             }
         }
 
-        public static LogEntryChanges Update(LogEntryModel model)
+        public static LogEntryChanges Update(string userId, LogEntryModel model)
         {
             using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())
             {
@@ -174,7 +201,27 @@ namespace HoomanLogic.Data
                 // add row to db table
                 db.SaveChanges();
 
-                if (new string[] { "performed", "skipped" }.Contains(model.Entry) && dateChanged)
+                if (model.ActionId.HasValue && model.ActionId.Value != Guid.Empty)
+                {
+                    var action = db.Actions.Where(a => a.Id == model.ActionId).FirstOrDefault();
+                    if (action != null)
+                    {
+                        var tags = action.Tags.Select(tag => (tag.Kind == "Focus" ? "!" : (tag.Kind == "Place" ? "@" : (tag.Kind == "Need" ? "$" : (tag.Kind == "Goal" ? ">" : (tag.Kind == "Box" ? "#" : ""))))) + tag.Name).ToList();
+                        if (model.Tags == null)
+                        {
+                            model.Tags = tags;
+                        }
+                        else
+                        {
+                            model.Tags = model.Tags.Concat(tags).Distinct().ToList();
+                        }
+                    }
+                }
+
+                SyncTags(db, userId, model, row);
+                db.SaveChanges();
+
+                if (model.ActionId.HasValue && model.ActionId.Value != Guid.Empty && new string[] { "performed", "skipped" }.Contains(model.Entry) && dateChanged)
                 {
                     // set next date action should be performed
                     var action = db.Actions.Where(a => a.Id == model.ActionId).FirstOrDefault();
@@ -199,6 +246,45 @@ namespace HoomanLogic.Data
 
                 return new LogEntryChanges() { Id = model.Id, NextDate = null };
             }
+        }
+
+        private static void SyncTags(ef.hoomanlogicEntities db, string userId, LogEntryModel model, ef.LogEntry row)
+        {
+            // model string list of tags
+            if (model.Tags == null)
+            {
+                model.Tags = new List<String>();
+            }
+
+            // row string list of tags
+            List<String> persistedTags = row.Tags.Select(tag => (tag.Kind == "Focus" ? "!" : (tag.Kind == "Place" ? "@" : (tag.Kind == "Need" ? "$" : (tag.Kind == "Goal" ? ">" : (tag.Kind == "Box" ? "#" : ""))))) + tag.Name).ToList();
+
+            // add tags that are in model and are not persisted
+            model.Tags.Where(tag => !persistedTags.Contains(tag)).ToList().ForEach(tag =>
+               row.Tags.Add(TagsRepository.GetTag(db, userId, tag))
+            );
+
+            // remove tags that are not in model and are persisted'
+            var removeTags = row.Tags.Where(tag => !model.Tags.Contains((tag.Kind == "Focus" ? "!" : (tag.Kind == "Place" ? "@" : (tag.Kind == "Need" ? "$" : (tag.Kind == "Goal" ? ">" : (tag.Kind == "Box" ? "#" : ""))))) + tag.Name)).ToList();
+            foreach (var tag in removeTags)
+            {
+                row.Tags.Remove(tag);
+            }
+
+            // must have at least one focus tag
+            bool hasFocus = false;
+            foreach (string tag in model.Tags)
+            {
+                if (TagsRepository.IsTagFocus(db, userId, tag))
+                {
+                    hasFocus = true;
+                }
+            }
+            if (!hasFocus)
+            {
+                row.Tags.Add(TagsRepository.GetTag(db, userId, "hooman"));
+            }
+
         }
 
         public static LogEntryChanges Delete(Guid id)

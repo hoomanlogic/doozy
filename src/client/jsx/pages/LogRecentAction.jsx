@@ -62,6 +62,11 @@
             }
             
             /**
+             * Setup Tag selector
+             */
+            this.setupTagsControl();
+            
+            /**
              * Set focus to control
              */
             if (this.props.action && this.props.action.name && this.props.action.name.length > 0) {
@@ -137,6 +142,7 @@
             var existingAction, 
                 newAction, 
                 names,
+                tags,
                 validationApology;
 
             // call method to save the action
@@ -144,55 +150,62 @@
 
             validationApology = 'Sorry, we don\'t have enough information yet.\n\n';
 
-            if (names.length === 1 && names[0] === '') {
-                toastr.error(validationApology + 'What did you do?');
-                return;
-            }
+            //if (names.length === 1 && names[0] === '') {
+            //    toastr.error(validationApology + 'What did you do?');
+            //    return;
+            //}
 
             if (String(this.state.date.getTime()) === 'NaN') {
                 toastr.error(validationApology + 'When did you do this?');
                 return;
             }
-
-            for (var i =0; i < names.length; i++) {
-
-                existingAction = actionStore.getActionByName(names[i]);
-
-                if (existingAction) {
-                    logEntryStore.create({
-                        actionId: existingAction.id,
-                        date: this.state.date, 
-                        duration: this.state.duration, 
-                        entry: this.state.kind, 
-                        details: this.state.details
-                    });
-                } else {
-                    var tags;
-                    if (this.refs.tags) {
-                        // get tags from control
-                        var tags = [];
-                        if (this.refs.tags.getDOMNode().value) {
-                            tags = this.refs.tags.getDOMNode().value.split(',');
-                        }
-                    } else {
-                        // get tags from UI filter
-                        var tags = ui.tags || [];
-                        tags = tags.slice(); //copy
-                        tags.push(this.props.focusTag);
-                    }
-
-                    newAction = doozy.action(names[i], tags);
-                    newAction.created = this.state.date.toISOString();
-                    
-                    logEntryStore.createWithNewAction(newAction, { 
-                        date: this.state.date, 
-                        duration: this.state.duration, 
-                        entry: 'performed', 
-                        details: this.state.details
-                    });
-                }
+            
+            // get tags from control
+            var tags = [];
+            if (this.refs.tags.getDOMNode().value) {
+                tags = this.refs.tags.getDOMNode().value.split(',');
             }
 
+            
+            if (names.length > 0 && names[0] !== '') {
+                
+                for (var i =0; i < names.length; i++) {
+
+                    existingAction = actionStore.getActionByName(names[i]);
+
+                    if (existingAction) {
+                        logEntryStore.create({
+                            actionId: existingAction.id,
+                            date: this.state.date, 
+                            duration: this.state.duration, 
+                            entry: this.state.kind, 
+                            details: this.state.details,
+                            tags: tags
+                        });
+                    } else {
+
+                        newAction = doozy.action(names[i], tags);
+                        newAction.created = this.state.date.toISOString();
+
+                        logEntryStore.createWithNewAction(newAction, { 
+                            date: this.state.date, 
+                            duration: this.state.duration, 
+                            entry: 'performed', 
+                            details: this.state.details,
+                            tags: tags
+                        });
+                    }
+                }
+            } else {
+                logEntryStore.createWithoutAction({
+                    actionId: null,
+                    date: this.state.date, 
+                    duration: this.state.duration, 
+                    entry: 'performed', 
+                    details: this.state.details,
+                    tags: tags
+                });
+            }
             window.ui.goBack();
         },
 
@@ -395,15 +408,6 @@
 
             var tags;
             
-            if (this.state.isNewAction) {
-                tags = (
-                    <div className="form-group">
-                        <label htmlFor="action-tags">Tags</label>
-                        <input id="action-tags" ref="tags" type="text" />
-                    </div>  
-                );
-            }
-
             return (
                 <div style={{padding: '5px'}}>
                     <h2>{'Log Recent Action'}</h2>
@@ -412,7 +416,10 @@
                             <label htmlFor="f1">What did you do?</label>
                             <input id="f1" ref="name" type="text" />
                         </div>
-                        {tags}
+                        <div className="form-group">
+                            <label htmlFor="action-tags">Tags</label>
+                            <input id="action-tags" ref="tags" type="text" />
+                        </div>  
                         <div className="form-group">
                             <label htmlFor="logentry-kind">What kind of log entry?</label>
                             <select id="logentry-kind" ref="kind" className="form-control" value={this.state.kind} onChange={this.handleChange}>

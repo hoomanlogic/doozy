@@ -178,70 +178,6 @@ namespace HoomanLogic.Data
         #endregion
 
         #region Private API
-        private static ef.Tag GetTag(ef.hoomanlogicEntities db, string userId, string tag)
-        {
-            string kind = "Tag";
-            if (tag.StartsWith("!"))
-            {
-                kind = "Focus";
-                tag = tag.Substring(1);
-            }
-            else if (tag.StartsWith("@"))
-            {
-                kind = "Place";
-                tag = tag.Substring(1);
-            }
-            else if (tag.StartsWith(">"))
-            {
-                kind = "Goal";
-                tag = tag.Substring(1);
-            }
-            else if (tag.StartsWith("$"))
-            {
-                kind = "Need";
-                tag = tag.Substring(1);
-            }
-            else if (tag.StartsWith("#"))
-            {
-                kind = "Box";
-                tag = tag.Substring(1);
-            }
-            var tagRow = db.Tags.Where(t => t.UserId == userId && t.Name == tag).FirstOrDefault();
-            if (tagRow == null)
-            {
-                tagRow = new ef.Tag()
-                {
-                    Id = Guid.NewGuid(),
-                    Name = tag,
-                    UserId = userId,
-                    Path = "/" + tag + "/",
-                    Kind = kind,
-                    IsFocus = kind == "Focus"
-                };
-                db.Tags.Add(tagRow);
-            }
-            return tagRow;
-        }
-
-        private static bool IsTagFocus(ef.hoomanlogicEntities db, string userId, string tag)
-        {
-            if (tag.StartsWith("!")) {
-                return true;
-            } else if (new string[] { "@", "#", "$", ">" }.Contains(tag[0].ToString()))
-            {
-                return false;
-            }
-
-            var tagRow = db.Tags.Where(t => t.UserId == userId && t.Name == tag).FirstOrDefault();
-            if (tagRow == null)
-            {
-                return false;
-            } 
-            else {
-                return tagRow.Kind == "Focus";
-            }
-        }
-
         private static ef.Action RecursiveAdd(ef.hoomanlogicEntities db, Guid? parentId, string userId, Models.ActionModel model)
         {
             DateTime thisMoment = DateTime.UtcNow;
@@ -266,8 +202,8 @@ namespace HoomanLogic.Data
             {
                 foreach (var tag in model.Tags)
                 {
-                    row.Tags.Add(GetTag(db, userId, tag));
-                    if (IsTagFocus(db, userId, tag))
+                    row.Tags.Add(TagsRepository.GetTag(db, userId, tag));
+                    if (TagsRepository.IsTagFocus(db, userId, tag))
                     {
                         hasFocus = true;
                     }
@@ -277,7 +213,7 @@ namespace HoomanLogic.Data
             // must have at least one focus tag
             if (!hasFocus)
             {
-                row.Tags.Add(GetTag(db, userId, "hooman"));
+                row.Tags.Add(TagsRepository.GetTag(db, userId, "hooman"));
             }
 
             // add recurrence rules
@@ -353,7 +289,7 @@ namespace HoomanLogic.Data
 
             // add tags that are in model and are not persisted
             model.Tags.Where(tag => !persistedTags.Contains(tag)).ToList().ForEach(tag =>
-               row.Tags.Add(GetTag(db, userId, tag))
+               row.Tags.Add(TagsRepository.GetTag(db, userId, tag))
             );
 
             // remove tags that are not in model and are persisted'
@@ -366,14 +302,14 @@ namespace HoomanLogic.Data
             bool hasFocus = false;
             foreach (string tag in model.Tags)
             {
-                if (IsTagFocus(db, userId, tag))
+                if (TagsRepository.IsTagFocus(db, userId, tag))
                 {
                     hasFocus = true;
                 }
             }
             if (!hasFocus)
             {
-                row.Tags.Add(GetTag(db, userId, "hooman"));
+                row.Tags.Add(TagsRepository.GetTag(db, userId, "hooman"));
             }
             
         }

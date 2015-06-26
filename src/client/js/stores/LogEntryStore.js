@@ -194,6 +194,22 @@
             });
 
         };
+        
+        this.createWithoutAction = function (logEntry) {
+
+            _api.postLogEntry(logEntry)
+            .done(function (result) {
+                // add log entry to collection
+                me.updates.value = me.updates.value.concat(result);
+                me.notify();
+        
+                toastr.success('Logged entry');
+            })
+            .fail(function (err) {
+                toastr.error(err.responseText);
+            });
+
+        };
 
         this.createWithNewAction = function (newAction, logEntry) {
             

@@ -22,11 +22,12 @@ namespace HoomanLogic.Models
         public string ProfileUri { get; set; }
         public DateTime Date { get; set; }
         public DateTime? NextDate { get; set; }
-        public Guid ActionId { get; set; }
+        public Guid? ActionId { get; set; }
         public string ActionName { get; set; }
         public string Entry { get; set; }
         public short? Duration { get; set; }
         public string Details { get; set; }
+        public List<string> Tags { get; set; }
         public List<LogEntryPeanut> Upvotes { get; set; }
         public List<LogEntryPeanut> Comments { get; set; }
         public List<LogEntryPeanut> Attachments { get; set; }
