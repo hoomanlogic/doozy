@@ -273,6 +273,13 @@
                             isNewAction: true
                         });
                     }
+                }.bind(this),
+                onChange: function (value) {
+                    var existingAction = actionStore.getActionByName(value);
+                    if (existingAction !== void 0 && existingAction !== null) {
+                        var selectize = $(this.refs.tags.getDOMNode())[0].selectize;
+                        selectize.setValue(existingAction.tags);
+                    }
                 }.bind(this)
             });  
         },

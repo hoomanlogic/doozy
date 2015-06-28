@@ -73,29 +73,31 @@
         
         componentDidUpdate: function () {
             if (this.state.isDropDownOpen) {
-                
-                var component = this;
-                var $win = $(window);
-                var $box = $('#dropdown-' + this.props.data.id);
-                var $toggle = $(this.refs.dropDown.getDOMNode());
-
-                var handler = function(event) {    
-                    // handle click outside of the dropdown
-                    if ($box.has(event.target).length == 0 && !$toggle.is(event.target) && !$box.is(event.target)) {
-                        component.setState({
-                            isDropDownOpen: false
-                        });
-                        $win.off("click.Bst", handler);
-                    }
-                };
-
-                $win.on("click.Bst", handler);  
+                $(window).on("click.Bst", this.handleOutsideClick);  
             }
         },
         
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
+        handleOutsideClick: function (event) {
+            var $win = $(window);
+            var $box = $('#dropdown-' + this.props.data.id);
+            
+            if (typeof this.refs.dropDown === 'undefined') {
+                $win.off("click.Bst", this.handleOutsideClick);
+                return;
+            }
+            
+            // handle click outside of the dropdown
+            var $toggle = $(this.refs.dropDown.getDOMNode());
+            if ($box.has(event.target).length == 0 && !$toggle.is(event.target) && !$box.is(event.target)) {
+                this.setState({
+                    isDropDownOpen: false
+                });
+                $win.off("click.Bst", this.handleOutsideClick);
+            }
+        },
         handleUpvoteClick: function () {
             logEntryStore.toggleUpvote(this.props.data.userName, this.props.data.id);
         },

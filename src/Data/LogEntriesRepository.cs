@@ -107,35 +107,15 @@ namespace HoomanLogic.Data
                 ef.LogEntry row = new ef.LogEntry();
                 row.Id = Guid.NewGuid();
                 row.UserId = userId;
-                if (model.ActionId != Guid.Empty)
-                {
-                    row.ActionId = model.ActionId;
-                }
+                row.ActionId = model.ActionId;
                 row.Date = model.Date;
                 row.Entry = model.Entry;
                 row.Duration = model.Duration;
                 row.Details = model.Details;
 
-
                 // add row to db table
                 db.LogEntries.Add(row);
                 db.SaveChanges();
-
-                if (model.ActionId.HasValue && model.ActionId.Value != Guid.Empty) {
-                    var action = db.Actions.Where(a => a.Id == model.ActionId).FirstOrDefault();
-                    if (action != null)
-                    {
-                        var tags = action.Tags.Select(tag => tag.TagKind.Symbol + tag.Name).ToList();
-                        if (model.Tags == null)
-                        {
-                            model.Tags = tags;
-                        }
-                        else
-                        {
-                            model.Tags = model.Tags.Concat(tags).Distinct().ToList();
-                        }
-                    }
-                }
 
                 // add tags
                 if (model.Tags != null)
@@ -147,17 +127,17 @@ namespace HoomanLogic.Data
                 }
                 db.SaveChanges();
 
-                if (model.ActionId.HasValue && model.ActionId.Value != Guid.Empty && new string[] { "performed", "skipped" }.Contains(model.Entry))
+                if (model.ActionId.HasValue && new string[] { "performed", "skipped" }.Contains(model.Entry))
                 {
 
                     var action = db.Actions.Where(a => a.Id == model.ActionId).FirstOrDefault();
 
-                    // process queue item and decrement next items in the queue
-                    var tags = action.Tags.Where(a => a.Kind == "Box").Select(a => a.Name).ToList();
-                    if (model.Entry == "performed" && tags.Count > 0 && action.Ordinal != null)
+                    // Box > Queue: process queue item and decrement next items in the queue
+                    var boxTags = action.Tags.Where(a => a.Kind == "Box").Select(a => a.Name).ToList();
+                    if (model.Entry == "performed" && boxTags.Count > 0 && action.Ordinal != null)
                     {
                         // subtract 1 from the ordinal for any 
-                        var actions = db.Actions.Where(a => a.Tags.Select(c => c.Name).Intersect(tags).Count() > 0 && a.Ordinal != null && a.Ordinal > action.Ordinal.Value);
+                        var actions = db.Actions.Where(a => a.Tags.Select(c => c.Name).Intersect(boxTags).Count() > 0 && a.Ordinal != null && a.Ordinal > action.Ordinal.Value);
                         foreach (var a in actions)
                         {
                             a.Ordinal -= 1;

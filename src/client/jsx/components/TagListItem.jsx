@@ -25,11 +25,12 @@
             // required
             tag: React.PropTypes.string.isRequired,
             handleClick: React.PropTypes.func.isRequired,
-            onTagUpdated: React.PropTypes.func.isRequired,
+            
             // optional
             canEdit: React.PropTypes.bool,
             canRemove: React.PropTypes.bool,
             isSelected: React.PropTypes.bool,
+            onTagUpdated: React.PropTypes.func,
         },
         
         /*************************************************************
