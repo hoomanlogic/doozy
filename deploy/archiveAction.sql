@@ -2,7 +2,7 @@
 use hoomanlogic
 go
 
-create procedure [dbo].[archiveAction] (
+alter procedure [dbo].[archiveAction] (
 	@ActionId uniqueidentifier
 )
 as
@@ -50,6 +50,16 @@ begin
 	from dbo.[LogEntries] 
 	where [ActionId] = @ActionId
 
+	insert into ArchivedLogEntriesTags (
+		[LogEntryId],
+		[TagId]
+	)
+	select 
+		t.[LogEntryId],
+		t.[TagId]
+	from dbo.[LogEntriesTags] t inner join dbo.[LogEntries] l on t.LogEntryId = l.Id
+	where l.[ActionId] = @ActionId
+
 	insert into ArchivedActionsTags ([ActionId], [TagId])
 	select [ActionId], [TagId]
 	from dbo.[ActionsTags] 
@@ -88,6 +98,10 @@ begin
 	 */
 	delete p 
 	from dbo.[LogEntryPeanuts] p inner join dbo.[LogEntries] l on p.LogEntryId = l.Id 
+	where l.ActionId = @ActionId
+
+	delete t 
+	from dbo.[LogEntriesTags] t inner join dbo.[LogEntries] l on t.LogEntryId = l.Id 
 	where l.ActionId = @ActionId
 	
 	delete from LogEntries 

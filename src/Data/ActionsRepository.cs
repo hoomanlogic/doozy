@@ -37,7 +37,7 @@ namespace HoomanLogic.Data
                     IsPublic = row.IsPublic,
                     Content = row.Content,
                     RecurrenceRules = row.RecurrenceRules.Select(a => a.Rule).ToList(),
-                    Tags = row.Tags.Select(tag => (tag.Kind == "Focus" ? "!" : (tag.Kind == "Place" ? "@" : (tag.Kind == "Need" ? "$" : (tag.Kind == "Goal" ? ">" : (tag.Kind == "Box" ? "#" : ""))))) + tag.Name).ToList(),
+                    Tags = row.Tags.Select(tag => tag.TagKind.Symbol + tag.Name).ToList(),
                     LastPerformed = db.LogEntries.Where(a => a.ActionId == row.Id && a.Entry == "performed").OrderByDescending(b => b.Date).Select(c => c.Date).FirstOrDefault()
                 }).FirstOrDefault();
 
@@ -78,7 +78,7 @@ namespace HoomanLogic.Data
                 //               IsPublic = row.IsPublic,
                 //               Content = row.Content,
                 //               RecurrenceRules = row.RecurrenceRules.Select(a => a.Rule).ToList(),
-                //               Tags = row.Tags.Select(tag => (tag.Kind == "Focus" ? "!" : (tag.Kind == "Place" ? "@" : (tag.Kind == "Need" ? "$" : (tag.Kind == "Goal" ? ">" : (tag.Kind == "Box" ? "#" : ""))))) + tag.Name).ToList(),
+                //               Tags = row.Tags.Select(tag => tag.TagKind.Symbol + tag.Name).ToList(),
                 //               LastPerformed = db.LogEntries.Where(a => a.ActionId == row.Id && a.Entry == "performed").OrderByDescending(b => b.Date).Select(c => c.Date).FirstOrDefault(),
                 //               LatestEntry = db.LogEntries.Where(a => a.ActionId == row.Id).OrderByDescending(b => b.Date).Select(c => new Models.LogEntryModel() { Id = c.Id, ActionId = c.ActionId, Date = c.Date, Entry = c.Entry, Duration = c.Duration, Details = c.Details }).FirstOrDefault()
                 //           }).ToList();
@@ -118,7 +118,7 @@ namespace HoomanLogic.Data
                                IsPublic = row.IsPublic,
                                Content = row.Content,
                                RecurrenceRules = row.RecurrenceRules.Select(a => a.Rule).ToList(),
-                               Tags = row.Tags.Select(tag => (tag.Kind == "Focus" ? "!" : (tag.Kind == "Place" ? "@" : (tag.Kind == "Need" ? "$" : (tag.Kind == "Goal" ? ">" : (tag.Kind == "Box" ? "#" : ""))))) + tag.Name).ToList(),
+                               Tags = row.Tags.Select(tag => tag.TagKind.Symbol + tag.Name).ToList(),
                                LastPerformed = db.LogEntries.Where(a => a.ActionId == row.Id && a.Entry == "performed").OrderByDescending(b => b.Date).Select(c => c.Date).FirstOrDefault()
                            }).ToList();
 
@@ -285,7 +285,7 @@ namespace HoomanLogic.Data
             }
 
             // row string list of tags
-            List<String> persistedTags = row.Tags.Select(tag => (tag.Kind == "Focus" ? "!" : (tag.Kind == "Place" ? "@" : (tag.Kind == "Need" ? "$" : (tag.Kind == "Goal" ? ">" : (tag.Kind == "Box" ? "#" : ""))))) + tag.Name).ToList();
+            List<String> persistedTags = row.Tags.Select(tag => tag.TagKind.Symbol + tag.Name).ToList();
 
             // add tags that are in model and are not persisted
             model.Tags.Where(tag => !persistedTags.Contains(tag)).ToList().ForEach(tag =>
@@ -293,7 +293,7 @@ namespace HoomanLogic.Data
             );
 
             // remove tags that are not in model and are persisted'
-            var removeTags = row.Tags.Where(tag => !model.Tags.Contains((tag.Kind == "Focus" ? "!" : (tag.Kind == "Place" ? "@" : (tag.Kind == "Need" ? "$" : (tag.Kind == "Goal" ? ">" : (tag.Kind == "Box" ? "#" : ""))))) + tag.Name)).ToList();
+            var removeTags = row.Tags.Where(tag => !model.Tags.Contains(tag.TagKind.Symbol + tag.Name)).ToList();
             foreach (var tag in removeTags) {
                 row.Tags.Remove(tag);
             }

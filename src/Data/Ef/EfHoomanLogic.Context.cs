@@ -43,5 +43,6 @@ namespace HoomanLogic.Data.Ef
         public virtual DbSet<Plan> Plans { get; set; }
         public virtual DbSet<PlanStep> PlanSteps { get; set; }
         public virtual DbSet<Target> Targets { get; set; }
+        public virtual DbSet<TagKind> TagKinds { get; set; }
     }
 }

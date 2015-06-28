@@ -116,6 +116,9 @@
     <Compile Include="Ef\Tag.cs">
       <DependentUpon>EfHoomanLogic.tt</DependentUpon>
     </Compile>
+    <Compile Include="Ef\TagKind.cs">
+      <DependentUpon>EfHoomanLogic.tt</DependentUpon>
+    </Compile>
     <Compile Include="Ef\Target.cs">
       <DependentUpon>EfHoomanLogic.tt</DependentUpon>
     </Compile>

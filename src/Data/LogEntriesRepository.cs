@@ -28,7 +28,7 @@ namespace HoomanLogic.Data
                     Details = row.Details,
                     Duration = row.Duration,
                     Entry = row.Entry,
-                    Tags = row.Tags.Select(tag => (tag.Kind == "Focus" ? "!" : (tag.Kind == "Place" ? "@" : (tag.Kind == "Need" ? "$" : (tag.Kind == "Goal" ? ">" : (tag.Kind == "Box" ? "#" : ""))))) + tag.Name).ToList(),
+                    Tags = row.Tags.Select(tag => tag.TagKind.Symbol + tag.Name).ToList(),
                     Upvotes = row.LogEntryPeanuts.Where(a => a.Kind == "Upvote").Select(a => new LogEntryPeanut() { Id = a.Id, UserId = a.UserId, Date = a.Date, Comment = a.Comment, AttachmentUri = a.AttachmentUri, ProfileUri = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().ProfileUri, KnownAs = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs }).ToList(),
                     Comments = row.LogEntryPeanuts.Where(a => a.Kind == "Comment").Select(a => new LogEntryPeanut() { Id = a.Id, UserId = a.UserId, Date = a.Date, Comment = a.Comment, AttachmentUri = a.AttachmentUri, ProfileUri = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().ProfileUri, KnownAs = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs }).ToList(),
                     Attachments = row.LogEntryPeanuts.Where(a => a.Kind == "Attachment").Select(a => new LogEntryPeanut() { Id = a.Id, UserId = a.UserId, Date = a.Date, Comment = a.Comment, AttachmentUri = a.AttachmentUri, ProfileUri = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().ProfileUri, KnownAs = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs }).ToList()
@@ -56,7 +56,7 @@ namespace HoomanLogic.Data
                     Details = row.Details,
                     Duration = row.Duration,
                     Entry = row.Entry,
-                    Tags = row.Tags.Select(tag => (tag.Kind == "Focus" ? "!" : (tag.Kind == "Place" ? "@" : (tag.Kind == "Need" ? "$" : (tag.Kind == "Goal" ? ">" : (tag.Kind == "Box" ? "#" : ""))))) + tag.Name).ToList(),
+                    Tags = row.Tags.Select(tag => tag.TagKind.Symbol + tag.Name).ToList(),
                     Upvotes = row.LogEntryPeanuts.Where(a => a.Kind == "Upvote").Select(a => new LogEntryPeanut() { Id = a.Id, UserId = a.UserId, Date = a.Date, Comment = a.Comment, AttachmentUri = a.AttachmentUri, ProfileUri = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().ProfileUri, KnownAs = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs }).ToList(),
                     Comments = row.LogEntryPeanuts.Where(a => a.Kind == "Comment").Select(a => new LogEntryPeanut() { Id = a.Id, UserId = a.UserId, Date = a.Date, Comment = a.Comment, AttachmentUri = a.AttachmentUri, ProfileUri = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().ProfileUri, KnownAs = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs }).ToList(),
                     Attachments = row.LogEntryPeanuts.Where(a => a.Kind == "Attachment").Select(a => new LogEntryPeanut() { Id = a.Id, UserId = a.UserId, Date = a.Date, Comment = a.Comment, AttachmentUri = a.AttachmentUri, ProfileUri = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().ProfileUri, KnownAs = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs }).ToList()
@@ -84,7 +84,7 @@ namespace HoomanLogic.Data
                     Details = row.Details,
                     Duration = row.Duration,
                     Entry = row.Entry,
-                    Tags = row.Tags.Select(tag => (tag.Kind == "Focus" ? "!" : (tag.Kind == "Place" ? "@" : (tag.Kind == "Need" ? "$" : (tag.Kind == "Goal" ? ">" : (tag.Kind == "Box" ? "#" : ""))))) + tag.Name).ToList(),
+                    Tags = row.Tags.Select(tag => tag.TagKind.Symbol + tag.Name).ToList(),
                     Upvotes = row.LogEntryPeanuts.Where(a => a.Kind == "Upvote").Select(a => new LogEntryPeanut() { Id = a.Id, UserId = a.UserId, Date = a.Date, Comment = a.Comment, AttachmentUri = a.AttachmentUri, ProfileUri = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().ProfileUri, KnownAs = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs }).ToList(),
                     Comments = row.LogEntryPeanuts.Where(a => a.Kind == "Comment").Select(a => new LogEntryPeanut() { Id = a.Id, UserId = a.UserId, Date = a.Date, Comment = a.Comment, AttachmentUri = a.AttachmentUri, ProfileUri = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().ProfileUri, KnownAs = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs }).ToList(),
                     Attachments = row.LogEntryPeanuts.Where(a => a.Kind == "Attachment").Select(a => new LogEntryPeanut() { Id = a.Id, UserId = a.UserId, Date = a.Date, Comment = a.Comment, AttachmentUri = a.AttachmentUri, ProfileUri = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().ProfileUri, KnownAs = a.AspNetUser.Personas.Where(b => b.Kind == "Public").FirstOrDefault().KnownAs }).ToList()
@@ -106,11 +106,16 @@ namespace HoomanLogic.Data
                 // create log entry row
                 ef.LogEntry row = new ef.LogEntry();
                 row.Id = Guid.NewGuid();
-                row.ActionId = model.ActionId;
+                row.UserId = userId;
+                if (model.ActionId != Guid.Empty)
+                {
+                    row.ActionId = model.ActionId;
+                }
                 row.Date = model.Date;
                 row.Entry = model.Entry;
                 row.Duration = model.Duration;
                 row.Details = model.Details;
+
 
                 // add row to db table
                 db.LogEntries.Add(row);
@@ -120,7 +125,7 @@ namespace HoomanLogic.Data
                     var action = db.Actions.Where(a => a.Id == model.ActionId).FirstOrDefault();
                     if (action != null)
                     {
-                        var tags = action.Tags.Select(tag => (tag.Kind == "Focus" ? "!" : (tag.Kind == "Place" ? "@" : (tag.Kind == "Need" ? "$" : (tag.Kind == "Goal" ? ">" : (tag.Kind == "Box" ? "#" : ""))))) + tag.Name).ToList();
+                        var tags = action.Tags.Select(tag => tag.TagKind.Symbol + tag.Name).ToList();
                         if (model.Tags == null)
                         {
                             model.Tags = tags;
@@ -206,7 +211,7 @@ namespace HoomanLogic.Data
                     var action = db.Actions.Where(a => a.Id == model.ActionId).FirstOrDefault();
                     if (action != null)
                     {
-                        var tags = action.Tags.Select(tag => (tag.Kind == "Focus" ? "!" : (tag.Kind == "Place" ? "@" : (tag.Kind == "Need" ? "$" : (tag.Kind == "Goal" ? ">" : (tag.Kind == "Box" ? "#" : ""))))) + tag.Name).ToList();
+                        var tags = action.Tags.Select(tag => tag.TagKind.Symbol + tag.Name).ToList();
                         if (model.Tags == null)
                         {
                             model.Tags = tags;
@@ -257,7 +262,7 @@ namespace HoomanLogic.Data
             }
 
             // row string list of tags
-            List<String> persistedTags = row.Tags.Select(tag => (tag.Kind == "Focus" ? "!" : (tag.Kind == "Place" ? "@" : (tag.Kind == "Need" ? "$" : (tag.Kind == "Goal" ? ">" : (tag.Kind == "Box" ? "#" : ""))))) + tag.Name).ToList();
+            List<String> persistedTags = row.Tags.Select(tag => tag.TagKind.Symbol + tag.Name).ToList();
 
             // add tags that are in model and are not persisted
             model.Tags.Where(tag => !persistedTags.Contains(tag)).ToList().ForEach(tag =>
@@ -265,7 +270,7 @@ namespace HoomanLogic.Data
             );
 
             // remove tags that are not in model and are persisted'
-            var removeTags = row.Tags.Where(tag => !model.Tags.Contains((tag.Kind == "Focus" ? "!" : (tag.Kind == "Place" ? "@" : (tag.Kind == "Need" ? "$" : (tag.Kind == "Goal" ? ">" : (tag.Kind == "Box" ? "#" : ""))))) + tag.Name)).ToList();
+            var removeTags = row.Tags.Where(tag => !model.Tags.Contains(tag.TagKind.Symbol + tag.Name)).ToList();
             foreach (var tag in removeTags)
             {
                 row.Tags.Remove(tag);
@@ -291,18 +296,22 @@ namespace HoomanLogic.Data
         {
             using (ef.hoomanlogicEntities db = new ef.hoomanlogicEntities())
             {
-                Guid actionId = Guid.Empty;
+                
 
                 // find log entry row in db table
                 var row = db.LogEntries.Where(a =>
                         a.Id == id
                     ).First();
 
+
                 // find action assigned to log entry then
                 // save reference to the action id then
                 // remove the retire date if unlogged action is a simple todo
-                var action = db.Actions.Where(a => a.Id == row.ActionId).First();
-                actionId = action.Id;
+                var action = db.Actions.Where(a => a.Id == row.ActionId).FirstOrDefault();
+
+                //DELETE FROM [dbo].[LogEntries] WHERE Id = @p0;
+
+                db.Database.ExecuteSqlCommand("DELETE FROM [dbo].[LogEntriesTags] WHERE LogEntryId = @p0;", new object[] { id });
 
                 // remove the log entry row from db table
                 db.LogEntries.Remove(row);
@@ -310,9 +319,13 @@ namespace HoomanLogic.Data
                 // persist changes
                 db.SaveChanges();
 
-                // re-calculate the next date
-                if (new string[] { "performed", "skipped" }.Contains(row.Entry))
+                // re-calculate the next date for action
+                if (action != null && new string[] { "performed", "skipped" }.Contains(row.Entry))
                 {
+
+                    Guid actionId = Guid.Empty;
+                    actionId = action.Id;
+
                     // set next date action should be performed
                     List<RecurrenceModel> recurrenceRules = new List<RecurrenceModel>();
                     foreach (var rule in action.RecurrenceRules)

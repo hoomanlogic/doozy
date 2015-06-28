@@ -48,6 +48,8 @@
         <AssociationConnector Association="hoomanlogicModel.FK_Targets_Users" />
         <AssociationConnector Association="hoomanlogicModel.LogEntriesTags" />
         <AssociationConnector Association="hoomanlogicModel.FK_LogEntries_Users" />
+        <EntityTypeShape EntityType="hoomanlogicModel.TagKind" Width="1.5" PointX="0.75" PointY="3.875" />
+        <AssociationConnector Association="hoomanlogicModel.FK_Tags_TagKinds" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

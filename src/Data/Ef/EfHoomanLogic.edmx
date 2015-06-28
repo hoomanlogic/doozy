@@ -225,6 +225,13 @@
           <Property Name="ActionId" Type="uniqueidentifier" Nullable="false" />
           <Property Name="Rule" Type="varchar" MaxLength="500" Nullable="false" />
         </EntityType>
+        <EntityType Name="TagKinds">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Symbol" Type="nvarchar" MaxLength="128" Nullable="false" />
+        </EntityType>
         <EntityType Name="Tags">
           <Key>
             <PropertyRef Name="Id" />
@@ -571,6 +578,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Tags_TagKinds">
+          <End Role="TagKinds" Type="Self.TagKinds" Multiplicity="1" />
+          <End Role="Tags" Type="Self.Tags" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TagKinds">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Tags">
+              <PropertyRef Name="Kind" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Tags_Users">
           <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -645,6 +664,7 @@
           <EntitySet Name="PlanSteps" EntityType="Self.PlanSteps" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Preferences" EntityType="Self.Preferences" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RecurrenceRules" EntityType="Self.RecurrenceRules" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TagKinds" EntityType="Self.TagKinds" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tags" EntityType="Self.Tags" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Targets" EntityType="Self.Targets" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_Achievements_Users" Association="Self.FK_Achievements_Users">
@@ -742,6 +762,10 @@
           <AssociationSet Name="FK_RecurrenceRules_Actions" Association="Self.FK_RecurrenceRules_Actions">
             <End Role="Actions" EntitySet="Actions" />
             <End Role="RecurrenceRules" EntitySet="RecurrenceRules" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tags_TagKinds" Association="Self.FK_Tags_TagKinds">
+            <End Role="TagKinds" EntitySet="TagKinds" />
+            <End Role="Tags" EntitySet="Tags" />
           </AssociationSet>
           <AssociationSet Name="FK_Tags_Users" Association="Self.FK_Tags_Users">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
@@ -882,6 +906,11 @@
           <AssociationSet Name="FK_LogEntries_Users" Association="hoomanlogicModel.FK_LogEntries_Users">
             <End Role="AspNetUser" EntitySet="AspNetUsers" />
             <End Role="LogEntry" EntitySet="LogEntries" />
+          </AssociationSet>
+          <EntitySet Name="TagKinds" EntityType="hoomanlogicModel.TagKind" />
+          <AssociationSet Name="FK_Tags_TagKinds" Association="hoomanlogicModel.FK_Tags_TagKinds">
+            <End Role="TagKind" EntitySet="TagKinds" />
+            <End Role="Tag" EntitySet="Tags" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="AspNetUser">
@@ -1154,6 +1183,7 @@
           <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Actions" Relationship="hoomanlogicModel.ActionsTags" FromRole="Tag" ToRole="Action" />
           <NavigationProperty Name="LogEntries" Relationship="hoomanlogicModel.LogEntriesTags" FromRole="Tag" ToRole="LogEntry" />
+          <NavigationProperty Name="TagKind" Relationship="hoomanlogicModel.FK_Tags_TagKinds" FromRole="Tag" ToRole="TagKind" />
         </EntityType>
         <Association Name="FK_Tags_Users">
           <End Type="hoomanlogicModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
@@ -1470,6 +1500,26 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="TagKind">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Symbol" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Tags" Relationship="hoomanlogicModel.FK_Tags_TagKinds" FromRole="TagKind" ToRole="Tag" />
+        </EntityType>
+        <Association Name="FK_Tags_TagKinds">
+          <End Type="hoomanlogicModel.TagKind" Role="TagKind" Multiplicity="1" />
+          <End Type="hoomanlogicModel.Tag" Role="Tag" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TagKind">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Tag">
+              <PropertyRef Name="Kind" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1740,6 +1790,14 @@
               <ScalarProperty Name="Id" ColumnName="LogEntryId" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="TagKinds">
+            <EntityTypeMapping TypeName="hoomanlogicModel.TagKind">
+              <MappingFragment StoreEntitySet="TagKinds">
+                <ScalarProperty Name="Symbol" ColumnName="Symbol" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

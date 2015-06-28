@@ -31,5 +31,6 @@ namespace HoomanLogic.Data.Ef
         public virtual AspNetUser AspNetUser { get; set; }
         public virtual ICollection<Action> Actions { get; set; }
         public virtual ICollection<LogEntry> LogEntries { get; set; }
+        public virtual TagKind TagKind { get; set; }
     }
 }
