@@ -50,10 +50,10 @@
             timerStore.pauseTimer();
             var duration = new babble.Duration(timerStore.updates.value.timeSoFar);
 
-            ui.logAction({
+            ui.logEntry({
+                id: '00000000-0000-0000-0000-000000000000',
                 name: timerStore.updates.value.workingOn,
-                duration: duration.toMinutes(),
-                tags: ui.tags
+                duration: duration.toMinutes()
             });
         },
         handleResetTimerClick: function () {

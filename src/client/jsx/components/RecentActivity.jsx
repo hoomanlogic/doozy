@@ -68,6 +68,11 @@
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
+        handleLogEntryClick: function() {
+            ui.logEntry({
+                id: '00000000-0000-0000-0000-000000000000'
+            });
+        },
         handleLogEntryStoreUpdate: function (logEntries) {
             this.setState({logEntriesLastUpdated: new Date().toISOString()});
         },
@@ -81,7 +86,7 @@
             var logEntries = logEntryStore.updates.value.filter( function (item) {
                 
                 var isActionIdAssigned = true;
-                if (item.actionId == null || item.actionId == '00000000-0000-0000-0000-000000000000') {
+                if (item.actionId == null || item.actionId === '00000000-0000-0000-0000-000000000000') {
                     isActionIdAssigned = false;
                 }
                 
@@ -120,7 +125,7 @@
                 <div style={{ marginTop: '5px' }}>
                     <div style={headerStyle}>
                         <span>Recent Activity</span>
-                        <button type="button" style={buttonStyle} className="btn pull-right" onClick={ui.logAction}>Log a recent action</button>
+                        <button type="button" style={buttonStyle} className="btn pull-right" onClick={this.handleLogEntryClick}>Log a recent action</button>
                     </div>
                     <div className={this.props.hidden ? 'hidden' : ''} style={{ backgroundColor: '#444' }}>
                         {logEntries.map(

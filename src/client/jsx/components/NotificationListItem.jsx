@@ -19,7 +19,7 @@
             window.React
         );
     }
-}(function (React, actionStore, TimerBar, WeatherIcon, FocusActions, ManageFocus, AddEditAction, LogAction, Conversation) {
+}(function (React) {
     'use strict';
     return React.createClass({
         /*************************************************************

@@ -96,7 +96,7 @@ var jsxFiles = [
 	
 	'src/client/jsx/components/PlanSteps.jsx',
 	'src/client/jsx/components/TimerBar.jsx',
-	'src/client/jsx/pages/LogRecentAction.jsx',
+	'src/client/jsx/pages/ManageLogEntry.jsx',
     'src/client/jsx/pages/ManageAction.jsx',
     'src/client/jsx/pages/ManageFocus.jsx',
 	'src/client/jsx/pages/ManagePlanStep.jsx',

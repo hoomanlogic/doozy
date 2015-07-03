@@ -51,6 +51,15 @@
             this.setupActionsControl();
             var selectize = $(this.refs.name.getDOMNode())[0].selectize;
             this.setOptionsAction(selectize);
+            
+            /**
+             * Setup Tag selector
+             */
+            this.setupTagsControl();
+            
+            /**
+             * Set Action Value
+             */
             if (this.props.action && this.props.action.name) {
                 if (this.state.isNewAction && this.props.action.name.length > 0) {
                     selectize.addOption({
@@ -60,11 +69,6 @@
                 }
                 selectize.setValue(this.props.action.name);
             }
-            
-            /**
-             * Setup Tag selector
-             */
-            this.setupTagsControl();
             
             /**
              * Set focus to control
@@ -336,11 +340,15 @@
             var selectize = $(this.refs.tags.getDOMNode())[0].selectize;
             this.setOptionsTag(selectize);
 
-            // set current value
-            var tags = ui.tags || [];
-            tags = tags.slice(); //copy
-            tags.push(this.props.focusTag);
-            selectize.setValue(tags);
+            if (this.state.isNewAction) {
+                // set current value
+                var tags = ui.tags || [];
+                tags = tags.slice(); //copy
+                tags.push(this.props.focusTag);
+                selectize.setValue(tags);
+            } else {
+                selectize.setValue(this.props.action.tags);
+            }
         },
 
         /*************************************************************

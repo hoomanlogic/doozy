@@ -10,8 +10,8 @@
             require('../components/WeatherIcon'), 
             require('../components/FocusActions'), 
             require('./ManageFocus'),
-            require('../components/AddEditAction'),
-            require('../components/LogAction'),
+            require('./ManageAction'),
+            require('./ManageLogEntry'),
             require('../components/Conversation'));
     }
     else if (typeof define === "function" && define.amd) {
@@ -23,8 +23,8 @@
             '../components/WeatherIcon', 
             '../components/FocusActions', 
             './ManageFocus',
-            '../components/AddEditAction',
-            '../components/LogAction',
+            './ManageAction',
+            './ManageLogEntry',
             '../components/Conversation'
         ], factory);
     }
@@ -35,14 +35,14 @@
             window.actionStore,
             window.TimerBar,
             window.WeatherIcon, 
-            window.FocusActions, 
+            window.FocusActions,
             window.ManageFocus,
-            window.AddEditAction,
-            window.LogAction,
+            window.ManageAction,
+            window.ManageLogEntry,
             window.Conversation
         );
     }
-}(function (React, actionStore, TimerBar, WeatherIcon, FocusActions, ManageFocus, AddEditAction, LogAction, Conversation) {
+}(function (React, actionStore, TimerBar, WeatherIcon, FocusActions, ManageFocus, ManageAction, ManageLogEntry, Conversation) {
     'use strict';
     return React.createClass({
         /*************************************************************
@@ -80,7 +80,7 @@
             window['ui'] = window['ui'] || {};
             window['ui'].addAction = this.addAction;
             window['ui'].editAction = this.editAction;
-            window['ui'].logAction = this.logAction;
+            window['ui'].logEntry = this.logEntry;
             window['ui'].goTo = this.goTo;
             window['ui'].goBack = this.goBack;
             window['ui'].openConversation = this.selectConversation;
@@ -327,8 +327,8 @@
             this.goTo('Manage Action', { actionId: (action ? action.id : null), mode: 'Edit'});
             //this.refs.addeditaction.edit(action);
         },
-        logAction: function (action) {
-            this.goTo('Log Recent Action', { actionId: (action ? action.id : null) });
+        logEntry: function (action) {
+            this.goTo('Log Recent Action', { actionId: action.id });
             //this.refs.logaction.log(action);
         },
         goTo: function (page, options) {

@@ -226,19 +226,20 @@ namespace HoomanLogic.Data
             }
 
             // add children
-            foreach (var child in model.Items)
-            {
-                //row.Children.Add(RecursiveAdd(db, row.Id, userId, child));
-            }
+            //foreach (var child in model.Items)
+            //{
+            //    row.Children.Add(RecursiveAdd(db, row.Id, userId, child));
+            //}
 
             // add created log entry
-            ef.LogEntry rowCreatedLog = new ef.LogEntry();
-            rowCreatedLog.Id = Guid.NewGuid();
-            rowCreatedLog.ActionId = row.Id;
-            rowCreatedLog.Date = thisMoment;
-            rowCreatedLog.Entry = "created";
-            rowCreatedLog.Duration = null;
-            db.LogEntries.Add(rowCreatedLog);
+            //ef.LogEntry rowCreatedLog = new ef.LogEntry();
+            //rowCreatedLog.Id = Guid.NewGuid();
+            //rowCreatedLog.UserId = userId;
+            //rowCreatedLog.ActionId = row.Id;
+            //rowCreatedLog.Date = thisMoment;
+            //rowCreatedLog.Entry = "created";
+            //rowCreatedLog.Duration = null;
+            //db.LogEntries.Add(rowCreatedLog);
 
             return row;
         }

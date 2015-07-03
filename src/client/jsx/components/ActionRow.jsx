@@ -74,8 +74,10 @@
          * EVENT HANDLING
          *************************************************************/
         handleCheck: function(event) {
-            if (ui.logAction && event.target.checked) {
-                ui.logAction(this.props.action);
+            if (ui.logEntry && event.target.checked) {
+                ui.logEntry({
+                    id: this.props.action.id
+                });
             }
         },
         handleCheckTouch: function () {
