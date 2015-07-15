@@ -179,31 +179,31 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Start\AntiForgeryHandleErrorAttribute.cs" />
-    <Compile Include="App_Start\FilterConfig.cs" />
-    <Compile Include="App_Start\LogExceptionFilterAttribute.cs" />
-    <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="App_Start\Startup.Auth.cs" />
-    <Compile Include="App_Start\IdentityConfig.cs" />
-    <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="AuthenticationHandler.cs" />
-    <Compile Include="ChatHub.cs" />
-    <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\PlanStepsController.cs" />
-    <Compile Include="Controllers\PlansController.cs" />
-    <Compile Include="Controllers\TagsController.cs" />
-    <Compile Include="Controllers\FocusesController.cs" />
-    <Compile Include="Controllers\ActionsController.cs" />
-    <Compile Include="Controllers\ConnectionsController.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\LogEntriesController.cs" />
-    <Compile Include="Controllers\ManageController.cs" />
-    <Compile Include="Controllers\MeController.cs" />
-    <Compile Include="Controllers\MessagesController.cs" />
-    <Compile Include="Controllers\NotificationsController.cs" />
-    <Compile Include="Controllers\SettingsController.cs" />
-    <Compile Include="Controllers\TargetsController.cs" />
-    <Compile Include="Controllers\UploadFilesController.cs" />
+    <Compile Include="Config\AntiForgeryHandleErrorAttribute.cs" />
+    <Compile Include="Config\FilterConfig.cs" />
+    <Compile Include="Config\LogExceptionFilterAttribute.cs" />
+    <Compile Include="Config\RouteConfig.cs" />
+    <Compile Include="Config\Startup.Auth.cs" />
+    <Compile Include="Config\IdentityConfig.cs" />
+    <Compile Include="Config\WebApiConfig.cs" />
+    <Compile Include="Handlers\AuthenticationHandler.cs" />
+    <Compile Include="Hubs\ChatHub.cs" />
+    <Compile Include="ViewControllers\AccountController.cs" />
+    <Compile Include="ApiControllers\PlanStepsController.cs" />
+    <Compile Include="ApiControllers\PlansController.cs" />
+    <Compile Include="ApiControllers\TagsController.cs" />
+    <Compile Include="ApiControllers\FocusesController.cs" />
+    <Compile Include="ApiControllers\ActionsController.cs" />
+    <Compile Include="ApiControllers\ConnectionsController.cs" />
+    <Compile Include="ViewControllers\HomeController.cs" />
+    <Compile Include="ApiControllers\LogEntriesController.cs" />
+    <Compile Include="ViewControllers\ManageController.cs" />
+    <Compile Include="ApiControllers\MeController.cs" />
+    <Compile Include="ApiControllers\MessagesController.cs" />
+    <Compile Include="ApiControllers\NotificationsController.cs" />
+    <Compile Include="ApiControllers\SettingsController.cs" />
+    <Compile Include="ApiControllers\TargetsController.cs" />
+    <Compile Include="ApiControllers\UploadFilesController.cs" />
     <Compile Include="Errl.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -218,32 +218,32 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="android-icon-144x144.png" />
-    <Content Include="android-icon-192x192.png" />
-    <Content Include="android-icon-36x36.png" />
-    <Content Include="android-icon-48x48.png" />
-    <Content Include="android-icon-72x72.png" />
-    <Content Include="android-icon-96x96.png" />
-    <Content Include="apple-icon-114x114.png" />
-    <Content Include="apple-icon-120x120.png" />
-    <Content Include="apple-icon-144x144.png" />
-    <Content Include="apple-icon-152x152.png" />
-    <Content Include="apple-icon-180x180.png" />
-    <Content Include="apple-icon-57x57.png" />
-    <Content Include="apple-icon-60x60.png" />
-    <Content Include="apple-icon-72x72.png" />
-    <Content Include="apple-icon-76x76.png" />
-    <Content Include="apple-icon-precomposed.png" />
-    <Content Include="apple-icon.png" />
+    <Content Include="media\android-icon-144x144.png" />
+    <Content Include="media\android-icon-192x192.png" />
+    <Content Include="media\android-icon-36x36.png" />
+    <Content Include="media\android-icon-48x48.png" />
+    <Content Include="media\android-icon-72x72.png" />
+    <Content Include="media\android-icon-96x96.png" />
+    <Content Include="media\apple-icon-114x114.png" />
+    <Content Include="media\apple-icon-120x120.png" />
+    <Content Include="media\apple-icon-144x144.png" />
+    <Content Include="media\apple-icon-152x152.png" />
+    <Content Include="media\apple-icon-180x180.png" />
+    <Content Include="media\apple-icon-57x57.png" />
+    <Content Include="media\apple-icon-60x60.png" />
+    <Content Include="media\apple-icon-72x72.png" />
+    <Content Include="media\apple-icon-76x76.png" />
+    <Content Include="media\apple-icon-precomposed.png" />
+    <Content Include="media\apple-icon.png" />
     <Content Include="browserconfig.xml" />
     <Content Include="css\all.min.css" />
     <Content Include="css\login.css" />
     <Content Include="css\login.min.css">
       <DependentUpon>login.css</DependentUpon>
     </Content>
-    <Content Include="favicon-16x16.png" />
-    <Content Include="favicon-32x32.png" />
-    <Content Include="favicon-96x96.png" />
+    <Content Include="media\favicon-16x16.png" />
+    <Content Include="media\favicon-32x32.png" />
+    <Content Include="media\favicon-96x96.png" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\fontawesome-webfont.eot" />
     <Content Include="fonts\fontawesome-webfont.svg" />
@@ -260,10 +260,10 @@
     <Content Include="js\react.js" />
     <Content Include="js\react.min.js" />
     <Content Include="media\hoomanlogic.svg" />
-    <Content Include="ms-icon-144x144.png" />
-    <Content Include="ms-icon-150x150.png" />
-    <Content Include="ms-icon-310x310.png" />
-    <Content Include="ms-icon-70x70.png" />
+    <Content Include="media\ms-icon-144x144.png" />
+    <Content Include="media\ms-icon-150x150.png" />
+    <Content Include="media\ms-icon-310x310.png" />
+    <Content Include="media\ms-icon-70x70.png" />
     <Content Include="Properties\PublishProfiles\ArvixeDeploy.pubxml.user" />
     <Content Include="manifest.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -303,9 +303,7 @@
     </Content>
     <Content Include="Views\Home\_SessionPartial.cshtml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="packages.config" />
   </ItemGroup>
