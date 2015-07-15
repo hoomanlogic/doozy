@@ -30,10 +30,10 @@
             // required
             action: React.PropTypes.object.isRequired,
             actionName: React.PropTypes.string.isRequired,
-            actionLastPerformed:  React.PropTypes.string.isRequired,
-            actionNextDate:  React.PropTypes.string.isRequired,
             
             // optional
+            actionLastPerformed:  React.PropTypes.string,
+            actionNextDate:  React.PropTypes.string,
             overrideIsDone: React.PropTypes.bool,
         },
         

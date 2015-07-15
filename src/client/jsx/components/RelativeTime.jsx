@@ -21,7 +21,7 @@
     'use strict';
     return React.createClass({
         propTypes: {
-            isoTime: React.PropTypes.string.isRequired,
+            isoTime: React.PropTypes.string,
             accuracy: React.PropTypes.oneOf([
                 'd', //day
                 'a'  //auto

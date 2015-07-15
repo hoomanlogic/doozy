@@ -89,7 +89,7 @@
          * EVENT HANDLING
          *************************************************************/
         handleCancel: function(event) {
-            window.ui.goBack();
+            window.ui.goTo('Do');
         },
         handleChange: function(event) {
             if (event.target === this.refs.performedat.getDOMNode()) {
@@ -210,7 +210,7 @@
                     tags: tags
                 });
             }
-            window.ui.goBack();
+            window.ui.goTo('Do');
         },
 
         /*************************************************************
@@ -340,7 +340,7 @@
             var selectize = $(this.refs.tags.getDOMNode())[0].selectize;
             this.setOptionsTag(selectize);
 
-            if (this.state.isNewAction) {
+            if (typeof this.props.action === 'undefined' || this.state.isNewAction) {
                 // set current value
                 var tags = ui.tags || [];
                 tags = tags.slice(); //copy
