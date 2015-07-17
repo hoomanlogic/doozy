@@ -198,6 +198,9 @@
                                                     backgroundColor={this.calcColor(stats.accuracy)} 
                                                     value={stats.accuracy} 
                                                     change={stats.change} />
+                                            <Indicator kind={'simple'} title={'Average'} 
+                                                    backgroundColor={this.calcColor(stats.accuracy)} 
+                                                    value={stats.average} />
                                         </div>
                                         <div style={{textAlign: 'right'}}>{timeLeft}</div>
                                     </div>

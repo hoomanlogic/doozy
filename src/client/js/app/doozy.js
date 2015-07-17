@@ -381,6 +381,7 @@
                     actionIds = [],
                     activePeriod,
                     allButLatestPeriod,
+                    average,
                     change = 0,
                     longestStreakPeriod,
                     periodStarts,
@@ -440,7 +441,18 @@
 
                 // calculate accuracy
                 accuracy = Math.round((periodsStats.filter(function (item) { return item.met; }).length / periodsStats.length) * 10000) / 100;
-
+                
+                if (periodsStats.length === 1) {
+                    average = periodsStats[0].number;
+                } else {
+                    average = 0;
+                    periodsStats.forEach( function (item) {
+                       average += item.number; 
+                    });
+                    average = average / periodsStats.length;
+                    average = Math.round(average * 100) / 100;
+                }
+                
                 if (periodsStats.length > 1) {
                     allButLatestPeriod = periodsStats.slice(0, -1);
                     accuracyBeforeLatestPeriod = Math.round((allButLatestPeriod.filter(function (item) { return item.met; }).length / allButLatestPeriod.length) * 10000) / 100;
@@ -456,6 +468,7 @@
                     periods: periodsStats,
                     accuracy: accuracy,
                     change: change,
+                    average: average
                 });
             });
 
