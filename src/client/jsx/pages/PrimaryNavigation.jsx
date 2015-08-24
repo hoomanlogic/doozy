@@ -9,7 +9,7 @@
             require('../../js/stores/NotificationStore'),
             require('../../js/stores/TimerStore'),
             require('../components/FocusListItem'),
-            require('../../../../../react_components/src/DropdownMenu'), 
+            require('../../../../../react_components/src/DropdownMenu'),
             require('../components/NotificationDropDown'),
             require('../components/Timer')
         );
@@ -22,7 +22,7 @@
             '../../js/stores/NotificationStore',
             '../../js/stores/TimerStore',
             '../components/FocusListItem',
-            '../../../../../react_components/src/DropdownMenu', 
+            '../../../../../react_components/src/DropdownMenu',
             '../components/NotificationDropDown',
             '../components/Timer'
         ], factory);
@@ -31,11 +31,11 @@
         // Global (browser)
         window.PrimaryNavigation = factory(
             window.React,
-            window.connectionStore, 
+            window.connectionStore,
             window.notificationStore,
-            window.FocusListItem, 
-            window.DropdownMenu, 
-            window.NotificationDropDown, 
+            window.FocusListItem,
+            window.DropdownMenu,
+            window.NotificationDropDown,
             window.Timer);
     }
 }(function (React, connectionStore, notificationStore, FocusListItem, DropdownMenu, NotificationDropDown, Timer) {
@@ -57,7 +57,7 @@
         componentDidMount: function() {
             window.addEventListener('resize', this.handleResize);
         },
-        
+
         componentWillMount: function () {
             connectionStore.subscribe(this.handleConnectionStoreUpdate);
             notificationStore.subscribe(this.handleNotificationStoreUpdate);
@@ -85,7 +85,7 @@
             this.setState({preferencesLastUpdated: new Date().toISOString()});
         },
         handleFocusClick: function (item) {
-            this.props.handleFocusClick(item);  
+            this.props.handleFocusClick(item);
         },
         handleResize: function(e) {
             this.setState({windowWidth: window.innerWidth});
@@ -98,14 +98,14 @@
             var currentFocus = this.props.currentFocus;
 
             var button = null;
-            if (typeof currentFocus !== 'undefined' && currentFocus !== null) { 
+            if (typeof currentFocus !== 'undefined' && currentFocus !== null) {
 
                 var imageStyle = {
                     width: '50px',
                     display: 'inline-block',
                     paddingRight: '5px'
                 };
-                
+
                 button = (
                     <div><img style={imageStyle} src={currentFocus.iconUri} title={currentFocus.kind + ': ' + currentFocus.name} /></div>
                 );
@@ -113,11 +113,11 @@
 
             var menuItems = focusStore.updates.value.map(function (item) {
                 return (
-                    <FocusListItem 
-                        key={item.id} 
-                        data={item} 
+                    <FocusListItem
+                        key={item.id}
+                        data={item}
                         handleFocusClick={this.handleFocusClick} />
-                ); 
+                );
             }.bind(this));
 
             /**
@@ -134,11 +134,11 @@
                     tagName: '',
                     iconUri: null
                 };
-                
+
                 var menuItemStyle = {
                     display: 'block',
                     padding: '3px 5px',
-                    borderBottom: '1px solid #e0e0e0', 
+                    borderBottom: '1px solid #e0e0e0',
                     clear: 'both',
                     fontWeight: '400',
                     lineHeight: '1.42857143',
@@ -146,7 +146,7 @@
                     whiteSpace: 'nowrap',
                     cursor: 'pointer'
                 };
-                
+
                 menuItems.push((
                     <li key="newfocus" >
                         <a onClick={this.handleFocusClick.bind(null, f)} style={menuItemStyle}>
@@ -162,7 +162,7 @@
             }
 
             return (
-                <DropdownMenu style={{padding: '2px', width: '50px'}} buttonContent={button} menuItems={menuItems} />  
+                <DropdownMenu style={{padding: '2px', width: '50px'}} buttonContent={button} menuItems={menuItems} />
             );
         },
         renderConnectionsDropDownMenu: function () {
@@ -173,19 +173,19 @@
                 return (
                     <li key={item.userName}>
                         <a href="javascript:;" onClick={ui.openConversation.bind(null, item.userName)} title={item.userName}>
-                            <div style={{}} style={{display: 'inline-block', width: '50px'}}>
+                            <div style={{display: 'inline-block', width: '50px'}}>
                                 <img className="img-responsive" src={item.profileUri} />
                             </div>
                             <span style={{verticalAlign: 'super'}}>{item.name}</span>
                         </a>
                     </li>
-                ); 
+                );
             }.bind(this));
 
             return (
                 <DropdownMenu
-                    style={{padding: '5px'}} 
-                    buttonContent={button} 
+                    style={{padding: '5px'}}
+                    buttonContent={button}
                     menuItems={menuItems} />
             );
         },
@@ -204,14 +204,14 @@
                 <li key="manage-targets"><a href="javascript:;" onClick={ui.goTo.bind(null, 'Manage Targets')} title="Manage Targets">Manage Targets</a></li>,
                 <li key="manage-persona"><a href="javascript:;" onClick={ui.goTo.bind(null, 'Preferences')} title="Preferences">Preferences</a></li>,
                 <li key="manage-account"><a href="/Manage" title="Manage">Account</a></li>,
-                <li key="logout"><a href="javascript:sessionStorage.removeItem('accessToken');$('#logoutForm').submit();">Log off</a></li>            
+                <li key="logout"><a href="javascript:sessionStorage.removeItem('accessToken');$('#logoutForm').submit();">Log off</a></li>
             ]);
 
             return (
                 <DropdownMenu
-                    style={{padding: '5px'}} 
-                    buttonContent={button} 
-                    menuItems={menuItems} />  
+                    style={{padding: '5px'}}
+                    buttonContent={button}
+                    menuItems={menuItems} />
             );
         },
         render: function () {
@@ -223,7 +223,7 @@
             if (this.state.windowWidth < 500) {
                 var adjustDropDownMenu = { marginRight: '-103px'};
             }
-            
+
             return (
                 <div className="navbar navbar-hl-theme">
                     <ul className="nav navbar-nav">

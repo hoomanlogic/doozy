@@ -29,23 +29,23 @@
         BOX: '#',
         TAG: ''
     };
-    
+
     var TARGET_MEASURE = {
         EXECUTION: 0,
         PROGRESS: 1,
         DURATION: 2
     };
-    
+
     var TARGET_PERIOD = {
         YEARS: 0,
         MONTHS: 1,
         WEEKS: 2,
         DAYS: 3
     };
-    
+
     var getFrequencyName = function (freq) {
         return {
-            w: 'Week',  
+            w: 'Week',
             m: 'Month',
             y: 'Year',
             d: 'Day'
@@ -53,7 +53,7 @@
     };
 
     /**
-     * Parse an iCal RRULE, EXRULE, RDATE, or EXDATE string 
+     * Parse an iCal RRULE, EXRULE, RDATE, or EXDATE string
      * and return a recurrence object
      */
     var parseRecurrenceRule = function (icalRule) {
@@ -122,38 +122,38 @@
         if (target.period === TARGET_PERIOD.YEARS) {
             starts.setFullYear(starts.getFullYear() + target.multiplier);
         } else if (target.period === TARGET_PERIOD.MONTHS) {
-            starts.setMonth(starts.getMonth() + target.multiplier);   
+            starts.setMonth(starts.getMonth() + target.multiplier);
         } else if (target.period === TARGET_PERIOD.WEEKS) {
-            starts.setDate(starts.getDate() + (target.multiplier * 7));   
+            starts.setDate(starts.getDate() + (target.multiplier * 7));
         } else if (target.period === TARGET_PERIOD.DAYS) {
-            starts.setDate(starts.getDate() + target.multiplier);   
+            starts.setDate(starts.getDate() + target.multiplier);
         }
     };
-    
+
     var targetPeriodEnds = function (target, starts) {
         var d = new Date(starts.toISOString());
         if (target.period === TARGET_PERIOD.YEARS) {
             d.setFullYear(d.getFullYear() + target.multiplier);
         } else if (target.period === TARGET_PERIOD.MONTHS) {
-            d.setMonth(d.getMonth() + target.multiplier);   
+            d.setMonth(d.getMonth() + target.multiplier);
         } else if (target.period === TARGET_PERIOD.WEEKS) {
-            d.setDate(d.getDate() + (target.multiplier * 7));   
+            d.setDate(d.getDate() + (target.multiplier * 7));
         } else if (target.period === TARGET_PERIOD.DAYS) {
-            d.setDate(d.getDate() + target.multiplier);   
+            d.setDate(d.getDate() + target.multiplier);
         }
         d.setDate(d.getDate() - 1);
         return d;
     };
-    
+
     var targetPeriodStats = function (target, actionIds, periodStarts, periodEnds, prevPeriodStats, isActive) {
         var number, performed, streak = 0;
-        
+
         // get performed log entries relevant to the target period
         performed = logEntryStore.updates.value.filter(function (item) {
             var logDate = new Date(item.date);
             return item.entry === 'performed' &&
                 actionIds.indexOf(item.actionId) !== -1 &&
-                logDate >= periodStarts && 
+                logDate >= periodStarts &&
                 logDate <= periodEnds;
         });
 
@@ -165,7 +165,7 @@
                 number += item.duration;
             });
         }
-        
+
         // calculate period streak
         if (target.number <= number) { // is target met?
             if (typeof prevPeriodStats !== 'undefined' && prevPeriodStats !== null) {
@@ -176,21 +176,21 @@
         } else if (isActive && typeof prevPeriodStats !== 'undefined' && prevPeriodStats !== null) {
             streak = prevPeriodStats.streak;
         }
-        
+
         // for current period, a few more indicators
         if (isActive) {
             var daysInPeriod = (periodEnds.getTime() - periodStarts.getTime()) / 86400000;
             var today = new Date();
             today.setHours(0,0,0,0);
-            
+
             if (periodEnds.getTime() === today.getTime()) {
                 var daysLeft = ((new Date()).getTime() - periodEnds.getTime()) / (86400000 * 0.7);
             } else {
                 var daysLeft = (periodEnds.getTime() - today.getTime()) / 86400000;
             }
-            
+
         }
-        
+
         // return period stats
         return {
             starts: periodStarts.toISOString(),
@@ -204,22 +204,22 @@
             daysInPeriod: daysInPeriod
         };
     };
-    
+
     return {
-        
+
         TAG_KIND: TAG_KIND,
-        
+
         TARGET_MEASURE: TARGET_MEASURE,
-        
+
         TARGET_PERIOD: TARGET_PERIOD,
-        
+
         getFrequencyName: getFrequencyName,
-        
+
         parseRecurrenceRule: parseRecurrenceRule,
-        
+
         getRecurrenceSummary: function (recurrenceRules) {
             if (!recurrenceRules || recurrenceRules.length === 0) {
-                return null;   
+                return null;
             }
 
             var summary = '';
@@ -276,7 +276,7 @@
 
             return summary;
         },
-        
+
         action: function (name, tags) {
 
             // add tags any were supplied
@@ -305,7 +305,7 @@
                 items: []
             };
         },
-        
+
         plan: function (name) {
             // return object literal
             return {
@@ -316,7 +316,6 @@
                 duration: 0,
                 tagName: null,
                 content: null,
-                tagName: null,
                 iconUri: null
             };
         },
@@ -373,7 +372,7 @@
                     return target.id === targetId;
                 });
             }
-            
+
             targets.forEach( function (target) {
 
                 var accuracy,
@@ -387,11 +386,11 @@
                     periodStarts,
                     periodsStats = [],
                     today;
-                
+
                 // today
                 today = new Date();
                 today.setHours(0,0,0,0);
-                
+
                 // first period starts
                 periodStarts = new Date(target.starts);
                 periodStarts.setHours(0,0,0,0);
@@ -441,18 +440,18 @@
 
                 // calculate accuracy
                 accuracy = Math.round((periodsStats.filter(function (item) { return item.met; }).length / periodsStats.length) * 10000) / 100;
-                
+
                 if (periodsStats.length === 1) {
                     average = periodsStats[0].number;
                 } else {
                     average = 0;
                     periodsStats.forEach( function (item) {
-                       average += item.number; 
+                       average += item.number;
                     });
                     average = average / periodsStats.length;
                     average = Math.round(average * 100) / 100;
                 }
-                
+
                 if (periodsStats.length > 1) {
                     allButLatestPeriod = periodsStats.slice(0, -1);
                     accuracyBeforeLatestPeriod = Math.round((allButLatestPeriod.filter(function (item) { return item.met; }).length / allButLatestPeriod.length) * 10000) / 100;
@@ -474,7 +473,7 @@
 
             return targetsStats;
         },
-        
+
         /**
          * Parses a tag value string to an object
          */
@@ -506,11 +505,11 @@
             }
 
             /**
-             * Separate the name from the 
+             * Separate the name from the
              * prefix when it is a special tag
              */
             if (kind !== 'Tag') {
-                name = name.slice(1);   
+                name = name.slice(1);
             }
 
             /**
@@ -523,7 +522,7 @@
                 className: className
             };
         },
-        
+
         /**
          * Get raw tag value from a tag object
          */
@@ -572,7 +571,7 @@
 
         calcNaturalDays: function (date) {
             if (!date) {
-                return '';   
+                return '';
             }
             var date1 = date;
             var date2 = new Date();
@@ -606,5 +605,5 @@
             }
         },
     };
-    
+
 }));
