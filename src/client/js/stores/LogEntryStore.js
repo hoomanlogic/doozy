@@ -4,17 +4,10 @@
     if (typeof exports === "object") {
         // CommonJS
         module.exports = exports = factory(
-            require('../../../../../common_js/src/store'),
+            require('../../../../bower_components/common_js/src/store'),
             require('../app/app'),
             require('jquery')
         );
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define([
-            '../../../../../common_js/src/store',
-            'jquery'
-        ], factory);
     }
     else {
         // Global (browser)
@@ -22,12 +15,12 @@
     }
 }(function (hlstore, doozy, $) {
     'use strict';
-    
+
     var LogEntryStore = function () {
         hlstore.Store.call(this);
         this.updates.value = [];
         var me = this;
-        
+
         var _api = {
             postAction: function (action) {
                 return $.ajax({
@@ -130,7 +123,7 @@
                 });
             }
         };
-        
+
         this.getLogEntriesByUserName = function (userName) {
             $.ajax({
                 context: me,
@@ -149,11 +142,11 @@
                 }
             });
         };
-        
+
         this.create = function (logEntry) {
 
-            var actionToUpdate = _.find(actionStore.updates.value, function(item) { 
-                return logEntry.actionId === item.id; 
+            var actionToUpdate = _.find(actionStore.updates.value, function(item) {
+                return logEntry.actionId === item.id;
             });
 
             _api.postLogEntry(logEntry)
@@ -161,32 +154,32 @@
                 // add log entry to collection
                 me.updates.value = me.updates.value.concat(result);
                 me.notify();
-                
+
                 // find last performed
                 var lastPerformed = null;
-                
+
                 me.updates.value
-                .filter( function (item) { 
-                    return item.actionId === actionToUpdate.id && ['performed','skipped'].indexOf(item.entry) > -1; 
+                .filter( function (item) {
+                    return item.actionId === actionToUpdate.id && ['performed','skipped'].indexOf(item.entry) > -1;
                 })
                 .forEach( function (item) {
                     if (lastPerformed === null || new Date(item.date) > new Date(lastPerformed)) {
-                        lastPerformed = item.date;   
+                        lastPerformed = item.date;
                     }
                 });
-            
+
                 // update action and notify
                 if (actionToUpdate.lastPerformed !== lastPerformed) {
                     actionToUpdate.lastPerformed = lastPerformed;
                     if (result.nextDate === "0001-01-01T00:00:00") {
-                        result.nextDate = null;   
+                        result.nextDate = null;
                     }
                     if (actionToUpdate.nextDate !== result.nextDate) {
                         actionToUpdate.nextDate = result.nextDate;
                     }
                     actionStore.updates.onNext(actionStore.updates.value);
                 }
-                
+
                 toastr.success('Logged action ' + result.actionName);
             })
             .fail(function (err) {
@@ -194,7 +187,7 @@
             });
 
         };
-        
+
         this.createWithoutAction = function (logEntry) {
 
             _api.postLogEntry(logEntry)
@@ -202,7 +195,7 @@
                 // add log entry to collection
                 me.updates.value = me.updates.value.concat(result);
                 me.notify();
-        
+
                 toastr.success('Logged entry');
             })
             .fail(function (err) {
@@ -212,23 +205,23 @@
         };
 
         this.createWithNewAction = function (newAction, logEntry) {
-            
+
             actionStore.create(newAction, function (result) {
                 logEntry.actionId = result.id
                 me.create(logEntry);
             });
 
         };
-        
+
         this.update = function (logEntry) {
-            
+
             var logEntryToUpdate = _.find(me.updates.value, {id: logEntry.id});
             var original = Object.assign({}, logEntry);
 
             // optimistic concurrency
             Object.assign(logEntryToUpdate, logEntry);
             me.notify();
-        
+
             ui.queueRequest('Log Entry', logEntry.id, 'Updated log entry for ' + logEntryToUpdate.actionName, function () {
                 _api.putLogEntry(logEntry)
                 .done(function (result) {
@@ -246,18 +239,18 @@
                 me.notify();
             });
         };
-        
+
         this.destroy = function (logEntry) {
-            
-            var actionToUpdate = _.find(actionStore.updates.value, function(item) { 
-                return logEntry.actionId === item.id; 
+
+            var actionToUpdate = _.find(actionStore.updates.value, function(item) {
+                return logEntry.actionId === item.id;
             });
-            
+
             // optimistic concurrency
             var filtered = me.updates.value.filter( function (item) { return item.id !== logEntry.id; });
             me.updates.value = filtered;
             me.notify();
-            
+
             ui.queueRequest('Log Entry', logEntry.id, 'Deleted log entry for ' + logEntry.actionName, function () {
                 _api.deleteLogEntry(logEntry)
                 .done( function (result) {
@@ -266,12 +259,12 @@
                     var lastPerformed = null;
 
                     me.updates.value
-                    .filter( function (item) { 
-                        return item.actionId === actionToUpdate.id && ['performed','skipped'].indexOf(item.entry) > -1; 
+                    .filter( function (item) {
+                        return item.actionId === actionToUpdate.id && ['performed','skipped'].indexOf(item.entry) > -1;
                     })
                     .forEach( function (item) {
                         if (lastPerformed === null || new Date(item.date) > new Date(lastPerformed)) {
-                            lastPerformed = item.date;   
+                            lastPerformed = item.date;
                         }
                     });
 
@@ -279,7 +272,7 @@
                     if (actionToUpdate.lastPerformed !== lastPerformed) {
                         actionToUpdate.lastPerformed = lastPerformed;
                         if (result.nextDate === "0001-01-01T00:00:00") {
-                            result.nextDate = null;   
+                            result.nextDate = null;
                         }
                         if (actionToUpdate.nextDate !== result.nextDate) {
                             actionToUpdate.nextDate = result.nextDate;
@@ -299,9 +292,9 @@
                 me.notify();
             });
         };
-        
+
         this.toggleUpvote = function (userName, id) {
-            
+
             $.ajax({
                 context: me,
                 url: clientApp.HOST_NAME + '/api/toggleupvote',
@@ -335,9 +328,9 @@
                 }
             });
         };
-        
+
         this.addComment = function (userName, id, comment) {
-            
+
             _api.postComment(id, comment)
             .done( function(result) {
 
@@ -351,9 +344,9 @@
                 toastr.error('Oh no! There was a problem with the request!' + status + err);
             });
         };
-        
+
         this.updateComment = function (userName, logEntryId, id, comment) {
-            
+
             _api.postComment(id, comment)
             .done( function(result) {
 
@@ -369,25 +362,25 @@
                 toastr.error('Oh no! There was a problem with the request!' + status + err);
             });
         };
-        
+
         this.deleteComment = function (userName, logEntryId, id) {
             _api.deleteComment(id)
             .done( function(result) {
-                
+
                 var logEntries = me.updates.value;
                 var logEntry = _.find(logEntries, {id: logEntryId});
                 logEntry.comments = _.where(logEntry.comments, function (item) { return item.id !== id; });
                 me.notify();
-                
+
             })
             .fail( function(xhr, status, err) {
                 toastr.error('Oh no! There was a problem with the request!' + status + err);
             });
         };
-        
+
         var user = 'my';
         var secret = 'hash';
-        
+
         this.init = function (userName, userId) {
 
             user = userName;

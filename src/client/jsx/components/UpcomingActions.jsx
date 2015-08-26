@@ -28,10 +28,10 @@
         calcIsUpcomingAction: function (item, index) {
             /**
              * Exclude boxed actions
-             */ 
+             */
             var boxTags = _.filter(item.tags, function(tag) { return tag.slice(0,1) === '#'; });
             if (boxTags.length > 0) {
-                return false;   
+                return false;
             }
 
             /**
@@ -61,28 +61,28 @@
         renderUpcomingActionsTable: function (upcomingActions) {
             return (
                 <table className="table table-striped">
-                    <tbody>                        
+                    <tbody>
                         {upcomingActions.map(function(item, index) {
                             return (
-                                <ActionRow key={item.id} 
+                                <ActionRow key={item.id}
                                     overrideIsDone={false}
-                                    action={item} 
+                                    action={item}
                                     actionName={item.name}
-                                    actionLastPerformed={item.nextDate} // use next date in last performed place so that it displays 
+                                    actionLastPerformed={item.nextDate} // use next date in last performed place so that it displays
                                                                         // when it's coming up instead of when it was last performed
                                                                         // TODO: ActionRow prop should be named something more suitable and generic
                                     actionNextDate={item.nextDate} />
                             );
                         }.bind(this))}
                     </tbody>
-                </table>  
+                </table>
             );
         },
         render: function () {
 
             var upcomingActions,
                 upcomingActionsTable;
-        
+
             /**
              * Return null if there are no upcoming actions
              */
@@ -90,25 +90,25 @@
             if (upcomingActions.length === 0) {
                 return null;
             }
-        
+
             /**
              * Sort the actions by next date and name
              */
-            upcomingActions = _.sortBy(upcomingActions, function(action){ 
-                return (action.nextDate + '-' + action.name); 
+            upcomingActions = _.sortBy(upcomingActions, function(action) { 
+                return (action.nextDate + '-' + action.name);
             })
 
-            upcomingActionsTable = this.renderUpcomingActionsTable(upcomingActions); 
+            upcomingActionsTable = this.renderUpcomingActionsTable(upcomingActions);
 
             /**
              * Inline Styles
              */
-            var headerStyle = { 
+            var headerStyle = {
                 padding: '2px 2px 2px 8px',
                 fontWeight: 'bold',
                 fontSize: '1.5em'
             };
-        
+
             /**
              * HTML
              */

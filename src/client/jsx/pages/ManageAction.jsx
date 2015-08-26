@@ -25,10 +25,10 @@
          * TYPES AND ENUMERATIONS
          *************************************************************/
         VIEW_MODE: {
-            GENERAL: 'general',  
-            HISTORY: 'history' 
+            GENERAL: 'general',
+            HISTORY: 'history'
         },
-        
+
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
@@ -37,7 +37,7 @@
                 viewMode: 'general',
                 durationInput: null,
                 durationDisplay: null,
-                dateInput: null, 
+                dateInput: null,
                 dateDisplay: null,
                 ordinal: null,
                 repeat: 'o',
@@ -50,7 +50,7 @@
                 repeatFri: false,
                 repeatSat: false,
                 logEntriesLastUpdated: new Date().toISOString()
-            };  
+            };
         },
 
         componentWillReceiveProps: function (nextProps) {
@@ -69,7 +69,7 @@
             }
         },
         componentWillMount: function () {
-            
+
             if (!this.props.action) {
                 // get tags from UI filter
                 var tags = ui.tags || [];
@@ -83,7 +83,7 @@
             } else {
                 this.props.action = this.edit(this.props.action);
             }
-            
+
             var detailsChange = EventHandler.create();
             detailsChange
                 .throttle(1000)
@@ -92,7 +92,7 @@
             this.handlers = {
                 detailsChange: detailsChange
             };
-            
+
             logEntryStore.subscribe(this.handleLogEntryStoreUpdate);
         },
         componentWillUnmount: function () {
@@ -100,21 +100,21 @@
              * Clean up objects and bindings
              */
             this.handlers.detailsChange.dispose();
-            
+
             logEntryStore.dispose(this.handleLogEntryStoreUpdate);
         },
 
         componentDidMount: function () {
             this.setupTagsControl();
-            
+
             var resizeTextArea = function () {
                 if (Math.abs($(this).height() - this.scrollHeight) > 16) {
                     $(this).height(0).height(this.scrollHeight);
                 }
             };
-            
+
             $(this.refs.content.getDOMNode()).on( 'change keyup keydown paste cut', resizeTextArea).change();
-            
+
             if (this.props.mode === 'Add') {
                 $(this.refs.name.getDOMNode()).focus();
             }
@@ -148,7 +148,7 @@
             var state = {
                 durationInput: durationInput,
                 durationDisplay: null,
-                dateInput: date, 
+                dateInput: date,
                 dateDisplay: null,
                 ordinal: editableCopy.ordinal,
                 mode: 'Edit',
@@ -196,7 +196,7 @@
 
             // set state
             this.setState(state);
-            
+
             return editableCopy;
         },
 
@@ -266,7 +266,7 @@
                 this.setState({logEntriesLastUpdated: new Date().toISOString()});
             }
         },
-        
+
         handleChange: function (event) {
             if (event.target === this.refs.name.getDOMNode()) {
                 this.props.action.name = event.target.value;
@@ -296,7 +296,7 @@
                     if (e instanceof RangeError) {
                         dateValue = null;
                     } else {
-                        throw e;   
+                        throw e;
                     }
                 }
 
@@ -335,11 +335,11 @@
                 try {
                     ord = parseInt(event.target.value);
                 } catch (e) {
-                    
+
                 }
                 this.setState({ordinal: ord});
             }
-            this.setState({ 
+            this.setState({
                 action: this.props.action,
                 durationInput: this.state.durationInput,
                 durationDisplay: this.state.durationDisplay,
@@ -391,11 +391,11 @@
             if (this.state.repeat === 'd') {
                 var dailyRule = 'RRULE:FREQ=DAILY';
                 if (this.state.repeatInterval > 1) {
-                    dailyRule += ';INTERVAL=' + this.state.repeatInterval;    
+                    dailyRule += ';INTERVAL=' + this.state.repeatInterval;
                 }
                 recurrenceRules.push(dailyRule);
             } else if (this.state.repeat === 'w' && (
-            this.state.repeatSun || 
+            this.state.repeatSun ||
             this.state.repeatMon ||
             this.state.repeatTue ||
             this.state.repeatWed ||
@@ -406,42 +406,42 @@
                 var weeklyRule = 'RRULE:FREQ=WEEKLY;BYDAY=';
                 var days = [];
                 if (this.state.repeatSun) {
-                    days.push('SU');   
+                    days.push('SU');
                 }
                 if (this.state.repeatMon) {
-                    days.push('MO');   
+                    days.push('MO');
                 }
                 if (this.state.repeatTue) {
-                    days.push('TU');   
+                    days.push('TU');
                 }
                 if (this.state.repeatWed) {
-                    days.push('WE');   
+                    days.push('WE');
                 }
                 if (this.state.repeatThu) {
-                    days.push('TH');   
+                    days.push('TH');
                 }
                 if (this.state.repeatFri) {
-                    days.push('FR');   
+                    days.push('FR');
                 }
                 if (this.state.repeatSat) {
-                    days.push('SA');   
+                    days.push('SA');
                 }
                 weeklyRule += days.join(',');
 
                 if (this.state.repeatInterval > 1) {
-                    weeklyRule += ';INTERVAL=' + this.state.repeatInterval;    
+                    weeklyRule += ';INTERVAL=' + this.state.repeatInterval;
                 }
                 recurrenceRules.push(weeklyRule);
             } else if (this.state.repeat === 'm') {
                 var monthlyRule = 'RRULE:FREQ=MONTHLY';
                 if (this.state.repeatInterval > 1) {
-                    monthlyRule += ';INTERVAL=' + this.state.repeatInterval;    
+                    monthlyRule += ';INTERVAL=' + this.state.repeatInterval;
                 }
                 recurrenceRules.push(monthlyRule);
             } else if (this.state.repeat === 'y') {
                 var yearlyRule = 'RRULE:FREQ=YEARLY';
                 if (this.state.repeatInterval > 1) {
-                    yearlyRule += ';INTERVAL=' + this.state.repeatInterval;    
+                    yearlyRule += ';INTERVAL=' + this.state.repeatInterval;
                 }
                 recurrenceRules.push(yearlyRule);
             }
@@ -473,13 +473,13 @@
             return (
                 <div style={divStyle}>
                     <label style={labelStyle} htmlFor={'action-repeat-' + day.toLowerCase()}>{day.slice(0,1)}</label>
-                    <input 
-                        id={'action-repeat-' + day.toLowerCase()} 
+                    <input
+                        id={'action-repeat-' + day.toLowerCase()}
                         ref={'repeat' + day}
-                        type="checkbox" 
-                        className="form-control" 
-                        style={checkboxStyle} 
-                        checked={this.state['repeat' + day]} 
+                        type="checkbox"
+                        className="form-control"
+                        style={checkboxStyle}
+                        checked={this.state['repeat' + day]}
                         onChange={this.handleChange} />
                 </div>
             );
@@ -490,7 +490,7 @@
             if (repeat === 'w') {
 
                 /**
-                 * Render day of week checkboxes in order 
+                 * Render day of week checkboxes in order
                  * based on the user's start of week
                  */
                 var dayIndex = userStore.updates.value.weekStarts;
@@ -499,7 +499,7 @@
                     daysOfWeek.push(this.renderDayCheckbox(babble.moments.daysOfWeek[dayIndex].slice(0,3)));
                     dayIndex++;
                     if (dayIndex > 6) {
-                        dayIndex = 0;   
+                        dayIndex = 0;
                     }
                 }
 
@@ -522,11 +522,11 @@
                     </div>
                 );
             } else {
-                return null;   
+                return null;
             }
         },
         renderGeneralView: function () {
-            
+
             /**
              * State and Prop Dependencies
              */
@@ -589,17 +589,17 @@
                         <input id="action-ispublic" ref="ispublic" type="checkbox" className="form-control" checked={isPublic} onChange={this.handleChange} />
                     </div>
                 </form>
-            ); 
+            );
         },
         renderHistoryView: function () {
             var actionId = this.props.action.id;
             var logEntries = logEntryStore.updates.value.filter(function (item) {
                 return item.actionId === actionId;
             });
-            
-            logEntries = _.sortBy(logEntries, function(item){ return item.date.split('T')[0] + '-' + (['performed','skipped'].indexOf(item.entry) > -1 ? '1' : '0'); });
+
+            logEntries = _.sortBy(logEntries, function(item) { return item.date.split('T')[0] + '-' + (['performed','skipped'].indexOf(item.entry) > -1 ? '1' : '0'); });
             logEntries.reverse();
-            
+
             return (
                 <div>
                     <h2 style={{ margin: '0 0 5px 5px'}}>Action History Log</h2>
@@ -627,7 +627,7 @@
                 currentView = this.renderHistoryView();
                 toggleTitle = 'View General';
             }
-            
+
             /**
              * Buttons array to pass to Modal component
              */
@@ -638,42 +638,42 @@
                 marginBottom: '5px',
                 fontSize: '1.1rem'
             };
-            
+
             var deleteButtonStyle = Object.assign({}, buttonStyle, {
                 marginTop: '3rem'
             });
-            
+
             if (this.props.mode === 'Add') {
-                buttons = [{type: 'primary', 
+                buttons = [{type: 'primary',
                             text: 'Save Action',
                             handler: this.handleSaveClick,
                             buttonStyle: buttonStyle},
-                           {type: 'default', 
-                            text: 'Cancel', 
+                           {type: 'default',
+                            text: 'Cancel',
                             handler: this.handleCancelClick,
                             buttonStyle: buttonStyle},
                            ];
             }
             else {
-                buttons = [{type: 'default', 
+                buttons = [{type: 'default',
                             text: toggleTitle,
                             handler: this.handleToggleViewModeClick,
                             buttonStyle: buttonStyle},
-                           {type: 'primary', 
+                           {type: 'primary',
                             text: 'Save Changes',
                             handler: this.handleSaveClick,
                             buttonStyle: buttonStyle},
-                           {type: 'default', 
-                            text: 'Cancel', 
+                           {type: 'default',
+                            text: 'Cancel',
                             handler: this.handleCancelClick,
-                            buttonStyle: buttonStyle}, 
-                           {type: 'danger', 
-                            text: 'Delete', 
+                            buttonStyle: buttonStyle},
+                           {type: 'danger',
+                            text: 'Delete',
                             handler: this.handleDeleteClick,
-                            buttonStyle: deleteButtonStyle} 
+                            buttonStyle: deleteButtonStyle}
                            ];
             }
-            
+
             var buttonsDom = buttons.map(function(button, index) {
                 return <button key={index} style={button.buttonStyle} type="button" className={'btn btn-' + button.type} onClick={button.handler}>{button.text}</button>
             });

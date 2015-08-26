@@ -1,20 +1,17 @@
+var webpack = require("webpack");
+var path = require("path");
 module.exports = {
     entry: "./entry.js",
-    output: {
-        path: __dirname + '/src/Server/js',
-        filename: "bundle.js",
-        //at this directory our bundle file will be available
-        //make sure port 8090 is used when launching webpack-dev-server
-        publicPath: 'http://localhost:8090/assets'
+    eslint: {
+        configFile: '.eslintrc'
     },
     module: {
         loaders: [
-            // tell webpack to use jsx-loader for all *.jsx files
-            { test: /\.jsx$/, loader: 'jsx-loader?insertPragma=React.DOM&harmony' },
-            
+            { test: /\.jsx?$/, loader: 'babel' },
+            { test: /\.jsx?$/, loader: 'eslint' },
             { test: /\.css$/, loader: "style!css" },
             { test: /\.less$/, loader: "style!css!less" },
-            
+
             // required for bootstrap/font-awesome
             { test: /\.woff$/,   loader: "url-loader?prefix=font/&limit=5000&mimetype=application/font-woff" },
             { test: /\.ttf$/,    loader: "file-loader" },
@@ -29,5 +26,12 @@ module.exports = {
     },
     resolve: {
         extensions: ['', '.js', '.jsx']
+    },
+    output: {
+        path: __dirname + '/src/Server/js',
+        filename: "bundle.js",
+        //at this directory our bundle file will be available
+        //make sure port 8090 is used when launching webpack-dev-server
+        publicPath: 'http://localhost:8090/assets'
     }
 };

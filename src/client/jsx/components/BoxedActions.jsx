@@ -69,12 +69,12 @@
             return boxTags.map( function (boxTag) {
                 var boxActions = _.filter(actions, function(action) { return action.tags.indexOf(boxTag) > -1 && action.lastPerformed === null; });
                 boxActions = _.sortBy(boxActions, function (action) { return action.name.toLowerCase(); });
-                return { 
-                    box: boxTag, 
+                return {
+                    box: boxTag,
                     actions: boxActions,
                     expanded: false
                 };
-            });  
+            });
         },
 
         /*************************************************************
@@ -83,13 +83,13 @@
         render: function () {
 
             if (this.state.boxes.length === 0) {
-                return null;        
+                return null;
             }
 
             /**
               * Inline Styles
               */
-            var headerStyle = { 
+            var headerStyle = {
                 padding: '2px 2px 2px 8px',
                 fontWeight: 'bold',
                 fontSize: '1.5em'
@@ -99,41 +99,41 @@
             boxesDom = this.state.boxes.map( function(box) {
 
                 var boxActions = box.actions;
-                boxActions = _.sortBy(boxActions, function(action){ 
-                    return (action.ordinal === null ? '' : action.ordinal + '-') + action.name.toLowerCase(); 
+                boxActions = _.sortBy(boxActions, function(action) { 
+                    return (action.ordinal === null ? '' : action.ordinal + '-') + action.name.toLowerCase();
                 });
 
                 if (boxActions.length === 0) {
-                    return null;   
+                    return null;
                 }
 
                 var list = null, nextInQueue = '';
                 if (box.expanded) {
                     list = (
                         <table className="table table-striped">
-                            <tbody>                        
+                            <tbody>
                                 {boxActions.map(function(item, index) {
                                     return (
-                                        <ActionRow key={item.id} 
+                                        <ActionRow key={item.id}
                                             action={item}
                                             actionName={item.name}
-                                            actionLastPerformed={item.lastPerformed} 
+                                            actionLastPerformed={item.lastPerformed}
                                             actionNextDate={item.nextDate} />
                                     );
                                 }.bind(this))}
                             </tbody>
-                        </table>  
+                        </table>
                     );
                 }
-                                            
+
                 if (boxActions[0].ordinal === 1) {
                     nextInQueue = ': ' + boxActions[0].name;
                 }
 
                 return (
                     <div key={box.box.substring(1)}>
-                        <div className="clickable" 
-                            style={headerStyle} 
+                        <div className="clickable"
+                            style={headerStyle}
                             onClick={this.handleBoxTitleClick.bind(null, box)}>
                             <i className={box.expanded ? 'fa fa-dropbox' : 'fa fa-cube'}></i>
                             <span>{box.box.substring(1) + nextInQueue}</span>
@@ -143,9 +143,9 @@
                 );
             }.bind(this));
 
-            var headerStyle = { 
-                color: '#e2ff63', 
-                backgroundColor: '#444', 
+            var headerStyle = {
+                color: '#e2ff63',
+                backgroundColor: '#444',
                 padding: '2px 2px 0 8px',
                 fontWeight: 'bold',
                 fontSize: '1.5em'

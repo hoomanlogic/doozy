@@ -6,14 +6,14 @@
 	if (typeof exports === "object") {
 		// CommonJS
 		module.exports = exports = factory(
-            require('react'), 
+            require('react'),
             require('../../../../../react_components/src/Modal')
         );
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
 		define([
-            'react', 
+            'react',
             '../../../../../react_components/src/Modal'
         ], factory);
 	}
@@ -83,7 +83,7 @@
                     if (e instanceof RangeError) {
                         isValid = false;
                     } else {
-                        throw e;   
+                        throw e;
                     }
                 }
 
@@ -118,8 +118,8 @@
             }
         },
         handleSave: function(event) {
-            var existingAction, 
-                newAction, 
+            var existingAction,
+                newAction,
                 names,
                 validationApology;
 
@@ -178,11 +178,11 @@
 
             // get actions sorted by name
             var actions = actionStore.updates.value;
-            actions = _.sortBy(actions, function(action){ 
+            actions = _.sortBy(actions, function(action) { 
                 action.name;
             });
             // add tags that user has assigned to other actions
-            actions.forEach( function (action) { 
+            actions.forEach( function (action) {
                 selectize.addOption({
                     value: action.name,
                     text: action.name
@@ -228,7 +228,7 @@
                         });
                     }
                 }.bind(this)
-            });  
+            });
         },
         setupTagsControl: function () {
 
@@ -352,15 +352,15 @@
          * RENDERING
          *************************************************************/
         render: function () {
-            var buttons = [{type: 'danger', 
-                            text: 'Cancel', 
+            var buttons = [{type: 'danger',
+                            text: 'Cancel',
                             handler: this.handleCancel},
-                           {type: 'primary', 
-                            text: 'Log', 
+                           {type: 'primary',
+                            text: 'Log',
                             handler: this.handleSave}];
 
             var forceHeightStyle = {
-                height: '59px'  
+                height: '59px'
             };
             var feedbackStyle = {
                 position: 'relative',
@@ -375,7 +375,7 @@
                     <div className="form-group">
                         <label htmlFor="action-tags">Tags</label>
                         <input id="action-tags" ref="tags" type="text" />
-                    </div>  
+                    </div>
                 );
             }
 

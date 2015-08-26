@@ -5,17 +5,9 @@
         // CommonJS
         module.exports = exports = factory(
             require('react'),
-            require('../../../../../babble/src/moments'),
+            require('../../../../bower_components/babble/src/moments'),
             require('./SendMessage')
         );
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define([
-            'react',
-            '../../../../../babble/src/moments',
-            './SendMessage'
-        ], factory);
     }
     else {
         // Global (browser)
@@ -45,7 +37,7 @@
         },
 
         componentWillUnmount: function () {
-            window.removeEventListener('resize', this.handleResize);  
+            window.removeEventListener('resize', this.handleResize);
         },
 
         /*************************************************************
@@ -56,7 +48,7 @@
         },
         handleViewLogEntriesClick: function () {
             logEntryStore.getLogEntriesByUserName(this.props.conversation.id);
-            ui.goTo('Log Entries', { userName: this.props.conversation.id});  
+            ui.goTo('Log Entries', { userName: this.props.conversation.id});
         },
         onClose: function () {
             if (this.props.onClose !== null) {
@@ -70,7 +62,7 @@
         goToEndOfConversation: function () {
             /**
              * Don't do anything if there is nothing rendered due
-             * to there being no active conversation open or if 
+             * to there being no active conversation open or if
              * there are no messages in the conversation
              */
             if (_.isUndefined(this.refs.scrollWindow) || !this.props.conversation || !this.props.conversation.messages) {
@@ -86,14 +78,14 @@
             var $fullConversation = $(this.refs.fullConversation.getDOMNode());
 
             if (($fullConversation.height() - $scrollWindow.height()) === 0) {
-                return; 
+                return;
             }
 
             /**
              * Seemingly React will call ComponentDidUpdate before the DOM is done being updated
              * because height doesn't work when the inner messages for the container are initially added
              * so we wait 150 milliseconds to make sure the DOM is finished and it will scroll all the way to the bottom
-             */ 
+             */
             if (this.firstLook) {
                 this.firstLook = false;
                 setTimeout(this.goToEndOfConversation, 150);
@@ -111,13 +103,13 @@
             var conversation = this.props.conversation;
 
             if (conversation === null) {
-                return null;    
+                return null;
             }
 
             var domMessages = null;
             var messages = _.sortBy(conversation.messages, function (a) { return a.sent.getTime() });
-            _.groupBy(messages, function(item){ return item.sent + item.from });
-            domMessages = 
+            _.groupBy(messages, function(item) { return item.sent + item.from });
+            domMessages =
                 messages.map(function(msg, index) {
                     var left = null;
                     var right = null;
@@ -163,7 +155,7 @@
                 padding: '5px',
                 margin: '0'
             };
-                             
+
             // style={containerStyle} className={"conversation-container" + (this.state.isOpen ? '' : ' hidden')}
 
             return (

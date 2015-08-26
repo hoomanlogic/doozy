@@ -5,15 +5,8 @@
         // CommonJS
         module.exports = exports = factory(
             require('react'),
-            require('../../../../../common_js/src/io')
+            require('../../../../bower_components/common_js/src/io')
         );
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define([
-            'react',
-            '../../../../../common_js/src/io'
-        ], factory);
     }
     else {
         // Global (browser)
@@ -29,14 +22,14 @@
             return {
                 filesSelected: false,
                 mode: 'inbox'
-            };  
+            };
         },
 
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
         handleFileChange: function () {
-            if ($('#theFile').prop('files').length > 0 && this.state.filesSelected === false) { 
+            if ($('#theFile').prop('files').length > 0 && this.state.filesSelected === false) {
                 this.setState({ filesSelected: true });
             } else if ($('#theFile').prop('files').length === 0 && this.state.filesSelected === true) {
                 this.setState({ filesSelected: false });
@@ -62,7 +55,7 @@
             var lengthOfMessage = $('#msg').val().length;
 
             if (numOfFiles + lengthOfMessage === 0) {
-                return;   
+                return;
             }
 
             if ($('#theFile').prop('files').length > 0) {
@@ -86,19 +79,19 @@
             return (
                 <div className="form form-inline" role="form" onKeyPress={this.handleKeyPress}>
                     <div className="form-group" style={{width: '100%', display: 'flex'}}>
-                        <div style={{display: 'flex', flexDirection: 'column'}}> 
+                        <div style={{display: 'flex', flexDirection: 'column'}}>
                             <a style={{minWidth: '55px'}} onClick={this.handleFileDialogClick}>
                                 <i style={{paddingLeft: '0'}} className={'file-img fa fa-2x fa-camera' + (this.state.filesSelected ? ' selected' : ' none')}></i>
                                 <input type="file" className="file-input-hidden" id="theFile" multiple accept="image/*" placeholder="share an image..." onChange={this.handleFileChange} />
                             </a>
-                            <a style={{minWidth: '55px'}} onClick={this.handlePrivateConnectionClick}>            
+                            <a style={{minWidth: '55px'}} onClick={this.handlePrivateConnectionClick}>
                                 <i style={{paddingLeft: '0'}} className={'chat-link fa fa-2x' + (this.state.mode !== 'inbox' ? ' fa-link enabled' : ' fa-unlink disabled')}></i>
                             </a>
                         </div>
                         <textarea className="form-control" id="msg" placeholder="message to send..." />
                         <button style={{ minWidth: '70px'}} className="btn btn-default btn-primary" type="button" onClick={this.handleSendClick}>Send</button>
                     </div>
-                </div>  
+                </div>
             );
         }
     });

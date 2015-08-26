@@ -23,18 +23,18 @@
 
         getInitialState: function () {
             return {
-                tagsLastUpdated: (new Date()).toISOString()  
+                tagsLastUpdated: (new Date()).toISOString()
             };
         },
-        
+
         componentWillMount: function () {
             /**
-             * Subscribe to Tag Store to be 
+             * Subscribe to Tag Store to be
              * notified of updates to the store
              */
             this.tagsObserver = tagStore.updates
                 .subscribe(this.handleTagStoreUpdate);
-            
+
         },
         componentWillUnmount: function () {
             /**
@@ -43,7 +43,7 @@
             this.tagsObserver.dispose();
         },
 
-        
+
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
@@ -56,13 +56,13 @@
         handleTagStoreUpdate: function (tags) {
             this.setState({ tagsLastUpdated: (new Date()).toISOString() });
         },
-        
+
         /*************************************************************
          * RENDERING
          *************************************************************/
         renderTagIcon: function (tag) {
             var tagIcon = 'fa-tag';
-            
+
             if (tag.kind === 'Focus') {
                 tagIcon = 'fa-eye';
             } else if (tag.kind === 'Place') {
@@ -75,7 +75,7 @@
                 tagIcon = 'fa-cube';
             }
             return (
-                <i className={"fa " + tagIcon} style={{ width: '20px', textAlign: 'center' }}></i>    
+                <i className={"fa " + tagIcon} style={{ width: '20px', textAlign: 'center' }}></i>
             );
         },
         render: function () {
@@ -85,7 +85,7 @@
             /**
              * Sort the actions by completed and name
              */
-            tags = _.sortBy(tags, function(tag){ 
+            tags = _.sortBy(tags, function(tag) { 
                 return tag.kind + '-' + tag.name.toLowerCase();
             })
 
@@ -95,19 +95,19 @@
             var headerStyle = {
                 display: 'flex',
                 flexDirection: 'row',
-                color: '#e2ff63', 
-                backgroundColor: '#444', 
+                color: '#e2ff63',
+                backgroundColor: '#444',
                 padding: '2px 2px 0 8px',
                 fontWeight: 'bold',
                 fontSize: '1.5em'
             };
-        
+
             var tagStyle = {
                 fontSize: 'large',
                 padding: '5px',
                 borderBottom: 'solid 1px #e0e0e0'
             };
-            
+
             // html
             return (
                 <div>
@@ -115,7 +115,7 @@
                         <div style={{flexGrow: '1'}}>Tags</div>
                         <div style={{paddingRight: '5px'}}><button type="button" className="close" onClick={this.handleCloseClick}><span aria-hidden="true">&times;</span></button></div>
                     </div>
-                    <div style={{display: 'flex', flexDirection: 'column'}}>                    
+                    <div style={{display: 'flex', flexDirection: 'column'}}>
                         {tags.map(function(item, index) {
                             return (
                                 <div key={item.id} className="clickable" style={tagStyle} onClick={this.handleTagClick.bind(null, item)}>
@@ -123,7 +123,7 @@
                                 </div>
                             );
                         }.bind(this))}
-                    </div>  
+                    </div>
                 </div>
             );
         }

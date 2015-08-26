@@ -29,19 +29,19 @@
                 return item.tagName === focusTag;
             });
             if (!focus) {
-                return [];   
+                return [];
             }
             var plans = _.where(planStore.updates.value, { focusId: focus.id });
             return plans;
         },
-        
+
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
         handlePlanClick: function (plan) {
             ui.goTo('Plan View', {planId: plan.id});
         },
-        
+
         /*************************************************************
          * RENDERING
          *************************************************************/
@@ -52,8 +52,8 @@
             /**
              * Sort the actions by completed and name
              */
-            activePlans = _.sortBy(activePlans, function(plan){ 
-                return plan.name.toLowerCase(); 
+            activePlans = _.sortBy(activePlans, function(plan) { 
+                return plan.name.toLowerCase();
             })
 
             /**
@@ -69,13 +69,13 @@
             var headerStyle = {
                 display: 'flex',
                 flexDirection: 'row',
-                color: '#e2ff63', 
-                backgroundColor: '#444', 
+                color: '#e2ff63',
+                backgroundColor: '#444',
                 padding: '2px 2px 0 8px',
                 fontWeight: 'bold',
                 fontSize: '1.5em'
             };
-        
+
             var listItemStyle = {
                 display: 'flex',
                 flexDirection: 'row',
@@ -84,24 +84,24 @@
                 borderBottom: 'solid 1px #e0e0e0'
             };
 
-            var buttonStyle = { 
-                paddingTop: '3px', 
-                paddingBottom: '3px', 
-                backgroundImage: 'none', 
-                color: '#444', 
-                backgroundColor: '#e2ff63', 
-                borderColor: '#e2ff63', 
-                fontWeight: 'bold', 
-                outlineColor: 'rgb(40, 40, 40)' 
+            var buttonStyle = {
+                paddingTop: '3px',
+                paddingBottom: '3px',
+                backgroundImage: 'none',
+                color: '#444',
+                backgroundColor: '#e2ff63',
+                borderColor: '#e2ff63',
+                fontWeight: 'bold',
+                outlineColor: 'rgb(40, 40, 40)'
             };
-        
+
             // html
             return (
                 <div>
                     <div style={headerStyle}>
                         <div>Active Plans</div>
                     </div>
-                    <div style={{display: 'flex', flexDirection: 'column'}}>                    
+                    <div style={{display: 'flex', flexDirection: 'column'}}>
                         {activePlans.map(function(item, index) {
                             return (
                                 <div key={item.id} style={listItemStyle}>
@@ -111,7 +111,7 @@
                                 </div>
                             );
                         }.bind(this))}
-                    </div>  
+                    </div>
                 </div>
             );
         }

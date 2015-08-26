@@ -4,17 +4,10 @@
     if (typeof exports === "object") {
         // CommonJS
         module.exports = exports = factory(
-            require('../../../../../common_js/src/store'),
+            require('../../../../bower_components/common_js/src/store'),
             require('../app/app'),
             require('jquery')
         );
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define([
-            '../../../../../common_js/src/store',
-            'jquery'
-        ], factory);
     }
     else {
         // Global (browser)
@@ -22,7 +15,7 @@
     }
 }(function (hlstore, doozy, $) {
     'use strict';
-    
+
     var ConnectionStore = function () {
         hlstore.Store.call(this);
         this.updates.value = [];
@@ -45,7 +38,7 @@
                 }
             });
         };
-        
+
         this.requestConnection = function (userName) {
             $.ajax({
                 context: me,
@@ -130,7 +123,7 @@
                 }
             });
         };
-        
+
     };
     ConnectionStore.prototype = Object.create(hlstore.Store.prototype);
     ConnectionStore.prototype.constructor = ConnectionStore;

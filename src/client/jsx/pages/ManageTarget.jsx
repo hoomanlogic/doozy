@@ -21,13 +21,13 @@
          *************************************************************/
         getInitialState: function () {
             if (!this.props.targetId) {
-                return doozy.target();   
+                return doozy.target();
             }
             var target = _.find(targetStore.updates.value, { id: this.props.targetId });
             if (!target) {
-                return doozy.target();   
+                return doozy.target();
             }
-            
+
             return {
                 id: target.id,
                 name: target.name,
@@ -50,7 +50,7 @@
                 this.setupActionsControl();
             }
         },
-        
+
         componentDidUpdate: function () {
             if (this.state.entityType === 'Tag') {
                 this.setupTagsControl();
@@ -58,13 +58,13 @@
                 this.setupActionsControl();
             }
         },
-        
+
         componentWillReceiveProps: function (nextProps) {
             var target = _.find(targetStore.updates.value, { id: nextProps.targetId });
             if (!target) {
-                return;   
+                return;
             }
-            
+
             this.setState({
                 id: target.id,
                 name: target.name,
@@ -120,7 +120,7 @@
             }
             ui.goBack();
         },
-        
+
         /*************************************************************
          * MISC
          *************************************************************/
@@ -130,19 +130,19 @@
 
             // get actions sorted by name
             var actions = actionStore.updates.value;
-            actions = _.sortBy(actions, function(action){ 
+            actions = _.sortBy(actions, function(action) { 
                 action.name;
             });
-            
+
             // add actions
-            actions.forEach( function (action) { 
+            actions.forEach( function (action) {
                 selectize.addOption({
                     id: action.id,
                     value: action.name,
                     name: action.name
                 });
             });
-            
+
             // set current value
             if (this.state.entityId) {
                 var action = actionStore.getActionById(this.state.entityId);
@@ -155,10 +155,10 @@
 
             // get distinct tags user has assigned to other actions
             var tags = tagStore.updates.value;
-            tags = _.sortBy(tags, function(tag){ 
+            tags = _.sortBy(tags, function(tag){
                 tag.name;
             });
-            
+
             // add tags that user has assigned to other actions
             tags.forEach( function (tag) {
                 selectize.addOption({
@@ -168,7 +168,7 @@
                     value: doozy.getTagValue(tag),
                 });
             });
-            
+
             // set current value
             if (this.state.entityId) {
                 var tag = tagStore.getTagById(this.state.entityId);
@@ -231,7 +231,7 @@
             var selectize = $(this.refs.entity.getDOMNode())[0].selectize;
             this.setOptionsTag(selectize);
         },
-        
+
         /*************************************************************
          * RENDERING
          *************************************************************/
@@ -242,30 +242,30 @@
                 marginBottom: '5px',
                 fontSize: '1.1rem'
             };
-            
+
             var deleteButtonStyle = Object.assign({}, buttonStyle, {
                 marginTop: '3rem'
             });
-            
+
             var buttons = [
-                {type: 'primary', 
+                {type: 'primary',
                  text: 'Save Changes',
                  handler: this.handleSaveClick,
                  buttonStyle: buttonStyle},
-                {type: 'default', 
-                 text: 'Cancel', 
+                {type: 'default',
+                 text: 'Cancel',
                  handler: this.handleCancelClick,
-                 buttonStyle: buttonStyle}, 
-                {type: 'danger', 
-                 text: 'Delete', 
+                 buttonStyle: buttonStyle},
+                {type: 'danger',
+                 text: 'Delete',
                  handler: this.handleDeleteClick,
-                 buttonStyle: deleteButtonStyle} 
+                 buttonStyle: deleteButtonStyle}
             ];
-            
+
             var buttonsDom = buttons.map(function(button, index) {
                 return <button key={index} style={button.buttonStyle} type="button" className={'btn btn-' + button.type} onClick={button.handler}>{button.text}</button>
             });
-            
+
             var selectorDom;
             if (this.state.entityType === 'Tag') {
                 selectorDom = (
@@ -282,7 +282,7 @@
                     </div>
                 );
             }
-            
+
             // html
             return (
                 <div style={{padding: '5px'}}>

@@ -4,16 +4,9 @@
     if (typeof exports === "object") {
         // CommonJS
         module.exports = exports = factory(
-            require('../../../../../common_js/src/store'),
+            require('../../../../bower_components/common_js/src/store'),
             require('jquery')
         );
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define([
-            '../../../../../common_js/src/store',
-            'jquery'
-        ], factory);
     }
     else {
         // Global (browser)
@@ -21,7 +14,7 @@
     }
 }(function (hlstore, $) {
     'use strict';
-    
+
     var WeatherStore = function () {
         hlstore.Store.call(this);
         var me = this;
@@ -54,7 +47,7 @@
         var setLatLng = function (nextLat, nextLng) {
 
             if (lat === String(nextLat) && lng === String(nextLng)) {
-                return;   
+                return;
             }
 
             lat = String(nextLat);
@@ -92,7 +85,7 @@
             updateWeather()
 
             /**
-             * Use local storage to give user something to look at 
+             * Use local storage to give user something to look at
              * until the server gets back the latest data
              */
             var result = me.loadLocal('hl.' + user + '.weather', secret);

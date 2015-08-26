@@ -4,17 +4,10 @@
     if (typeof exports === "object") {
         // CommonJS
         module.exports = exports = factory(
-            require('../../../../../common_js/src/store'),
+            require('../../../../bower_components/common_js/src/store'),
             require('../app/app'),
             require('jquery')
         );
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define([
-            '../../../../../common_js/src/store',
-            'jquery'
-        ], factory);
     }
     else {
         // Global (browser)
@@ -22,7 +15,7 @@
     }
 }(function (hlstore, doozy, $) {
     'use strict';
-    
+
     var NotificationStore = function () {
         hlstore.Store.call(this);
         this.updates.value = [];
@@ -59,7 +52,7 @@
             if (index > -1) {
                 notifications.splice(index, 1);
                 me.notify();
-            }  
+            }
         };
 
         this.acknowledgeNotification = function (notification) {

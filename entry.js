@@ -12,17 +12,17 @@
 //require('./src/client/less/attributes.less');
 
 //JS External Libraries
-var $ = require('jquery');
-var _ = require('lodash');
-var React = require('react/addons');
-var json2 = require('./node_modules/json2/lib/JSON2/static/json2');
+//var $ = require('jquery');
+//var _ = require('lodash');
+//var React = require('react/addons');
+//var json2 = require('json2');
 
 //JS Internal Libraries
-var hlcommon = require('./bower_components/common_js/src/common.js');
-var hldatetime = require('./bower_components/common_js/src/datetime.js');
-var hlio = require('./bower_components/common_js/src/io.js');
-var hluri = require('./bower_components/common_js/src/uri.js');
-var EventHandler = require('./bower_components/common_js/src/EventHandler.js');
+//var hlcommon = require('./bower_components/common_js/src/common.js');
+//var hldatetime = require('./bower_components/common_js/src/datetime.js');
+//var hlio = require('./bower_components/common_js/src/io.js');
+//var hluri = require('./bower_components/common_js/src/uri.js');
+//var EventHandler = require('./bower_components/common_js/src/EventHandler.js');
 
 //JS App
 var HoomanLogicApp = require('./src/client/jsx/pages/App');

@@ -5,15 +5,8 @@
         // CommonJS
         module.exports = exports = factory(
             require('react'),
-            require('../../../../../babble/src/durations')
+            require('../../../../bower_components/babble/src/durations')
         );
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define([
-            'react',
-            '../../../../../babble/src/durations'
-        ], factory);
     }
     else {
         // Global (browser)
@@ -30,13 +23,13 @@
             // required
             action: React.PropTypes.object.isRequired,
             actionName: React.PropTypes.string.isRequired,
-            
+
             // optional
             actionLastPerformed:  React.PropTypes.string,
             actionNextDate:  React.PropTypes.string,
             overrideIsDone: React.PropTypes.bool,
         },
-        
+
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
@@ -64,7 +57,7 @@
             };
             window.addEventListener('resize', this.handleResize);
         },
-        
+
         componentWillUnmount: function () {
             this.handlers.nameChange.dispose();
             window.removeEventListener('resize', this.handleResize);
@@ -101,9 +94,9 @@
             this.preventTouch = false;
         },
         handleNameChange: function (name) {
-            actionStore.update({ 
+            actionStore.update({
                 id: this.props.action.id,
-                name: name 
+                name: name
             });
         },
         handleResize: function(e) {
@@ -131,14 +124,14 @@
                 actionNameStyle;
 
             isDone = this.calcIsDone();
-            
+
             if (isDone) {
                 actionNameStyle = {
                     color: '#8e8e8e',
-                    textDecoration: 'line-through'      
+                    textDecoration: 'line-through'
                 };
             }
-            
+
             /**
              * Render icon to signify that there are details attached to this action
              */
@@ -156,8 +149,8 @@
                     <span> <i className="fa fa-repeat" title={doozy.getRecurrenceSummary(this.props.action.recurrenceRules)}></i></span>
                 );
             }
-    
-                             
+
+
             return (
                 <tr className={'highlight-hover'} onDoubleClick={this.handleClick} onTouchStart={this.handleTouchStart} onTouchMove={this.handleTouchMove} onTouchEnd={this.handleTouchEnd}>
                     <td width="5px" style={{padding: '0 0 0 5px'}}><input style={{height: '18px', width: '18px'}} type="checkbox" onChange={this.handleCheck} onTouchStart={this.handleCheckTouch} checked={isDone} /></td>

@@ -37,7 +37,7 @@
                 kind: 'performed'
             };
         },
-        
+
         componentWillMount: function () {
             if (this.props.action) {
                 this.log(this.props.action);
@@ -51,12 +51,12 @@
             this.setupActionsControl();
             var selectize = $(this.refs.name.getDOMNode())[0].selectize;
             this.setOptionsAction(selectize);
-            
+
             /**
              * Setup Tag selector
              */
             this.setupTagsControl();
-            
+
             /**
              * Set Action Value
              */
@@ -69,7 +69,7 @@
                 }
                 selectize.setValue(this.props.action.name);
             }
-            
+
             /**
              * Set focus to control
              */
@@ -79,7 +79,7 @@
                 $(this.refs.name.getDOMNode())[0].selectize.focus();
             }
         },
-        
+
         componentDidUpdate: function () {
             if (this.state.isNewAction) {
                 this.setupTagsControl();
@@ -105,7 +105,7 @@
                     if (e instanceof RangeError) {
                         isValid = false;
                     } else {
-                        throw e;   
+                        throw e;
                     }
                 }
 
@@ -143,8 +143,8 @@
             }
         },
         handleSave: function(event) {
-            var existingAction, 
-                newAction, 
+            var existingAction,
+                newAction,
                 names,
                 tags,
                 validationApology;
@@ -163,16 +163,16 @@
                 toastr.error(validationApology + 'When did you do this?');
                 return;
             }
-            
+
             // get tags from control
             var tags = [];
             if (this.refs.tags.getDOMNode().value) {
                 tags = this.refs.tags.getDOMNode().value.split(',');
             }
 
-            
+
             if (names.length > 0 && names[0] !== '') {
-                
+
                 for (var i =0; i < names.length; i++) {
 
                     existingAction = actionStore.getActionByName(names[i]);
@@ -180,9 +180,9 @@
                     if (existingAction) {
                         logEntryStore.create({
                             actionId: existingAction.id,
-                            date: this.state.date, 
-                            duration: this.state.duration, 
-                            entry: this.state.kind, 
+                            date: this.state.date,
+                            duration: this.state.duration,
+                            entry: this.state.kind,
                             details: this.state.details,
                             tags: tags
                         });
@@ -191,10 +191,10 @@
                         newAction = doozy.action(names[i], tags);
                         newAction.created = this.state.date.toISOString();
 
-                        logEntryStore.createWithNewAction(newAction, { 
-                            date: this.state.date, 
-                            duration: this.state.duration, 
-                            entry: 'performed', 
+                        logEntryStore.createWithNewAction(newAction, {
+                            date: this.state.date,
+                            duration: this.state.duration,
+                            entry: 'performed',
                             details: this.state.details,
                             tags: tags
                         });
@@ -203,9 +203,9 @@
             } else {
                 logEntryStore.createWithoutAction({
                     actionId: null,
-                    date: this.state.date, 
-                    duration: this.state.duration, 
-                    entry: 'performed', 
+                    date: this.state.date,
+                    duration: this.state.duration,
+                    entry: 'performed',
                     details: this.state.details,
                     tags: tags
                 });
@@ -222,11 +222,11 @@
 
             // get actions sorted by name
             var actions = actionStore.updates.value;
-            actions = _.sortBy(actions, function(action){ 
+            actions = _.sortBy(actions, function(action) { 
                 action.name;
             });
             // add actions to selection control
-            actions.forEach( function (action) { 
+            actions.forEach( function (action) {
                 selectize.addOption({
                     value: action.name,
                     text: action.name
@@ -285,7 +285,7 @@
                         selectize.setValue(existingAction.tags);
                     }
                 }.bind(this)
-            });  
+            });
         },
         setupTagsControl: function () {
 
@@ -382,7 +382,7 @@
             } else if (typeof action === 'string') {
                 actionName = action || '';
             }
-            
+
             if (!actionStore.getActionByName(actionName)) {
                 state.isNewAction = true;
             }
@@ -394,11 +394,11 @@
          * RENDERING
          *************************************************************/
         render: function () {
-            var buttons = [{type: 'primary', 
-                            text: 'Log', 
+            var buttons = [{type: 'primary',
+                            text: 'Log',
                             handler: this.handleSave},
-                           {type: 'default', 
-                            text: 'Cancel', 
+                           {type: 'default',
+                            text: 'Cancel',
                             handler: this.handleCancel}
                            ];
             var buttonStyle = {
@@ -411,9 +411,9 @@
             var buttonsDom = buttons.map(function(button, index) {
                 return <button key={index} style={buttonStyle} type="button" className={'btn btn-' + button.type} onClick={button.handler}>{button.text}</button>
             })
-            
+
             var forceHeightStyle = {
-                height: '59px'  
+                height: '59px'
             };
             var feedbackStyle = {
                 position: 'relative',
@@ -422,7 +422,7 @@
             };
 
             var tags;
-            
+
             return (
                 <div style={{padding: '5px'}}>
                     <h2>{'Log Recent Action'}</h2>
@@ -434,7 +434,7 @@
                         <div className="form-group">
                             <label htmlFor="action-tags">Tags</label>
                             <input id="action-tags" ref="tags" type="text" />
-                        </div>  
+                        </div>
                         <div className="form-group">
                             <label htmlFor="logentry-kind">What kind of log entry?</label>
                             <select id="logentry-kind" ref="kind" className="form-control" value={this.state.kind} onChange={this.handleChange}>

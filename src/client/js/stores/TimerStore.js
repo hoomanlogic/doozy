@@ -4,14 +4,8 @@
     if (typeof exports === "object") {
         // CommonJS
         module.exports = exports = factory(
-            require('../../../../../common_js/src/store')
+            require('../../../../bower_components/common_js/src/store')
         );
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define([
-            '../../../../../common_js/src/store'
-        ], factory);
     }
     else {
         // Global (browser)
@@ -19,7 +13,7 @@
     }
 }(function (hlstore) {
     'use strict';
-    
+
     var TimerStore = function () {
         hlstore.Store.call(this);
         this.updates.value = [];
@@ -44,7 +38,7 @@
             me.notify();
             me.saveLocal('hl.timer', me.updates.value, 'nothingtohide');
         };
-        
+
         this.openTimer = function () {
             Object.assign(me.updates.value, {
                 isOpen: true
@@ -61,7 +55,7 @@
             me.notify();
             me.saveLocal('hl.timer', me.updates.value, 'nothingtohide');
         };
-        
+
         this.hideTimer = function () {
             Object.assign(me.updates.value, {
                 isOpen: false,
@@ -94,7 +88,7 @@
 
         this.init();
     };
-    
+
     TimerStore.prototype = Object.create(hlstore.Store.prototype);
     TimerStore.prototype.constructor = TimerStore;
 
