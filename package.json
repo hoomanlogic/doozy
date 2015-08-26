@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/hoomanlogic/hoomanlogic.git"
+    "url": "https://github.com/hoomanlogic/doozy.git"
   },
   "author": "Geoff Manning <geoff.manning.sd@gmail.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/hoomanlogic/hoomanlogic/issues"
+    "url": "https://github.com/hoomanlogic/doozy/issues"
   },
-  "homepage": "https://github.com/hoomanlogic/hoomanlogic.git",
+  "homepage": "https://github.com/hoomanlogic/doozy.git",
   "dependencies": {
     "jquery": "^2.1.4",
     "json2": "^0.4.0",
