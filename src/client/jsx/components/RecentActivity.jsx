@@ -6,7 +6,7 @@
         module.exports = exports = factory(
             require('react'),
             require('./ActionRow'),
-            require('../../../../bower_components/babble/src/durations')
+            require('babble/src/durations')
         );
     }
     else {

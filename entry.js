@@ -18,11 +18,11 @@
 //var json2 = require('json2');
 
 //JS Internal Libraries
-//var hlcommon = require('./bower_components/common_js/src/common.js');
-//var hldatetime = require('./bower_components/common_js/src/datetime.js');
-//var hlio = require('./bower_components/common_js/src/io.js');
-//var hluri = require('./bower_components/common_js/src/uri.js');
-//var EventHandler = require('./bower_components/common_js/src/EventHandler.js');
+//var hlcommon = require('./bower_components/hl-common-js/src/common.js');
+//var hldatetime = require('./bower_components/hl-common-js/src/datetime.js');
+//var hlio = require('./bower_components/hl-common-js/src/io.js');
+//var hluri = require('./bower_components/hl-common-js/src/uri.js');
+//var EventHandler = require('./bower_components/hl-common-js/src/EventHandler.js');
 
 //JS App
 var HoomanLogicApp = require('./src/client/jsx/pages/App');

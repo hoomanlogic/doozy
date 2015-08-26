@@ -4,7 +4,7 @@
     if (typeof exports === "object") {
         // CommonJS
         module.exports = exports = factory(
-            require('../../../../bower_components/common_js/src/store'),
+            require('hl-common-js/src/store'),
             require('../app/app'),
             require('jquery')
         );

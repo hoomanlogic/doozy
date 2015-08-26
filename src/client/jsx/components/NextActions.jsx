@@ -6,7 +6,7 @@
         module.exports = exports = factory(
             require('react'),
             require('./ActionRow'),
-            require('../../../../bower_components/babble/src/durations')
+            require('babble/src/durations')
         );
     }
     else {
@@ -21,23 +21,23 @@
          *************************************************************/
         isNextAction: function (item, index) {
             /**
-              * Exclude boxed actions
-              */
+             * Exclude boxed actions
+             */
             var boxTags = _.filter(item.tags, function(tag) { return tag.slice(0,1) === '#'; });
             if (boxTags.length > 0) {
                 return false;
             }
 
             /**
-              * Next Action has either never been performed or has a Next Date up to today
-              */
+             * Next Action has either never been performed or has a Next Date up to today
+             */
             if ((item.nextDate === null && item.lastPerformed === null) || (item.nextDate !== null && new Date(item.nextDate) <= new Date())) {
                 return true;
             }
 
             /**
-              * Keep Actions logged as performed today in Next Actions until tomorrow
-              */
+             * Keep Actions logged as performed today in Next Actions until tomorrow
+             */
             return babble.durations.hourDiff(new Date(item.lastPerformed), new Date()) < 24 && new Date(item.lastPerformed).getDate() === (new Date()).getDate();
         },
 
@@ -81,7 +81,7 @@
                     (action.lastPerformed !== null && (action.nextDate === null ||
                                                        new Date(action.nextDate) > new Date()));
                 return (checked ? '1' : '0') + '-' + (action.ordinal === null ? '' : action.ordinal + '-') + action.name.toLowerCase();
-            })
+            });
 
             /**
              * Render the table if there are any actions

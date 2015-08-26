@@ -5,7 +5,7 @@
         // CommonJS
         module.exports = exports = factory(
             require('react'),
-            require('../../../../bower_components/babble/src/durations')
+            require('babble/src/durations')
         );
     }
     else {

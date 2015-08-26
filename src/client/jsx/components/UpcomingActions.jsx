@@ -69,7 +69,7 @@
                                     action={item}
                                     actionName={item.name}
                                     actionLastPerformed={item.nextDate} // use next date in last performed place so that it displays
-                                                                        // when it's coming up instead of when it was last performed
+                                                                        // when its coming up instead of when it was last performed
                                                                         // TODO: ActionRow prop should be named something more suitable and generic
                                     actionNextDate={item.nextDate} />
                             );
@@ -94,9 +94,9 @@
             /**
              * Sort the actions by next date and name
              */
-            upcomingActions = _.sortBy(upcomingActions, function(action) { 
+            upcomingActions = _.sortBy(upcomingActions, function(action) {
                 return (action.nextDate + '-' + action.name);
-            })
+            });
 
             upcomingActionsTable = this.renderUpcomingActionsTable(upcomingActions);
 

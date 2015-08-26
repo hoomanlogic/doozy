@@ -27,12 +27,10 @@
     "react": "~0.12.2",
     "Chart.js": "~1.0.1",
     "errl_js": "https://github.com/hoomanlogic/errl_js.git",
-    "common_js": "https://github.com/hoomanlogic/common_js.git",
     "react_components": "https://github.com/hoomanlogic/react_components.git",
     "crypto-js": "~3.1.4",
     "jstorage": "~0.4.12",
-    "Sugar": "https://github.com/geoffreyfloyd/Sugar.git#master",
-    "babble": "https://github.com/hoomanlogic/babble.git#master"
+    "Sugar": "https://github.com/geoffreyfloyd/Sugar.git#master"
   },
   "resolutions": {
     "sifter": "0.4.x"

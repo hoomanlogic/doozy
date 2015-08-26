@@ -5,7 +5,7 @@
         // CommonJS
         module.exports = exports = factory(
             require('react'),
-            require('../../../../bower_components/common_js/src/io')
+            require('hl-common-js/src/io')
         );
     }
     else {

@@ -28,7 +28,9 @@
     "react": "^0.13.2",
     "rx": "^2.5.2",
     "style-loader": "^0.12.1",
-    "url-loader": "^0.5.5"
+    "url-loader": "^0.5.5",
+    "babble": "https://github.com/hoomanlogic/babble.git#master",
+    "hl-common-js": "https://github.com/hoomanlogic/hl-common-js.git#master"
   },
   "devDependencies": {
     "babel-core": "^5.5.8",

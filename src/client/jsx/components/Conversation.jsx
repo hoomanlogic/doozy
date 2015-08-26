@@ -5,7 +5,7 @@
         // CommonJS
         module.exports = exports = factory(
             require('react'),
-            require('../../../../bower_components/babble/src/moments'),
+            require('babble/src/moments'),
             require('./SendMessage')
         );
     }
@@ -107,8 +107,8 @@
             }
 
             var domMessages = null;
-            var messages = _.sortBy(conversation.messages, function (a) { return a.sent.getTime() });
-            _.groupBy(messages, function(item) { return item.sent + item.from });
+            var messages = _.sortBy(conversation.messages, function (a) { return a.sent.getTime(); });
+            _.groupBy(messages, function(item) { return item.sent + item.from; });
             domMessages =
                 messages.map(function(msg, index) {
                     var left = null;

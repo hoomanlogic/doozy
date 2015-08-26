@@ -4,11 +4,11 @@
     if (typeof exports === "object") {
         // CommonJS
         module.exports = exports = factory(
-            require('react'), 
+            require('react'),
             require('../../js/stores/ActionStore'),
-            require('../components/TimerBar'), 
-            require('../components/WeatherIcon'), 
-            require('../components/FocusActions'), 
+            require('../components/TimerBar'),
+            require('../components/WeatherIcon'),
+            require('../components/FocusActions'),
             require('./ManageFocus'),
             require('./ManageAction'),
             require('./ManageLogEntry'),
@@ -17,11 +17,11 @@
     else if (typeof define === "function" && define.amd) {
         // AMD
         define([
-            'react', 
+            'react',
             '../../js/stores/ActionStore',
-            '../components/TimerBar', 
-            '../components/WeatherIcon', 
-            '../components/FocusActions', 
+            '../components/TimerBar',
+            '../components/WeatherIcon',
+            '../components/FocusActions',
             './ManageFocus',
             './ManageAction',
             './ManageLogEntry',
@@ -31,10 +31,10 @@
     else {
         // Global (browser)
         window.DoozyApp = factory(
-            window.React, 
+            window.React,
             window.actionStore,
             window.TimerBar,
-            window.WeatherIcon, 
+            window.WeatherIcon,
             window.FocusActions,
             window.ManageFocus,
             window.ManageAction,
@@ -52,20 +52,20 @@
             // get last saved state of application
             var previousState = hlio.loadLocal('hl.' + this.props.settings.userName + '.settings', this.props.settings.userId);
             if (!previousState) {
-                previousState = { 
+                previousState = {
                     currentFocus: null
-                };   
+                };
             }
-            
+
             var page = 'Do';
             if (window && window.history && window.history.state && window.history.state.page) {
-                page = window.history.state.page;   
+                page = window.history.state.page;
             }
-            
+
             return {
                 currentFocus: previousState.currentFocus || null,
-                weatherLastUpdated: null, 
-                conversations: [], 
+                weatherLastUpdated: null,
+                conversations: [],
                 activeConversation: null,
                 page: page,
                 pageOptions: null,
@@ -104,9 +104,9 @@
             tagStore.init(this.props.settings.userName, this.props.settings.userId);
             targetStore.init(this.props.settings.userName, this.props.settings.userId);
             weatherStore.init(this.props.settings.userName, this.props.settings.userId);
-            
+
             connectionStore.getConnections();
-            
+
             // Check that service workers are supported, if so, progressively
             // enhance and add push messaging support, otherwise continue without it.
             if ('serviceWorker' in navigator) {
@@ -115,7 +115,7 @@
             } else {
                 console.log('Service workers aren\'t supported in this browser.');
             }
-            
+
             /**
              * Work with initial data store values
              */
@@ -124,7 +124,7 @@
             }
 
             /**
-             * Subscribe to User Store to be 
+             * Subscribe to User Store to be
              * notified of updates to preferences
              */
             this.userObserver = userStore.updates
@@ -157,22 +157,22 @@
 
         componentDidMount: function () {
             this.initializeSignalR();
-            
+
             if (window && window.history) {
                 window.history.replaceState({ page: this.state.page, pageOptions: this.state.pageOptions }, 'Doozy');
                 window.onpopstate = this.handleBrowserStateChange;
             }
-            
+
             window.addEventListener("beforeunload", this.handleBeforeUnload);
         },
         componentDidUpdate: function () {
             // save state of application
-            hlio.saveLocal('hl.' + this.props.settings.userName + '.settings', { 
+            hlio.saveLocal('hl.' + this.props.settings.userName + '.settings', {
                 currentFocus: this.state.currentFocus,
             }, this.props.settings.userId);
 
             if (window && window.history && window.history.state && window.history.state.page && this.state.page !== window.history.state.page) {
-                window.history.pushState({ page: this.state.page, pageOptions: this.state.pageOptions }, 'Doozy');   
+                window.history.pushState({ page: this.state.page, pageOptions: this.state.pageOptions }, 'Doozy');
             }
         },
 
@@ -183,20 +183,20 @@
             this.state.requests.forEach(function (item) {
                 this.forceRequest(item.timeoutId);
             }.bind(this));
-            
+
             //(e || window.event).returnValue = null;
             //return null;
         },
         handleBrowserStateChange: function (e) {
             if (e.state && e.state.page) {
-                this.setState({ page: e.state.page, pageOptions: e.state.pageOptions || null });   
+                this.setState({ page: e.state.page, pageOptions: e.state.pageOptions || null });
             }
         },
         handleConversationClose: function () {
           this.setState({activeConversation: null, page: 'Do'});
         },
         handleFocusClick: function (item) {
-            this.setState({ currentFocus: item });  
+            this.setState({ currentFocus: item });
         },
         handleFocusStoreUpdate: function (focuses) {
             if (this.state.currentFocus === null && focuses.length > 0) {
@@ -206,8 +206,8 @@
             } else {
                 var currentFocus = null;
                 if (this.state.currentFocus) {
-                    currentFocus = _.find(focuses, function(item) { 
-                        return item.id === this.state.currentFocus.id; 
+                    currentFocus = _.find(focuses, function(item) {
+                        return item.id === this.state.currentFocus.id;
                     }.bind(this));
                 }
                 this.setState({ currentFocus: currentFocus });
@@ -229,55 +229,55 @@
         queueRequest: function (entityType, entityId, msg, fn, fnUndo, ms) {
             var uuid = hlcommon.uuid();
             if (typeof ms === 'undefined') {
-                ms = 30000;   
+                ms = 30000;
             }
-            
+
             var processRequests = _.where(this.state.requests, {entityId: entityId, entityType: entityType});
             processRequests.forEach(function (item) {
                 item.fn();
-                clearTimeout(item.timeoutId);   
+                clearTimeout(item.timeoutId);
             });
-            
+
             var requests = _.reject(this.state.requests, function (item) {
                 return item.entityId === entityId && item.entityType === entityType;
             });
-            
+
             var request = {
-                entityType: entityType, 
+                entityType: entityType,
                 entityId: entityId,
                 id: uuid,
                 timeoutId: setTimeout(function () {
                     this.processRequest(fn, uuid);
-                }.bind(this), ms), 
+                }.bind(this), ms),
                 msg: msg,
                 fn: fn,
                 onUndo: fnUndo
             };
-            
+
             requests.push(request);
             this.setState({requests: requests});
             toastr.info(msg);
         },
         processRequest: function (fn, id) {
             fn();
-            this.state.requests = this.state.requests.filter( function (item) { return item.id !== id});
+            this.state.requests = this.state.requests.filter( function (item) { return item.id !== id; });
             this.setState({requests: this.state.requests.slice()});
         },
         undoRequest: function (timeoutId) {
             var request = _.find(this.state.requests, {timeoutId: timeoutId});
             request.onUndo();
             clearTimeout(timeoutId);
-            this.state.requests = this.state.requests.filter( function (item) { return item.timeoutId !== timeoutId});
+            this.state.requests = this.state.requests.filter( function (item) { return item.timeoutId !== timeoutId; });
             this.setState({requests: this.state.requests.slice()});
         },
         forceRequest: function (timeoutId) {
             var request = _.find(this.state.requests, {timeoutId: timeoutId});
             request.fn();
             clearTimeout(timeoutId);
-            this.state.requests = this.state.requests.filter( function (item) { return item.timeoutId !== timeoutId});
+            this.state.requests = this.state.requests.filter( function (item) { return item.timeoutId !== timeoutId; });
             this.setState({requests: this.state.requests.slice()});
         },
-        
+
         getHeightBuffer: function () {
             if (timerStore.updates.value.isOpen) {
                 return 55 + 38;
@@ -307,7 +307,7 @@
 
             // Create a function that the hub can call back to update profile pic uri.
             this.chat.client.handleProfileUriUpdated = function (uri) {
-                userStore.updateProfileUriFromSignalR(uri)
+                userStore.updateProfileUriFromSignalR(uri);
             }.bind(this);
 
             // Create a function that the hub can call back to update focus pic uri.
@@ -318,7 +318,7 @@
             // Start the connection.
             $.connection.hub.start();
         },
-        
+
         addAction: function (action) {
             this.goTo('Manage Action', { actionId: (action ? action.id : null), mode: 'Add'});
             //this.refs.addeditaction.add(action);
@@ -362,8 +362,8 @@
                     myProfileUri = connection.myProfileUri;
                 }
                 conversation = {
-                    id: userName, 
-                    name: name, 
+                    id: userName,
+                    name: name,
                     messages: [],
                     selected: true,
                     profileUri: profileUri,
@@ -371,7 +371,7 @@
                 };
                 conversations.push(conversation);
                 this.setState({ conversations: conversations });
-                
+
                 // get message history
                 $.ajax({
                     context: this,
@@ -386,9 +386,9 @@
                     success: function(result) {
                         var messages = conversation.messages;
                         result.map(function (msg) {
-                            messages.push({ 
-                                from: msg.direction === 'Sent' ? this.props.settings.userName : userName, 
-                                sent: new Date(msg.sent), 
+                            messages.push({
+                                from: msg.direction === 'Sent' ? this.props.settings.userName : userName,
+                                sent: new Date(msg.sent),
                                 text: msg.text,
                                 mode: 'server',
                                 old: true,
@@ -411,7 +411,7 @@
 
             var conversations = this.state.conversations;
             var selectedConversation = this.state.activeConversation;
-            this.setState({ page: 'Conversation', activeConversation: conversation });   
+            this.setState({ page: 'Conversation', activeConversation: conversation });
         },
 
         addMessageToConversation: function(id, msg, select) {
@@ -421,10 +421,10 @@
             var connection = this.findConnectionFromId(id);
 
             if (_.isUndefined(select)) {
-                select = false;   
+                select = false;
             }
             if (conversations.length === 0) {
-                select = true;   
+                select = true;
             }
 
             // append message to existing conversation
@@ -443,9 +443,9 @@
                 if (connection !== null) {
                     name = connection.name;
                 }
-                conversations.push({ 
-                    id: id, 
-                    name: name, 
+                conversations.push({
+                    id: id,
+                    name: name,
                     messages: [msg],
                     selected: select
                 });
@@ -465,7 +465,7 @@
 
         getConversation: function (id) {
             if (id === null || this.state.conversations.length === 0) {
-                return null;   
+                return null;
             }
 
             for (var i = 0; i < this.state.conversations.length; i++) {
@@ -503,36 +503,36 @@
 
                 info = (
                     userStore.updates.value.location + '\n' +
-                    weather.currently.summary + ' ' + weather.currently.temperature + 
-                    '\n\nToday: ' + weather.daily.data[0].summary + 
-                    '\nLow: ' + weather.daily.data[0].temperatureMin + 
+                    weather.currently.summary + ' ' + weather.currently.temperature +
+                    '\n\nToday: ' + weather.daily.data[0].summary +
+                    '\nLow: ' + weather.daily.data[0].temperatureMin +
                     '\nHigh: ' + weather.daily.data[0].temperatureMax
                 );
 
                 style = {
-                    position: 'absolute', 
-                    bottom: '10px', 
-                    right: '10px', 
-                    opacity: weather.currently.temperature >= 60 && weather.currently.temperature <= 80 ? '0.05' : '0.1', 
-                    zIndex: '-1' 
+                    position: 'absolute',
+                    bottom: '10px',
+                    right: '10px',
+                    opacity: weather.currently.temperature >= 60 && weather.currently.temperature <= 80 ? '0.05' : '0.1',
+                    zIndex: '-1'
                 };
 
                 color = (
-                    weather.currently.temperature < 60 ? 
-                        '#428bca' : 
-                        (weather.currently.temperature > 80 ? 
-                            '#d9534f' : 
+                    weather.currently.temperature < 60 ?
+                        '#428bca' :
+                        (weather.currently.temperature > 80 ?
+                            '#d9534f' :
                             'black')
                 );
 
                 backdrop = (
-                    <WeatherIcon 
-                        id={'icon1'} 
-                        icon={weather.currently.icon} 
-                        style={style} 
-                        info={info} 
-                        height={500} 
-                        width={window.innerWidth - 20} 
+                    <WeatherIcon
+                        id={'icon1'}
+                        icon={weather.currently.icon}
+                        style={style}
+                        info={info}
+                        height={500}
+                        width={window.innerWidth - 20}
                         color={color} />
                 );
             }
@@ -542,10 +542,10 @@
         render: function () {
             // let other components know what page we're on
             window['ui'].page = this.state.page;
-            
+
             //var weatherBackdrop = this.renderWeatherBackdrop();
             var action, mode, actionId, planId, tagId, targetId;
-            
+
             var page = null,
                 hideMain = true;
             if (this.state.page === 'Focus Management') {
@@ -597,13 +597,13 @@
             } else { //DO
                 hideMain = false;
             }
-                        
+
             var requests;
             if (this.state.requests.length > 0) {
                 var containerStyle = {
                     display: 'flex',
                     flexDirection: 'column',
-                    backgroundColor: '#444', 
+                    backgroundColor: '#444',
                     padding: '1px'
                 };
 
@@ -640,12 +640,12 @@
                     </div>
                 );
             }
-                    
+
             return (
                 <div>
-                    <PrimaryNavigation 
-                        currentPage={this.state.page} 
-                        currentFocus={this.state.currentFocus} 
+                    <PrimaryNavigation
+                        currentPage={this.state.page}
+                        currentFocus={this.state.currentFocus}
                         handleFocusClick={this.handleFocusClick} />
                     <TimerBar />
                     {requests}

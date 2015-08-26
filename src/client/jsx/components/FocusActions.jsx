@@ -5,7 +5,7 @@
         // CommonJS
         module.exports = exports = factory(
             require('react'),
-            require('../../js/stores/ActionStore'), 
+            require('../../js/stores/ActionStore'),
             require('./TagList'),
             require('./NextActions'),
             require('./UpcomingActions'),
@@ -16,8 +16,8 @@
     else if (typeof define === "function" && define.amd) {
         // AMD
         define([
-            'react', 
-            '../../js/stores/ActionStore', 
+            'react',
+            '../../js/stores/ActionStore',
             './TagList',
             './NextActions',
             './UpcomingActions',
@@ -28,12 +28,12 @@
     else {
         // Global (browser)
         window.FocusActions = factory(
-            window.React, 
-            window.actionStore, 
-            window.TagList, 
-            window.NextActions, 
-            window.UpcomingActions, 
-            window.RecentActivity, 
+            window.React,
+            window.actionStore,
+            window.TagList,
+            window.NextActions,
+            window.UpcomingActions,
+            window.RecentActivity,
             window.BoxedActions
         );
     }
@@ -44,7 +44,7 @@
          * COMPONENT LIFECYCLE
          *************************************************************/
         getInitialState: function () {
-            return { 
+            return {
                 focusActions: [],
                 tags: [],
                 tagsFilter: [],
@@ -54,16 +54,16 @@
 
         componentWillMount: function () {
             /**
-             * Subscribe to Action Store to be 
+             * Subscribe to Action Store to be
              * notified of updates to the store
              */
             this.actionsObserver = actionStore.updates
                 .subscribe(this.handleActionStoreUpdate);
-            
+
         },
         componentWillReceiveProps: function (nextProps) {
             /**
-             * Update the list of actions for the current 
+             * Update the list of actions for the current
              * focus when the focus changes
              */
             if (nextProps.focusTag !== this.props.focusTag) {
@@ -82,7 +82,7 @@
          *************************************************************/
         handleTagsFilterTypeClick: function (type) {
             if (type !== this.state.tagsFilterType) {
-                this.setState({ tagsFilterType: type });   
+                this.setState({ tagsFilterType: type });
             }
         },
         handleTagFilterClick: function(tag) {
@@ -113,7 +113,7 @@
             /**
              * actionsObserver does not pass focusTag
              * so we default to the props.focusTag
-             * but when we receive new props we 
+             * but when we receive new props we
              * need to pass those props (componentWillReceiveProps)
              */
             if (typeof focusTag === 'undefined') {
@@ -127,7 +127,7 @@
                 if (action.tags.indexOf(focusTag) > -1) {
                     return true;
                 } else {
-                    return false;   
+                    return false;
                 }
             }, this);
 
@@ -140,7 +140,7 @@
                 focusActions: focusActions,
                 tags: tags,
                 tagsFilter: tagsFilter
-            });   
+            });
 
             /**
              * Reset globally accessible default tags
@@ -148,7 +148,7 @@
             window['ui'] = window['ui'] || {};
             window['ui'].tags = [];
         },
-        
+
         /*************************************************************
          * HELPERS
          *************************************************************/
@@ -157,13 +157,13 @@
             var distinctTags = [];
 
             /**
-             * Get all distinct tags of all this focus' 
+             * Get all distinct tags of all this focus'
              * actions except for the special tags
              */
             var specialPrefixes = ['!','#'];
             focusActions.map(function(action) {
-                distinctTags = _.union(distinctTags, _.reject(action.tags, function (tag) { 
-                    return specialPrefixes.indexOf(tag.slice(0,1)) > -1; 
+                distinctTags = _.union(distinctTags, _.reject(action.tags, function (tag) {
+                    return specialPrefixes.indexOf(tag.slice(0,1)) > -1;
                 }));
             });
 
@@ -202,7 +202,7 @@
          *************************************************************/
         renderTagFilter: function () {
             var tagFilter;
-            
+
             if (this.state.tags && this.state.tags.length > 0) {
                 tagFilter = (
                     <div style={{marginTop: '2px'}}>
@@ -211,14 +211,14 @@
                             <li className={'clickable' + (this.state.tagsFilterType === 'all' ? ' selected' : '')} onClick={this.handleTagsFilterTypeClick.bind(null, 'all')}>All</li>
                             <li className={'clickable' + (this.state.tagsFilterType === 'not' ? ' selected' : '')} onClick={this.handleTagsFilterTypeClick.bind(null, 'not')}>Not</li>
                         </ul>
-                        <TagList tags={this.state.tags} 
-                          selectedTags={this.state.tagsFilter} 
+                        <TagList tags={this.state.tags}
+                          selectedTags={this.state.tagsFilter}
                           selectionChanged={this.handleTagFilterClick} />
                     </div>
                 );
             }
 
-            return tagFilter
+            return tagFilter;
         },
         render: function () {
             /**

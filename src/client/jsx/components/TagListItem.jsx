@@ -25,19 +25,19 @@
             // required
             tag: React.PropTypes.string.isRequired,
             handleClick: React.PropTypes.func.isRequired,
-            
+
             // optional
             canEdit: React.PropTypes.bool,
             canRemove: React.PropTypes.bool,
             isSelected: React.PropTypes.bool,
             onTagUpdated: React.PropTypes.func,
         },
-        
+
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
         getDefaultProps: function () {
-          return { 
+          return {
               canEdit: false,
               canRemove: false,
               isSelected: false
@@ -52,7 +52,7 @@
                 this.props.tag = 'new tag';
                 this.forceUpdate();
             } else {
-                this.props.handleClick(); 
+                this.props.handleClick();
             }
         },
 
@@ -90,7 +90,7 @@
          *************************************************************/
         render: function () {
             var tag = doozy.parseTag(this.props.tag);
-            
+
             var isSelected = this.props.isSelected ? ' selected' : '';
 
             var closeButton = null;
@@ -100,7 +100,7 @@
 
             var domTag = <span> {tag.name}</span>;
             if (this.props.canEdit) {
-                domTag = <ContentEditable html={tag.value} onChange={this.handleTagNameChange} />
+                domTag = (<ContentEditable html={tag.value} onChange={this.handleTagNameChange} />);
             }
 
             return (

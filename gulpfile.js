@@ -8,49 +8,49 @@ var minifyCSS = require('gulp-minify-css');
 var plumber = require('gulp-plumber');
 var gutil = require('gulp-util');
 
-var onError = function (err) {  
+var onError = function (err) {
     gutil.beep();
     console.log(err);
 };
 
 var jsLibs = [
-    'node_modules/jquery/dist/jquery.js', 
+    'node_modules/jquery/dist/jquery.js',
     'bower_components/underscore/underscore.js',
     'node_modules/json2/lib/JSON2/static/json2.js',
     'bower_components/toastr/toastr.js',
     'bower_components/skycons/skycons.js',
-    //'bower_components/showdown/compressed/Showdown.min.js', 
+    //'bower_components/showdown/compressed/Showdown.min.js',
     'bower_components/jstorage/jstorage.js',
-    
+
     'bower_components/crypto-js/core.js',
     'bower_components/crypto-js/enc-base64.js',
     'bower_components/crypto-js/md5.js',
     'bower_components/crypto-js/evpkdf.js',
     'bower_components/crypto-js/cipher-core.js',
     'bower_components/crypto-js/aes.js',
-    
+
     'nuget_packages/Microsoft.AspNet.SignalR.JS.2.1.2/content/Scripts/jquery.signalR-2.1.2.js',
     'bower_components/selectize/dist/js/standalone/selectize.js',
-	'bower_components/babble/dist/babble.js',
+	'mode_modules/babble/dist/babble.js',
 	'bower_components/Sugar/release/date.js',
     '../errl_js/src/errl.js',
-    
-    '../common_js/src/common.js',
-    '../common_js/src/extensions.js',
-    '../common_js/src/polyfills.js',
-    '../common_js/src/io.js',
-    '../common_js/src/uri.js',
-	'../common_js/src/store.js',
-    
+
+    '../hl-common-js/src/common.js',
+    '../hl-common-js/src/extensions.js',
+    '../hl-common-js/src/polyfills.js',
+    '../hl-common-js/src/io.js',
+    '../hl-common-js/src/uri.js',
+	'../hl-common-js/src/store.js',
+
     'bower_components/rxjs/dist/rx.lite.js',
-    '../common_js/src/EventHandler.js',
-    
+    '../hl-common-js/src/EventHandler.js',
+
 ];
 
 var cssAll = [
-	'bower_components/fontawesome/css/font-awesome.min.css', 
-	'bower_components/toastr/build/toastr.min.css', 
-	'bower_components/selectize/dist/css/selectize.css', 
+	'bower_components/fontawesome/css/font-awesome.min.css',
+	'bower_components/toastr/build/toastr.min.css',
+	'bower_components/selectize/dist/css/selectize.css',
 	'bower_components/selectize/dist/css/selectize.default.css',
 	'src/server/css/app.min.css'
 ];
@@ -58,18 +58,18 @@ var cssAll = [
 var jsxFiles = [
     '../react_components/src/**',
 	'src/client/jsx/mixins/**',
-	
+
 	'src/client/jsx/components/RelativeTime.jsx',
 	'src/client/jsx/components/Indicator.jsx',
-	
+
     'src/client/jsx/components/ActionRow.jsx',
     'src/client/jsx/components/FocusListItem.jsx',
     'src/client/jsx/components/NotificationListItem.jsx',
     'src/client/jsx/components/TagListItem.jsx',
     'src/client/jsx/components/Uploader.jsx',
-    
+
     'src/client/jsx/components/SendMessage.jsx',
-    
+
     'src/client/jsx/components/AddEditAction.jsx',
     'src/client/jsx/components/BoxedActions.jsx',
     'src/client/jsx/components/Conversation.jsx',
@@ -85,15 +85,15 @@ var jsxFiles = [
     'src/client/jsx/components/Timer.jsx',
     'src/client/jsx/components/UpcomingActions.jsx',
     'src/client/jsx/components/WeatherIcon.jsx',
-    
+
 	'src/client/jsx/components/LogEntryBox.jsx',
 	'src/client/jsx/components/LogEntries.jsx',
 	'src/client/jsx/components/CommentForm.jsx',
-	
-	
+
+
     'src/client/jsx/components/FocusActions.jsx',
 	'src/client/jsx/components/PlanStep.jsx',
-	
+
 	'src/client/jsx/components/PlanSteps.jsx',
 	'src/client/jsx/components/TimerBar.jsx',
 	'src/client/jsx/pages/ManageLogEntry.jsx',
@@ -108,12 +108,12 @@ var jsxFiles = [
 	'src/client/jsx/pages/ManageTarget.jsx',
 	'src/client/jsx/pages/ManageTargets.jsx',
     'src/client/jsx/pages/PrimaryNavigation.jsx',
-    
+
     'src/client/jsx/pages/App.jsx',
 ];
 
 var maps = [
-    'bower_components/jquery/dist/jquery.min.js.map', 
+    'bower_components/jquery/dist/jquery.min.js.map',
 ];
 
 gulp.task('build', ['concat-js-libs', 'concat-css-all', 'concat-js-app']);
@@ -197,9 +197,9 @@ gulp.task('watch', function () {
     lessWatcher.on('change', function (event) {
         console.log('File ' + event.path + ' was ' + event.type + ', running task...');
     });
-    
+
     // Watch Internal JS Libraries for Updates
-    var jsLibWatcher = gulp.watch(['../errl_js/dist/*.min.js', '../common_js/dist/*.min.js'], ['concat-js-libs']);
+    var jsLibWatcher = gulp.watch(['../errl_js/dist/*.min.js', '../hl-common-js/dist/*.min.js'], ['concat-js-libs']);
     jsLibWatcher.on('change', function (event) {
         console.log('File ' + event.path + ' was ' + event.type + ', running task...');
     });

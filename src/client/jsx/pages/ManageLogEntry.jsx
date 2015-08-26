@@ -222,7 +222,7 @@
 
             // get actions sorted by name
             var actions = actionStore.updates.value;
-            actions = _.sortBy(actions, function(action) { 
+            actions = _.sortBy(actions, function(action) {
                 action.name;
             });
             // add actions to selection control
@@ -257,7 +257,7 @@
                     return {
                         value: input,
                         text: input
-                    }
+                    };
                 },
                 maxItems: 1,
                 openOnFocus: false,
@@ -409,8 +409,12 @@
             };
 
             var buttonsDom = buttons.map(function(button, index) {
-                return <button key={index} style={buttonStyle} type="button" className={'btn btn-' + button.type} onClick={button.handler}>{button.text}</button>
-            })
+                return (
+                  <button key={index} style={buttonStyle} type="button"
+                    className={'btn btn-' + button.type}
+                    onClick={button.handler}>{button.text}</button>
+                );
+            });
 
             var forceHeightStyle = {
                 height: '59px'

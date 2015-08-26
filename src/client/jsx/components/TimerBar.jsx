@@ -85,35 +85,36 @@
          * RENDERING
          *************************************************************/
         render: function () {
-            
+
             var workingOn, timerDone, timerReset;
             if (timerStore.updates.value.isOpen) {
-                
+
                 var aStyle = {
                     padding: '5px',
                     color: '#e2ff63'
                 };
-                
+
                 var textStyle = {
                     fontSize: '1.5rem',
                     padding: '0.2rem',
                     color: '#e2ff63'
-                }
+                };
+
                 var displayDuration = null;
                 if (timerStore.updates.value.isRunning || timerStore.updates.value.timeSoFar > 0) {
                     var currentTime = new Date().getTime();
-                    var timeSoFar = timerStore.updates.value.timeSoFar + (currentTime - (timerStore.updates.value.startedAt || currentTime))
+                    var timeSoFar = timerStore.updates.value.timeSoFar + (currentTime - (timerStore.updates.value.startedAt || currentTime));
                     var duration = new babble.Duration(timeSoFar);
                     displayDuration = (<span style={textStyle}>{duration.toString(':')}</span>);
                 }
-                
+
                 return (
                     <div style={{ display: 'flex', padding: '2px', backgroundColor: '#444' }}>
                         <div style={{ flexGrow: '1', marginRight: '2px' }}>
                             <input ref="workingOn" className="form-control" type="text" placeholder="What are you working on?" onChange={this.handleWorkingOnChange} value={timerStore.updates.value.workingOn} />
                         </div>
                         <div onClick={this.handleDoneTimerClick}>{displayDuration}</div>
-                        
+
                         <div>
                             <a style={aStyle} href="javascript:;" onClick={this.handlePlayPauseTimerClick}>
                                 <i style={{ margin: '0.2rem'}} className={'fa fa-2x ' + (timerStore.updates.value.isRunning ? 'fa-pause' : 'fa-play')}></i>
@@ -128,7 +129,7 @@
                 );
             }
             else {
-                return null;                 
+                return null;
             }
         }
     });
