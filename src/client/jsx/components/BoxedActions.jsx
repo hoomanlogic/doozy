@@ -92,14 +92,14 @@
             var headerStyle = {
                 padding: '2px 2px 2px 8px',
                 fontWeight: 'bold',
-                fontSize: '1.5em'
+                fontSize: '2em'
             };
 
             var boxesDom = null;
             boxesDom = this.state.boxes.map( function(box) {
 
                 var boxActions = box.actions;
-                boxActions = _.sortBy(boxActions, function(action) { 
+                boxActions = _.sortBy(boxActions, function(action) {
                     return (action.ordinal === null ? '' : action.ordinal + '-') + action.name.toLowerCase();
                 });
 

@@ -152,8 +152,8 @@
 
 
             return (
-                <tr className={'highlight-hover'} onDoubleClick={this.handleClick} onTouchStart={this.handleTouchStart} onTouchMove={this.handleTouchMove} onTouchEnd={this.handleTouchEnd}>
-                    <td width="5px" style={{padding: '0 0 0 5px'}}><input style={{height: '18px', width: '18px'}} type="checkbox" onChange={this.handleCheck} onTouchStart={this.handleCheckTouch} checked={isDone} /></td>
+                <tr style={{fontSize: '1.4em'}} className={'highlight-hover'} onDoubleClick={this.handleClick} onTouchStart={this.handleTouchStart} onTouchMove={this.handleTouchMove} onTouchEnd={this.handleTouchEnd}>
+                    <td width="5px" style={{padding: '0 0 0 5px'}}><input style={{height: '24px', width: '24px'}} type="checkbox" onChange={this.handleCheck} onTouchStart={this.handleCheckTouch} checked={isDone} /></td>
                     <td>
                         <ContentEditable style={actionNameStyle} html={this.props.actionName} onChange={this.handlers.nameChange} />
                         {details}

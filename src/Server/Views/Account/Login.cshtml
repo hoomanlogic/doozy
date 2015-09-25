@@ -4,12 +4,12 @@
     ViewBag.Title = "Log in";
 }
 <link href="~/css/login.min.css" rel="stylesheet" />
-<div class="flex-container" style="justify-content: space-around;align-items: center;">
-    <i style="margin: 1rem" id="hoomanlogic"></i>
-    <h1 style="font-size: 3em;">Do better. Together.</h1>
-</div>
-<div>
-    <h2 style="font-size: 2em;">@ViewBag.Title.</h2>
+<div class="flex-container">
+    <i style="margin: 1rem; height: 6rem; width: 6rem;" id="hoomanlogic"></i>
+    <div style="flex-grow: 1">
+        <h1 style="font-size: 2.8em; text-align: right;">Do better.</h1>
+        <h1 style="font-size: 2.8em; text-align: right;">Together.</h1>
+    </div>
 </div>
 <div class="flex-container">
     <div class="flex-cell" style="flex-grow: 1">
@@ -22,26 +22,45 @@
             @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
             {
                 @Html.AntiForgeryToken()
-                <h4>Use a local account to log in.</h4>
-                <hr />
+                <h4 style="font-size: 1.3em; line-height: 1;">Use a local account to log in.</h4>
+                <hr style="margin: 0.6em 0;" />
+                <style>
+                    .bigger-is-better input[type="checkbox"] {
+                      width: 20px; /*Desired width*/
+                      height: 20px; /*Desired height*/
+                      margin-left: 0;
+                    }
+
+                    .bigger-is-better label {
+                      margin-left: 0.6em;
+                      padding-right: 40px;
+                    }
+
+                     .bigger-is-better {
+                         height: 40px;
+                         font-size: 20px;
+                    }
+
+                    .form-group {
+                        margin-bottom: 0.6em;
+                    }
+                </style>
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                 <div class="form-group">
-                    @Html.LabelFor(m => m.Email, new { @class = "col-xs-2 control-label" })
-                    <div class="col-md-10">
-                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                    <div>
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control bigger-is-better", @placeholder = "Email Address" })
                         @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
                     </div>
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(m => m.Password, new { @class = "col-xs-2 control-label" })
-                    <div class="col-md-10">
-                        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                    <div style="height: 40px; font-size: 20px">
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control bigger-is-better", @placeholder = "Password" })
                         @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
                     </div>
                 </div>
                 <div class="form-group">
-                    <div class="col-xs-offset-2 col-xs-10">
-                        <div class="checkbox">
+                    <div>
+                        <div class="checkbox bigger-is-better">
                             @Html.CheckBoxFor(m => m.RememberMe)
                             @Html.LabelFor(m => m.RememberMe)
                         </div>
@@ -49,10 +68,10 @@
                 </div>
                 <div class="form-group">
                     <div>
-                        <input type="submit" value="Log in" class="btn btn-primary" style="display: block; width: 100%; margin-bottom: 10px; font-size: 1.5em" />
+                        <input type="submit" value="Log in" class="btn btn-primary" style="display: block; width: 100%; margin-bottom: 0; font-size: 1.5em" />
                     </div>
                 </div>
-                <p>
+                <p style="font-size: 1.2em">
                     @Html.ActionLink("Register as a new user", "Register")
                 </p>
                 @* Enable this once you have account confirmation enabled for password reset functionality
@@ -75,38 +94,32 @@
             padding: 0.5em 10px;
             quotes: "\201C""\201D""\2018""\2019";
         }
-        blockquote span:before {
-            color: #ccc;
-            content: open-quote;
-            font-size: 4em;
-            line-height: 0.1em;
-            margin-right: 0.1em;
-            vertical-align: -0.4em;
-        }
-        /*blockquote span:after {
-            vertical-align:text-bottom;
-            color: #ccc;
-            content: close-quote;
-            font-size: 4em;
-            line-height: 0.1em;
-            margin-left: 0.25em;
-            vertical-align: -0.5em;
-        }*/
-        blockquote p {
-            color: #12ab31;
-            text-align: right;
-            margin: 0 10px;
-            font-size: 1.5em;
-        }
-        blockquote p:before {
-            
-            color: #ccc;
-            content: " - ";
-            font-size: 1.5em;
-            line-height: 0.1em;
-            margin-left: 0.1em;
-            vertical-align: -0.1em;
-        }
+
+            blockquote span:before {
+                color: #ccc;
+                content: open-quote;
+                font-size: 4em;
+                line-height: 0.01em;
+                margin-right: 0.1em;
+                margin-top: 0.1em;
+                vertical-align: -0.45em;
+            }
+
+            blockquote p {
+                color: #12ab31;
+                text-align: right;
+                margin: 0 10px;
+                font-size: 1.5em;
+            }
+
+                blockquote p:before {
+                    color: #ccc;
+                    content: " - ";
+                    font-size: 1.5em;
+                    line-height: 0.1em;
+                    margin-left: 0.1em;
+                    vertical-align: -0.1em;
+                }
     </style>
     <blockquote><span>I have not failed. I've just found 10,000 ways that won't work.</span><p>Thomas Edison</p></blockquote>
 </div>
