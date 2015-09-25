@@ -31,19 +31,19 @@ var jsLibs = [
 
     'nuget_packages/Microsoft.AspNet.SignalR.JS.2.1.2/content/Scripts/jquery.signalR-2.1.2.js',
     'bower_components/selectize/dist/js/standalone/selectize.js',
-	'mode_modules/babble/dist/babble.js',
+	'node_modules/babble/dist/babble.js',
 	'bower_components/Sugar/release/date.js',
     '../errl_js/src/errl.js',
 
-    '../hl-common-js/src/common.js',
-    '../hl-common-js/src/extensions.js',
-    '../hl-common-js/src/polyfills.js',
-    '../hl-common-js/src/io.js',
-    '../hl-common-js/src/uri.js',
-	'../hl-common-js/src/store.js',
+    '../common_js/src/common.js',
+    '../common_js/src/extensions.js',
+    '../common_js/src/polyfills.js',
+    '../common_js/src/io.js',
+    '../common_js/src/uri.js',
+	'../common_js/src/store.js',
 
     'bower_components/rxjs/dist/rx.lite.js',
-    '../hl-common-js/src/EventHandler.js',
+    '../common_js/src/EventHandler.js',
 
 ];
 
@@ -199,7 +199,7 @@ gulp.task('watch', function () {
     });
 
     // Watch Internal JS Libraries for Updates
-    var jsLibWatcher = gulp.watch(['../errl_js/dist/*.min.js', '../hl-common-js/dist/*.min.js'], ['concat-js-libs']);
+    var jsLibWatcher = gulp.watch(['../errl_js/dist/*.min.js', '../common_js/dist/*.min.js'], ['concat-js-libs']);
     jsLibWatcher.on('change', function (event) {
         console.log('File ' + event.path + ' was ' + event.type + ', running task...');
     });

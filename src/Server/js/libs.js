@@ -11143,7 +11143,7 @@ if (!this.JSON) {
                 options: {},
                 subscribe: subscribe,
                 success: success,
-                version: '2.1.1',
+                version: '2.1.2',
                 warning: warning
             };
 
@@ -11277,6 +11277,9 @@ if (!this.JSON) {
                     hideDuration: 1000,
                     hideEasing: 'swing',
                     onHidden: undefined,
+                    closeMethod: false,
+                    closeDuration: false,
+                    closeEasing: false,
 
                     extendedTimeOut: 1000,
                     iconClasses: {
@@ -11290,6 +11293,7 @@ if (!this.JSON) {
                     timeOut: 5000, // Set timeOut and extendedTimeOut to 0 to make it sticky
                     titleClass: 'toast-title',
                     messageClass: 'toast-message',
+                    escapeHtml: false,
                     target: 'body',
                     closeHtml: '<button type="button">&times;</button>',
                     newestOnTop: true,
@@ -11351,6 +11355,18 @@ if (!this.JSON) {
 
                 return $toastElement;
 
+                function escapeHtml(source) {
+                    if (source == null)
+                        source = "";
+
+                    return new String(source)
+                        .replace(/&/g, '&amp;')
+                        .replace(/"/g, '&quot;')
+                        .replace(/'/g, '&#39;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;');
+                }
+
                 function personalizeToast() {
                     setIcon();
                     setTitle();
@@ -11378,8 +11394,8 @@ if (!this.JSON) {
                     }
 
                     if (options.onclick) {
-                        $toastElement.click(function () {
-                            options.onclick();
+                        $toastElement.click(function (event) {
+                            options.onclick(event);
                             hideToast();
                         });
                     }
@@ -11418,14 +11434,14 @@ if (!this.JSON) {
 
                 function setTitle() {
                     if (map.title) {
-                        $titleElement.append(map.title).addClass(options.titleClass);
+                        $titleElement.append(!options.escapeHtml ? map.title : escapeHtml(map.title)).addClass(options.titleClass);
                         $toastElement.append($titleElement);
                     }
                 }
 
                 function setMessage() {
                     if (map.message) {
-                        $messageElement.append(map.message).addClass(options.messageClass);
+                        $messageElement.append(!options.escapeHtml ? map.message : escapeHtml(map.message)).addClass(options.messageClass);
                         $toastElement.append($messageElement);
                     }
                 }
@@ -11456,13 +11472,17 @@ if (!this.JSON) {
                 }
 
                 function hideToast(override) {
+                    var method = override && options.closeMethod !== false ? options.closeMethod : options.hideMethod;
+                    var duration = override && options.closeDuration !== false ?
+                        options.closeDuration : options.hideDuration;
+                    var easing = override && options.closeEasing !== false ? options.closeEasing : options.hideEasing;
                     if ($(':focus', $toastElement).length && !override) {
                         return;
                     }
                     clearTimeout(progressBar.intervalId);
-                    return $toastElement[options.hideMethod]({
-                        duration: options.hideDuration,
-                        easing: options.hideEasing,
+                    return $toastElement[method]({
+                        duration: duration,
+                        easing: easing,
                         complete: function () {
                             removeToast($toastElement);
                             if (options.onHidden && response.state !== 'hidden') {
@@ -11520,7 +11540,7 @@ if (!this.JSON) {
     if (typeof module !== 'undefined' && module.exports) { //Node
         module.exports = factory(require('jquery'));
     } else {
-        window['toastr'] = factory(window['jQuery']);
+        window.toastr = factory(window.jQuery);
     }
 }));
 
@@ -13484,14 +13504,11 @@ if (!this.JSON) {
 	                    var thatByte = (thatWords[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff;
 	                    thisWords[(thisSigBytes + i) >>> 2] |= thatByte << (24 - ((thisSigBytes + i) % 4) * 8);
 	                }
-	            } else if (thatWords.length > 0xffff) {
+	            } else {
 	                // Copy one word at a time
 	                for (var i = 0; i < thatSigBytes; i += 4) {
 	                    thisWords[(thisSigBytes + i) >>> 2] = thatWords[i >>> 2];
 	                }
-	            } else {
-	                // Copy all words at once
-	                thisWords.push.apply(thisWords, thatWords);
 	            }
 	            this.sigBytes += thatSigBytes;
 
@@ -22119,7 +22136,7 @@ if (!this.JSON) {
  */
 (function (exports) {
     'use strict';
-    
+
     /**
      * Returns the given object's toString representation
      * if it is defined, otherwise returns the given object.
@@ -22129,15 +22146,16 @@ if (!this.JSON) {
     var toStringIfExists = function (obj) {
         if (obj.hasOwnProperty('toString')) {
             return obj.toString();
-        } else {
-            return obj;   
+        }
+        else {
+            return obj;
         }
     };
 
     /**
-     * Get token closest to current match that is 
+     * Get token closest to current match that is
      * between the previous and current match.
-     * As always, a collection of tokens is assumed 
+     * As always, a collection of tokens is assumed
      * to already be ordered by pos prop.
      */
     var getTokenModifier = function (tokens, match, previousMatch) {
@@ -22148,34 +22166,37 @@ if (!this.JSON) {
             lowerBound = previousMatch.pos + previousMatch.text.length;
         }
 
-        var i = 0,
-            token = null;
+        var i = 0;
+        var token = null;
 
         for (var i = 0; i < tokens.length; i++) {
             if (lowerBound <= tokens[i].pos && tokens[i].pos < upperBound) {
                 token = tokens[i];
-            } else if (tokens[i].pos >= upperBound) {
-                break;   
+            }
+            else if (tokens[i].pos >= upperBound) {
+                break;
             }
         }
 
         return token;
     };
     exports.getTokenModifier = getTokenModifier;
-    
+
     /**
      * Function keeps the matches in order by the position
      * so processing doesn't have to worry about sorting it
      */
     var insertToken = function (arr, obj) {
         if (arr.length === 0 || arr[arr.length - 1].pos < obj.pos) {
-            arr.push(obj);   
-        } else {
+            arr.push(obj);
+        }
+        else {
             for (var i = 0; i < arr.length; i++) {
                 if (arr[i].pos > obj.pos) {
                     arr.splice(i, 0, obj);
                     break;
-                } else if (arr[i].pos === obj.pos && arr[i].len < obj.len) {
+                }
+                else if (arr[i].pos === obj.pos && arr[i].len < obj.len) {
                     arr.splice(i, 1, obj);
                     break;
                 }
@@ -22183,7 +22204,7 @@ if (!this.JSON) {
         }
     };
     exports.insertToken = insertToken;
-    
+
     /**
      * Create parsed results object and Bind functions to the parsed results for sugar
      */
@@ -22192,25 +22213,25 @@ if (!this.JSON) {
         this.tokens = tokens;
         this.preParsedResults = preParsedResults || null;
     };
-    
+
     ParsedResult.prototype = {
         /**
-         * This takes any string, locates groups of 
+         * This takes any string, locates groups of
          * spelled out numbers and converts them to digits
          * @return {number} Returns the processed input string.
          */
         toString: function () {
             var input = this.input;
             for (var i = 0; i < this.tokens.length; i++) {
-                input = 
-                    input.slice(0 ,this.tokens[i].pos) + 
-                    toStringIfExists(this.tokens[i].value) + 
+                input =
+                    input.slice(0 ,this.tokens[i].pos) +
+                    toStringIfExists(this.tokens[i].value) +
                     input.slice(this.tokens[i].pos + this.tokens[i].text.length);
             }
             return input;
         }
      };
-    
+
     /**
      * Tokens are the gold nuggets of lexical analysis
      */
@@ -22221,57 +22242,57 @@ if (!this.JSON) {
         this.text = text;
         this.tokens = tokens || [];
         this.certainty = certainty || 0;
-    }
+    };
 
     var BaseTranslator = function (onTranslate, locale) {
 
         /**
          * Validate instance
-         */ 
+         */
         if (
-        !this.hasOwnProperty('name') || 
-        typeof this.name !== 'string' || 
-        !this.hasOwnProperty('parse') || 
-        typeof this.parse !== 'function' || 
+        !this.hasOwnProperty('name') ||
+        typeof this.name !== 'string' ||
+        !this.hasOwnProperty('parse') ||
+        typeof this.parse !== 'function' ||
         this.constructor.toString() === 'function Object() { [native code] }') {
-            
+
             throw new Error('BaseTranslator must be inheritied and properties set for "name" and "parse"');
         }
-        
+
         /**
          * Validate registration
-         */ 
+         */
         if (typeof translators[this.name] === 'undefined') {
             throw new Error('"' + this.name + '" must be registered before it is instantiated');
         }
-        
+
         /**
          * Validate locale
-         */ 
+         */
         this.locale = locale || translators[this.name].defaultLocale;
         if (translators[this.name].supportedLocales.indexOf(this.locale) === -1) {
             throw new Error('Locale "' + this.locale + '" is not supported by "' + this.name + '"');
         }
-        
+
         /**
          * Define onTranslate which is called
          * by the listen event
-         */ 
+         */
         this.onTranslate = onTranslate || null;
-        
+
         /**
          * Define assistants array if derived class
          * has not already defined it
-         */ 
+         */
         if (!this.hasOwnProperty('assistants')) {
             this.assistants = [];
         }
     };
-    
+
     BaseTranslator.prototype = {
         /**
          * Attaches the translate function to an event listener
-         * @param speaker {Element, object, string} 
+         * @param speaker {Element, object, string}
          */
         listen: function (speaker, event, onTranslate, locale) {
             /**
@@ -22282,44 +22303,48 @@ if (!this.JSON) {
             if (typeof speaker === 'string' && document && document.getElementById) {
                 speaker = document.getElementById(speaker);
             }
-            
+
             /**
              * Default event name to input if not given
              */
             event = event || 'input';
-            
+
             /**
              * Define onTranslate which is called
              * by the listen event
              */
             onTranslate = onTranslate || this.onTranslate;
-            
+
             /**
              * Bind to the input control's oninput event
              */
             if (speaker.addEventListener) {
                 speaker.addEventListener(event, this.translate.bind(this, { speaker: speaker, locale: locale, onTranslate: onTranslate }));
-            } else if (speaker.attachEvent) {
+            }
+            else if (speaker.attachEvent) {
                 speaker.attachEvent('on' + event, this.translate.bind(this, { speaker: speaker, locale: locale, onTranslate: onTranslate }));
-            } else if (typeof speaker['on' + event] !== 'undefined') {
+            }
+            else if (typeof speaker['on' + event] !== 'undefined') {
                 speaker['on' + event] = this.translate.bind(this, { speaker: speaker, locale: locale, onTranslate: onTranslate });
-            } else if (typeof speaker[event] !== 'undefined') {
+            }
+            else if (typeof speaker[event] !== 'undefined') {
                 speaker[event] = this.translate.bind(this, { speaker: speaker, locale: locale, onTranslate: onTranslate });
-            } else {
-                throw new Error('Could not find an appropriate event to bind to');   
+            }
+            else {
+                throw new Error('Could not find an appropriate event to bind to');
             }
         },
         /**
          * Determines accepts multiple arguments and
          * passes appropriate ones to the parse function.
          * Passes the result to callbacks before returning
-         * the result. 
+         * the result.
          * This can be used directly or by the listen method.
          */
         translate: function () {
-            
+
             var input = null;
-            
+
             /**
              * Default options
              */
@@ -22328,7 +22353,7 @@ if (!this.JSON) {
                 onTranslate: null,
                 speaker: null
             };
-            
+
             /**
              * Set passed input and options
              */
@@ -22340,31 +22365,35 @@ if (!this.JSON) {
                      */
                     if (arguments[i].length < 6 && translators[this.name].supportedLocales.indexOf(arguments[i]) !== -1) {
                         options.locale = arguments[i];
-                    } else if (input === null) {
+                    }
+                    else if (input === null) {
                         input = arguments[i];
                     }
-                } else if (typeof arguments[i] === 'object') {
+                }
+                else if (typeof arguments[i] === 'object') {
                     /**
                      * Object could either be an Event object or the options object.
                      * If object.target.value doesn't exist, then assume options object
                      */
                     if (typeof arguments[i].target !== 'undefined' && typeof arguments[i].target.value !== 'undefined') {
                         input = arguments[i].target.value;
-                    } else {
+                    }
+                    else {
                         for (var propName in arguments[i]) {
                             if (arguments[i].hasOwnProperty(propName)) {
                                 options[propName] = arguments[i][propName];
                             }
                         }
                     }
-                } else if (typeof arguments[i] === 'function') {
+                }
+                else if (typeof arguments[i] === 'function') {
                     /**
                      * We only support one type of function
                      */
                     options.onTranslate = arguments[i];
                 }
             }
-            
+
             /**
              * Parse the input, pass to callbacks, and return the result.
              */
@@ -22384,11 +22413,11 @@ if (!this.JSON) {
                 }
                 return result;
             }
-            
+
             return new ParsedResult(input, []);
         },
         /**
-         * Passes the input to the translators 
+         * Passes the input to the translators
          * assistants and returns parsed results
          */
         passToAssistants: function (input, locale) {
@@ -22399,14 +22428,14 @@ if (!this.JSON) {
             return preParsedResults;
         }
     };
-        
+
     /**
      * Expose classes used by Translator implementations
      */
     exports.ParsedResult = ParsedResult;
     exports.BaseTranslator = BaseTranslator;
     exports.Token = Token;
-    
+
     /**
      * Expose method used for registering translators with
      * the core. passToAssistants uses these singleton
@@ -22419,13 +22448,13 @@ if (!this.JSON) {
             defaultLocale: defaultLocale,
             supportedLocales: supportedLocales
         };
-        
+
         translators[name].instance = new instance();
     };
     exports.register = register;
-    
+
     /**
-     * Expose method used for getting a singleton instance 
+     * Expose method used for getting a singleton instance
      * of a translator.
      */
     var get = function (name, locale) {
@@ -22433,24 +22462,24 @@ if (!this.JSON) {
         if (translators[name].supportedLocales.indexOf(locale) === -1) {
             throw new Error('Locale "' + this.locale + '" is not supported by "' + name + '"');
         }
-        
+
         translators[name].locale = locale || translators[name].instance.locale;
         return translators[name].instance;
     };
     exports.get = get;
-    
+
     /**
      * TODO: Describe this
      */
     var assign = function (name, speaker) {
-        var event = null, 
-            locale = null, 
-            onTranslate = null;
-        
+        var event = null;
+        var locale = null;
+        var onTranslate = null;
+
         if (arguments.length < 3 || typeof arguments[arguments.length - 1] !== 'function') {
-            throw new TypeError('Unexpected number of arguments');   
+            throw new TypeError('Unexpected number of arguments');
         }
-        
+
         onTranslate = arguments[arguments.length - 1];
         if (arguments.length > 3) {
             event = arguments[2];
@@ -22458,14 +22487,15 @@ if (!this.JSON) {
         if (arguments.length > 4) {
             locale = arguments[3];
         }
-        
+
         var translator = get(name, locale);
-        //translator.locale = locale; // we have to set it so it doesn't forget
+        // translator.locale = locale; // we have to set it so it doesn't forget
         translator.listen(speaker, event, onTranslate, locale);
     };
     exports.assign = assign;
-    
-}(typeof exports === 'undefined' ? this['babble'] = this['babble'] || {}: exports));
+
+}(typeof exports === 'undefined' ? this['babble'] = this['babble'] || {} : exports));
+
 /**
  * @module durations
  * @dependency core
@@ -22476,136 +22506,141 @@ if (!this.JSON) {
 
     var Locales = {
         'en-US': {
-            'code': 'en-US',
-            'millennium': {
-                'full': ['millennium', 'millennia']
+            code: 'en-US',
+            millennium: {
+                full: ['millennium', 'millennia']
             },
-            'century': {
-                'full': ['centuries', 'century']
+            century: {
+                full: ['centuries', 'century']
             },
-            'decade': {
-                'full': ['decades', 'decade']
+            decade: {
+                full: ['decades', 'decade']
             },
-            'year': {
-                'full': ['years', 'year'],
-                'short': ['yr'],
-                'symbol': ['y']
+            year: {
+                full: ['years', 'year'],
+                short: ['yr'],
+                symbol: ['y']
             },
-            'day': {
-                'full': ['days', 'day'],
-                'short': ['dys', 'dy'],
-                'symbol': ['d']
+            day: {
+                full: ['days', 'day'],
+                short: ['dys', 'dy'],
+                symbol: ['d']
             },
-            'hour': {
-                'full': ['hours', 'hour'],
-                'short': ['hrs', 'hr'],
-                'symbol': ['h'],
+            hour: {
+                full: ['hours', 'hour'],
+                short: ['hrs', 'hr'],
+                symbol: ['h'],
             },
-            'minute': {
-                'full': ['minutes', 'minute'],
-                'short': ['mins', 'min'],
-                'symbol': ['m'],
+            minute: {
+                full: ['minutes', 'minute'],
+                short: ['mins', 'min'],
+                symbol: ['m'],
             },
-            'second': {
-                'full': ['seconds', 'second'],
-                'short': ['secs', 'sec'],
-                'symbol': ['s'],
+            second: {
+                full: ['seconds', 'second'],
+                short: ['secs', 'sec'],
+                symbol: ['s'],
             },
-            'millisecond': {
-                'full': ['milliseconds', 'millisecond'],
-                'short': ['millisecs', 'millisec', 'msecs', 'msec'],
-                'symbol': ['ms'],
+            millisecond: {
+                full: ['milliseconds', 'millisecond'],
+                short: ['millisecs', 'millisec', 'msecs', 'msec'],
+                symbol: ['ms'],
             },
-            'timeJoiners': [',',', and',',and','and',''],
-            'modifierJoiners': ['of an','of a','an','a',''],
-            
+            timeJoiners: [',',', and',',and','and',''],
+            modifierJoiners: ['of an','of a','an','a',''],
+
             /**
              * Pluralizes a word based on how many
              */
             formatNoun: function (noun, howMany) {
 
-                var plural = function (noun) {
+                var plural = function () {
                     var vowels = ['a','e','i','o','u'];
                     if (noun[noun.length - 1] === 'y' && vowels.indexOf(noun[noun.length - 2].toLowerCase()) === -1) {
                         return noun.substring(0, noun.length - 1) + 'ies';
-                    } else {
+                    }
+                    else {
                         return noun + 's';
                     }
-                }
+                };
 
                 if (howMany === 0) {
-                    return 'no ' + plural(noun);
-                } else if (howMany === 1) {
+                    return 'no ' + plural();
+                }
+                else if (howMany === 1) {
                     return noun;
-                } else {
-                    return plural(noun);
+                }
+                else {
+                    return plural();
                 }
             }
         },
 
     };
     Locales['de-DE'] = {
-            'code': 'de-DE',
-            'millennium': {
-                'full': []
-            },
-            'century': {
-                'full': []
-            },
-            'decade': {
-                'full': []
-            },
-            'year': {
-                'full': ['jahre', 'jahr'],
-                'short': [],
-                'symbol': ['j']
-            },
-            'day': {
-                'full': ['tage', 'tag'],
-                'short': [],
-                'symbol': ['t']
-            },
-            'hour': {
-                'full': ['stunde'],
-                'short': [],
-                'symbol': ['st'],
-            },
-            'minute': {
-                'full': ['minuten'],
-                'short': ['min'],
-                'symbol': ['m'],
-            },
-            'second': {
-                'full': ['sekunden'],
-                'short': ['sek'],
-                'symbol': ['s'],
-            },
-            'millisecond': {
-                'full': ['millisekunden'],
-                'short': ['millisek', 'msek'],
-                'symbol': ['ms'],
-            },
-            'timeJoiners': [',',', und',',und','und',''],
-            'modifierJoiners': ['ob',''],
-            
-            /**
-             * Pluralizes a word based on how many
-             */
-            formatNoun: function (noun, howMany) {
+        code: 'de-DE',
+        millennium: {
+            full: []
+        },
+        century: {
+            full: []
+        },
+        decade: {
+            full: []
+        },
+        year: {
+            full: ['jahre', 'jahr'],
+            short: [],
+            symbol: ['j']
+        },
+        day: {
+            full: ['tage', 'tag'],
+            short: [],
+            symbol: ['t']
+        },
+        hour: {
+            full: ['stunde'],
+            short: [],
+            symbol: ['st'],
+        },
+        minute: {
+            full: ['minuten'],
+            short: ['min'],
+            symbol: ['m'],
+        },
+        second: {
+            full: ['sekunden'],
+            short: ['sek'],
+            symbol: ['s'],
+        },
+        millisecond: {
+            full: ['millisekunden'],
+            short: ['millisek', 'msek'],
+            symbol: ['ms'],
+        },
+        timeJoiners: [',',', und',',und','und',''],
+        modifierJoiners: ['ob',''],
 
-                var plural = function (noun) {
-                    return noun + 'e';
-                }
+        /**
+         * Pluralizes a word based on how many
+         */
+        formatNoun: function (noun, howMany) {
 
-                if (howMany === 0) {
-                    return 'kein ' + plural(noun);
-                } else if (howMany === 1) {
-                    return noun;
-                } else {
-                    return plural(noun);
-                }
+            var plural = function () {
+                return noun + 'e';
+            };
+
+            if (howMany === 0) {
+                return 'kein ' + plural();
             }
-        };
+            else if (howMany === 1) {
+                return noun;
+            }
+            else {
+                return plural();
+            }
+        }
+    };
 
     /**
      * Module variables for duration calculations
@@ -22618,14 +22653,14 @@ if (!this.JSON) {
     var decadeInt = 10 * yearInt;
     var centuryInt = 10 * decadeInt;
     var millenniumInt = 10 * centuryInt;
-    
+
     /**
      * Create Duration object
      */
     exports.Duration = function (milliseconds) {
-        
+
         this.value = milliseconds;
-        
+
         this.milliseconds = 0;
         this.seconds = 0;
         this.minutes = 0;
@@ -22655,11 +22690,11 @@ if (!this.JSON) {
             leftOver -= this.seconds * secondInt;
         }
         this.milliseconds = leftOver;
-    }
-    
-    
+    };
+
+
     exports.Duration.prototype.toString = function (format, locale) {
-        
+
         /**
          * Set the locale used for matching
          * and default to the CurrentLocale
@@ -22667,94 +22702,99 @@ if (!this.JSON) {
          */
         if (locale && Locales[locale]) {
             locale = Locales[locale];
-        } else {
+        }
+        else {
             locale = Locales[defaultLocale];
         }
 
         if (typeof format !== 'undefined' && format !== null && format.slice(0,1) === ':') {
-            
+
             if (this.days > 0) {
                 return (
-                    this.days + ':' + 
-                    (this.hours < 10 ? '0' : '') + this.hours + ':' + 
+                    this.days + ':' +
+                    (this.hours < 10 ? '0' : '') + this.hours + ':' +
                     (this.minutes < 10 ? '0' : '') + this.minutes
                 );
-            } else if (this.hours > 0) {
+            }
+            else if (this.hours > 0) {
                 if (format === ':minutes') {
                     return (
-                        this.hours + ':' + 
+                        this.hours + ':' +
                         (this.minutes < 10 ? '0' : '') + this.minutes
                     );
-                } else {
+                }
+                else {
                     return (
-                        this.hours + ':' + 
-                        (this.minutes < 10 ? '0' : '') + this.minutes + ':' + 
+                        this.hours + ':' +
+                        (this.minutes < 10 ? '0' : '') + this.minutes + ':' +
                         (this.seconds < 10 ? '0' : '') + this.seconds
                     );
                 }
-            } else {
+            }
+            else {
                 if (format === ':minutes') {
                     return (
                         this.minutes
                     );
-                } else {
+                }
+                else {
                     return (
-                        this.minutes + ':' + 
+                        this.minutes + ':' +
                         (this.seconds < 10 ? '0' : '') + this.seconds
                     );
                 }
             }
         } else {
-            
+
             if (typeof format === 'undefined' || format === null) {
                 format = 'milliseconds';
             }
 
             var info = [];
             if (this.years) {
-                info.push(this.years + ' ' + locale.formatNoun(locale.year.full[1], this.years));   
+                info.push(this.years + ' ' + locale.formatNoun(locale.year.full[1], this.years));
             }
             if (format === 'days') {
                 return info.join(', ');
             }
             if (this.days) {
-                info.push(this.days + ' ' + locale.formatNoun(locale.day.full[1], this.days));   
+                info.push(this.days + ' ' + locale.formatNoun(locale.day.full[1], this.days));
             }
             if (format === 'days') {
                 return info.join(', ');
             }
             if (this.hours) {
-                info.push(this.hours + ' ' + locale.formatNoun(locale.hour.full[1], this.hours));   
+                info.push(this.hours + ' ' + locale.formatNoun(locale.hour.full[1], this.hours));
             }
             if (format === 'hours') {
                 return info.join(', ');
             }
             if (this.minutes) {
-                info.push(this.minutes + ' ' + locale.formatNoun(locale.minute.full[1], this.minutes));   
+                info.push(this.minutes + ' ' + locale.formatNoun(locale.minute.full[1], this.minutes));
             }
             if (format === 'minutes') {
                 return info.join(', ');
             }
             if (this.seconds) {
-                info.push(this.seconds + ' ' + locale.formatNoun(locale.second.full[1], this.seconds));   
+                info.push(this.seconds + ' ' + locale.formatNoun(locale.second.full[1], this.seconds));
             }
             if (format === 'seconds') {
                 return info.join(', ');
             }
             if (this.milliseconds) {
-                info.push(this.milliseconds + ' ' + locale.formatNoun(locale.millisecond.full[1], this.milliseconds));   
+                info.push(this.milliseconds + ' ' + locale.formatNoun(locale.millisecond.full[1], this.milliseconds));
             }
             return info.join(', ');
         }
-    }
-        
+    };
+
     exports.Duration.prototype.toMinutes = function () {
         if (this.value > 60000) {
             return Math.floor((this.value / 1000) / 60);
         } else {
-            return 0;   
+            return 0;
         }
-    }
+    };
 
     /**
      * Return whether name is variation of millenium
@@ -22898,22 +22938,22 @@ if (!this.JSON) {
     var getValue = function (name, locale) {
 
         if (isMillennium(name, locale)) {
-            return millenniumInt;   
+            return millenniumInt;
         }
         if (isCentury(name, locale)) {
-            return centuryInt;   
+            return centuryInt;
         }
         if (isDecade(name, locale)) {
-            return decadeInt;   
+            return decadeInt;
         }
         if (isYear(name, locale)) {
-            return yearInt;   
+            return yearInt;
         }
         if (isDay(name, locale)) {
             return dayInt;
         }
         if (isHour(name, locale)) {
-            return hourInt;   
+            return hourInt;
         }
         if (isMinute(name, locale)) {
             return minuteInt;
@@ -22926,13 +22966,13 @@ if (!this.JSON) {
         }
         throw new Error('Invalid duration name');
     };
-    
+
     /**
-     * This takes any string, locates groups of 
+     * This takes any string, locates groups of
      * durations and returns results
      */
     var parse = function (input, locale) {
-    
+
         /**
          * Set the locale used for matching
          * and default to the CurrentLocale
@@ -22976,18 +23016,18 @@ if (!this.JSON) {
          * Run pre-parsing dependencies
          */
         var preParsedResults = this.passToAssistants(input, locale.code);
-        
+
         /**
          * Array for holding number matches
          */
         var matches = [];
-        
+
         //http://leaverou.github.io/regexplained/
         var match;
-        // use negative lookahead to ensure it's the end of a word 
+        // use negative lookahead to ensure it's the end of a word
         // without consuming a digit that could otherwise be a part
         // of the following match
-        var re = new RegExp('(\\b|\\d)(' + names.join('|') + ')\.?(?![a-zA-Z])', 'gi')
+        var re = new RegExp('(\\b|\\d)(' + names.join('|') + ')\.?(?![a-zA-Z])', 'gi');
         while ((match = re.exec(input)) !== null) {
             var truePos = match.index + (match[1] || '').length;
             core.insertToken(matches, {
@@ -22996,8 +23036,8 @@ if (!this.JSON) {
                 text: match[2],
                 value: getValue(match[2], locale)
             });
-        };
-        
+        }
+
         /**
          * Add numerical language matches
          */
@@ -23012,21 +23052,19 @@ if (!this.JSON) {
                     value: null
                 });
             }
-        };
-        
+        }
 
-        
         if (matches.length === 0) {
-            return new core.ParsedResult(input, [], preParsedResults); 
+            return new core.ParsedResult(input, [], preParsedResults);
         }
 
         var results = [];
         var segments = [];
         var previousMatch = null;
         for (var i = 0; i < matches.length; i++) {
-            
+
             if (matches[i].kind === 'duration.full') {
-                
+
                 var timeSegments = matches[i].text.split(':');
                 var timeSum = 0;
                 if (timeSegments.length === 4) {
@@ -23034,16 +23072,17 @@ if (!this.JSON) {
                     timeSum += parseInt(timeSegments[1]) * hourInt;
                     timeSum += parseInt(timeSegments[2]) * minuteInt;
                     timeSum += parseFloat(timeSegments[3]) * secondInt;
-                } else if (timeSegments.length === 3) {
+                }
+                else if (timeSegments.length === 3) {
                     timeSum += parseInt(timeSegments[0]) * hourInt;
                     timeSum += parseInt(timeSegments[1]) * minuteInt;
                     timeSum += parseFloat(timeSegments[2]) * secondInt;
-                } else if (timeSegments.length === 2) {
+                }
+                else if (timeSegments.length === 2) {
                     timeSum += parseInt(timeSegments[0] * hourInt);
                     timeSum += parseInt(timeSegments[1] * minuteInt);
                 }
-                
-                
+
                 segments.push({
                     kind: 'duration',
                     pos: matches[i].pos,
@@ -23052,12 +23091,12 @@ if (!this.JSON) {
                 });
                 continue;
             }
-            
+
             /**
              * Find number token that modifies this duration match
              */
             var numToken = core.getTokenModifier(preParsedResults['numbers'].tokens, matches[i], previousMatch);
-            
+
             /**
              * This match segment has no modifier
              */
@@ -23070,7 +23109,7 @@ if (!this.JSON) {
                 });
                 continue;
             }
-            
+
             /**
              * Check i
              */
@@ -23083,17 +23122,17 @@ if (!this.JSON) {
                     value: numToken.value * matches[i].value
                 });
             }
-            
+
             /**
              * Set previousMatch to current match for use in next iteration
              */
             previousMatch = matches[i];
         }
-        
+
         /**
          * Combine segments
          */
-        
+
         var prev = null;
         var next = null;
         for (var i = 0; i < segments.length; i++) {
@@ -23111,17 +23150,17 @@ if (!this.JSON) {
             prev = segments[i];
         }
         results.push(next);
-        
+
         for (var i = 0; i < results.length; i++) {
             results[i].value = new exports.Duration(results[i].value);
         }
-        
+
         /**
          * Create parsed results object and Bind functions to the parsed results for sugar
          */
         return new core.ParsedResult(input, results, preParsedResults);
     };
-    
+
     /**
      * Define core and preparse dependencies
      */
@@ -23132,7 +23171,7 @@ if (!this.JSON) {
         var core = window['babble'];
         var numbers = window['babble'];
     }
-    
+
     /**
      * Define DurationTranslator class
      */
@@ -23141,11 +23180,12 @@ if (!this.JSON) {
         this.parse = parse;
         this.assistants = ['numbers'];
         core.BaseTranslator.call(this, onTranslate, locale);
-    }
+    };
+
     DurationTranslator.prototype = Object.create(core.BaseTranslator.prototype);
     DurationTranslator.prototype.constructor = DurationTranslator;
     exports.DurationTranslator = DurationTranslator;
-    
+
     /**
      * Register this translator with the core list
      */
@@ -23155,8 +23195,8 @@ if (!this.JSON) {
       locales.push(name);
     }
     core.register('durations', DurationTranslator, defaultLocale, locales);
-    
-    
+
+
     exports.durations = {
         /**
          * Calculates the number of days between two dates.
@@ -23176,12 +23216,12 @@ if (!this.JSON) {
         hourDiff: function (d1, d2) {
             return Math.abs(d1 - d2) / hourInt;
         },
-        
+
         formatDuration: function (minutes, locale) {
             if (typeof locale === 'undefined') {
                 locale = 'en-US';
             }
-            
+
             if (minutes < 60) {
                 return minutes + ' ' + Locales[locale].formatNoun('minute', minutes);
             } else {
@@ -23195,6 +23235,7 @@ if (!this.JSON) {
     };
 
 }(typeof exports === 'undefined' ? this['babble'] = this['babble'] || {} : exports));
+
 /**
  * @module moments
  * @dependency core
@@ -23202,9 +23243,9 @@ if (!this.JSON) {
  */
 (function (exports) {
     'use strict';
-    
+
     /**
-     * This takes any string, locates groups of 
+     * This takes any string, locates groups of
      * durations and returns results
      */
     exports.parse = function (input, locale) {
@@ -23219,9 +23260,9 @@ if (!this.JSON) {
 //        } else {
 //            locale = Locales['en-US'];
 //        }
-//        
+//
     };
-    
+
 //    /**
 //     * Define core and preparse dependencies
 //     */
@@ -23245,7 +23286,7 @@ if (!this.JSON) {
 //    MomentTranslator.prototype = Object.create(core.BaseTranslator.prototype);
 //    MomentTranslator.prototype.constructor = MomentTranslator;
 //    exports.MomentTranslator = MomentTranslator;
-//    
+//
 //    /**
 //     * Register this translator with the core list
 //     */
@@ -23255,7 +23296,7 @@ if (!this.JSON) {
 //      locales.push(name);
 //    }
 //    core.register('moments', MomentTranslator, defaultLocale, locales);
-    
+
     /**
      * Helpers
      */
@@ -23271,18 +23312,18 @@ if (!this.JSON) {
         ],
 
         monthsOfYear: [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December'
+            'January',
+            'February',
+            'March',
+            'April',
+            'May',
+            'June',
+            'July',
+            'August',
+            'September',
+            'October',
+            'November',
+            'December'
         ],
 
         dateOnly: function (datetime) {
@@ -23329,14 +23370,16 @@ if (!this.JSON) {
                 isDate = true;
                 dayIndex = start.getDay();
                 date = start;
-            } else {
+            }
+            else {
                 dayIndex = start;
             }
             for (var i = 0; i < numOfDays; i++) {
                 var className = 'calendar-future';
                 if (date.getTime() === today.getTime()) {
                     className = 'calendar-today';
-                } else if (date.getTime() < today.getTime()) {
+                }
+                else if (date.getTime() < today.getTime()) {
                     className = 'calendar-past';
                 }
 
@@ -23387,7 +23430,7 @@ if (!this.JSON) {
             return days[d.getDay()].value;
         },
 
-        /** 
+        /**
          * Date object is milliseconds since 1/1/1970
          * However, time in forecast.io api is seconds since 1/1/1970
          * so we must convert to milliseconds before casting it as a date
@@ -23407,12 +23450,12 @@ if (!this.JSON) {
 
         formatDateTime: function (date) {
             var options = {
-                weekday: "long", year: "numeric", month: "short",
-                day: "numeric", hour: "numeric", minute: "2-digit"
+                weekday: 'long', year: 'numeric', month: 'short',
+                day: 'numeric', hour: 'numeric', minute: '2-digit'
             };
             date = new Date(date);
             // Friday, Feb 1, 2013 6:00 AM
-            return date.toLocaleTimeString("en-us", options);
+            return date.toLocaleTimeString('en-us', options);
         },
 
         getLocalDate: function (str) {
@@ -23422,9 +23465,10 @@ if (!this.JSON) {
 
         parseLocalDate: function (str) {
             var date = null;
-            if (Date.parse(str) === NaN) {
+            if (isNaN(Date.parse(str))) {
                 date = null;
-            } else {
+            }
+            else {
                 date = new Date(Date.parse(str));
                 date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
             }
@@ -23433,6 +23477,7 @@ if (!this.JSON) {
     };
 
 }(typeof exports === 'undefined' ? this['babble'] = this['babble'] || {} : exports));
+
 /**
  * @module numbers
  * @dependency core
@@ -23440,7 +23485,7 @@ if (!this.JSON) {
  */
 (function (exports) {
     'use strict';
-    
+
     var Locales = {
         'en-US': {
             /**
@@ -23451,56 +23496,56 @@ if (!this.JSON) {
              * of mappings so that the ones toward the bottom
              * are evaluated first
              */
-            'numbers': {
-                'half': 0.5,
-                'quarter': 0.25,
-                'qtr': 0.25,
-                'zero': 0,
-                'one': 1,
-                'two': 2,
-                'three': 3,
-                'four': 4,
-                'five': 5,
-                'six': 6,
-                'seven': 7,
-                'eight': 8,
-                'nine': 9,
-                'ten': 10,
-                'eleven': 11,
-                'twelve': 12,
-                'thirteen': 13,
-                'fourteen': 14,
-                'fifteen': 15,
-                'sixteen': 16,
-                'seventeen': 17,
-                'eighteen': 18,
-                'nineteen': 19,
-                'twenty': 20,
-                'score': 20,
-                'thirty': 30,
-                'forty': 40,
-                'fifty': 50,
-                'sixty': 60,
-                'seventy': 70,
-                'eighty': 80,
-                'ninety': 90,
-                'hundred': 100,
-                'thousand': 1000,
+            numbers: {
+                half: 0.5,
+                quarter: 0.25,
+                qtr: 0.25,
+                zero: 0,
+                one: 1,
+                two: 2,
+                three: 3,
+                four: 4,
+                five: 5,
+                six: 6,
+                seven: 7,
+                eight: 8,
+                nine: 9,
+                ten: 10,
+                eleven: 11,
+                twelve: 12,
+                thirteen: 13,
+                fourteen: 14,
+                fifteen: 15,
+                sixteen: 16,
+                seventeen: 17,
+                eighteen: 18,
+                nineteen: 19,
+                twenty: 20,
+                score: 20,
+                thirty: 30,
+                forty: 40,
+                fifty: 50,
+                sixty: 60,
+                seventy: 70,
+                eighty: 80,
+                ninety: 90,
+                hundred: 100,
+                thousand: 1000,
                 'half-a-mil': 500000,
                 'half-a-mill': 500000,
-                'million': 1000000,
+                million: 1000000,
                 'half-a-bil': 500000000,
                 'half-a-bill': 500000000,
-                'billion': 1000000000,
-                'tenth': 0.1,
-                'hundredth': 0.01,
-                'thousandth': 0.001,
+                billion: 1000000000,
+                tenth: 0.1,
+                hundredth: 0.01,
+                thousandth: 0.001,
             },
             /**
              * Joiners define what characters
              * may separate words of the same number
              */
-            'joiners': [
+            joiners: [
                 '',
                 ' ',
                 ' and ',
@@ -23510,69 +23555,69 @@ if (!this.JSON) {
             ],
             /**
              * Flippers define what characters between two number-words will
-             * cause a smaller number preceeding a larger number to be added 
+             * cause a smaller number preceeding a larger number to be added
              * instead of treated as a modifier.
              * Example: Germans write 'five and fifty' instead of 'fifty five'.
              * So, this essentially 'flips' the behavior of processing
              */
-            'flippers': [
-                
+            flippers: [
+
             ]
         }
     };
 
     Locales['de-DE'] = {
-        'numbers': {
-            'null': 0,
-            'ein': 1,
-            'eine': 1,
-            'eins': 1,
-            'zwei': 2,
-            'zwo': 2,
-            'drei': 3,
-            'vier': 4,
-            'fünf': 5,
-            'sechs': 6,
-            'sieben': 7,
-            'acht': 8,
-            'neun': 9,
-            'zehn': 10,
-            'elf': 11,
-            'zwölf': 12,
-            'dreizehn': 13,
-            'vierzehn': 14,
-            'fünfzehn': 15,
-            'sechzehn': 16,
-            'siebzehn': 17,
-            'achtzehn': 18,
-            'neunzehn': 19,
-            'zwanzig': 20,
-            'dreißig': 30,
-            'vierzig': 40,
-            'fünfzig': 50,
-            'sechzig': 60,
-            'siebzig': 70,
-            'achtzig': 80,
-            'neunzig': 90,
-            'hundert': 100,
-            'tausend': 1000,
-            'million': 1000000,
-            'milliarde': 1000000000
+        numbers: {
+            null: 0,
+            ein: 1,
+            eine: 1,
+            eins: 1,
+            zwei: 2,
+            zwo: 2,
+            drei: 3,
+            vier: 4,
+            fünf: 5,
+            sechs: 6,
+            sieben: 7,
+            acht: 8,
+            neun: 9,
+            zehn: 10,
+            elf: 11,
+            zwölf: 12,
+            dreizehn: 13,
+            vierzehn: 14,
+            fünfzehn: 15,
+            sechzehn: 16,
+            siebzehn: 17,
+            achtzehn: 18,
+            neunzehn: 19,
+            zwanzig: 20,
+            dreißig: 30,
+            vierzig: 40,
+            fünfzig: 50,
+            sechzig: 60,
+            siebzig: 70,
+            achtzig: 80,
+            neunzig: 90,
+            hundert: 100,
+            tausend: 1000,
+            million: 1000000,
+            milliarde: 1000000000
         },
-        'joiners': [
+        joiners: [
             '',' ','und',' und ','-'
         ],
-        'flippers': [
+        flippers: [
             'und',' und '
         ]
     };
-    
+
     var getValue = function (name, locale) {
         return locale.numbers[name.toLowerCase()] || parseFloat(name);
-    }
-    
+    };
+
     /**
-     * This takes any string, locates groups of 
+     * This takes any string, locates groups of
      * spelled out numbers and returns results
      */
     var parse = function (input, locale) {
@@ -23584,15 +23629,16 @@ if (!this.JSON) {
          */
         if (locale && Locales[locale]) {
             locale = Locales[locale];
-        } else {
+        }
+        else {
             locale = Locales[defaultLocale];
-        }    
-    
-        // Build list of numbers and reverse so 
+        }
+
+        // Build list of numbers and reverse so
         // it matches the 'teens' before the ones
         var names = [];
         for (var name in locale.numbers) {
-          names.push(name);
+            names.push(name);
         }
         names.reverse();
 
@@ -23605,43 +23651,45 @@ if (!this.JSON) {
          * Add numerical language words
          */
         var re = new RegExp('(' + names.join('|') + ')', 'gi');
-        
+
         var match;
         while ((match = re.exec(input)) !== null) {
             core.insertToken(words, new core.Token(
-                getValue(match[0], locale), 
-                'number.word', 
-                match.index, 
+                getValue(match[0], locale),
+                'number.word',
+                match.index,
                 match[0]
             ));
-        };
-        
+        }
+
         /**
          * Add digit words
          */
         re = /([+-]{0,1}\d+)/gi;
         while ((match = re.exec(input)) !== null) {
             core.insertToken(words, new core.Token(
-                getValue(match[0], locale), 
-                'number.word', 
-                match.index, 
+                getValue(match[0], locale),
+                'number.word',
+                match.index,
                 match[0]
             ));
-        };
-        
+        }
+
         /**
          * Return empty result when there are
          * no words
          */
         if (words.length === 0) {
-            return new core.ParsedResult(input, []); 
+            return new core.ParsedResult(input, []);
         }
-        
-        var numDigits = function(val) {
-            if (val < 1) return '';
+
+        var numDigits = function (val) {
+            if (val < 1) {
+                return '';
+            }
             return String(val).length;
         };
-        
+
         var tallySegments = function (segments) {
             var value = 0;
             segments.forEach( function (segment) {
@@ -23667,7 +23715,7 @@ if (!this.JSON) {
                     prevWord = null;
                 }
             }
-            
+
             // above block may set prevWord to null
             // to intentionally cause this condition
             if (!prevWord) {
@@ -23684,42 +23732,45 @@ if (!this.JSON) {
                 if (locale.flippers.indexOf(theSpaceBetween) > -1) {
                     numbers[numbersIndex].tokens[segmentsIndex].tokens.push(words[i]);
                     numbers[numbersIndex].tokens[segmentsIndex].value += words[i].value;
-                } else if (segmentsIndex === 0) {
+                }
+                else if (segmentsIndex === 0) {
                     numbers[numbersIndex].tokens[segmentsIndex].tokens.push(words[i]);
                     numbers[numbersIndex].tokens[segmentsIndex].value *= words[i].value;
-                } else {
+                }
+                else {
                     // might merge a segment
                     // traverse backwards until the end or sum is greater than current value
                     var segmentsTally = 0;
                     var splitter = 0;
                     for (var j = numbers[numbersIndex].tokens.length - 1; j > -1; j--) {
-                        
+
                         if (numbers[numbersIndex].tokens[j].value > words[i].value) {
                             splitter = j + 1;
                             break;
                         }
-                        
+
                         segmentsTally += numbers[numbersIndex].tokens[j].value;
                     }
 
                     var segmentsToMerge = numbers[numbersIndex].tokens.splice(
                         splitter, numbers[numbersIndex].tokens.length
                     );
-                    
+
                     var mergedSegment = new core.Token(
-                        segmentsTally * words[i].value, 
-                        'number.segment', 
-                        segmentsToMerge[0].pos, 
+                        segmentsTally * words[i].value,
+                        'number.segment',
+                        segmentsToMerge[0].pos,
                         input.slice(
-                            segmentsToMerge[0].pos, 
-                            segmentsToMerge[segmentsToMerge.length - 1].pos + 
+                            segmentsToMerge[0].pos,
+                            segmentsToMerge[segmentsToMerge.length - 1].pos +
                             segmentsToMerge[segmentsToMerge.length - 1].text.length)
                     );
-                    
+
                     numbers[numbersIndex].tokens.push(mergedSegment);
                     segmentsIndex = splitter;
-                }   
-            } else if (prevWord && numbers[numbersIndex].tokens[segmentsIndex].value > words[i].value) {
+                }
+            }
+            else if (prevWord && numbers[numbersIndex].tokens[segmentsIndex].value > words[i].value) {
                 numbers[numbersIndex].tokens.push(new core.Token(
                     words[i].value,
                     'number.segment',
@@ -23728,7 +23779,8 @@ if (!this.JSON) {
                     [words[i]]
                 ));
                 segmentsIndex++;
-            } else if (prevWord) {
+            }
+            else if (prevWord) {
                 numbers[numbersIndex].tokens[segmentsIndex].value += words[i].value;
                 numbers[numbersIndex].tokens[segmentsIndex].pos = words[i].pos;
                 numbers[numbersIndex].tokens[segmentsIndex].text = words[i].text;
@@ -23745,12 +23797,12 @@ if (!this.JSON) {
          */
         return new core.ParsedResult(input, numbers);
     };
-    
+
     /**
      * Define core and preparse dependencies
      */
     if (typeof require !== 'undefined') {
-        var core = require('./core.js');
+        var core = require('./core');
     } else {
         var core = window['babble'];
     }
@@ -23762,11 +23814,12 @@ if (!this.JSON) {
         this.name = 'numbers';
         this.parse = parse;
         core.BaseTranslator.call(this, onTranslate, locale);
-    }
+    };
+
     NumberTranslator.prototype = Object.create(core.BaseTranslator.prototype);
     NumberTranslator.prototype.constructor = NumberTranslator;
     exports.NumberTranslator = NumberTranslator;
-    
+
     /**
      * Register translator with the core list
      */
@@ -23778,6 +23831,7 @@ if (!this.JSON) {
     core.register('numbers', NumberTranslator, defaultLocale, locales);
 
 }(typeof exports === 'undefined' ? this['babble'] = this['babble'] || {} : exports));
+
 (function(){
 "use strict";
     /***
@@ -27627,14 +27681,14 @@ setDateProperties();
             throw new TypeError('Object.assign cannot be called with null or undefined target');
         }
         target = Object(target);
-        
-        items = [].slice.call(arguments, 1); 
 
-        return items.reduce(function (target, item) { 
-            return Object.keys(Object(item)).reduce(function (target, property) { 
-                target[property] = item[property]; 
-                return target; 
-            }, target); 
+        items = [].slice.call(arguments, 1);
+
+        return items.reduce(function (target, item) {
+            return Object.keys(Object(item)).reduce(function (target, property) {
+                target[property] = item[property];
+                return target;
+            }, target);
         }, target);
     };
     //#endregion
@@ -27722,7 +27776,7 @@ setDateProperties();
         return this.getFullYear() + '-' + month + '-' + date;
     };
     //#endregion
-    
+
     //#region String Extensions
     String.prototype.plural = function () {
         var vowels = ['a','e','i','o','u'];
@@ -27731,7 +27785,7 @@ setDateProperties();
         } else {
             return this + 's';
         }
-    }
+    };
     //#endregion
 
 })();
@@ -27929,8 +27983,8 @@ setDateProperties();
         }
 
         return data;
-    }
-    
+    };
+
     return {
         /**
          * Returns an object with properties for each key in url query string
@@ -27946,15 +28000,16 @@ setDateProperties();
         },
 
         /**
-         * Returns an object with properties 
+         * Returns an object with properties
          * for each key in url query string.
-         * Ie. "maxresult=20&orderby=date" results 
+         * Ie. "maxresult=20&orderby=date" results
          * in {maxresults: '20', orderby: 'date'}
          */
         parseQueryString: parseQueryString
     };
-    
+
 }));
+
 // CommonJS, AMD, and Global shim
 (function (factory) {
     'use strict';
@@ -27977,12 +28032,12 @@ setDateProperties();
 	}
 }(function (hlio) {
     'use strict';
-    
+
     var Store = function () {
         this.updates = { value: null };
         this.subscribers = [];
-    }
-    
+    };
+
     Store.prototype = {
         subscribe: function (callback) {
             this.subscribers.push(callback);
@@ -27999,15 +28054,16 @@ setDateProperties();
                 this.subscribers[i](this.updates.value);
             }
         },
-        loadLocal: hlio.loadLocal, 
+        loadLocal: hlio.loadLocal,
         saveLocal: hlio.saveLocal
     };
-    
+
     return {
         Store: Store
     };
-    
+
 }));
+
 // Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
 ;(function (undefined) {
