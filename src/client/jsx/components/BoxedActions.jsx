@@ -86,22 +86,20 @@
                 return null;
             }
 
-            /**
-              * Inline Styles
-              */
-            var headerStyle = {
-                fontWeight: 'bold',
-                fontSize: '2em',
-                borderRadius: '5px',
-                backgroundColor: '#333',
-                color: '#fff',
-                padding: '5px',
-                marginLeft: '5px',
-                marginTop: '5px'
-            };
-
             var boxesDom = null;
             boxesDom = this.state.boxes.map( function(box) {
+
+                var headerStyle = {
+                    fontWeight: 'bold',
+                    fontSize: '2em',
+                    borderRadius: '5px',
+                    backgroundColor: '#333',
+                    color: '#fff',
+                    padding: '5px',
+                    marginLeft: '5px',
+                    marginTop: '5px',
+                    display: 'block'
+                };
 
                 var boxActions = box.actions;
                 boxActions = _.sortBy(boxActions, function(action) {
@@ -114,6 +112,7 @@
 
                 var list = null, nextInQueue = '';
                 if (box.expanded) {
+                    headerStyle.marginRight = '5px';
                     list = (
                         <table className="table table-striped">
                             <tbody>
@@ -132,13 +131,13 @@
                 }
                 else {
                     headerStyle.display = 'inline';
-                    if (boxActions[0].ordinal === 1) {
-                        nextInQueue = ': ' + boxActions[0].name;
-                    }
+                    // if (boxActions[0].ordinal === 1) {
+                    //     nextInQueue = ': ' + boxActions[0].name;
+                    // }
                 }
 
                 return (
-                    <div key={box.box.substring(1)} style={box.expanded ? { marginTop: '5px' } : {display: 'inline', marginTop: '5px'}}>
+                    <div key={box.box.substring(1)} style={box.expanded ? { display: 'block', marginTop: '5px' } : {display: 'inline', marginTop: '5px'}}>
                         <div className="clickable"
                             style={headerStyle}
                             onClick={this.handleBoxTitleClick.bind(null, box)}>
