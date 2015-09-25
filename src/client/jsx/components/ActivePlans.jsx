@@ -52,7 +52,7 @@
             /**
              * Sort the actions by completed and name
              */
-            activePlans = _.sortBy(activePlans, function(plan) { 
+            activePlans = _.sortBy(activePlans, function(plan) {
                 return plan.name.toLowerCase();
             })
 
@@ -67,21 +67,23 @@
              * Inline Styles
              */
             var headerStyle = {
-                display: 'flex',
-                flexDirection: 'row',
                 color: '#e2ff63',
                 backgroundColor: '#444',
                 padding: '2px 2px 0 8px',
                 fontWeight: 'bold',
-                fontSize: '1.5em'
+                fontSize: '1.5em',
+                marginBottom: '5px'
             };
 
             var listItemStyle = {
-                display: 'flex',
-                flexDirection: 'row',
-                fontSize: 'large',
+                fontWeight: 'bold',
+                fontSize: '2em',
+                borderRadius: '5px',
+                backgroundColor: '#333',
+                color: '#fff',
                 padding: '5px',
-                borderBottom: 'solid 1px #e0e0e0'
+                margin: '0 0 5px 5px',
+                display: 'inline'
             };
 
             var buttonStyle = {
@@ -101,13 +103,11 @@
                     <div style={headerStyle}>
                         <div>Active Plans</div>
                     </div>
-                    <div style={{display: 'flex', flexDirection: 'column'}}>
+                    <div style={{marginBottom: '5px'}}>
                         {activePlans.map(function(item, index) {
                             return (
                                 <div key={item.id} style={listItemStyle}>
-                                    <div style={{flexGrow: '1'}}>
-                                        <span className="clickable" onClick={this.handlePlanClick.bind(null, item)}>{item.name}</span>
-                                    </div>
+                                    <span className="clickable" onClick={this.handlePlanClick.bind(null, item)}>{item.name}</span>
                                 </div>
                             );
                         }.bind(this))}

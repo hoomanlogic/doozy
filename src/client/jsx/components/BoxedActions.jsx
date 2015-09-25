@@ -90,9 +90,14 @@
               * Inline Styles
               */
             var headerStyle = {
-                padding: '2px 2px 2px 8px',
                 fontWeight: 'bold',
-                fontSize: '2em'
+                fontSize: '2em',
+                borderRadius: '5px',
+                backgroundColor: '#333',
+                color: '#fff',
+                padding: '5px',
+                marginLeft: '5px',
+                marginTop: '5px'
             };
 
             var boxesDom = null;
@@ -125,13 +130,15 @@
                         </table>
                     );
                 }
-
-                if (boxActions[0].ordinal === 1) {
-                    nextInQueue = ': ' + boxActions[0].name;
+                else {
+                    headerStyle.display = 'inline';
+                    if (boxActions[0].ordinal === 1) {
+                        nextInQueue = ': ' + boxActions[0].name;
+                    }
                 }
 
                 return (
-                    <div key={box.box.substring(1)}>
+                    <div key={box.box.substring(1)} style={box.expanded ? { marginTop: '5px' } : {display: 'inline', marginTop: '5px'}}>
                         <div className="clickable"
                             style={headerStyle}
                             onClick={this.handleBoxTitleClick.bind(null, box)}>
@@ -148,7 +155,8 @@
                 backgroundColor: '#444',
                 padding: '2px 2px 0 8px',
                 fontWeight: 'bold',
-                fontSize: '1.5em'
+                fontSize: '1.5em',
+                marginBottom: '5px'
             };
 
             // html
