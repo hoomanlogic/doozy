@@ -33,19 +33,35 @@
                 dateInput: 'today',
                 dateFeedback: Date.create('today').toLocaleDateString(),
                 duration: 0,
-                durationInput: '',
+                durationInput: durationInput,
                 durationFeedback: '',
                 details: '',
                 kind: 'performed'
             };
 
             if (this.props.logEntry) {
-                state.id = this.props.logEntry.id;
-                if (this.props.logEntry.actionId) {
+
+                // create a copy of the action for editing
+                var editableCopy = {};
+                Object.assign(editableCopy, this.props.logEntry);
+
+                var durationParse = babble.get('durations').translate(editableCopy.duration + ' min');
+                var durationInput = null;
+                if (durationParse.tokens.length !== 0) {
+                    var durationInput = durationParse.tokens[0].value.toString();
+                }
+
+                state.id = editableCopy.id;
+                if (editableCopy.actionId) {
 
                 }
-                state.duration = this.props.logEntry.duration;
-                state.details = this.props.logEntry.details;
+
+                state.details = editableCopy.details;
+                state.duration = editableCopy.duration;
+                state.durationInput = durationInput;
+                state.date = Date.create(editableCopy.date);
+                state.dateInput = state.date.toLocaleDateString();
+                state.dateFeedback = '';
             }
 
             return state;
@@ -157,7 +173,9 @@
             }
         },
         handleSave: function(event) {
-            var existingAction,
+            var actionName,
+                existingAction,
+                logEntry,
                 newAction,
                 names,
                 tags,
@@ -179,51 +197,49 @@
             }
 
             // get tags from control
-            var tags = [];
+            tags = [];
             if (this.refs.tags.getDOMNode().value) {
                 tags = this.refs.tags.getDOMNode().value.split(',');
             }
 
+            logEntry = {
+                date: this.state.date.toISOString(),
+                duration: this.state.duration,
+                entry: this.state.kind,
+                details: this.state.details,
+                tags: tags
+            };
 
+            // get action info
             if (names.length > 0 && names[0] !== '') {
-
-                for (var i =0; i < names.length; i++) {
-
-                    existingAction = actionStore.getActionByName(names[i]);
-
-                    if (existingAction) {
-                        logEntryStore.create({
-                            actionId: existingAction.id,
-                            date: this.state.date,
-                            duration: this.state.duration,
-                            entry: this.state.kind,
-                            details: this.state.details,
-                            tags: tags
-                        });
-                    } else {
-
-                        newAction = doozy.action(names[i], tags);
-                        newAction.created = this.state.date.toISOString();
-
-                        logEntryStore.createWithNewAction(newAction, {
-                            date: this.state.date,
-                            duration: this.state.duration,
-                            entry: 'performed',
-                            details: this.state.details,
-                            tags: tags
-                        });
-                    }
+                actionName = names[0];
+                existingAction = actionStore.getActionByName(names[i]);
+                if (existingAction) {
+                    logEntry.actionId = existingAction.id;
                 }
-            } else {
-                logEntryStore.createWithoutAction({
-                    actionId: null,
-                    date: this.state.date,
-                    duration: this.state.duration,
-                    entry: 'performed',
-                    details: this.state.details,
-                    tags: tags
-                });
+                else {
+                    newAction = doozy.action(names[i], tags);
+                    newAction.created = this.state.date.toISOString();
+                }
             }
+
+            // update log entry
+            if (this.props.logEntry) {
+                logEntry.id = this.state.id;
+                if (!newAction) {
+                    logEntryStore.update(logEntry);
+                } else {
+                    logEntryStore.updateWithNewAction(newAction, logEntry);
+                }
+            }
+            else {
+                if (!newAction) {
+                    logEntryStore.create(logEntry);
+                } else {
+                    logEntryStore.createWithNewAction(newAction, logEntry);
+                }
+            }
+
             window.ui.goTo('Do');
         },
 
@@ -354,7 +370,10 @@
             var selectize = $(this.refs.tags.getDOMNode())[0].selectize;
             this.setOptionsTag(selectize);
 
-            if (typeof this.props.action === 'undefined' || this.state.isNewAction) {
+            if (typeof this.props.logEntry !== 'undefined') {
+                selectize.setValue(this.props.logEntry.tags);
+            }
+            else if (typeof this.props.action === 'undefined' || this.state.isNewAction) {
                 // set current value
                 var tags = ui.tags || [];
                 tags = tags.slice(); //copy

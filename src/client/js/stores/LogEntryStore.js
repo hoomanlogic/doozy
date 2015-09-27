@@ -152,70 +152,51 @@
 
         this.create = function (logEntry) {
 
-            var actionToUpdate = _.find(actionStore.updates.value, function(item) {
-                return logEntry.actionId === item.id;
-            });
+            var actionToUpdate = null;
 
-            _api.postLogEntry(logEntry)
-            .done(function (result) {
-                // add log entry to collection
-                me.updates.value = me.updates.value.concat(result);
-                me.notify();
-
-                // find last performed
-                var lastPerformed = null;
-
-                me.updates.value
-                .filter( function (item) {
-                    return item.actionId === actionToUpdate.id && ['performed','skipped'].indexOf(item.entry) > -1;
-                })
-                .forEach( function (item) {
-                    if (lastPerformed === null || new Date(item.date) > new Date(lastPerformed)) {
-                        lastPerformed = item.date;
-                    }
+            if (logEntry.actionId) {
+                actionToUpdate = _.find(actionStore.updates.value, function(item) {
+                    return logEntry.actionId === item.id;
                 });
-
-                // update action and notify
-                if (actionToUpdate.lastPerformed !== lastPerformed) {
-                    actionToUpdate.lastPerformed = lastPerformed;
-                    if (result.nextDate === "0001-01-01T00:00:00") {
-                        result.nextDate = null;
-                    }
-                    if (actionToUpdate.nextDate !== result.nextDate) {
-                        actionToUpdate.nextDate = result.nextDate;
-                    }
-                    actionStore.updates.onNext(actionStore.updates.value);
-                }
-
-                toastr.success('Logged action ' + result.actionName);
-            })
-            .fail(function (err) {
-                toastr.error(err.responseText);
-            });
-
-        };
-
-        this.createWithoutAction = function (logEntry) {
+            }
 
             _api.postLogEntry(logEntry)
             .done(function (result) {
                 // add log entry to collection
                 me.updates.value = me.updates.value.concat(result);
                 me.notify();
+
+                if (logEntry.actionId) {
+                    // find last performed
+                    var lastPerformed = null;
+
+                    me.updates.value
+                    .filter( function (item) {
+                        return item.actionId === actionToUpdate.id && ['performed','skipped'].indexOf(item.entry) > -1;
+                    })
+                    .forEach( function (item) {
+                        if (lastPerformed === null || new Date(item.date) > new Date(lastPerformed)) {
+                            lastPerformed = item.date;
+                        }
+                    });
+
+                    // update action and notify
+                    if (actionToUpdate.lastPerformed !== lastPerformed) {
+                        actionToUpdate.lastPerformed = lastPerformed;
+                        if (result.nextDate === "0001-01-01T00:00:00") {
+                            result.nextDate = null;
+                        }
+                        if (actionToUpdate.nextDate !== result.nextDate) {
+                            actionToUpdate.nextDate = result.nextDate;
+                        }
+                        actionStore.updates.onNext(actionStore.updates.value);
+                    }
+                }
 
                 toastr.success('Logged entry');
             })
             .fail(function (err) {
                 toastr.error(err.responseText);
-            });
-
-        };
-
-        this.createWithNewAction = function (newAction, logEntry) {
-
-            actionStore.create(newAction, function (result) {
-                logEntry.actionId = result.id
-                me.create(logEntry);
             });
 
         };
@@ -229,7 +210,7 @@
             Object.assign(logEntryToUpdate, logEntry);
             me.notify();
 
-            ui.queueRequest('Log Entry', logEntry.id, 'Updated log entry for ' + logEntryToUpdate.actionName, function () {
+            ui.queueRequest('Log Entry', logEntry.id, 'Updated log entry', function () {
                 _api.putLogEntry(logEntry)
                 .done(function (result) {
                     Object.assign(logEntryToUpdate, result);
@@ -247,6 +228,24 @@
             });
         };
 
+        this.createWithNewAction = function (newAction, logEntry) {
+
+            actionStore.create(newAction, function (result) {
+                logEntry.actionId = result.id
+                me.create(logEntry);
+            });
+
+        };
+
+        this.updateWithNewAction = function (newAction, logEntry) {
+
+            actionStore.create(newAction, function (result) {
+                logEntry.actionId = result.id
+                me.update(logEntry);
+            });
+
+        };
+
         this.destroy = function (logEntry) {
 
             var actionToUpdate = _.find(actionStore.updates.value, function(item) {
@@ -258,7 +257,7 @@
             me.updates.value = filtered;
             me.notify();
 
-            ui.queueRequest('Log Entry', logEntry.id, 'Deleted log entry for ' + logEntry.actionName, function () {
+            ui.queueRequest('Log Entry', logEntry.id, 'Deleted log entry', function () {
                 _api.deleteLogEntry(logEntry)
                 .done( function (result) {
 
