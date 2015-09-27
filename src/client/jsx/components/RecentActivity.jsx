@@ -75,14 +75,21 @@
         render: function () {
 
             var actionIds = _.pluck(this.props.actions, 'id');
+
+            /**
+             * Get all distinct tags of all this focus'
+             * actions except for the special tags
+             */
+            var specialPrefixes = ['!','#'];
+            var distinctTags = [];
+            this.props.actions.map(function(action) {
+                distinctTags = _.union(distinctTags, _.reject(action.tags, function (tag) {
+                    return specialPrefixes.indexOf(tag.slice(0,1)) > -1;
+                }));
+            });
+
             var logEntries = logEntryStore.updates.value.filter( function (item) {
-
-                var isActionIdAssigned = true;
-                if (item.actionId == null || item.actionId === '00000000-0000-0000-0000-000000000000') {
-                    isActionIdAssigned = false;
-                }
-
-                return item.entry !== 'created' && (!isActionIdAssigned || actionIds.indexOf(item.actionId) > -1 || _.intersection(item.tags, window.ui.tags).length > 0);
+                return item.entry !== 'created' && (actionIds.indexOf(item.actionId) > -1 || _.intersection(item.tags, distinctTags).length > 0);
             });
 
             logEntries = _.sortBy(logEntries, function(item) { return item.date.split('T')[0] + '-' + (['performed','skipped'].indexOf(item.entry) ? '1' : '0'); });
