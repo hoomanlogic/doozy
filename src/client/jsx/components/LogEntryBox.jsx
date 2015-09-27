@@ -26,10 +26,10 @@
          *************************************************************/
         getInitialState: function () {
             return {
-                isDropDownOpen: false  
+                isDropDownOpen: false
             };
         },
-        
+
         componentWillMount: function () {
             var detailsChange = EventHandler.create();
             detailsChange
@@ -42,7 +42,7 @@
                 }.bind(this))
                 .distinctUntilChanged()
                 .subscribe(this.handleDetailsChange);
-            
+
             var durationChange = EventHandler.create();
             durationChange
                 .throttle(2000)
@@ -53,7 +53,7 @@
                     if (durationParseResult.tokens.length > 0) {
                         duration = durationParseResult.tokens[0].value.toMinutes();
                     }
-                
+
                     return duration;
                 })
                 .filter(function (duration) {
@@ -64,31 +64,31 @@
             this.handlers = {
                 detailsChange: detailsChange,
                 durationChange: durationChange
-            };  
+            };
         },
         componentWillUnmount: function () {
             this.handlers.detailsChange.dispose();
             this.handlers.durationChange.dispose();
         },
-        
+
         componentDidUpdate: function () {
             if (this.state.isDropDownOpen) {
-                $(window).on("click.Bst", this.handleOutsideClick);  
+                $(window).on("click.Bst", this.handleOutsideClick);
             }
         },
-        
+
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
         handleOutsideClick: function (event) {
             var $win = $(window);
             var $box = $('#dropdown-' + this.props.data.id);
-            
+
             if (typeof this.refs.dropDown === 'undefined') {
                 $win.off("click.Bst", this.handleOutsideClick);
                 return;
             }
-            
+
             // handle click outside of the dropdown
             var $toggle = $(this.refs.dropDown.getDOMNode());
             if ($box.has(event.target).length == 0 && !$toggle.is(event.target) && !$box.is(event.target)) {
@@ -101,11 +101,11 @@
         handleUpvoteClick: function () {
             logEntryStore.toggleUpvote(this.props.data.userName, this.props.data.id);
         },
-        
+
         handleCommentClick: function () {
             ui.goTo('Comment', { userName: this.props.data.userName, id: this.props.data.id });
         },
-        
+
         handleDeleteClick: function () {
             logEntryStore.destroy(this.props.data);
         },
@@ -114,6 +114,12 @@
                 isDropDownOpen: false
             });
             ui.editAction(actionStore.getActionById(this.props.data.actionId));
+        },
+        handleEditLogEntryClick: function () {
+            this.setState({
+                isDropDownOpen: false
+            });
+            ui.editLogEntry(logEntryStore.getLogEntryById(this.props.data.id));
         },
         handleEditDetailsClick: function () {
             this.refs.logdetails.getDOMNode().focus();
@@ -140,16 +146,16 @@
                 isDropDownOpen: !this.state.isDropDownOpen
             });
         },
-        
+
         /*************************************************************
          * RENDERING
          *************************************************************/
         renderLayer: function () {
-            
+
             if (!this.state.isDropDownOpen) {
                 return null;
             };
-            
+
             var style = {
                 position: 'absolute',
                 top: $(this.refs.dropDown.getDOMNode()).offset().top + 22 + 'px',
@@ -160,15 +166,15 @@
                 border: '2px solid #e0e0e0',
                 boxShadow: '0 0 10px #000000'
             };
-            
+
             var listStyle = {
                 listStyle: 'none',
                 margin: '0',
                 padding: '0'
             };
-            
+
             var options = [];
-            
+
             var aStyle = {
                 fontSize: '20px',
                 display: 'block',
@@ -179,14 +185,19 @@
                 color: '#333',
                 whiteSpace: 'nowrap'
             }
-            
+
             if (userStore.updates.value.userId === this.props.data.userId) {
                 options.push((
                     <li><a className="clickable hoverable" style={aStyle} onClick={this.handleDeleteClick}><i className="fa fa-trash"></i> Delete Log Entry</a></li>
                 ));
                 options.push((
-                    <li><a className="clickable hoverable" style={aStyle} onClick={this.handleEditActionClick}><i className="fa fa-pencil"></i> Edit Action</a></li>
+                    <li><a className="clickable hoverable" style={aStyle} onClick={this.handleEditLogEntryClick}><i className="fa fa-pencil"></i> Edit Entry</a></li>
                 ));
+                if (this.props.data.actionId !== null) {
+                    options.push((
+                        <li><a className="clickable hoverable" style={aStyle} onClick={this.handleEditActionClick}><i className="fa fa-pencil"></i> Edit Action</a></li>
+                    ));
+                }
                 options.push((
                     <li><a className="clickable hoverable" style={aStyle} onClick={this.handleEditDetailsClick}><i className="fa fa-pencil"></i> Edit Details</a></li>
                 ));
@@ -194,33 +205,33 @@
                     <li><a className="clickable hoverable" style={aStyle} onClick={this.handleEditDurationClick}><i className="fa fa-pencil"></i> Edit Duration</a></li>
                 ));
             }
-            
+
             if (options.length === 0) {
-                return null;   
+                return null;
             }
             var data = this.props.data;
-            
+
             return (
                 <div id={"dropdown-" + data.id} style={style}>
                     <ul style={listStyle}>
                         {options}
                     </ul>
-                </div>    
+                </div>
             );
         },
         render: function () {
             var data = this.props.data;
 
             var upvoteCounter, commentCounter;
-            
+
             if (data.upvotes && data.upvotes.length > 0) {
                 upvoteCounter = (<span>{data.upvotes.length + ' ' + doozy.formatNoun('Cheer', data.upvotes.length)}</span>);
             }
-                                 
+
             if (data.comments && data.comments.length > 0) {
                 commentCounter = (<span className="clickable" onClick={this.handleCommentClick}>{(upvoteCounter ? ' - ' : '') + data.comments.length + ' ' + doozy.formatNoun('Comment', data.comments.length)}</span>);
             }
-            
+
             /**
              * Inline Styles
              */
@@ -232,7 +243,7 @@
                 borderRadius: '4px',
                 marginBottom: '5px'
             }
-            
+
             var logEntryActionsStyle = {
                 display: 'flex',
                 flexDirection: 'row',
@@ -240,72 +251,73 @@
                 borderBottomLeftRadius: '4px',
                 borderBottomRightRadius: '4px'
             }
-            
+
             var cheerButtonStyle = {
                 borderRadius: '0',
                 flexGrow: '1',
-                paddingTop: '3px', 
-                paddingBottom: '3px', 
-                color: '#fff', 
-                backgroundImage: 'none', 
-                backgroundColor: '#444', 
-                borderColor: '#222', 
-                fontWeight: 'bold', 
+                paddingTop: '3px',
+                paddingBottom: '3px',
+                color: '#fff',
+                backgroundImage: 'none',
+                backgroundColor: '#444',
+                borderColor: '#222',
+                fontWeight: 'bold',
                 outlineColor: 'rgb(40, 40, 40)',
-                
+
                 borderBottomLeftRadius: '4px'
             };
-            
+
             var heartColorStyle = {
                 color: 'rgb(250, 133, 133)'
             };
-            
+
             var commentButtonStyle = {
                 borderRadius: '0',
                 flexGrow: '1',
-                paddingTop: '3px', 
-                paddingBottom: '3px', 
-                color: '#fff', 
-                backgroundImage: 'none', 
-                backgroundColor: '#444', 
-                borderColor: '#222', 
-                fontWeight: 'bold', 
+                paddingTop: '3px',
+                paddingBottom: '3px',
+                color: '#fff',
+                backgroundImage: 'none',
+                backgroundColor: '#444',
+                borderColor: '#222',
+                fontWeight: 'bold',
                 outlineColor: 'rgb(40, 40, 40)',
-                
+
                 borderLeft: '0',
                 borderBottomRightRadius: '4px'
             };
-            
+
             var pencilColorStyle = {
                 color: '#e2ff63'
             };
-            
+
             var duration;
             if (data.duration) {
-                duration = new babble.Duration(data.duration * 60000).toString();   
+                duration = new babble.Duration(data.duration * 60000).toString();
             }
-            
+
             return (
                 <article key={data.id} style={logEntryBoxStle}>
                     <div>
+
                         <header style={{display: 'flex', flexDirection: 'row'}}>
                             <div style={{minWidth: '45px', paddingRight: '5px'}}><img style={{maxHeight: '45px', padding: '2px'}} src={this.props.data.profileUri} /></div>
-                            <div style={{flexGrow: '1'}}>
-                                <div>
-                                    <span style={{fontWeight: 'bold'}}>{this.props.data.knownAs}</span> {data.entry} <span style={{fontWeight: 'bold'}}>{data.actionName}</span>
+                                <div style={{ padding: '5px', fontSize: '1.8em' }}>
+                                    <ContentEditable ref="logdetails" html={data.details} onChange={this.handlers.detailsChange} />
                                 </div>
-                                <div>
-                                    <small>
-                                        <RelativeTime accuracy="d" isoTime={data.date} />
-                                        <span>{(data.duration ? ' for ' : '')}</span>
-                                        <ContentEditable ref="logduration" html={duration} onChange={this.handlers.durationChange} />
-                                    </small>
-                                </div>
-                            </div>
                             <i ref="dropDown" style={{ color: '#b2b2b2' }} className="fa fa-chevron-down" onClick={this.handleDropDownClick}></i>
                         </header>
-                        <div style={{ padding: '5px' }}>
-                            <ContentEditable ref="logdetails" html={data.details} onChange={this.handlers.detailsChange} />
+                        <div style={{flexGrow: '1'}}>
+                            <div>
+                                <span style={{fontWeight: 'bold'}}>{this.props.data.knownAs}</span> {data.entry} <span style={{fontWeight: 'bold'}}>{data.actionName}</span>
+                            </div>
+                            <div>
+                                <small>
+                                    <RelativeTime accuracy="d" isoTime={data.date} />
+                                    <span>{(data.duration ? ' for ' : '')}</span>
+                                    <ContentEditable ref="logduration" html={duration} onChange={this.handlers.durationChange} />
+                                </small>
+                            </div>
                         </div>
                     </div>
                     <footer style={{display: 'flex', flexDirection: 'column'}}>

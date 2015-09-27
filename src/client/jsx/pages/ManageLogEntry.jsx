@@ -15,7 +15,7 @@
     }
     else {
         // Global (browser)
-        window.LogRecentAction = factory(window.React);
+        window.ManageLogEntry = factory(window.React);
     }
 }(function (React, Modal) {
     'use strict';
@@ -24,7 +24,9 @@
          * COMPONENT LIFECYCLE
          *************************************************************/
         getInitialState: function () {
-            return {
+
+            var state = {
+                id: '',
                 name: '',
                 isNewAction: false,
                 date: Date.create('today'),
@@ -36,12 +38,24 @@
                 details: '',
                 kind: 'performed'
             };
+
+            if (this.props.logEntry) {
+                state.id = this.props.logEntry.id;
+                if (this.props.logEntry.actionId) {
+
+                }
+                state.duration = this.props.logEntry.duration;
+                state.details = this.props.logEntry.details;
+            }
+
+            return state;
         },
 
         componentWillMount: function () {
             if (this.props.action) {
                 this.log(this.props.action);
             }
+
         },
 
         componentDidMount: function () {
@@ -395,7 +409,7 @@
          *************************************************************/
         render: function () {
             var buttons = [{type: 'primary',
-                            text: 'Log',
+                            text: this.state.id ? 'Update Log' : 'Log',
                             handler: this.handleSave},
                            {type: 'default',
                             text: 'Cancel',
@@ -429,7 +443,7 @@
 
             return (
                 <div style={{padding: '5px'}}>
-                    <h2>{'Log Recent Action'}</h2>
+                    <h2>{this.state.id ? 'Update Log' : 'Log Recent Action'}</h2>
                     <form role="form">
                         <div className="form-group">
                             <label htmlFor="f1">What did you do?</label>

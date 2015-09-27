@@ -143,6 +143,13 @@
             });
         };
 
+        this.getLogEntryById = function (id) {
+            var existingLogEntry = _.find(this.updates.value, function(item) {
+                return item.id.toLowerCase() === id.toLowerCase();
+            });
+            return existingLogEntry;
+        };
+
         this.create = function (logEntry) {
 
             var actionToUpdate = _.find(actionStore.updates.value, function(item) {

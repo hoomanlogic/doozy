@@ -48,7 +48,7 @@
          * EVENT HANDLING
          *************************************************************/
         handleCloseClick: function () {
-            ui.goBack();  
+            ui.goBack();
         },
         handleLogEntryStoreUpdate: function (connections) {
             this.setState({logEntriesLastUpdated: new Date().toISOString()});
@@ -58,26 +58,26 @@
          *************************************************************/
         render: function () {
             var userName = this.props.userName;
-            
+
             // find log entries for this user
             var logEntries = _.where(logEntryStore.updates.value, {userName: userName});
             logEntries = _.sortBy(logEntries, function (item) { return item.date.split('T')[0] + '-' + (['performed','skipped'].indexOf(item.entry) > -1 ? '1' : '0')});
             logEntries.reverse();
             logEntries = logEntries.slice(0, this.state.maxReturn);
-            
+
             /**
              * Inline Styles
              */
             var headerStyle = {
                 display: 'flex',
                 flexDirection: 'row',
-                color: '#e2ff63', 
-                backgroundColor: '#444', 
+                color: '#e2ff63',
+                backgroundColor: '#444',
                 padding: '2px 2px 0 8px',
                 fontWeight: 'bold',
                 fontSize: '1.5em'
             };
-            
+
             return (
                 <div>
                     <div style={headerStyle}>

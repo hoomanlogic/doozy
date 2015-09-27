@@ -81,6 +81,7 @@
             window['ui'].addAction = this.addAction;
             window['ui'].editAction = this.editAction;
             window['ui'].logEntry = this.logEntry;
+            window['ui'].editLogEntry = this.editLogEntry;
             window['ui'].goTo = this.goTo;
             window['ui'].goBack = this.goBack;
             window['ui'].openConversation = this.selectConversation;
@@ -327,6 +328,10 @@
             this.goTo('Manage Action', { actionId: (action ? action.id : null), mode: 'Edit'});
             //this.refs.addeditaction.edit(action);
         },
+        editLogEntry: function (logEntry) {
+            this.goTo('Manage Log Entry', { logEntryId: logEntry.id });
+            //this.refs.logaction.log(action);
+        },
         logEntry: function (action) {
             this.goTo('Log Recent Action', { actionId: action.id });
             //this.refs.logaction.log(action);
@@ -544,7 +549,7 @@
             window['ui'].page = this.state.page;
 
             //var weatherBackdrop = this.renderWeatherBackdrop();
-            var action, mode, actionId, planId, tagId, targetId;
+            var action, mode, actionId, logEntry, logEntryId, planId, tagId, targetId;
 
             var page = null,
                 hideMain = true;
@@ -564,7 +569,13 @@
                 if (actionId) {
                     action = actionStore.getActionById(actionId);
                 }
-                page = (<LogRecentAction action={action} focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : ''} />);
+                page = (<ManageLogEntry action={action} focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : ''} />);
+            } else if (this.state.page === 'Manage Log Entry') {
+                logEntryId = (this.state.pageOptions || {}).logEntryId || null;
+                if (logEntryId) {
+                    logEntry = logEntryStore.getLogEntryById(logEntryId);
+                }
+                page = (<ManageLogEntry logEntry={logEntry} mode={mode} focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : ''}  />);
             } else if (this.state.page === 'Conversation' && typeof this.state.activeConversation !== 'undefined' && this.state.activeConversation !== null) {
                 page = (<Conversation conversation={this.state.activeConversation} send={this.send} userName={this.props.settings.userName} onClose={this.handleConversationClose} />);
             } else if (this.state.page === 'Notifications') {
