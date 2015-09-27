@@ -296,27 +296,47 @@
                 duration = new babble.Duration(data.duration * 60000).toString();
             }
 
+            var typeOfLogEntry;
+            if (data.actionName && data.actionName.length > 0) {
+                typeOfLogEntry = ([
+                    <span style={{fontWeight: 'bold'}}>
+                        {this.props.data.knownAs}
+                    </span>,
+                    <span>
+                        {' ' + data.entry + ' '}
+                    </span>,
+                    <span style={{fontWeight: 'bold'}}>
+                        {data.actionName}
+                    </span>
+                ]);
+            }
+            else {
+                typeOfLogEntry = ([
+                    <span style={{fontWeight: 'bold'}}>{this.props.data.knownAs}</span>,
+                    <span>{' logged an entry'}</span>
+                ]);
+            }
             return (
                 <article key={data.id} style={logEntryBoxStle}>
                     <div>
 
                         <header style={{display: 'flex', flexDirection: 'row'}}>
                             <div style={{minWidth: '45px', paddingRight: '5px'}}><img style={{maxHeight: '45px', padding: '2px'}} src={this.props.data.profileUri} /></div>
-                                <div style={{ padding: '5px', fontSize: '1.8em' }}>
-                                    <ContentEditable ref="logdetails" html={data.details} onChange={this.handlers.detailsChange} />
+                            <div style={{flexGrow: '1'}}>
+                                <div>
+                                    {typeOfLogEntry}
                                 </div>
-                            <i ref="dropDown" style={{ color: '#b2b2b2' }} className="fa fa-chevron-down" onClick={this.handleDropDownClick}></i>
-                        </header>
-                        <div style={{flexGrow: '1'}}>
-                            <div>
-                                <span style={{fontWeight: 'bold'}}>{this.props.data.knownAs}</span> {data.entry} <span style={{fontWeight: 'bold'}}>{data.actionName}</span>
-                            </div>
-                            <div>
                                 <small>
                                     <RelativeTime accuracy="d" isoTime={data.date} />
                                     <span>{(data.duration ? ' for ' : '')}</span>
                                     <ContentEditable ref="logduration" html={duration} onChange={this.handlers.durationChange} />
                                 </small>
+                            </div>
+                            <i ref="dropDown" style={{ color: '#b2b2b2' }} className="fa fa-chevron-down" onClick={this.handleDropDownClick}></i>
+                        </header>
+                        <div>
+                            <div style={{ padding: '5px', fontSize: '1.8em' }}>
+                                <ContentEditable ref="logdetails" html={data.details} onChange={this.handlers.detailsChange} />
                             </div>
                         </div>
                     </div>
