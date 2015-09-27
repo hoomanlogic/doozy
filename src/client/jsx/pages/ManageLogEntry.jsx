@@ -446,7 +446,11 @@
                     <h2>{this.state.id ? 'Update Log' : 'Log Recent Action'}</h2>
                     <form role="form">
                         <div className="form-group">
-                            <label htmlFor="f1">What did you do?</label>
+                            <label htmlFor="logentry-details">Entry</label>
+                            <textarea id="logentry-details" ref="details" type="text" className="form-control" onChange={this.handleChange} value={this.state.details} />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="f1">Action</label>
                             <input id="f1" ref="name" type="text" />
                         </div>
                         <div className="form-group">
@@ -454,25 +458,21 @@
                             <input id="action-tags" ref="tags" type="text" />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="logentry-kind">What kind of log entry?</label>
+                            <label htmlFor="logentry-kind">Kind</label>
                             <select id="logentry-kind" ref="kind" className="form-control" value={this.state.kind} onChange={this.handleChange}>
                                 <option value="performed">Performed</option>
                                 <option value="skipped">Skipped</option>
                             </select>
                         </div>
                         <div style={forceHeightStyle} className="form-group">
-                            <label htmlFor="logentry-date">When did you do this?</label>
+                            <label htmlFor="logentry-date">When</label>
                             <input id="logentry-date" ref="performedat" type="text" className="form-control" onChange={this.handleChange} value={this.state.dateInput} />
                             <span style={feedbackStyle}>{this.state.dateFeedback}</span>
                         </div>
                         <div style={forceHeightStyle} className="form-group">
-                            <label htmlFor="logentry-duration">How long did it take?</label>
+                            <label htmlFor="logentry-duration">Duration</label>
                             <input id="logentry-duration" ref="actualduration" type="text" className="form-control" onChange={this.handleChange} value={this.state.durationInput} />
                             <span style={feedbackStyle}>{this.state.durationFeedback}</span>
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="logentry-details">Anything else?</label>
-                            <textarea id="logentry-details" ref="details" type="text" className="form-control" onChange={this.handleChange} value={this.state.details} />
                         </div>
                     </form>
                     {buttonsDom}
