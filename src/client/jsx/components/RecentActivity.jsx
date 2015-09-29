@@ -78,13 +78,13 @@
 
             /**
              * Get all distinct tags of all this focus'
-             * actions except for the special tags
+             * actions except for the box tags
              */
-            var specialPrefixes = ['!','#'];
+            var excludePrefixes = ['#'];
             var distinctTags = [];
             this.props.actions.map(function(action) {
                 distinctTags = _.union(distinctTags, _.reject(action.tags, function (tag) {
-                    return specialPrefixes.indexOf(tag.slice(0,1)) > -1;
+                    return excludePrefixes.indexOf(tag.slice(0,1)) > -1;
                 }));
             });
 

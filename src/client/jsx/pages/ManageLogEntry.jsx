@@ -213,12 +213,12 @@
             // get action info
             if (names.length > 0 && names[0] !== '') {
                 actionName = names[0];
-                existingAction = actionStore.getActionByName(names[i]);
+                existingAction = actionStore.getActionByName(actionName);
                 if (existingAction) {
                     logEntry.actionId = existingAction.id;
                 }
                 else {
-                    newAction = doozy.action(names[i], tags);
+                    newAction = doozy.action(actionName, tags);
                     newAction.created = this.state.date.toISOString();
                 }
             }
