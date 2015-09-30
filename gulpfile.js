@@ -1,5 +1,4 @@
 var gulp = require('gulp');
-var babel = require('gulp-babel');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
@@ -53,79 +52,7 @@ var cssAll = [
 	'src/server/css/app.min.css'
 ];
 
-var jsxFiles = [
-    '../react_components/src/**',
-	'src/client/jsx/mixins/**',
-
-	'src/client/jsx/components/RelativeTime.jsx',
-	'src/client/jsx/components/Indicator.jsx',
-
-    'src/client/jsx/components/ActionRow.jsx',
-    'src/client/jsx/components/FocusListItem.jsx',
-    'src/client/jsx/components/NotificationListItem.jsx',
-    'src/client/jsx/components/TagListItem.jsx',
-    'src/client/jsx/components/Uploader.jsx',
-
-    'src/client/jsx/components/SendMessage.jsx',
-
-    'src/client/jsx/components/AddEditAction.jsx',
-    'src/client/jsx/components/BoxedActions.jsx',
-    'src/client/jsx/components/Conversation.jsx',
-    'src/client/jsx/components/LogAction.jsx',
-    'src/client/jsx/components/Microphone.jsx',
-    'src/client/jsx/components/NextActions.jsx',
-	'src/client/jsx/components/ActivePlans.jsx',
-    'src/client/jsx/components/NotificationDropdown.jsx',
-	'src/client/jsx/components/NotificationList.jsx',
-    'src/client/jsx/components/ProfilePic.jsx',
-    'src/client/jsx/components/RecentActivity.jsx',
-    'src/client/jsx/components/TagList.jsx',
-    'src/client/jsx/components/Timer.jsx',
-    'src/client/jsx/components/UpcomingActions.jsx',
-    'src/client/jsx/components/WeatherIcon.jsx',
-
-	'src/client/jsx/components/LogEntryBox.jsx',
-	'src/client/jsx/components/LogEntries.jsx',
-	'src/client/jsx/components/CommentForm.jsx',
-
-
-    'src/client/jsx/components/FocusActions.jsx',
-	'src/client/jsx/components/PlanStep.jsx',
-
-	'src/client/jsx/components/PlanSteps.jsx',
-	'src/client/jsx/components/TimerBar.jsx',
-	'src/client/jsx/pages/ManageLogEntry.jsx',
-    'src/client/jsx/pages/ManageAction.jsx',
-    'src/client/jsx/pages/ManageFocus.jsx',
-	'src/client/jsx/pages/ManagePlanStep.jsx',
-	'src/client/jsx/pages/ManagePlan.jsx',
-	'src/client/jsx/pages/ManagePlans.jsx',
-	'src/client/jsx/pages/ManagePreferences.jsx',
-	'src/client/jsx/pages/ManageTag.jsx',
-	'src/client/jsx/pages/ManageTags.jsx',
-	'src/client/jsx/pages/ManageTarget.jsx',
-	'src/client/jsx/pages/ManageTargets.jsx',
-    'src/client/jsx/pages/PrimaryNavigation.jsx',
-
-    'src/client/jsx/pages/App.jsx',
-];
-
-var maps = [
-    'bower_components/jquery/dist/jquery.min.js.map',
-];
-
-gulp.task('build', ['concat-js-libs', 'concat-css-all', 'concat-js-app']);
-
-// TASK: Compile JSX source
-gulp.task('compile-jsx', function () {
-    return gulp.src(jsxFiles)
-        .pipe(plumber({
-            errorHandler: onError
-        }))
-        .pipe(babel())
-		.pipe(concat('views.js'))
-        .pipe(gulp.dest('build'));
-});
+gulp.task('build', ['concat-js-libs', 'concat-css-all']);
 
 // TASK: Compile LESS source
 gulp.task('compile-less', function () {
@@ -140,6 +67,16 @@ gulp.task('compile-less', function () {
             path.basename += '.min';
         }))
         .pipe(minifyCSS())
+        .pipe(gulp.dest('src/server/css'));
+});
+
+// TASK: Concat Css Libs
+gulp.task('concat-css-all', ['compile-less'], function () {
+    return gulp.src(cssAll)
+        .pipe(plumber({
+            errorHandler: onError
+        }))
+        .pipe(concat('all.min.css'))
         .pipe(gulp.dest('src/server/css'));
 });
 
@@ -158,47 +95,10 @@ gulp.task('concat-js-libs', function () {
         .pipe(gulp.dest('src/server/js'));
 });
 
-// TASK: Concat Js Internal Code
-gulp.task('concat-js-app', ['compile-jsx'], function () {
-    return gulp.src(['src/client/js/app/*.js', 'src/client/js/stores/*.js', 'build/views.js'])
-        .pipe(plumber({
-            errorHandler: onError
-        }))
-        .pipe(concat('app.js'))
-        .pipe(gulp.dest('src/server/js'))
-        .pipe(rename(function (path) {
-            path.basename += '.min';
-        }))
-        .pipe(uglify())
-        .pipe(gulp.dest('src/server/js'));
-});
-
-// TASK: Concat Css Libs
-gulp.task('concat-css-all', ['compile-less'], function () {
-    return gulp.src(cssAll)
-        .pipe(plumber({
-            errorHandler: onError
-        }))
-        .pipe(concat('all.min.css'))
-        .pipe(gulp.dest('src/server/css'));
-});
-
 gulp.task('watch', function () {
-    // Watch JSX source and recompile whenever a change occurs
-    var jsxWatcher = gulp.watch(['../react_components/src/**', 'src/client/jsx/mixins/**', 'src/client/jsx/components/**', 'src/client/jsx/pages/**', 'src/client/js/**'], ['compile-jsx', 'concat-js-app']);
-    jsxWatcher.on('change', function (event) {
-        console.log('File ' + event.path + ' was ' + event.type + ', running task...');
-    });
-
     // Watch LESS source and recompile whenever a change occurs
     var lessWatcher = gulp.watch(['src/client/less/mixins/**', 'src/client/less/base/**', 'src/client/less/element_selectors/**', 'src/client/less/*.less'], ['compile-less', 'concat-css-all']);
     lessWatcher.on('change', function (event) {
-        console.log('File ' + event.path + ' was ' + event.type + ', running task...');
-    });
-
-    // Watch Internal JS Libraries for Updates
-    var jsLibWatcher = gulp.watch(['../errl_js/dist/*.min.js', '../common_js/dist/*.min.js'], ['concat-js-libs']);
-    jsLibWatcher.on('change', function (event) {
         console.log('File ' + event.path + ' was ' + event.type + ', running task...');
     });
 });
