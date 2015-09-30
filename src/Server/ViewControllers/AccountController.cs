@@ -57,8 +57,9 @@ namespace HoomanLogic.Server.Controllers
         // protected Web API. If the user is not logged in then they will be redirected to 
         // the Login page. After a successful login you can call a Web API.
         [HttpGet]
-        public ActionResult Authorize()
+        public ActionResult Authorize(string app)
         {
+            Response.Cookies.Add(new HttpCookie("app", app));
             var claims = new ClaimsPrincipal(User).Claims.ToArray();
             var identity = new ClaimsIdentity(claims, "Bearer");
             AuthenticationManager.SignIn(identity);

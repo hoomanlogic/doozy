@@ -5,13 +5,19 @@ using System.Web.Mvc;
 
 namespace HoomanLogic.Server.Controllers
 {
-    [Authorize]
     public class HomeController : Controller
     {
         public ActionResult Index()
         {
             ViewBag.Version = System.Configuration.ConfigurationManager.AppSettings["AppVersion"];
-            return View();
+            if (Request.QueryString.Count > 1)
+            {
+                return Redirect("~/doozy" + Request.QueryString.ToString());
+            }
+            else
+            {
+                return View();
+            }
         }
     }
 }

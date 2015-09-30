@@ -1,8 +1,0 @@
-﻿@using Microsoft.AspNet.Identity
-@if (Request.IsAuthenticated)
-{
-    using (Html.BeginForm("LogOff", "Account", new { area = "" }, FormMethod.Post, new { id = "logoutForm", hidden = "true" }))
-    {
-        @Html.AntiForgeryToken()
-    }
-}
