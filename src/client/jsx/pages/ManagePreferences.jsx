@@ -1,8 +1,4 @@
-// CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
-    if (typeof exports === "object") {
-        // CommonJS
         module.exports = exports = factory(
             require('react'),
             require('../../js/app/doozy'),
@@ -10,20 +6,8 @@
             require('../../js/stores/UserStore'),
             require('../components/ProfilePic')
         );
-    }
-    else {
-        // Global (browser)
-        window.ManagePreferences = factory(
-            window.React,
-            window.doozy,
-            window.doozyNotifications,
-            window.userStore,
-            window.ProfilePic
-        );
-    }
 }(function (React, doozy, doozyNotifications, userStore, ProfilePic) {
-    'use strict';
-    return React.createClass({
+    var ManagePreferences = React.createClass({
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
@@ -132,4 +116,5 @@
             );
         }
     });
+    return ManagePreferences;
  }));

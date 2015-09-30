@@ -1,36 +1,19 @@
-// CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('react'),
-            require('./Uploader')
-        );
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define([
-            'react',
-            './Uploader'
-        ], factory);
-    }
-    else {
-        // Global (browser)
-        window.ProfilePic = factory(window.React, window.Uploader);
-    }
+    module.exports = exports = factory(
+        require('react'),
+        require('./Uploader')
+    );
 }(function (React, Uploader) {
-    'use strict';
-    return React.createClass({
+    var ProfilePic = React.createClass({
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
         getInitialState: function () {
             return {
-                filesSelected: false  
+                filesSelected: false
             };
         },
-        
+
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
@@ -39,7 +22,7 @@
                 filesSelected: filesSelected
             });
         },
-        
+
         /*************************************************************
          * RENDERING
          *************************************************************/
@@ -57,4 +40,5 @@
             );
         }
     });
+    return ProfilePic;
 }));

@@ -1,22 +1,12 @@
-// CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('react'),
-            require('./LogEntryBox'),
-            require('babble/src/durations'),
-            require('../../js/stores/LogEntryStore')
-        );
-    }
-    else {
-        // Global (browser)
-        window.RecentActivity = factory(window.React, window.LogEntryBox, window.babble, window.logEntryStore);
-    }
+    module.exports = exports = factory(
+        require('react'),
+        require('./LogEntryBox'),
+        require('babble/src/durations'),
+        require('../../js/stores/LogEntryStore')
+    );
 }(function (React, LogEntryBox, babble, logEntryStore) {
-    'use strict';
-    return React.createClass({
+    var RecentActivity = React.createClass({
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
@@ -138,4 +128,5 @@
             );
         }
     });
+    return RecentActivity;
  }));

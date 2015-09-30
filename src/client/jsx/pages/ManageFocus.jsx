@@ -1,25 +1,11 @@
-// CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('react'),
-            require('../components/Uploader'),
-            require('../../js/stores/FocusStore'),
-        );
-    }
-    else {
-        // Global (browser)
-        window.ManageFocus = factory(
-            window.React,
-            window.Uploader,
-            window.focusStore
-        );
-    }
+    module.exports = exports = factory(
+        require('react'),
+        require('../components/Uploader'),
+        require('../../js/stores/FocusStore'),
+    );
 }(function (React, Uploader, focusStore) {
-    'use strict';
-    return React.createClass({
+    var ManageFocus = React.createClass({
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
@@ -131,4 +117,5 @@
             );
         }
     });
+    return ManageFocus;
 }));

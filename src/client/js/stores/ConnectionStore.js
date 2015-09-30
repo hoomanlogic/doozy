@@ -1,18 +1,10 @@
 (function (factory) {
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('hl-common-js/src/store'),
-            require('jquery'),
-            require('toastr')
-        );
-    }
-    else {
-        // Global (browser)
-        window.connectionStore = factory(window.hlstore, window.$, window.toastr);
-    }
+    module.exports = exports = factory(
+        require('hl-common-js/src/store'),
+        require('jquery'),
+        require('toastr')
+    );
 }(function (hlstore, $, toastr) {
-
     var ConnectionStore = function () {
         hlstore.Store.call(this);
         this.updates.value = [];

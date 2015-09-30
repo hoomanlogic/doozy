@@ -1,21 +1,11 @@
-// CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('react'),
-            require('./ActionRow'),
-            require('babble/src/durations')
-        );
-    }
-    else {
-        // Global (browser)
-        window.NextActions = factory(window.React, window.ActionRow, window.babble);
-    }
+    module.exports = exports = factory(
+        require('react'),
+        require('./ActionRow'),
+        require('babble/src/durations')
+    );
 }(function (React, ActionRow, babble) {
-    'use strict';
-    return React.createClass({
+    var NextActions = React.createClass({
         /*************************************************************
          * CALCULATIONS
          *************************************************************/
@@ -126,4 +116,5 @@
             );
         }
     });
+    return NextActions;
  }));

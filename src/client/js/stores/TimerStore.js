@@ -1,15 +1,8 @@
 (function (factory) {
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('hl-common-js/src/store'),
-            require('hl-common-js/src/io')
-        );
-    }
-    else {
-        // Global (browser)
-        window.timerStore = factory(window.hlstore, window.hlio);
-    }
+    module.exports = exports = factory(
+        require('hl-common-js/src/store'),
+        require('hl-common-js/src/io')
+    );
 }(function (hlstore, hlio) {
 
     var TimerStore = function () {

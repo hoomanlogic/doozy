@@ -1,23 +1,10 @@
-// CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('react'),
-            require('../../js/stores/PlanStepStore')
-        );
-    }
-    else {
-        // Global (browser)
-        window.ManagePlanStep = factory(
-            window.React,
-            window.planStepStore
-        );
-    }
+    module.exports = exports = factory(
+        require('react'),
+        require('../../js/stores/PlanStepStore')
+    );
 }(function (React, planStepStore) {
-    'use strict';
-    return React.createClass({
+    var ManagePlanStep = React.createClass({
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
@@ -241,4 +228,5 @@
             );
         }
     });
+    return ManagePlanStep;
 }));

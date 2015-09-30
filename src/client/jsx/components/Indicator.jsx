@@ -1,31 +1,15 @@
-// CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('react')
-        );
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define([
-            'react'
-        ], factory);
-    }
-    else {
-        // Global (browser)
-        window.Indicator = factory(window.React);
-    }
+    module.exports = exports = factory(
+        require('react')
+    );
 }(function (React) {
-    'use strict';
-    return React.createClass({
+    var Indicator = React.createClass({
         mixins: [React.addons.PureRenderMixin],
         propTypes: {
             value: React.PropTypes.string.isRequired,
             change: React.PropTypes.any.isRequired
         },
-        
+
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
@@ -36,28 +20,28 @@
                 isPercent: false
             };
         },
-        
+
         /*************************************************************
          * RENDERING
          *************************************************************/
         render: function () {
-            
+
             var changeColor = 'rgb(68, 68, 68)',
                 changePrefix = '',
                 content,
                 suffix = '';
-            
+
             if (this.props.change > 0) {
                 changeColor = 'hsl(120,90%,40%)';
             } else if (this.props.change < 0) {
-                changeColor = 'hsl(0,90%,40%)';   
+                changeColor = 'hsl(0,90%,40%)';
             }
-            
+
             if (this.props.kind === 'percent') {
                 suffix = '%';
             }
             if (this.props.change > 0) {
-                changePrefix = '+';   
+                changePrefix = '+';
             }
 
             /**
@@ -77,7 +61,7 @@
                     </div>
                 );
             }
-            
+
             return (
                 <div style={{minWidth: this.props.width, margin: '5px'}}>
                     <div style={{textAlign: 'center', borderRadius: '8px 8px 0 0', backgroundColor: 'rgb(68, 68, 68)', color: 'white', marginBottom: '2px'}}>{this.props.title}</div>
@@ -88,4 +72,5 @@
         },
 
     });
+    return Indicator;
 }));

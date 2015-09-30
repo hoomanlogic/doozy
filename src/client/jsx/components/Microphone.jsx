@@ -1,25 +1,11 @@
-// CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('react'),
-            require('react/addons'),
-            require('../../js/app/doozy')
-        );
-    }
-    else {
-        // Global (browser)
-        window.Microphone = factory(
-            window.React,
-            window.addons,
-            window.doozy
-        );
-    }
-}(function (React, addons) {
-    'use strict';
-    return React.createClass({
+    module.exports = exports = factory(
+        require('react'),
+        require('react/addons'),
+        require('../../js/app/doozy')
+    );
+}(function (React, addons, doozy) {
+    var Microphone = React.createClass({
         mixins: [addons.PureRenderMixin],
         /*************************************************************
          * COMPONENT LIFECYCLE
@@ -276,4 +262,5 @@
             );
         },
     });
+    return Microphone;
 }));

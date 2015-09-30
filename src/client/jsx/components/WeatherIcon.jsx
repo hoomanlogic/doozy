@@ -1,14 +1,7 @@
 (function (factory) {
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('react')
-        );
-    }
-    else {
-        // Global (browser)
-        window.WeatherIcon = factory(window.React);
-    }
+    module.exports = exports = factory(
+        require('react')
+    );
 }(function (React) {
     var WeatherIcon = React.createClass({
         /*************************************************************
@@ -47,6 +40,6 @@
             );
         }
     });
-    
+
     return WeatherIcon;
 }));

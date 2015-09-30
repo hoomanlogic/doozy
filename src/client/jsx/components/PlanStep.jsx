@@ -1,40 +1,24 @@
-// CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('react')
-        );
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define([
-            'react'
-        ], factory);
-    }
-    else {
-        // Global (browser)
-        window.PlanStep = factory(window.React);
-    }
+    module.exports = exports = factory(
+        require('react')
+    );
 }(function (React) {
-    'use strict';
-    return React.createClass({
+    var PlanStep = React.createClass({
 
         getInitialState: function () {
             return {
-                planStepsLastUpdated: (new Date()).toISOString()  
+                planStepsLastUpdated: (new Date()).toISOString()
             };
         },
-        
+
         componentWillMount: function () {
             /**
-             * Subscribe to Tag Store to be 
+             * Subscribe to Tag Store to be
              * notified of updates to the store
              */
             this.planStepsObserver = planStepStore.updates
                 .subscribe(this.handlePlanStepStoreUpdate);
-            
+
         },
         componentWillUnmount: function () {
             /**
@@ -42,7 +26,7 @@
              */
             this.planStepsObserver.dispose();
         },
-        
+
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
@@ -50,22 +34,22 @@
             this.setState({ planStepsLastUpdated: (new Date()).toISOString() });
         },
         handleCardClick: function () {
-            
+
             ui.goTo('Manage Plan Step', {
                 isNew: this.props.data.isNew || false,
-                planStepId: this.props.data.id, 
-                planId: this.props.data.planId, 
+                planStepId: this.props.data.id,
+                planId: this.props.data.planId,
                 parentId: this.props.data.parentId
             });
         },
-        
+
         calculateNewStep: function () {
-            
-            var steps = _.where(planStepStore.updates.value, { 
-                planId: this.props.planId, 
-                parentId: this.props.data.id 
+
+            var steps = _.where(planStepStore.updates.value, {
+                planId: this.props.planId,
+                parentId: this.props.data.id
             });
-            
+
             var nextOrdinal = 1;
             if (steps.length > 0) {
                 steps = _.sortBy(steps, function (item) {
@@ -74,7 +58,7 @@
                 steps.reverse();
                 nextOrdinal = steps[0].ordinal + 1;
             }
-            
+
             return {
                 id: hlcommon.uuid(),
                 planId: this.props.planId,
@@ -88,7 +72,7 @@
                 isNew: true
             };
         },
-        
+
         /*************************************************************
          * RENDERING
          *************************************************************/
@@ -103,18 +87,18 @@
                 //padding: '5px',
                 //borderBottom: 'solid 1px #e0e0e0'
             };
-            
-            var buttonStyle = { 
-                paddingTop: '3px', 
-                paddingBottom: '3px', 
-                backgroundImage: 'none', 
-                color: '#444', 
-                backgroundColor: '#e2ff63', 
-                borderColor: '#e2ff63', 
-                fontWeight: 'bold', 
+
+            var buttonStyle = {
+                paddingTop: '3px',
+                paddingBottom: '3px',
+                backgroundImage: 'none',
+                color: '#444',
+                backgroundColor: '#e2ff63',
+                borderColor: '#e2ff63',
+                fontWeight: 'bold',
                 outlineColor: 'rgb(40, 40, 40)'
             };
-            
+
             var stepStyles = [
                 {},
                 {
@@ -143,7 +127,7 @@
                     height: '120px'
                 },
             ];
-            
+
             var newStepStyle = {
                 opacity: '0.5',
                 borderStyle: 'dashed',
@@ -161,7 +145,7 @@
                     paddingTop: '45px'
                 });
             }
-            
+
             var childStepsStyles = [
                 {},
                 {
@@ -174,7 +158,7 @@
                     display: 'block'
                 }
             ];
-            
+
             var steps = _.where(planStepStore.updates.value, { planId: this.props.planId, parentId: this.props.data.id });
             steps = _.sortBy(steps, function (item) {
                 var type = 0;
@@ -189,19 +173,19 @@
                 }
                 return type + '-' + item.ordinal;
             });
-            
+
             var stepsDom = steps.map( function (step) {
                 return (
                     <PlanStep planId={this.props.planId} data={step} level={this.props.level + 1} />
                 );
             }.bind(this));
-            
+
             if ((!this.props.data.hasOwnProperty('isNew') || !this.props.data.isNew) && this.props.level < 3) {
                 stepsDom.push((
                     <PlanStep planId={this.props.planId} data={this.calculateNewStep()} level={this.props.level + 1} />
                 ));
             }
-            
+
             if (this.props.data.status === 'Done') {
                 var nameStyle = {
                     textDecoration: 'line-through',
@@ -216,7 +200,7 @@
                     backgroundColor: '#E2FF63'
                 };
             }
-                
+
             return (
                 <li key={this.props.data.id} style={Object.assign({}, listItemStyle, childStepsStyles[this.props.level])}>
                     <div className="clickable" onClick={this.handleCardClick}>
@@ -231,4 +215,5 @@
             );
         }
     });
+    return PlanStep;
  }));

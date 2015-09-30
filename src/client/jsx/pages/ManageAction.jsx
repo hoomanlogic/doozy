@@ -1,23 +1,13 @@
 // CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('react'),
-            require('../../js/app/doozy')
-        );
-    }
-    else {
-        // Global (browser)
-        window.ManageAction = factory(
-            window.React,
-            window.doozy
-        );
-    }
-}(function (React, doozy) {
-    'use strict';
-    return React.createClass({
+    module.exports = exports = factory(
+        require('react'),
+        require('../../js/app/doozy'),
+        require('../../js/stores/ActionStore'),
+        require('../../js/stores/LogEntryStore')
+    );
+}(function (React, doozy, actionStore, logEntryStore) {
+    var ManageAction = React.createClass({
 
         /*************************************************************
          * TYPES AND ENUMERATIONS
@@ -688,4 +678,5 @@
             );
         },
     });
+    return ManageAction;
 }));

@@ -1,25 +1,11 @@
-// CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('react'),
-            require('../../js/app/doozy'),
-            require('./RelativeTime')
-        );
-    }
-    else {
-        // Global (browser)
-        window.FocusListItem = factory(
-            window.React,
-            window.doozy,
-            window.RelativeTime
-        );
-    }
+    module.exports = exports = factory(
+        require('react'),
+        require('../../js/app/doozy'),
+        require('./RelativeTime')
+    );
 }(function (React, doozy, RelativeTime) {
-    'use strict';
-    return React.createClass({
+    var FocusListItem = React.createClass({
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
@@ -86,4 +72,5 @@
             );
         }
     });
+    return FocusListItem;
 }));

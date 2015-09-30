@@ -1,20 +1,10 @@
-// CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('react'),
-            require('hl-common-js/src/io')
-        );
-    }
-    else {
-        // Global (browser)
-        window.SendMessage = factory(window.React, window.hlio);
-    }
+    module.exports = exports = factory(
+        require('react'),
+        require('hl-common-js/src/io')
+    );
 }(function (React, hlio) {
-    'use strict';
-    return React.createClass({
+    var SendMessage = React.createClass({
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
@@ -95,4 +85,5 @@
             );
         }
     });
+    return SendMessage;
 }));

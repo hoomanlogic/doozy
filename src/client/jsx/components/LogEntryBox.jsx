@@ -1,30 +1,15 @@
 (function (factory) {
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('react'),
-            require('../mixins/LayeredComponentMixin'),
-            require('./RelativeTime'),
-            require('../../../../../react_components/src/ContentEditable'),
-            require('../../js/stores/ActionStore'),
-            require('../../js/stores/LogEntryStore'),
-            require('../../js/app/doozy')
-        );
-    }
-    else {
-        // Global (browser)
-        window.LogEntryBox = factory(
-            window.React,
-            window.LayeredComponentMixin,
-            window.RelativeTime,
-            window.ContentEditable,
-            window.actionStore,
-            window.logEntryStore,
-            window.doozy
-        );
-    }
+    module.exports = exports = factory(
+        require('react'),
+        require('../mixins/LayeredComponentMixin'),
+        require('./RelativeTime'),
+        require('../../../../../react_components/src/ContentEditable'),
+        require('../../js/stores/ActionStore'),
+        require('../../js/stores/LogEntryStore'),
+        require('../../js/app/doozy')
+    );
 }(function (React, LayeredComponentMixin, RelativeTime, ContentEditable, actionStore, logEntryStore, doozy) {
-    return React.createClass({
+    var LogEntryBox = React.createClass({
         mixins: [LayeredComponentMixin],
         /*************************************************************
          * COMPONENT LIFECYCLE
@@ -361,4 +346,5 @@
             );
         }
     });
+    return LogEntryBox;
 }));

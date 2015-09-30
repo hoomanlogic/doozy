@@ -1,19 +1,9 @@
-// CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('react')
-        );
-    }
-    else {
-        // Global (browser)
-        window.Uploader = factory(window.React);
-    }
+    module.exports = exports = factory(
+        require('react')
+    );
 }(function (React) {
-    'use strict';
-    return React.createClass({
+    var Uploader = React.createClass({
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
@@ -139,4 +129,5 @@
             );
         }
     });
+    return Uploader;
 }));

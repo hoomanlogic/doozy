@@ -1,35 +1,16 @@
-// CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('react'),
-            require('../../js/stores/ActionStore'),
-            require('./TagList'),
-            require('./ActivePlans'),
-            require('./NextActions'),
-            require('./UpcomingActions'),
-            require('./RecentActivity'),
-            require('./BoxedActions')
-        );
-    }
-    else {
-        // Global (browser)
-        window.FocusActions = factory(
-            window.React,
-            window.actionStore,
-            window.TagList,
-            window.ActivePlans,
-            window.NextActions,
-            window.UpcomingActions,
-            window.RecentActivity,
-            window.BoxedActions
-        );
-    }
+    module.exports = exports = factory(
+        require('react'),
+        require('../../js/stores/ActionStore'),
+        require('./TagList'),
+        require('./ActivePlans'),
+        require('./NextActions'),
+        require('./UpcomingActions'),
+        require('./RecentActivity'),
+        require('./BoxedActions')
+    );
 }(function (React, actionStore, TagList, ActivePlans, NextActions, UpcomingActions, RecentActivity, BoxedActions) {
-    'use strict';
-    return React.createClass({
+    var FocusActions = React.createClass({
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
@@ -228,4 +209,5 @@
             );
         }
     });
+    return FocusActions;
 }));

@@ -1,17 +1,10 @@
 (function (factory) {
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('jquery'),
-            require('rx'),
-            require('toastr'),
-            require('hl-common-js/src/io')
-        );
-    }
-    else {
-        // Global (browser)
-        window.planStepStore = factory(window.$, window.Rx, window.toastr, window.hlio);
-    }
+    module.exports = exports = factory(
+        require('jquery'),
+        require('rx'),
+        require('toastr'),
+        require('hl-common-js/src/io')
+    );
 }(function ($, Rx, toastr, hlio) {
     var PlanStepStore = function () {
 

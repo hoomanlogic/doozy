@@ -1,15 +1,7 @@
 (function(factory) {
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('../../js/stores/UserStore')
-        );
-    } else {
-        // Global (browser)
-        window.doozyNotifications = factory(
-            window.userStore
-        );
-    }
+    module.exports = exports = factory(
+        require('../../js/stores/UserStore')
+    );
 }(function(userStore) {
 
     var API_KEY = 'AIzaSyCJI_tjIhwGCyiyXlPxMtEL2L3CR7ocMU0'; // '379697648331-f7b2qooh3g6d787l0c1n6s66jh6us2u1.apps.googleusercontent.com';

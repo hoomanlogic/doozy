@@ -1,29 +1,13 @@
-// CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('react'),
-            require('../../js/app/doozy'),
-            require('../../js/stores/ActionStore'),
-            require('../../js/stores/TargetStore'),
-            require('../../js/stores/TagStore')
-        );
-    }
-    else {
-        // Global (browser)
-        window.ManageTarget = factory(
-            window.React,
-            window.doozy,
-            window.actionStore,
-            window.targetStore,
-            window.tagStore
-        );
-    }
+    module.exports = exports = factory(
+        require('react'),
+        require('../../js/app/doozy'),
+        require('../../js/stores/ActionStore'),
+        require('../../js/stores/TargetStore'),
+        require('../../js/stores/TagStore')
+    );
 }(function (React, doozy, actionStore, targetStore, tagStore) {
-    'use strict';
-    return React.createClass({
+    var ManageTarget = React.createClass({
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
@@ -338,4 +322,5 @@
             );
         }
     });
+    return ManageTarget;
 }));

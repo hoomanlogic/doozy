@@ -1,23 +1,10 @@
-// CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('react'),
-            require('../../js/stores/PlanStore')
-        );
-    }
-    else {
-        // Global (browser)
-        window.ManagePlans = factory(
-            window.React,
-            window.planStore
-        );
-    }
+    module.exports = exports = factory(
+        require('react'),
+        require('../../js/stores/PlanStore')
+    );
 }(function (React, planStore) {
-    'use strict';
-    return React.createClass({
+    var ManagePlans = React.createClass({
 
         getInitialState: function () {
             return {
@@ -128,4 +115,5 @@
             );
         }
     });
+    return ManagePlans;
  }));

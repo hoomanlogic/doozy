@@ -1,20 +1,12 @@
 (function (factory) {
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('react'),
-            require('../../js/app/doozy')
-        );
-    }
-    else {
-        // Global (browser)
-        window.ManageLogEntry = factory(
-            window.React,
-            window.doozy
-        );
-    }
-}(function (React, doozy) {
-    return React.createClass({
+    module.exports = exports = factory(
+        require('react'),
+        require('../../js/app/doozy'),
+        require('../../js/stores/ActionStore'),
+        require('../../js/stores/LogEntryStore')
+    );
+}(function (React, doozy, actionStore, logEntryStore) {
+    var ManageLogEntry = React.createClass({
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
@@ -494,4 +486,6 @@
             );
         },
     });
+
+    return ManageLogEntry;
 }));

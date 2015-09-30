@@ -1,24 +1,12 @@
 (function (factory) {
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('react'),
-            require('../../js/app/doozy'),
-            require('../../js/stores/TargetStore'),
-            require('../components/Indicator')
-        );
-    }
-    else {
-        // Global (browser)
-        window.ManageTargets = factory(
-            window.React,
-            window.doozy,
-            window.targetStore,
-            window.Indicator
-        );
-    }
+    module.exports = exports = factory(
+        require('react'),
+        require('../../js/app/doozy'),
+        require('../../js/stores/TargetStore'),
+        require('../components/Indicator')
+    );
 }(function (React, doozy, targetStore, Indicator) {
-    return React.createClass({
+    var ManageTargets = React.createClass({
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
@@ -211,4 +199,5 @@
             );
         }
     });
+    return ManageTargets;
  }));

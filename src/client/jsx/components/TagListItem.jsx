@@ -1,25 +1,11 @@
-// CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('react'),
-            require('../../js/app/doozy'),
-            require('../../../../../react_components/src/ContentEditable')
-        );
-    }
-    else {
-        // Global (browser)
-        window.TagListItem = factory(
-            window.React,
-            window.doozy,
-            window.ContentEditable
-        );
-    }
+    module.exports = exports = factory(
+        require('react'),
+        require('../../js/app/doozy'),
+        require('../../../../../react_components/src/ContentEditable')
+    );
 }(function (React, doozy, ContentEditable) {
-    'use strict';
-    return React.createClass({
+    var TagListItem = React.createClass({
         mixins: [React.addons.PureRenderMixin],
         propTypes: {
             // required
@@ -110,4 +96,5 @@
             );
         },
     });
+    return TagListItem;
 }));

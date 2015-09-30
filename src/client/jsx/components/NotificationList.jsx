@@ -1,26 +1,12 @@
-// CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('react'),
-            require('../../js/stores/NotificationStore'),
-            require('../../../../../react_components/src/DropDownMenu'),
-            require('./NotificationListItem')
-        );
-    }
-    else {
-        // Global (browser)
-        window.NotificationList = factory(
-            window.React,
-            window.notificationStore,
-            window.NotificationListItem
-        );
-    }
+    module.exports = exports = factory(
+        require('react'),
+        require('../../js/stores/NotificationStore'),
+        require('../../../../../react_components/src/DropDownMenu'),
+        require('./NotificationListItem')
+    );
 }(function (React, notificationStore, NotificationListItem) {
-    'use strict';
-    return React.createClass({
+    var NotificationList = React.createClass({
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
@@ -103,4 +89,5 @@
             );
         }
     });
+    return NotificationList;
 }));

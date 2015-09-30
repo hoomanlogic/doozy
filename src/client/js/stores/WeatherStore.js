@@ -1,15 +1,8 @@
 (function (factory) {
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('hl-common-js/src/store'),
-            require('jquery')
-        );
-    }
-    else {
-        // Global (browser)
-        window.logEntryStore = factory(window.hlstore, window.$);
-    }
+    module.exports = exports = factory(
+        require('hl-common-js/src/store'),
+        require('jquery')
+    );
 }(function (hlstore, $) {
 
     var WeatherStore = function () {

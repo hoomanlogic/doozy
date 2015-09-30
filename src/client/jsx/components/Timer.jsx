@@ -1,27 +1,10 @@
-// CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('react'),
-            require('../../js/stores/TimerStore')
-        );
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define([
-            'react',
-            '../../js/stores/TimerStore'
-        ], factory);
-    }
-    else {
-        // Global (browser)
-        window.Timer = factory(window.React, window.timerStore);
-    }
+    module.exports = exports = factory(
+        require('react'),
+        require('../../js/stores/TimerStore')
+    );
 }(function (React, timerStore) {
-    'use strict';
-    return React.createClass({
+    var Timer = React.createClass({
         mixins: [React.addons.PureRenderMixin],
         /*************************************************************
          * COMPONENT LIFECYCLE
@@ -62,14 +45,15 @@
          *************************************************************/
         render: function () {
             var iconStyle = { marginRight: '5px' };
-            
+
             var timerStyle = {
                 padding: '5px'
             };
-            
+
             return (
                 <li key="timer"><a className={timerStore.updates.value.isRunning ? 'active' : ''} style={timerStyle} href="javascript:;" onClick={this.handleToggleTimerClick}><i style={iconStyle} className="fa fa-2x fa-clock-o"></i></a></li>
             );
         },
     });
+    return Timer;
  }));

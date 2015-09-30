@@ -1,39 +1,20 @@
-// CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('react'),
-            require('../../js/stores/ConnectionStore'),
-            require('../../js/stores/FocusStore'),
-            require('../../js/stores/NotificationStore'),
-            require('../../js/stores/UserStore'),
-            require('../components/FocusListItem'),
-            require('../../../../../react_components/src/DropdownMenu'),
-            require('../components/Microphone'),
-            require('../components/NotificationDropdown'),
-            require('../components/Timer')
-        );
-    }
-    else {
-        // Global (browser)
-        window.PrimaryNavigation = factory(
-            window.React,
-            window.connectionStore,
-            window.focusStore,
-            window.notificationStore,
-            window.userStore,
-            window.FocusListItem,
-            window.DropdownMenu,
-            window.Microphone,
-            window.NotificationDropdown,
-            window.Timer);
-    }
+    module.exports = exports = factory(
+        require('react'),
+        require('../../js/stores/ConnectionStore'),
+        require('../../js/stores/FocusStore'),
+        require('../../js/stores/NotificationStore'),
+        require('../../js/stores/UserStore'),
+        require('../components/FocusListItem'),
+        require('../../../../../react_components/src/DropdownMenu'),
+        require('../components/Microphone'),
+        require('../components/NotificationDropdown'),
+        require('../components/Timer')
+    );
 }(function (React, connectionStore, focusStore, notificationStore, userStore,
     FocusListItem, DropdownMenu, Microphone, NotificationDropdown, Timer) {
-    'use strict';
-    return React.createClass({
+
+    var PrimaryNavigation = React.createClass({
 
         /*************************************************************
          * COMPONENT LIFECYCLE
@@ -233,4 +214,5 @@
             );
         }
     });
+    return PrimaryNavigation;
 }));

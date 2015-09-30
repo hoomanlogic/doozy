@@ -1,27 +1,10 @@
-// CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('react'),
-            require('../../js/stores/TimerStore')
-        );
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define([
-            'react',
-            '../../js/stores/TimerStore'
-        ], factory);
-    }
-    else {
-        // Global (browser)
-        window.TimerBar = factory(window.React, window.timerStore);
-    }
+    module.exports = exports = factory(
+        require('react'),
+        require('../../js/stores/TimerStore')
+    );
 }(function (React, timerStore) {
-    'use strict';
-    return React.createClass({
+    var TimerBar = React.createClass({
         mixins: [React.addons.PureRenderMixin],
         /*************************************************************
          * COMPONENT LIFECYCLE
@@ -133,4 +116,5 @@
             }
         }
     });
+    return TimerBar;
  }));

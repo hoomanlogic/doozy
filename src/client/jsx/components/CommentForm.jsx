@@ -1,30 +1,14 @@
-// CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('react')
-        );
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define([
-            'react'
-        ], factory);
-    }
-    else {
-        // Global (browser)
-        window.CommentForm = factory(window.React);
-    }
+    module.exports = exports = factory(
+        require('react')
+    );
 }(function (React) {
-    'use strict';
-    return React.createClass({
+    var CommentForm = React.createClass({
         propTypes: {
-            userName: React.PropTypes.string.isRequired,  
+            userName: React.PropTypes.string.isRequired,
             articleId: React.PropTypes.number.isRequired,
         },
-        
+
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
@@ -45,7 +29,7 @@
 
             this.handlers = {
                 commentChange: commentChange
-            };  
+            };
         },
         componentWillUnmount: function () {
             logEntryStore.dispose(this.handleLogEntryStoreUpdate);
@@ -58,15 +42,15 @@
         handleLogEntryStoreUpdate: function (connections) {
             this.setState({logEntriesLastUpdated: new Date().toISOString()});
         },
-        
+
         handleClose: function () {
             ui.goTo('Log Entries', { userName: this.props.userName });
         },
-        
+
         handleCommentChange: function (comment) {
-            toastr.success('Comment changed');  
+            toastr.success('Comment changed');
         },
-        
+
         handlePostCommentClick: function () {
             var comment = this.refs.comment.getDOMNode().value || '';
             comment = comment.trim();
@@ -80,35 +64,35 @@
          *************************************************************/
         render: function () {
             var userName = this.props.userName;
-            
+
             // find existing connection
             var connections = connectionStore.updates.value;
                         // find log entries for this user
             var logEntry = _.find( logEntryStore.updates.value, { id: this.props.articleId } );
-            
+
             if (!logEntry) {
                 return null;
             }
-            
+
             var comments = _.sortBy(logEntry.comments, function (item) { return item.date; });
-            
+
             var headerStyle = {
                 display: 'flex',
                 flexDirection: 'row',
                 marginBottom: '5px'
             };
-            
+
             var containerStyle = {
                 display: 'flex',
                 flexDirection: 'column',
                 border: '1px solid #e0e0e0'
             };
-            
+
             var commentStyle = {
                 display: 'flex',
                 flexDirection: 'row'
             };
-            
+
             var imgContainerStyle = {
                 marginRight: '5px'
             };
@@ -117,7 +101,7 @@
                 maxWidth: '45px',
                 maxHeight: '45px'
             };
-            
+
             return (
                 <div className="comments" style={{padding: '5px'}}>
                     <div style={headerStyle}>
@@ -151,4 +135,5 @@
             );
         }
     });
+    return CommentForm;
 }));

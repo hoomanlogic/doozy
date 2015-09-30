@@ -1,21 +1,11 @@
-// CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('react'),
-            require('babble/src/moments'),
-            require('./SendMessage')
-        );
-    }
-    else {
-        // Global (browser)
-        window.Conversation = factory(window.React, window.babble, window.SendMessage);
-    }
+    module.exports = exports = factory(
+        require('react'),
+        require('babble/src/moments'),
+        require('./SendMessage')
+    );
 }(function (React, babble, SendMessage) {
-    'use strict';
-    return React.createClass({
+    var Conversation = React.createClass({
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
@@ -177,4 +167,5 @@
             );
         }
     });
+    return Conversation;
 }));

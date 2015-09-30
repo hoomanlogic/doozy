@@ -1,25 +1,9 @@
-// CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('react')
-        );
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define([
-            'react'
-        ], factory);
-    }
-    else {
-        // Global (browser)
-        window.LogEntries = factory(window.React);
-    }
+    module.exports = exports = factory(
+        require('react')
+    );
 }(function (React) {
-    'use strict';
-    return React.createClass({
+    var LogEntries = React.createClass({
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
@@ -95,4 +79,5 @@
             );
         }
     });
+    return LogEntries;
 }));

@@ -1,31 +1,14 @@
-// CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('react'),
-            require('react/addons'),
-            require('babble/src/durations'),
-            require('../../../../../react_components/src/ContentEditable'),
-            require('./RelativeTime'),
-            require('../../js/app/doozy')
-        );
-    }
-    else {
-        // Global (browser)
-        window.ActionRow = factory(
-            window.React,
-            window.addons,
-            window.babble,
-            window.ContentEditable,
-            window.RelativeTime,
-            window.doozy
-        );
-    }
+    module.exports = exports = factory(
+        require('react'),
+        require('react/addons'),
+        require('babble/src/durations'),
+        require('../../../../../react_components/src/ContentEditable'),
+        require('./RelativeTime'),
+        require('../../js/app/doozy')
+    );
 }(function (React, addons, babble, ContentEditable, RelativeTime, doozy) {
-    'use strict';
-    return React.createClass({
+    var ActionRow = React.createClass({
         mixins: [addons.PureRenderMixin],
         propTypes: {
             // required
@@ -172,4 +155,5 @@
             );
         }
     });
+    return ActionRow;
 }));

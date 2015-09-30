@@ -1,17 +1,10 @@
 (function (factory) {
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('hl-common-js/src/store'),
-            require('jquery'),
-            require('toastr'),
-            require('hl-common-js/src/io')
-        );
-    }
-    else {
-        // Global (browser)
-        window.logEntryStore = factory(window.hlstore, window.$, window.toastr, window.hlio);
-    }
+    module.exports = exports = factory(
+        require('hl-common-js/src/store'),
+        require('jquery'),
+        require('toastr'),
+        require('hl-common-js/src/io')
+    );
 }(function (hlstore, $, toastr, hlio) {
 
     var LogEntryStore = function () {

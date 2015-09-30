@@ -1,21 +1,11 @@
 (function (factory) {
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('react'),
-            require('../../js/stores/NotificationStore')
-        );
-    }
-    else {
-        // Global (browser)
-        window.NotificationDropdown = factory(
-            window.React,
-            window.notificationStore
-        );
-    }
+    module.exports = exports = factory(
+        require('react'),
+        require('../../js/stores/NotificationStore')
+    );
 }(function (React, notificationStore) {
 
-    return React.createClass({
+    var NotificationDropdown = React.createClass({
         propTypes: {
             isOpen: React.PropTypes.bool
         },
@@ -64,4 +54,5 @@
             );
         }
     });
+    return NotificationDropdown;
 }));

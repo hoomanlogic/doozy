@@ -1,29 +1,12 @@
-// CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
-
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('hl-common-js/src/common'),
-            require('../stores/ActionStore'),
-            require('../stores/LogEntryStore'),
-            require('../stores/TagStore'),
-            require('../stores/TargetStore')
-        );
-    }
-    else {
-        // Global (browser)
-        window.doozy = factory(
-            window.hlcommon,
-            window.actionStore,
-            window.logEntryStore,
-            window.tagStore,
-            window.targetStore
-        );
-    }
+    module.exports = exports = factory(
+        require('hl-common-js/src/common'),
+        require('../stores/ActionStore'),
+        require('../stores/LogEntryStore'),
+        require('../stores/TagStore'),
+        require('../stores/TargetStore')
+    );
 }(function (hlcommon, targetStore) {
-    'use strict';
 
     var TAG_KIND = {
         FOCUS: '!',

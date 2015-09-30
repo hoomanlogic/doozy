@@ -1,25 +1,9 @@
-// CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('react')
-        );
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define([
-            'react'
-        ], factory);
-    }
-    else {
-        // Global (browser)
-        window.RelativeTime = factory(window.React);
-    }
+    module.exports = exports = factory(
+        require('react')
+    );
 }(function (React) {
-    'use strict';
-    return React.createClass({
+    var RelativeTime = React.createClass({
         propTypes: {
             isoTime: React.PropTypes.string,
             accuracy: React.PropTypes.oneOf([
@@ -27,24 +11,24 @@
                 'a'  //auto
             ])
         },
-        
+
         getDefaultProps: function () {
             return {
-                accuracy: 'a' // auto  
+                accuracy: 'a' // auto
             };
         },
-        
+
         /*************************************************************
          * CALCULATIONS
          *************************************************************/
         calcRelativeTime: function () {
             var time = new Date(this.props.isoTime);
             var now = new Date();
-            
+
             if (this.props.accuracy === 'd') {
                 time = new Date(time.toLocaleDateString()); // away with thee, time specificity
                 now = new Date(now.toLocaleDateString()); // and thee as well
-                
+
                 var timeDiff = Math.abs(now.getTime() - time.getTime());
                 var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
                 if (time < now) {
@@ -82,7 +66,7 @@
          * RENDERING
          *************************************************************/
         render: function () {
-            
+
             if (!this.props.isoTime) {
                 return null;
             } else {
@@ -90,4 +74,5 @@
             }
         },
     });
+    return RelativeTime;
 }));

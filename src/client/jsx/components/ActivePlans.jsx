@@ -1,25 +1,11 @@
-// CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('react'),
-            require('../../js/stores/FocusStore'),
-            require('../../js/stores/PlanStore')
-        );
-    }
-    else {
-        // Global (browser)
-        window.ActivePlans = factory(
-            window.React,
-            window.focusStore,
-            window.planStore
-        );
-    }
+    module.exports = exports = factory(
+        require('react'),
+        require('../../js/stores/FocusStore'),
+        require('../../js/stores/PlanStore')
+    );
 }(function (React, focusStore, planStore) {
-    'use strict';
-    return React.createClass({
+    var ActivePlans = React.createClass({
         /*************************************************************
          * CALCULATIONS
          *************************************************************/
@@ -116,4 +102,5 @@
             );
         }
     });
+    return ActivePlans;
  }));

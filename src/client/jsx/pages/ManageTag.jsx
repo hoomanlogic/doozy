@@ -1,20 +1,10 @@
 (function (factory) {
-    if (typeof exports === "object") {
-        // CommonJS
-        module.exports = exports = factory(
-            require('react'),
-            require('../../js/stores/TagStore')
-        );
-    }
-    else {
-        // Global (browser)
-        window.ManageTag = factory(
-            window.React,
-            window.tagStore
-        );
-    }
+    module.exports = exports = factory(
+        require('react'),
+        require('../../js/stores/TagStore')
+    );
 }(function (React, tagStore) {
-    return React.createClass({
+    var ManageTag = React.createClass({
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
@@ -137,4 +127,5 @@
             );
         }
     });
+    return ManageTag;
 }));
