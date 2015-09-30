@@ -56,7 +56,7 @@
              */
             plans = _.sortBy(plans, function(plan) {
                 return plan.name.toLowerCase();
-            })
+            });
 
             /**
              * Inline Styles

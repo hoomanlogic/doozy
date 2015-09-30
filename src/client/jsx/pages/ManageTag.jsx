@@ -95,7 +95,7 @@
             ];
 
             var buttonsDom = buttons.map(function(button, index) {
-                return <button key={index} style={button.buttonStyle} type="button" className={'btn btn-' + button.type} onClick={button.handler}>{button.text}</button>
+                return (<button key={index} style={button.buttonStyle} type="button" className={'btn btn-' + button.type} onClick={button.handler}>{button.text}</button>);
             });
 
             // html

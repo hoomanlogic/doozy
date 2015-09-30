@@ -41,7 +41,7 @@
                 whiteSpace: 'nowrap',
                 verticalAlign: 'baseline',
                 marginRight: '-10px'
-            }
+            };
 
             if (unreadCount > 0) {
                 badge = (<span style={badgeStyle}>{unreadCount}</span>);

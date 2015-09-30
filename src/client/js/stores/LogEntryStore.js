@@ -3,9 +3,10 @@
         require('hl-common-js/src/store'),
         require('jquery'),
         require('toastr'),
-        require('hl-common-js/src/io')
+        require('hl-common-js/src/io'),
+        require('./ActionStore')
     );
-}(function (hlstore, $, toastr, hlio) {
+}(function (hlstore, $, toastr, hlio, actionStore) {
 
     var LogEntryStore = function () {
         hlstore.Store.call(this);
@@ -222,7 +223,7 @@
         this.createWithNewAction = function (newAction, logEntry) {
 
             actionStore.create(newAction, function (result) {
-                logEntry.actionId = result.id
+                logEntry.actionId = result.id;
                 me.create(logEntry);
             });
 
@@ -231,7 +232,7 @@
         this.updateWithNewAction = function (newAction, logEntry) {
 
             actionStore.create(newAction, function (result) {
-                logEntry.actionId = result.id
+                logEntry.actionId = result.id;
                 me.update(logEntry);
             });
 

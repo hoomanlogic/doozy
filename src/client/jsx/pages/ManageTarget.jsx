@@ -147,12 +147,12 @@
 
             // get distinct tags user has assigned to other actions
             var tags = tagStore.updates.value;
-            tags = _.sortBy(tags, function(tag){
+            tags = _.sortBy(tags, function (tag) {
                 tag.name;
             });
 
             // add tags that user has assigned to other actions
-            tags.forEach( function (tag) {
+            tags.forEach(function (tag) {
                 selectize.addOption({
                     id: tag.id,
                     name: tag.name,
@@ -255,7 +255,7 @@
             ];
 
             var buttonsDom = buttons.map(function(button, index) {
-                return <button key={index} style={button.buttonStyle} type="button" className={'btn btn-' + button.type} onClick={button.handler}>{button.text}</button>
+                return (<button key={index} style={button.buttonStyle} type="button" className={'btn btn-' + button.type} onClick={button.handler}>{button.text}</button>);
             });
 
             var selectorDom;

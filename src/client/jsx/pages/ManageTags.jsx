@@ -72,7 +72,7 @@
              */
             tags = _.sortBy(tags, function(tag) {
                 return tag.kind + '-' + tag.name.toLowerCase();
-            })
+            });
 
             /**
              * Inline Styles

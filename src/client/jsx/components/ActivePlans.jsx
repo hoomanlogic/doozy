@@ -33,14 +33,14 @@
          *************************************************************/
         render: function () {
 
-            var activePlans = this.getActivePlans()
+            var activePlans = this.getActivePlans();
 
             /**
              * Sort the actions by completed and name
              */
             activePlans = _.sortBy(activePlans, function(plan) {
                 return plan.name.toLowerCase();
-            })
+            });
 
             /**
              * Return null if there are no active plans for this focus

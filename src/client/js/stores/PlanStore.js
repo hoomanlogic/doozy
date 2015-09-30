@@ -168,7 +168,7 @@
             if (plans) {
                 updates.onNext(plans);
             }
-        }
+        };
 
     };
 

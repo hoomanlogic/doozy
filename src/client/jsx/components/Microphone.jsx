@@ -2,9 +2,11 @@
     module.exports = exports = factory(
         require('react'),
         require('react/addons'),
-        require('../../js/app/doozy')
+        require('../../js/app/doozy'),
+        require('../../js/stores/ActionStore'),
+        require('../../js/stores/LogEntryStore')
     );
-}(function (React, addons, doozy) {
+}(function (React, addons, doozy, actionStore, logEntryStore) {
     var Microphone = React.createClass({
         mixins: [addons.PureRenderMixin],
         /*************************************************************
@@ -61,7 +63,7 @@
                 if (context === 'log-action') {
                     spokenArgs = this.parseSpeech(speech, context);
 
-                    existingAction = actionStore.getActionByName(commandArgs[actionIndex]);
+                    existingAction = actionStore.getActionByName(spokenArgs.actionName);
 
                     if (existingAction) {
                         /**
@@ -69,21 +71,20 @@
                          */
                         logEntryStore.create({
                             actionId: existingAction.id,
-                            date: date,
-                            duration: duration,
+                            date: spokenArgs.date,
+                            duration: spokenArgs.duration,
                             entry: 'performed',
                             details: null
                         });
                     } else {
-
-                        newAction = this.createActionObjectLiteral(commandArgs[actionIndex], date);
+                        newAction = this.createActionObjectLiteral(spokenArgs.actionName, spokenArgs.date);
 
                         /**
                          * Call API store function to create and log a new action
                          */
                         logEntryStore.createWithNewAction(newAction, {
-                            date: date,
-                            duration: duration,
+                            date: spokenArgs.date,
+                            duration: spokenArgs.duration,
                             entry: 'performed',
                             details: null
                         });
@@ -142,6 +143,7 @@
         parseSpeech: function (speech, context) {
             var actionIndex = 0,
                 actionName,
+                contextWord,
                 commandArgs,
                 commandWord,
                 date,
@@ -195,6 +197,7 @@
                     date = Date.create('today');
                 }
             }
+            date = date.toISOString();
 
             /**
              * Parse duration argument if supplied, else 0

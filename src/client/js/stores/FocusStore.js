@@ -167,7 +167,7 @@
             if (focuses) {
                 updates.onNext(focuses);
             }
-        }
+        };
 
     };
 

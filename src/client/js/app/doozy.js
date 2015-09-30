@@ -545,7 +545,7 @@
                 } else {
                     return noun + 's';
                 }
-            }
+            };
 
             if (howMany === 0) {
                 return 'no ' + plural(noun);

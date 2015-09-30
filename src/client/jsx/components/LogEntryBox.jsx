@@ -174,7 +174,7 @@
                 lineHeight: '1.42857143',
                 color: '#333',
                 whiteSpace: 'nowrap'
-            }
+            };
 
             if (userStore.updates.value.userId === this.props.data.userId) {
                 options.push((
@@ -232,7 +232,7 @@
                 padding: '5px',
                 borderRadius: '4px',
                 marginBottom: '5px'
-            }
+            };
 
             var logEntryActionsStyle = {
                 display: 'flex',
@@ -240,7 +240,7 @@
                 backgroundColor: '#b2b2b2',
                 borderBottomLeftRadius: '4px',
                 borderBottomRightRadius: '4px'
-            }
+            };
 
             var cheerButtonStyle = {
                 borderRadius: '0',

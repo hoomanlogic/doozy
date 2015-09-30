@@ -93,7 +93,7 @@
             var result = JSON.parse(evt.target.responseText);
 
             if (this.props.type.toLowerCase() === 'profile') {
-                userStore.updateProfileUriFromSignalR(result[0])
+                userStore.updateProfileUriFromSignalR(result[0]);
             } else if (this.props.type.toLowerCase() === 'focus') {
                 focusStore.updateFromServer(this.props.arg, { iconUri: result[0] });
             }
@@ -113,7 +113,7 @@
         render: function () {
             var img = null;
             if (this.state.dataUrl) {
-                img = <img style={{display: 'inline', maxWidth: '100px', maxHeight: '100px'}} src={this.state.dataUrl} />
+                img = (<img style={{display: 'inline', maxWidth: '100px', maxHeight: '100px'}} src={this.state.dataUrl} />);
             }
 
             return (

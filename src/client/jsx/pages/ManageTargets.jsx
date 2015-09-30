@@ -104,7 +104,7 @@
              */
             targets = _.sortBy(targets, function(target) {
                 return target.name.toLowerCase();
-            })
+            });
 
 
             /**
@@ -144,7 +144,7 @@
                         {targets.map(function(item, index) {
 
                             // find statistics object for this target
-                            var stats = _.find(targetsStats, function (s) { return s.targetId === item.id});
+                            var stats = _.find(targetsStats, function (s) { return s.targetId === item.id; });
 
                             if (typeof stats === 'undefined') {
                                 // new target has no stats
@@ -160,7 +160,7 @@
                                 var streak = {
                                     backgroundColor: stats.periodActive.streak >= stats.periodLongestStreak.streak ? 'hsl(120,90%,40%)' : (stats.periodActive.streak === 0 ? 'hsl(0,90%,40%)' : 'white'),
                                     change: stats.periodActive.streak > stats.periodLongestStreak.streak ? stats.periodActive.streak - stats.periodLongestStreak.streak : 0
-                                }
+                                };
 
                                 var timeTo = new Date(stats.periodActive.ends);
                                 timeTo.setHours(23,59,59,999);
