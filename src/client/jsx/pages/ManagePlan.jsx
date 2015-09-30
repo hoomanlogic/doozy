@@ -3,17 +3,19 @@
     'use strict';
     if (typeof exports === "object") {
         // CommonJS
-        module.exports = exports = factory(require('react'));
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define(['react'], factory);
+        module.exports = exports = factory(
+            require('react'),
+            require('../../js/stores/PlanStore')
+        );
     }
     else {
         // Global (browser)
-        window.ManagePlan = factory(window.React);
+        window.ManagePlan = factory(
+            window.React,
+            window.planStore
+        );
     }
-}(function (React) {
+}(function (React, planStore) {
     'use strict';
     return React.createClass({
         /*************************************************************
@@ -23,11 +25,11 @@
             if (!this.props.planId) {
                 return {
                     id: '',
-                    name: '', 
+                    name: '',
                     kind: '',
                     tagName: '',
                     content: ''
-                };   
+                };
             }
             var plan = _.find(planStore.updates.value, { id: this.props.planId });
             return {
@@ -38,7 +40,7 @@
                 content: plan.content
             };
         },
-        
+
         componentWillReceiveProps: function (nextProps) {
             var plan = _.find(planStore.updates.value, { id: nextProps.planId });
             this.setState({
@@ -75,7 +77,7 @@
             planStore.update(this.state);
             ui.goBack();
         },
-        
+
         /*************************************************************
          * RENDERING
          *************************************************************/
@@ -86,30 +88,30 @@
                 marginBottom: '5px',
                 fontSize: '1.1rem'
             };
-            
+
             var deleteButtonStyle = Object.assign({}, buttonStyle, {
                 marginTop: '3rem'
             });
-            
+
             var buttons = [
-                {type: 'primary', 
+                {type: 'primary',
                  text: 'Save Changes',
                  handler: this.handleSaveClick,
                  buttonStyle: buttonStyle},
-                {type: 'default', 
-                 text: 'Cancel', 
+                {type: 'default',
+                 text: 'Cancel',
                  handler: this.handleCancelClick,
-                 buttonStyle: buttonStyle}, 
-                {type: 'danger', 
-                 text: 'Delete', 
+                 buttonStyle: buttonStyle},
+                {type: 'danger',
+                 text: 'Delete',
                  handler: this.handleDeleteClick,
-                 buttonStyle: deleteButtonStyle} 
+                 buttonStyle: deleteButtonStyle}
             ];
-            
+
             var buttonsDom = buttons.map(function(button, index) {
                 return <button key={index} style={button.buttonStyle} type="button" className={'btn btn-' + button.type} onClick={button.handler}>{button.text}</button>
             });
-            
+
             // html
             return (
                 <div style={{padding: '5px'}}>

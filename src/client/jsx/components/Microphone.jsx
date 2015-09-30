@@ -4,23 +4,23 @@
     if (typeof exports === "object") {
         // CommonJS
         module.exports = exports = factory(
-            require('react')
+            require('react'),
+            require('react/addons'),
+            require('../../js/app/doozy')
         );
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define([
-            'react'
-        ], factory);
     }
     else {
         // Global (browser)
-        window.Microphone = factory(window.React);
+        window.Microphone = factory(
+            window.React,
+            window.addons,
+            window.doozy
+        );
     }
-}(function (React) {
+}(function (React, addons) {
     'use strict';
     return React.createClass({
-        mixins: [React.addons.PureRenderMixin],
+        mixins: [addons.PureRenderMixin],
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
@@ -48,9 +48,9 @@
              * Already listening, abort
              */
             if (this.state.isListening) {
-                return;   
+                return;
             }
-            
+
             this.recognition.start();
             this.setState({isListening: true});
         },
@@ -63,9 +63,9 @@
                 spokenArgs;
 
             if (event.results.length > 0) {
-                
+
                 speech = event.results[0][0].transcript.trim().toLowerCase();
-                
+
                 if (speech.indexOf('i did ') > -1) {
                     context = 'log-action';
                 } else if (speech.indexOf('i will ') > -1 || speech.indexOf('i want to ') > -1) {
@@ -74,7 +74,7 @@
 
                 if (context === 'log-action') {
                     spokenArgs = this.parseSpeech(speech, context);
-                    
+
                     existingAction = actionStore.getActionByName(commandArgs[actionIndex]);
 
                     if (existingAction) {
@@ -83,9 +83,9 @@
                          */
                         logEntryStore.create({
                             actionId: existingAction.id,
-                            date: date, 
-                            duration: duration, 
-                            entry: 'performed', 
+                            date: date,
+                            duration: duration,
+                            entry: 'performed',
                             details: null
                         });
                     } else {
@@ -96,18 +96,18 @@
                          * Call API store function to create and log a new action
                          */
                         logEntryStore.createWithNewAction(newAction, {
-                            date: date, 
-                            duration: duration, 
-                            entry: 'performed', 
+                            date: date,
+                            duration: duration,
+                            entry: 'performed',
                             details: null
                         });
                     }
-                    
+
                 } else if (context === 'new-action') {
                     spokenArgs = this.parseSpeech(speech, context);
-                    
+
                     existingAction = actionStore.getActionByName(spokenArgs.actionName);
-                    
+
                     if (existingAction) {
                         toastr.error('An action by this name already exists');
                     } else {
@@ -126,7 +126,7 @@
 
             this.setState({isListening: false});
         },
-        
+
         handleNoSpeech: function () {
             this.setState({isListening: false});
         },
@@ -152,24 +152,24 @@
             newAction = doozy.action(actionName, tags);
             newAction.created = created;
         },
-        
+
         parseSpeech: function (speech, context) {
             var actionIndex = 0,
                 actionName,
                 commandArgs,
                 commandWord,
                 date,
-                dateSignal = false, 
-                duration, 
+                dateSignal = false,
+                duration,
                 durationSignal = false,
                 parseDuration;
-            
+
             if (context === 'new-action') {
                 contextWord = 'will';
             } else if (context === 'log-action') {
                 contextWord = 'did';
             }
-            
+
             /**
              * Check for a language signal that a date is referenced
              */
@@ -177,7 +177,7 @@
                 dateSignal = true;
                 speech = speech.replace(' i ' + contextWord + ' ', '|');
             }
-            
+
             /**
              * Check for a language signal that a duration is referenced
              */
@@ -185,14 +185,14 @@
                 durationSignal = true;
                 speech = speech.replace(' for ', '|');
             }
-            
+
             /**
              * Remove 'excess' language for clean split of command arguments
              */
             if (speech.slice(0, (3 + contextWord.length)) === 'i ' + contextWord + ' ') {
                 speech = speech.replace('i ' + contextWord + ' ', '');
             }
-            
+
             /**
              * Split command arguments
              */
@@ -209,7 +209,7 @@
                     date = Date.create('today');
                 }
             }
-            
+
             /**
              * Parse duration argument if supplied, else 0
              */
@@ -217,12 +217,12 @@
             if (durationSignal) {
                 parseDuration = babble.get('durations')
                     .translate(commandArgs[commandArgs.length - 1]);
-                
+
                 if (parseDuration.tokens.length > 0) {
                     duration = parseDuration.tokens[0].value.toMinutes();
                 }
             }
-            
+
             /**
              * Determine the arg index that contains the name of the action
              */
@@ -233,12 +233,12 @@
             } else if  (commandArgs.length === 2 && durationSignal) {
                 actionIndex = 0;
             }
-            
+
             /**
              * Build a clean action name (begin with uppercase)
              */
             actionName = commandArgs[actionIndex].slice(0,1).toUpperCase() + commandArgs[actionIndex].slice(1);
-            
+
             /**
              * Return an object literal of parsed arguments
              */
@@ -248,13 +248,13 @@
                 duration: duration
             };
         },
-        
+
         /*************************************************************
          * RENDERING
          *************************************************************/
         render: function () {
             if (typeof webkitSpeechRecognition === 'undefined') {
-                return null;   
+                return null;
             }
 
             var iconStyle = { minWidth: '40px' };
@@ -266,9 +266,9 @@
 
             return (
                 <li key="mic">
-                    <a className={this.state.isListening ? 'active' : ''} 
-                            style={listItemContentStyle} 
-                            href="javascript:;" 
+                    <a className={this.state.isListening ? 'active' : ''}
+                            style={listItemContentStyle}
+                            href="javascript:;"
                             onClick={this.handleSpeakReadyClick}>
                         <i style={iconStyle} className="fa fa-2x fa-microphone"></i>
                     </a>

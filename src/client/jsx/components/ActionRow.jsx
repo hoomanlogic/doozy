@@ -5,20 +5,28 @@
         // CommonJS
         module.exports = exports = factory(
             require('react'),
-            require('babble/src/durations')
+            require('react/addons'),
+            require('babble/src/durations'),
+            require('../../../../../react_components/src/ContentEditable'),
+            require('./RelativeTime'),
+            require('../../js/app/doozy')
         );
     }
     else {
         // Global (browser)
         window.ActionRow = factory(
             window.React,
-            window.babble
+            window.addons,
+            window.babble,
+            window.ContentEditable,
+            window.RelativeTime,
+            window.doozy
         );
     }
-}(function (React, babble) {
+}(function (React, addons, babble, ContentEditable, RelativeTime, doozy) {
     'use strict';
     return React.createClass({
-        mixins: [React.addons.PureRenderMixin],
+        mixins: [addons.PureRenderMixin],
         propTypes: {
             // required
             action: React.PropTypes.object.isRequired,

@@ -4,20 +4,20 @@
     if (typeof exports === "object") {
         // CommonJS
         module.exports = exports = factory(
-            require('react')
+            require('react'),
+            require('../../js/app/doozy'),
+            require('../../../../../react_components/src/ContentEditable')
         );
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define([
-            'react'
-        ], factory);
     }
     else {
         // Global (browser)
-        window.TagListItem = factory(window.React);
+        window.TagListItem = factory(
+            window.React,
+            window.doozy,
+            window.ContentEditable
+        );
     }
-}(function (React) {
+}(function (React, doozy, ContentEditable) {
     'use strict';
     return React.createClass({
         mixins: [React.addons.PureRenderMixin],

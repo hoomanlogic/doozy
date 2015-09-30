@@ -5,15 +5,16 @@
         // CommonJS
         module.exports = exports = factory(
             require('react'),
-            require('./ActionRow'),
-            require('babble/src/durations')
+            require('./LogEntryBox'),
+            require('babble/src/durations'),
+            require('../../js/stores/LogEntryStore')
         );
     }
     else {
         // Global (browser)
-        window.RecentActivity = factory(window.React, window.ActionRow, window.babble);
+        window.RecentActivity = factory(window.React, window.LogEntryBox, window.babble, window.logEntryStore);
     }
-}(function (React, ActionRow, babble) {
+}(function (React, LogEntryBox, babble, logEntryStore) {
     'use strict';
     return React.createClass({
         /*************************************************************

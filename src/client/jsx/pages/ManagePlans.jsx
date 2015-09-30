@@ -4,20 +4,18 @@
     if (typeof exports === "object") {
         // CommonJS
         module.exports = exports = factory(
-            require('react')
+            require('react'),
+            require('../../js/stores/PlanStore')
         );
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define([
-            'react'
-        ], factory);
     }
     else {
         // Global (browser)
-        window.ManagePlans = factory(window.React);
+        window.ManagePlans = factory(
+            window.React,
+            window.planStore
+        );
     }
-}(function (React) {
+}(function (React, planStore) {
     'use strict';
     return React.createClass({
 
@@ -69,7 +67,7 @@
             /**
              * Sort the actions by completed and name
              */
-            plans = _.sortBy(plans, function(plan) { 
+            plans = _.sortBy(plans, function(plan) {
                 return plan.name.toLowerCase();
             })
 

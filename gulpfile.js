@@ -19,7 +19,6 @@ var jsLibs = [
     'node_modules/json2/lib/JSON2/static/json2.js',
     'bower_components/toastr/toastr.js',
     'bower_components/skycons/skycons.js',
-    //'bower_components/showdown/compressed/Showdown.min.js',
     'bower_components/jstorage/jstorage.js',
 
     'bower_components/crypto-js/core.js',
@@ -33,7 +32,6 @@ var jsLibs = [
     'bower_components/selectize/dist/js/standalone/selectize.js',
 	'node_modules/babble/dist/babble.js',
 	'bower_components/Sugar/release/date.js',
-    '../errl_js/src/errl.js',
 
     '../common_js/src/common.js',
     '../common_js/src/extensions.js',

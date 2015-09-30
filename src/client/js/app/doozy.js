@@ -5,20 +5,24 @@
     if (typeof exports === "object") {
         // CommonJS
         module.exports = exports = factory(
-            require('hlcommon')
+            require('hl-common-js/src/common'),
+            require('../stores/ActionStore'),
+            require('../stores/LogEntryStore'),
+            require('../stores/TagStore'),
+            require('../stores/TargetStore')
         );
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define([
-            './hlcommon'
-        ], factory);
     }
     else {
         // Global (browser)
-        window.doozy = factory(window.hlcommon);
+        window.doozy = factory(
+            window.hlcommon,
+            window.actionStore,
+            window.logEntryStore,
+            window.tagStore,
+            window.targetStore
+        );
     }
-}(function (hlcommon) {
+}(function (hlcommon, targetStore) {
     'use strict';
 
     var TAG_KIND = {

@@ -1,20 +1,17 @@
-// CommonJS, AMD, and Global shim
 (function(factory) {
-    'use strict';
-
     if (typeof exports === "object") {
         // CommonJS
-        module.exports = exports = factory();
-    } else if (typeof define === "function" && define.amd) {
-        // AMD
-        define([], factory);
+        module.exports = exports = factory(
+            require('../../js/stores/UserStore')
+        );
     } else {
         // Global (browser)
-        window.doozyNotifications = factory();
+        window.doozyNotifications = factory(
+            window.userStore
+        );
     }
-}(function() {
-    'use strict';
-                  
+}(function(userStore) {
+
     var API_KEY = 'AIzaSyCJI_tjIhwGCyiyXlPxMtEL2L3CR7ocMU0'; // '379697648331-f7b2qooh3g6d787l0c1n6s66jh6us2u1.apps.googleusercontent.com';
     var GCM_ENDPOINT = 'https://android.googleapis.com/gcm/send';
 
@@ -41,7 +38,7 @@
         }
         return mergedEndpoint;
     }
-    
+
     function sendSubscriptionToServer(subscription) {
         // TODO: Send the subscription.endpoint
         // to your server and save it to send a
@@ -78,14 +75,14 @@
                 gcmEndpoint: subscriptionId
             });
         }
-        
+
         var curlCommand = 'curl --header "Authorization: key=' + API_KEY +
             '" --header Content-Type:"application/json" ' + GCM_ENDPOINT +
             ' -d "{\\"registration_ids\\":[\\"' + subscriptionId + '\\"]}"';
 
         console.log(curlCommand);
     }
-    
+
         // Once the service worker is registered set the initial state
     function initialiseState () {
         // Are Notifications supported in the service worker?

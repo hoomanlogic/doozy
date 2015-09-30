@@ -1,24 +1,29 @@
-// CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
     if (typeof exports === "object") {
         // CommonJS
         module.exports = exports = factory(
-            require('react')
+            require('react'),
+            require('../mixins/LayeredComponentMixin'),
+            require('./RelativeTime'),
+            require('../../../../../react_components/src/ContentEditable'),
+            require('../../js/stores/ActionStore'),
+            require('../../js/stores/LogEntryStore'),
+            require('../../js/app/doozy')
         );
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define([
-            'react'
-        ], factory);
     }
     else {
         // Global (browser)
-        window.LogEntryBox = factory(window.React);
+        window.LogEntryBox = factory(
+            window.React,
+            window.LayeredComponentMixin,
+            window.RelativeTime,
+            window.ContentEditable,
+            window.actionStore,
+            window.logEntryStore,
+            window.doozy
+        );
     }
-}(function (React) {
-    'use strict';
+}(function (React, LayeredComponentMixin, RelativeTime, ContentEditable, actionStore, logEntryStore, doozy) {
     return React.createClass({
         mixins: [LayeredComponentMixin],
         /*************************************************************

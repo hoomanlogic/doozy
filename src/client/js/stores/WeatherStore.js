@@ -1,6 +1,4 @@
-// CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
     if (typeof exports === "object") {
         // CommonJS
         module.exports = exports = factory(
@@ -10,10 +8,9 @@
     }
     else {
         // Global (browser)
-        window.weatherStore = factory(window.hlstore, window.$);
+        window.logEntryStore = factory(window.hlstore, window.$);
     }
 }(function (hlstore, $) {
-    'use strict';
 
     var WeatherStore = function () {
         hlstore.Store.call(this);
@@ -67,7 +64,7 @@
                     setLatLng(response.results[0].geometry.location.lat, response.results[0].geometry.location.lng);
                 }
             });
-        }
+        };
 
         this.init = function (userName, userId) {
 
@@ -77,12 +74,12 @@
             /**
              * Update weather every 15 minutes
              */
-            this.intervalHandle = setInterval(updateWeather, 900000)
+            this.intervalHandle = setInterval(updateWeather, 900000);
 
             /**
              * Get weather
              */
-            updateWeather()
+            updateWeather();
 
             /**
              * Use local storage to give user something to look at

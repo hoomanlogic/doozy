@@ -3,17 +3,21 @@
     'use strict';
     if (typeof exports === "object") {
         // CommonJS
-        module.exports = exports = factory(require('react'));
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define(['react'], factory);
+        module.exports = exports = factory(
+            require('react'),
+            require('../components/Uploader'),
+            require('../../js/stores/FocusStore'),
+        );
     }
     else {
         // Global (browser)
-        window.ManageFocus = factory(window.React);
+        window.ManageFocus = factory(
+            window.React,
+            window.Uploader,
+            window.focusStore
+        );
     }
-}(function (React) {
+}(function (React, Uploader, focusStore) {
     'use strict';
     return React.createClass({
         /*************************************************************
@@ -27,7 +31,7 @@
                 name: this.props.currentFocus.name,
                 kind: this.props.currentFocus.kind,
                 tagName: this.props.currentFocus.tagName,
-                filesSelected: false  
+                filesSelected: false
             };
         },
         componentWillReceiveProps: function (nextProps) {
@@ -90,13 +94,13 @@
               marginBottom: '5px',
               fontSize: '1.1rem'
             };
-            
+
             var currentImage;
             if (!this.state.filesSelected) {
                 currentImage = (<img style={{display: 'inline', maxWidth: '100px', maxHeight: '100px'}} src={this.props.currentFocus.iconUri} />);
             }
             //<button style={buttonStyle} type="button" className="btn btn-danger" onClick={this.handleDeleteClick}>Delete Focus</button>
-            
+
             // html
             return (
                 <div style={{padding: '5px'}}>
@@ -121,7 +125,7 @@
                         </div>
                         <button style={buttonStyle} type="button" className="btn btn-primary" onClick={this.handleSaveClick}>Save Changes</button>
                         <button style={buttonStyle} type="button" className="btn btn-default" onClick={this.handleCancelClick}>Cancel</button>
-                        
+
                     </form>
                 </div>
             );

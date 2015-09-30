@@ -4,20 +4,20 @@
     if (typeof exports === "object") {
         // CommonJS
         module.exports = exports = factory(
-            require('react')
+            require('react'),
+            require('../../js/stores/FocusStore'),
+            require('../../js/stores/PlanStore')
         );
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define([
-            'react'
-        ], factory);
     }
     else {
         // Global (browser)
-        window.ActivePlans = factory(window.React);
+        window.ActivePlans = factory(
+            window.React,
+            window.focusStore,
+            window.planStore
+        );
     }
-}(function (React) {
+}(function (React, focusStore, planStore) {
     'use strict';
     return React.createClass({
         /*************************************************************

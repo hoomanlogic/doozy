@@ -3,17 +3,19 @@
     'use strict';
     if (typeof exports === "object") {
         // CommonJS
-        module.exports = exports = factory(require('react'));
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define(['react'], factory);
+        module.exports = exports = factory(
+            require('react'),
+            require('../../js/stores/PlanStepStore')
+        );
     }
     else {
         // Global (browser)
-        window.ManagePlanStep = factory(window.React);
+        window.ManagePlanStep = factory(
+            window.React,
+            window.planStepStore
+        );
     }
-}(function (React) {
+}(function (React, planStepStore) {
     'use strict';
     return React.createClass({
         /*************************************************************
@@ -31,7 +33,7 @@
                     steps.reverse();
                     nextOrdinal = steps[0].ordinal + 1;
                 }
-                
+
                 var state = Object.assign({}, {
                     id: hlcommon.uuid(),
                     planId: this.props.planId,
@@ -68,14 +70,14 @@
                     content: planStep.content,
                     ordinal: planStep.ordinal,
                     tagName: planStep.tagName
-                };   
+                };
             }
         },
-        
+
         componentWillReceiveProps: function (nextProps) {
             var planStep = _.find(planStepStore.updates.value, { id: nextProps.planStepId });
             if (!planStep) {
-                return;   
+                return;
             }
             var durationParse = babble.get('durations').translate((planStep.duration || 0) + ' min');
             if (durationParse.tokens.length === 0) {
@@ -138,7 +140,7 @@
                 try {
                     ord = parseInt(event.target.value);
                 } catch (e) {
-                    
+
                 }
                 this.setState({ordinal: ord});
             }
@@ -156,7 +158,7 @@
             }
             ui.goBack();
         },
-        
+
         /*************************************************************
          * RENDERING
          *************************************************************/
@@ -173,18 +175,18 @@
             });
 
             var buttons = [
-                {type: 'primary', 
+                {type: 'primary',
                  text: 'Save Changes',
                  handler: this.handleSaveClick,
                  buttonStyle: buttonStyle},
-                {type: 'default', 
-                 text: 'Cancel', 
+                {type: 'default',
+                 text: 'Cancel',
                  handler: this.handleCancelClick,
-                 buttonStyle: buttonStyle}, 
-                {type: 'danger', 
-                 text: 'Delete', 
+                 buttonStyle: buttonStyle},
+                {type: 'danger',
+                 text: 'Delete',
                  handler: this.handleDeleteClick,
-                 buttonStyle: deleteButtonStyle} 
+                 buttonStyle: deleteButtonStyle}
             ];
 
             var buttonsDom = buttons.map(function(button, index) {

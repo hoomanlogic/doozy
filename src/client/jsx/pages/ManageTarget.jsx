@@ -3,17 +3,25 @@
     'use strict';
     if (typeof exports === "object") {
         // CommonJS
-        module.exports = exports = factory(require('react'));
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define(['react'], factory);
+        module.exports = exports = factory(
+            require('react'),
+            require('../../js/app/doozy'),
+            require('../../js/stores/ActionStore'),
+            require('../../js/stores/TargetStore'),
+            require('../../js/stores/TagStore')
+        );
     }
     else {
         // Global (browser)
-        window.ManageTarget = factory(window.React);
+        window.ManageTarget = factory(
+            window.React,
+            window.doozy,
+            window.actionStore,
+            window.targetStore,
+            window.tagStore
+        );
     }
-}(function (React) {
+}(function (React, doozy, actionStore, targetStore, tagStore) {
     'use strict';
     return React.createClass({
         /*************************************************************
@@ -130,7 +138,7 @@
 
             // get actions sorted by name
             var actions = actionStore.updates.value;
-            actions = _.sortBy(actions, function(action) { 
+            actions = _.sortBy(actions, function(action) {
                 action.name;
             });
 

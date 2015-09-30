@@ -1,14 +1,28 @@
 var webpack = require("webpack");
 var path = require("path");
 module.exports = {
-    entry: "./entry.js",
+    entry: {
+        doozy:  path.resolve(__dirname, 'entry.js'),
+    },
     eslint: {
         configFile: '.eslintrc'
     },
     module: {
         loaders: [
-            { test: /\.jsx?$/, loader: 'babel' },
-            { test: /\.jsx?$/, loader: 'eslint' },
+            {
+                test: /\.jsx?$/,
+                loader: 'babel',
+                exclude: /node_modules|bower_components/,
+                query: {
+                    optional: ['spec.undefinedToVoid', 'runtime'],
+                    stage: 0
+                }
+            },
+            {
+                test: /\.jsx?$/,
+                loader: 'eslint',
+                exclude: /node_modules|bower_components/
+            },
             { test: /\.css$/, loader: "style!css" },
             { test: /\.less$/, loader: "style!css!less" },
 
@@ -22,16 +36,24 @@ module.exports = {
     externals: {
         //don't bundle the 'react' npm package with our bundle.js
         //but get it from a global 'React' variable
-        'react': 'React'
+        'react': 'React',
+        'react/addons': 'React.addons',
+        'toastr': 'toastr',
+        'jquery': '$',
+        'rx': 'Rx'
     },
     resolve: {
-        extensions: ['', '.js', '.jsx']
+        extensions: ['', '.js', '.jsx', '.json', '.coffee'],
+        root: path.resolve('./src/Client')
     },
     output: {
-        path: __dirname + '/src/Server/js',
-        filename: "bundle.js",
+        filename: 'react-[name].js',
+        path: './src/Server/js',
         //at this directory our bundle file will be available
         //make sure port 8090 is used when launching webpack-dev-server
         publicPath: 'http://localhost:8090/assets'
     }
+    // plugins: [
+    //     new CommonsChunkPlugin("react-shared.js", ["deck", "kiosk", "powertrack", "playground"])
+    // ]
 };

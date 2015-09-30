@@ -6,39 +6,32 @@
         module.exports = exports = factory(
             require('react'),
             require('../../js/stores/ConnectionStore'),
+            require('../../js/stores/FocusStore'),
             require('../../js/stores/NotificationStore'),
-            require('../../js/stores/TimerStore'),
+            require('../../js/stores/UserStore'),
             require('../components/FocusListItem'),
             require('../../../../../react_components/src/DropdownMenu'),
-            require('../components/NotificationDropDown'),
+            require('../components/Microphone'),
+            require('../components/NotificationDropdown'),
             require('../components/Timer')
         );
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define([
-            'react',
-            '../../js/stores/ConnectionStore',
-            '../../js/stores/NotificationStore',
-            '../../js/stores/TimerStore',
-            '../components/FocusListItem',
-            '../../../../../react_components/src/DropdownMenu',
-            '../components/NotificationDropDown',
-            '../components/Timer'
-        ], factory);
     }
     else {
         // Global (browser)
         window.PrimaryNavigation = factory(
             window.React,
             window.connectionStore,
+            window.focusStore,
             window.notificationStore,
+            window.userStore,
             window.FocusListItem,
             window.DropdownMenu,
-            window.NotificationDropDown,
+            window.Microphone,
+            window.NotificationDropdown,
             window.Timer);
     }
-}(function (React, connectionStore, notificationStore, FocusListItem, DropdownMenu, NotificationDropDown, Timer) {
+}(function (React, connectionStore, focusStore, notificationStore, userStore,
+    FocusListItem, DropdownMenu, Microphone, NotificationDropdown, Timer) {
     'use strict';
     return React.createClass({
 

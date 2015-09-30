@@ -1,24 +1,19 @@
-// CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
     if (typeof exports === "object") {
         // CommonJS
         module.exports = exports = factory(
-            require('react')
+            require('react'),
+            require('../../js/app/doozy')
         );
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define([
-            'react'
-        ], factory);
     }
     else {
         // Global (browser)
-        window.ManageLogEntry = factory(window.React);
+        window.ManageLogEntry = factory(
+            window.React,
+            window.doozy
+        );
     }
-}(function (React, Modal) {
-    'use strict';
+}(function (React, doozy) {
     return React.createClass({
         /*************************************************************
          * COMPONENT LIFECYCLE

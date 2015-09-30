@@ -1,21 +1,17 @@
-// CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
     if (typeof exports === "object") {
         // CommonJS
         module.exports = exports = factory(
             require('hl-common-js/src/store'),
-            require('../app/app'),
-            require('jquery')
+            require('jquery'),
+            require('toastr')
         );
     }
     else {
         // Global (browser)
-        window.notificationStore = factory(window.hlstore, window.doozy, window.$);
+        window.notificationStore = factory(window.hlstore, window.$, window.toastr);
     }
-}(function (hlstore, doozy, $) {
-    'use strict';
-
+}(function (hlstore, $, toastr) {
     var NotificationStore = function () {
         hlstore.Store.call(this);
         this.updates.value = [];

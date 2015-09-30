@@ -1,0 +1,48 @@
+<div id="doozy"></div>
+@Html.Partial("_SessionPartial")
+@section Scripts {
+    <script src="~/js/libs.js"></script>
+
+    <!-- SIGNALR auto-generated script -->
+    <script src="~/signalr/hubs"></script>
+
+    <script src="~/js/react-doozy.js?@ViewBag.Version"></script>
+
+    <script>
+        $(document).ready(function () {
+            window.onerror = function () {
+                errl.log(arguments);
+            };
+
+            if (!clientApp.getAccessToken()) {
+                // The following code looks for a fragment in the URL to get the access token which will be
+                // used to call the protected Web API resource
+                var fragment = hluri.getHashToken();
+
+                if (fragment.access_token) {
+                    // returning with access token, restore old hash, or at least hide token
+                    window.location.hash = fragment.state || '';
+                    clientApp.setAccessToken(fragment.access_token);
+                } else {
+                    // no token - so bounce to Authorize endpoint in AccountController to sign in or register
+                    window.location = "/Account/Authorize?client_id=web&response_type=token&state=" + encodeURIComponent(window.location.hash);
+                }
+            }
+            else {
+                $.ajax({
+                    url: clientApp.HOST_NAME + '/api/settings',
+                    dataType: 'json',
+                    headers: {
+                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    },
+                    success: function (data) {
+                        React.render(React.createElement(DoozyApp, { settings: data }), document.getElementById('doozy'));
+                    }.bind(this),
+                    error: function (xhr, status, err) {
+                        console.error('settings.json', status, err.toString());
+                    }.bind(this)
+                });
+            }
+        });
+    </script>
+}

@@ -195,6 +195,7 @@
     <Compile Include="ApiControllers\FocusesController.cs" />
     <Compile Include="ApiControllers\ActionsController.cs" />
     <Compile Include="ApiControllers\ConnectionsController.cs" />
+    <Compile Include="ViewControllers\DoozyController.cs" />
     <Compile Include="ViewControllers\HomeController.cs" />
     <Compile Include="ApiControllers\LogEntriesController.cs" />
     <Compile Include="ViewControllers\ManageController.cs" />
@@ -218,6 +219,9 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="js\jquery.js" />
+    <Content Include="js\jquery.min.js" />
+    <Content Include="js\react-doozy.js" />
     <Content Include="media\android-icon-144x144.png" />
     <Content Include="media\android-icon-192x192.png" />
     <Content Include="media\android-icon-36x36.png" />
@@ -302,6 +306,8 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Views\Home\_SessionPartial.cshtml" />
+    <Content Include="Views\Doozy\_SessionPartial.cshtml" />
+    <Content Include="Views\Doozy\Index.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

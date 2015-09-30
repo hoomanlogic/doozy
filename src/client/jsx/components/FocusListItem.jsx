@@ -4,20 +4,20 @@
     if (typeof exports === "object") {
         // CommonJS
         module.exports = exports = factory(
-            require('react')
+            require('react'),
+            require('../../js/app/doozy'),
+            require('./RelativeTime')
         );
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define([
-            'react'
-        ], factory);
     }
     else {
         // Global (browser)
-        window.FocusListItem = factory(window.React);
+        window.FocusListItem = factory(
+            window.React,
+            window.doozy,
+            window.RelativeTime
+        );
     }
-}(function (React) {
+}(function (React, doozy, RelativeTime) {
     'use strict';
     return React.createClass({
         /*************************************************************
@@ -54,7 +54,7 @@
             var menuItemStyle = {
                 display: 'block',
                 padding: '3px 5px',
-                borderBottom: '1px solid #e0e0e0', 
+                borderBottom: '1px solid #e0e0e0',
                 clear: 'both',
                 fontWeight: '400',
                 lineHeight: '1.42857143',
@@ -62,12 +62,12 @@
                 whiteSpace: 'nowrap',
                 cursor: 'pointer'
             };
-            
+
             var imageStyle = {
                 maxHeight: '50px',
                 width: '50px',
                 paddingRight: '5px',
-                display: 'inline', 
+                display: 'inline',
                 verticalAlign: 'inherit'
             };
 

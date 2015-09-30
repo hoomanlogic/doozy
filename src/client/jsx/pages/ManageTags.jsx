@@ -1,24 +1,20 @@
 // CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
     if (typeof exports === "object") {
         // CommonJS
         module.exports = exports = factory(
-            require('react')
+            require('react'),
+            require('../../js/stores/TagStore')
         );
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define([
-            'react'
-        ], factory);
     }
     else {
         // Global (browser)
-        window.ManageTags = factory(window.React);
+        window.ManageTags = factory(
+            window.React,
+            window.tagStore
+        );
     }
-}(function (React) {
-    'use strict';
+}(function (React, tagStore) {
     return React.createClass({
 
         getInitialState: function () {
@@ -85,7 +81,7 @@
             /**
              * Sort the actions by completed and name
              */
-            tags = _.sortBy(tags, function(tag) { 
+            tags = _.sortBy(tags, function(tag) {
                 return tag.kind + '-' + tag.name.toLowerCase();
             })
 

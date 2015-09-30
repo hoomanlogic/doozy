@@ -4,20 +4,24 @@
     if (typeof exports === "object") {
         // CommonJS
         module.exports = exports = factory(
-            require('react')
+            require('react'),
+            require('../../js/app/doozy'),
+            require('../../js/app/notifications'),
+            require('../../js/stores/UserStore'),
+            require('../components/ProfilePic')
         );
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define([
-            'react'
-        ], factory);
     }
     else {
         // Global (browser)
-        window.ManagePreferences = factory(window.React);
+        window.ManagePreferences = factory(
+            window.React,
+            window.doozy,
+            window.doozyNotifications,
+            window.userStore,
+            window.ProfilePic
+        );
     }
-}(function (React) {
+}(function (React, doozy, doozyNotifications, userStore, ProfilePic) {
     'use strict';
     return React.createClass({
         /*************************************************************
@@ -25,12 +29,12 @@
          *************************************************************/
         componentWillMount: function () {
             /**
-             * Subscribe to User Store to be 
+             * Subscribe to User Store to be
              * notified of updates to the store
              */
             this.userObserver = userStore.updates
                 .subscribe(this.handleUserStoreUpdate);
-            
+
         },
         componentWillUnmount: function () {
             /**
@@ -38,7 +42,7 @@
              */
             this.userObserver.dispose();
         },
-        
+
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
@@ -54,7 +58,7 @@
             }
         },
         handleCancelClick: function () {
-            this.setState({ page: 'Do' });
+            ui.goBack();
         },
         handleSavePreferencesClick: function () {
 
@@ -66,16 +70,16 @@
                 knownAs: this.refs.prefsKnownAs.getDOMNode().value
             });
 
-            this.setState({ page: 'Do' });
+            ui.goBack();
         },
-        
+
         /*************************************************************
          * RENDERING
          *************************************************************/
         render: function () {
 
             var prefs = userStore.updates.value;
-            
+
             /**
              * Inline Styles
              */
@@ -85,7 +89,7 @@
               marginBottom: '5px',
               fontSize: '1.1rem'
             };
-            
+
             // html
             return (
                 <div style={{padding: '5px'}}>
@@ -119,8 +123,8 @@
                             <label htmlFor="prefs-email-notifications">Receive email notifications?</label>
                             <input id="prefs-email-notifications" ref="prefsEmailNotifications" type="checkbox" className="form-control" defaultChecked={prefs.emailNotifications} />
                         </div>
-                        <button type="button" className="btn btn-primary" onClick={this.handleNotifySubscriptionClick}>Subscribe</button>        
-                
+                        <button type="button" className="btn btn-primary" onClick={this.handleNotifySubscriptionClick}>Subscribe</button>
+
                         <button style={buttonStyle} type="button" className="btn btn-primary" onClick={this.handleSavePreferencesClick}>Save Changes</button>
                         <button style={buttonStyle} type="button" className="btn btn-default" onClick={this.handleCancelClick}>Cancel</button>
                     </form>

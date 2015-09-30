@@ -7,12 +7,6 @@
             require('react')
         );
     }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define([
-            'react'
-        ], factory);
-    }
     else {
         // Global (browser)
         window.Uploader = factory(window.React);
@@ -27,7 +21,7 @@
             return {
                 filesSelected: false,
                 dataUrl: null
-            };  
+            };
         },
 
         /*************************************************************
@@ -39,7 +33,7 @@
                     this.props.onFileChange(true);
                 }
                 hlio.convertFileToDataUrl($('#theFile').prop('files')[0], function (fileName, dataUrl) {
-                    this.setState({ 
+                    this.setState({
                         filesSelected: true,
                         dataUrl: dataUrl
                     });
@@ -57,7 +51,7 @@
         handleFileDialogClick: function () {
             $('#theFile').click();
         },
-        
+
 //        handleUploadClick: function (evt) {
 //            if ($('#theFile').prop('files').length > 0) {
 //                for (var i = 0; i < $('#theFile').prop('files').length; i++) {
@@ -67,11 +61,11 @@
 //                }
 //            }
 //        },
-        
+
         uploadFile: function () {
- 
+
             var fd = new FormData();
- 
+
             var count = document.getElementById('theFile').files.length;
 
             for (var index = 0; index < count; index ++) {
@@ -94,7 +88,7 @@
             xhr.send(fd);
 
         },
-        
+
         uploadProgress: function (evt) {
             if (evt.lengthComputable) {
                 var percentComplete = Math.round(evt.loaded * 100 / evt.total);
@@ -104,9 +98,9 @@
                 document.getElementById('progress').innerHTML = 'Uploading...';
             }
         },
- 
+
         uploadComplete: function (evt) {
-            var result = JSON.parse(evt.target.responseText); 
+            var result = JSON.parse(evt.target.responseText);
 
             if (this.props.type.toLowerCase() === 'profile') {
                 userStore.updateProfileUriFromSignalR(result[0])

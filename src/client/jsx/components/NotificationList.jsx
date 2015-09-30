@@ -10,15 +10,6 @@
             require('./NotificationListItem')
         );
     }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define([
-            'react',
-            '../../js/stores/NotificationStore',
-            '../../../../../react_components/src/DropDownMenu',
-            './NotificationListItem'
-        ], factory);
-    }
     else {
         // Global (browser)
         window.NotificationList = factory(
@@ -54,20 +45,20 @@
         render: function () {
             var domUnread,
                 domRead;
-            
+
             var notifications = _.sortBy(notificationStore.updates.value, 'occurredAt').reverse();
-            
+
             var unreadNotifications = _.where(notifications, {readAt: null});
-            
-            var readNotifications = _.filter(notifications, function (item) { 
+
+            var readNotifications = _.filter(notifications, function (item) {
                 return typeof item.readAt !== 'undefined' && item.readAt !== null;
             });
-            
+
             if (unreadNotifications.length > 0) {
                 domUnread = (
                     <div>
                         <ul className="notifications">
-                            {unreadNotifications.map( 
+                            {unreadNotifications.map(
                                 function(item) {
                                     return (<NotificationListItem key={item.id} data={item} handleNotificationClicked={this.handleNotificationClicked} />);
                                 }.bind(this)
@@ -82,7 +73,7 @@
                     </div>
                 );
             }
-            
+
             var notificationsStyle = {
                 listStyle: 'none',
                 padding: '0'
@@ -94,7 +85,7 @@
                     <div>
                         <h2 style={{margin: '0.2rem'}}>Recent Notifications</h2>
                         <ul style={notificationsStyle}>
-                            {readNotifications.map( 
+                            {readNotifications.map(
                                 function(item) {
                                     return (<NotificationListItem key={item.id} data={item} handleNotificationClicked={this.handleNotificationClicked} />);
                                 }.bind(this)
@@ -103,7 +94,7 @@
                     </div>
                 );
             }
-            
+
             return (
                 <div style={{padding: '5px'}}>
                     {domUnread}

@@ -1,4 +1,3 @@
-// CommonJS, AMD, and Global shim
 (function (factory) {
     'use strict';
     if (typeof exports === "object") {
@@ -6,45 +5,72 @@
         module.exports = exports = factory(
             require('react'),
             require('../../js/stores/ActionStore'),
+            require('../../js/stores/ConnectionStore'),
+            require('../../js/stores/UserStore'),
+            require('../../js/stores/FocusStore'),
+            require('../../js/stores/LogEntryStore'),
+            require('../../js/stores/NotificationStore'),
+            require('../../js/stores/PlanStore'),
+            require('../../js/stores/PlanStepStore'),
+            require('../../js/stores/TagStore'),
+            require('../../js/stores/TargetStore'),
+            require('../../js/stores/WeatherStore'),
+            require('../../js/app/notifications'),
+            require('./PrimaryNavigation'),
             require('../components/TimerBar'),
             require('../components/WeatherIcon'),
             require('../components/FocusActions'),
             require('./ManageFocus'),
             require('./ManageAction'),
             require('./ManageLogEntry'),
+            require('./ManagePlan'),
+            require('./ManagePlans'),
+            require('./ManagePreferences'),
+            require('./ManageTarget'),
+            require('./ManageTag'),
+            require('./ManageTargets'),
+            require('./ManageTags'),
             require('../components/Conversation'));
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define([
-            'react',
-            '../../js/stores/ActionStore',
-            '../components/TimerBar',
-            '../components/WeatherIcon',
-            '../components/FocusActions',
-            './ManageFocus',
-            './ManageAction',
-            './ManageLogEntry',
-            '../components/Conversation'
-        ], factory);
     }
     else {
         // Global (browser)
         window.DoozyApp = factory(
             window.React,
             window.actionStore,
+            window.connectionStore,
+            window.userStore,
+            window.focusStore,
+            window.logEntryStore,
+            window.notificationStore,
+            window.planStore,
+            window.planStepStore,
+            window.tagStore,
+            window.targetStore,
+            window.weatherStore,
+            window.doozyNotifications,
+            window.PrimaryNavigation,
             window.TimerBar,
             window.WeatherIcon,
             window.FocusActions,
             window.ManageFocus,
             window.ManageAction,
             window.ManageLogEntry,
+            window.ManagePlan,
+            window.ManagePlans,
+            window.ManagePreferences,
+            window.ManageTarget,
+            window.ManageTag,
+            window.ManageTargets,
+            window.ManageTags,
             window.Conversation
         );
     }
-}(function (React, actionStore, TimerBar, WeatherIcon, FocusActions, ManageFocus, ManageAction, ManageLogEntry, Conversation) {
-    'use strict';
-    return React.createClass({
+}(function (React, actionStore, connectionStore, userStore, focusStore, logEntryStore, notificationStore, planStore,
+    planStepStore, tagStore, targetStore, weatherStore, doozyNotifications, PrimaryNavigation,
+    TimerBar, WeatherIcon, FocusActions, ManageFocus, ManageAction, ManageLogEntry, ManagePlan,
+    ManagePlans, ManagePreferences, ManageTarget, ManageTag, ManageTargets, ManageTags, Conversation) {
+
+    var DoozyApp = React.createClass({
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
@@ -667,4 +693,5 @@
         },
     });
 
+    return DoozyApp;
 }));

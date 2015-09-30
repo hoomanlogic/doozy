@@ -1,18 +1,16 @@
-// CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
     if (typeof exports === "object") {
         // CommonJS
         module.exports = exports = factory(
-            require('hl-common-js/src/store')
+            require('hl-common-js/src/store'),
+            require('hl-common-js/src/io')
         );
     }
     else {
         // Global (browser)
-        window.timerStore = factory(window.hlstore);
+        window.timerStore = factory(window.hlstore, window.hlio);
     }
-}(function (hlstore) {
-    'use strict';
+}(function (hlstore, hlio) {
 
     var TimerStore = function () {
         hlstore.Store.call(this);

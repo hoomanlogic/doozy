@@ -1,24 +1,23 @@
-// CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
     if (typeof exports === "object") {
         // CommonJS
         module.exports = exports = factory(
-            require('react')
+            require('react'),
+            require('../../js/app/doozy'),
+            require('../../js/stores/TargetStore'),
+            require('../components/Indicator')
         );
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define([
-            'react'
-        ], factory);
     }
     else {
         // Global (browser)
-        window.ManageTargets = factory(window.React);
+        window.ManageTargets = factory(
+            window.React,
+            window.doozy,
+            window.targetStore,
+            window.Indicator
+        );
     }
-}(function (React) {
-    'use strict';
+}(function (React, doozy, targetStore, Indicator) {
     return React.createClass({
         /*************************************************************
          * COMPONENT LIFECYCLE
@@ -115,7 +114,7 @@
             /**
              * Sort the actions by completed and name
              */
-            targets = _.sortBy(targets, function(target) { 
+            targets = _.sortBy(targets, function(target) {
                 return target.name.toLowerCase();
             })
 

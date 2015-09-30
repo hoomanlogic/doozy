@@ -4,20 +4,18 @@
     if (typeof exports === "object") {
         // CommonJS
         module.exports = exports = factory(
-            require('react')
+            require('react'),
+            require('../../js/app/doozy')
         );
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define([
-            'react'
-        ], factory);
     }
     else {
         // Global (browser)
-        window.ManageAction = factory(window.React);
+        window.ManageAction = factory(
+            window.React,
+            window.doozy
+        );
     }
-}(function (React) {
+}(function (React, doozy) {
     'use strict';
     return React.createClass({
 

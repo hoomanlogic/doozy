@@ -7,23 +7,12 @@
             require('react'),
             require('../../js/stores/ActionStore'),
             require('./TagList'),
+            require('./ActivePlans'),
             require('./NextActions'),
             require('./UpcomingActions'),
             require('./RecentActivity'),
             require('./BoxedActions')
         );
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define([
-            'react',
-            '../../js/stores/ActionStore',
-            './TagList',
-            './NextActions',
-            './UpcomingActions',
-            './RecentActivity',
-            './BoxedActions'
-        ], factory);
     }
     else {
         // Global (browser)
@@ -31,13 +20,14 @@
             window.React,
             window.actionStore,
             window.TagList,
+            window.ActivePlans,
             window.NextActions,
             window.UpcomingActions,
             window.RecentActivity,
             window.BoxedActions
         );
     }
-}(function (React, actionStore, TagList, NextActions, UpcomingActions, RecentActivity, BoxedActions) {
+}(function (React, actionStore, TagList, ActivePlans, NextActions, UpcomingActions, RecentActivity, BoxedActions) {
     'use strict';
     return React.createClass({
         /*************************************************************

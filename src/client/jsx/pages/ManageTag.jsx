@@ -1,20 +1,19 @@
-// CommonJS, AMD, and Global shim
 (function (factory) {
-    'use strict';
     if (typeof exports === "object") {
         // CommonJS
-        module.exports = exports = factory(require('react'));
-    }
-    else if (typeof define === "function" && define.amd) {
-        // AMD
-        define(['react'], factory);
+        module.exports = exports = factory(
+            require('react'),
+            require('../../js/stores/TagStore')
+        );
     }
     else {
         // Global (browser)
-        window.ManageTag = factory(window.React);
+        window.ManageTag = factory(
+            window.React,
+            window.tagStore
+        );
     }
-}(function (React) {
-    'use strict';
+}(function (React, tagStore) {
     return React.createClass({
         /*************************************************************
          * COMPONENT LIFECYCLE
@@ -23,10 +22,10 @@
             if (!this.props.tagId) {
                 return {
                     id: '',
-                    name: '', 
+                    name: '',
                     kind: '',
                     content: ''
-                };   
+                };
             }
             var tag = _.find(tagStore.updates.value, { id: this.props.tagId });
             return {
@@ -36,11 +35,11 @@
                 content: tag.content
             };
         },
-        
+
         componentWillReceiveProps: function (nextProps) {
             var tag = _.find(tagStore.updates.value, { id: nextProps.tagId });
             if (!tag) {
-                return;   
+                return;
             }
             this.setState({
                 id: tag.id,
@@ -74,7 +73,7 @@
             tagStore.update(this.state);
             ui.goBack();
         },
-        
+
         /*************************************************************
          * RENDERING
          *************************************************************/
@@ -85,30 +84,30 @@
                 marginBottom: '5px',
                 fontSize: '1.1rem'
             };
-            
+
             var deleteButtonStyle = Object.assign({}, buttonStyle, {
                 marginTop: '3rem'
             });
-            
+
             var buttons = [
-                {type: 'primary', 
+                {type: 'primary',
                  text: 'Save Changes',
                  handler: this.handleSaveClick,
                  buttonStyle: buttonStyle},
-                {type: 'default', 
-                 text: 'Cancel', 
+                {type: 'default',
+                 text: 'Cancel',
                  handler: this.handleCancelClick,
-                 buttonStyle: buttonStyle}, 
-                {type: 'danger', 
-                 text: 'Delete', 
+                 buttonStyle: buttonStyle},
+                {type: 'danger',
+                 text: 'Delete',
                  handler: this.handleDeleteClick,
-                 buttonStyle: deleteButtonStyle} 
+                 buttonStyle: deleteButtonStyle}
             ];
-            
+
             var buttonsDom = buttons.map(function(button, index) {
                 return <button key={index} style={button.buttonStyle} type="button" className={'btn btn-' + button.type} onClick={button.handler}>{button.text}</button>
             });
-            
+
             // html
             return (
                 <div style={{padding: '5px'}}>
