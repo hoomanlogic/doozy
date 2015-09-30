@@ -99,7 +99,7 @@
                         toastr.error('An action by this name already exists');
                     } else {
 
-                        newAction = this.createActionObjectLiteral(spokenArgs.actionName, date);
+                        newAction = this.createActionObjectLiteral(spokenArgs.actionName, spokenArgs.date);
 
                         newAction.duration = spokenArgs.duration;
                         newAction.nextDate = spokenArgs.date;
@@ -138,6 +138,7 @@
              */
             newAction = doozy.action(actionName, tags);
             newAction.created = created;
+            return newAction;
         },
 
         parseSpeech: function (speech, context) {
