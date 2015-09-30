@@ -45,11 +45,11 @@ var jsLibs = [
 ];
 
 var cssAll = [
-	'bower_components/fontawesome/css/font-awesome.min.css',
-	'bower_components/toastr/build/toastr.min.css',
+	'bower_components/fontawesome/css/font-awesome.css',
+	'bower_components/toastr/build/toastr.css',
 	'bower_components/selectize/dist/css/selectize.css',
 	'bower_components/selectize/dist/css/selectize.default.css',
-	'src/server/css/app.min.css'
+	'src/server/css/app.css'
 ];
 
 gulp.task('build', ['concat-js-libs', 'concat-css-all']);
@@ -76,7 +76,7 @@ gulp.task('concat-css-all', ['compile-less'], function () {
         .pipe(plumber({
             errorHandler: onError
         }))
-        .pipe(concat('all.min.css'))
+        .pipe(concat('all.css'))
         .pipe(gulp.dest('src/server/css'));
 });
 

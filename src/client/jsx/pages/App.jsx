@@ -10,6 +10,7 @@
         require('../../js/stores/PlanStore'),
         require('../../js/stores/PlanStepStore'),
         require('../../js/stores/TagStore'),
+        require('../../js/stores/TimerStore'),
         require('../../js/stores/TargetStore'),
         require('../../js/stores/WeatherStore'),
         require('../../js/app/notifications'),
@@ -30,7 +31,7 @@
         require('../components/Conversation')
     );
 }(function (React, actionStore, connectionStore, userStore, focusStore, logEntryStore, notificationStore, planStore,
-    planStepStore, tagStore, targetStore, weatherStore, doozyNotifications, PrimaryNavigation,
+    planStepStore, tagStore, timerStore, targetStore, weatherStore, doozyNotifications, PrimaryNavigation,
     TimerBar, WeatherIcon, FocusActions, ManageFocus, ManageAction, ManageLogEntry, ManagePlan,
     ManagePlans, ManagePreferences, ManageTarget, ManageTag, ManageTargets, ManageTags, Conversation) {
 

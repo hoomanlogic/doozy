@@ -4,12 +4,7 @@
 <div id="doozy"></div>
 @Html.Partial("_SessionPartial")
 @section Scripts {
-    <script src="~/js/libs.js"></script>
-
-    <!-- SIGNALR auto-generated script -->
-    <script src="~/signalr/hubs"></script>
-
-    <script src="~/js/react-doozy.js?@ViewBag.Version"></script>
+    @Scripts.Render("~/bundles/react-doozy")
 
     <script>
         $(document).ready(function () {

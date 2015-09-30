@@ -26,10 +26,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- STYLESHEETS -->
-    <link href="~/css/all.min.css" rel="stylesheet" />
+    <link rel=" stylesheet" type="text/css" href="~/css/all.min.css">
 
     <!-- SCRIPTS - BEFORE BODY -->
-    <script src="~/js/react-with-addons.js"></script>
+    @Scripts.Render("~/bundles/react-libs")
+
+    <!-- SIGNALR auto-generated script -->
+    <script src="~/signalr/hubs"></script>
+
 </head>
 <body>
     @RenderBody()
