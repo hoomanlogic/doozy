@@ -6,7 +6,7 @@
         require('../stores/TagStore'),
         require('../stores/TargetStore')
     );
-}(function (hlcommon, targetStore) {
+}(function (hlcommon, actionStore, logEntryStore, tagStore, targetStore) {
 
     var TAG_KIND = {
         FOCUS: '!',
