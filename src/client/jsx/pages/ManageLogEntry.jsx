@@ -3,9 +3,10 @@
         require('react'),
         require('../../js/app/doozy'),
         require('../../js/stores/ActionStore'),
-        require('../../js/stores/LogEntryStore')
+        require('../../js/stores/LogEntryStore'),
+        require('babble')
     );
-}(function (React, doozy, actionStore, logEntryStore) {
+}(function (React, doozy, actionStore, logEntryStore, babble) {
     var ManageLogEntry = React.createClass({
         /*************************************************************
          * COMPONENT LIFECYCLE

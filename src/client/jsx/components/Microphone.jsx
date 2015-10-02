@@ -4,9 +4,10 @@
         require('react/addons'),
         require('../../js/app/doozy'),
         require('../../js/stores/ActionStore'),
-        require('../../js/stores/LogEntryStore')
+        require('../../js/stores/LogEntryStore'),
+        require('babble')
     );
-}(function (React, addons, doozy, actionStore, logEntryStore) {
+}(function (React, addons, doozy, actionStore, logEntryStore, babble) {
     var Microphone = React.createClass({
         mixins: [addons.PureRenderMixin],
         /*************************************************************

@@ -1,9 +1,10 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
-        require('../../js/stores/TimerStore')
+        require('../../js/stores/TimerStore'),
+        require('babble')
     );
-}(function (React, timerStore) {
+}(function (React, timerStore, babble) {
     var TimerBar = React.createClass({
         mixins: [React.addons.PureRenderMixin],
         /*************************************************************

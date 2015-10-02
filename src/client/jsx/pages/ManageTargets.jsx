@@ -3,9 +3,10 @@
         require('react'),
         require('../../js/app/doozy'),
         require('../../js/stores/TargetStore'),
-        require('../components/Indicator')
+        require('../components/Indicator'),
+        require('babble')
     );
-}(function (React, doozy, targetStore, Indicator) {
+}(function (React, doozy, targetStore, Indicator, babble) {
     var ManageTargets = React.createClass({
         /*************************************************************
          * COMPONENT LIFECYCLE

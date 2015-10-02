@@ -2,7 +2,7 @@
     module.exports = exports = factory(
         require('react'),
         require('./ActionRow'),
-        require('babble/src/durations')
+        require('babble')
     );
 }(function (React, ActionRow, babble) {
     var NextActions = React.createClass({

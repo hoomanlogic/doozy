@@ -7,9 +7,10 @@
         require('../../js/stores/ActionStore'),
         require('../../js/stores/LogEntryStore'),
         require('../../js/stores/UserStore'),
-        require('../../js/app/doozy')
+        require('../../js/app/doozy'),
+        require('babble')
     );
-}(function (React, LayeredComponentMixin, RelativeTime, ContentEditable, actionStore, logEntryStore, userStore, doozy) {
+}(function (React, LayeredComponentMixin, RelativeTime, ContentEditable, actionStore, logEntryStore, userStore, doozy, babble) {
     var LogEntryBox = React.createClass({
         mixins: [LayeredComponentMixin],
         /*************************************************************

@@ -264,9 +264,7 @@
     <Content Include="js\libs.js" />
     <Content Include="js\libs.min.js" />
     <Content Include="js\react-with-addons.js" />
-    <Content Include="js\react-with-addons.min.js" />
     <Content Include="js\react.js" />
-    <Content Include="js\react.min.js" />
     <Content Include="media\hoomanlogic.svg" />
     <Content Include="media\ms-icon-144x144.png" />
     <Content Include="media\ms-icon-150x150.png" />

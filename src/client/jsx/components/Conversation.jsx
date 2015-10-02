@@ -1,7 +1,7 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
-        require('babble/src/moments'),
+        require('babble'),
         require('./SendMessage')
     );
 }(function (React, babble, SendMessage) {

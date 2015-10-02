@@ -2,12 +2,11 @@
     module.exports = exports = factory(
         require('react'),
         require('react/addons'),
-        require('babble/src/durations'),
         require('../../../../../react_components/src/ContentEditable'),
         require('./RelativeTime'),
         require('../../js/app/doozy')
     );
-}(function (React, addons, babble, ContentEditable, RelativeTime, doozy) {
+}(function (React, addons, ContentEditable, RelativeTime, doozy) {
     var ActionRow = React.createClass({
         mixins: [addons.PureRenderMixin],
         propTypes: {

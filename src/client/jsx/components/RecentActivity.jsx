@@ -2,10 +2,9 @@
     module.exports = exports = factory(
         require('react'),
         require('./LogEntryBox'),
-        require('babble/src/durations'),
         require('../../js/stores/LogEntryStore')
     );
-}(function (React, LogEntryBox, babble, logEntryStore) {
+}(function (React, LogEntryBox, logEntryStore) {
     var RecentActivity = React.createClass({
         /*************************************************************
          * COMPONENT LIFECYCLE

@@ -1,9 +1,10 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
-        require('../../js/stores/PlanStepStore')
+        require('../../js/stores/PlanStepStore'),
+        require('babble')
     );
-}(function (React, planStepStore) {
+}(function (React, planStepStore, babble) {
     var ManagePlanStep = React.createClass({
         /*************************************************************
          * COMPONENT LIFECYCLE

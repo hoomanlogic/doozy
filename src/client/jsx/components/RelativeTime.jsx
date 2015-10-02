@@ -1,8 +1,9 @@
 (function (factory) {
     module.exports = exports = factory(
-        require('react')
+        require('react'),
+        require('babble')
     );
-}(function (React) {
+}(function (React, babble) {
     var RelativeTime = React.createClass({
         propTypes: {
             isoTime: React.PropTypes.string,

@@ -4,9 +4,10 @@
         require('../stores/ActionStore'),
         require('../stores/LogEntryStore'),
         require('../stores/TagStore'),
-        require('../stores/TargetStore')
+        require('../stores/TargetStore'),
+        require('babble')
     );
-}(function (hlcommon, actionStore, logEntryStore, tagStore, targetStore) {
+}(function (hlcommon, actionStore, logEntryStore, tagStore, targetStore, babble) {
 
     var TAG_KIND = {
         FOCUS: '!',

@@ -14,6 +14,8 @@ var onError = function (err) {
 
 var jsLibs = [
     'node_modules/jquery/dist/jquery.js',
+    'nuget_packages/Microsoft.AspNet.SignalR.JS.2.1.2/content/Scripts/jquery.signalR-2.1.2.js',
+
     'bower_components/underscore/underscore.js',
     'node_modules/json2/lib/JSON2/static/json2.js',
     'bower_components/toastr/toastr.js',
@@ -27,9 +29,7 @@ var jsLibs = [
     'bower_components/crypto-js/cipher-core.js',
     'bower_components/crypto-js/aes.js',
 
-    'nuget_packages/Microsoft.AspNet.SignalR.JS.2.1.2/content/Scripts/jquery.signalR-2.1.2.js',
     'bower_components/selectize/dist/js/standalone/selectize.js',
-	'node_modules/babble/dist/babble.js',
 	'bower_components/Sugar/release/date.js',
 
     '../common_js/src/common.js',
