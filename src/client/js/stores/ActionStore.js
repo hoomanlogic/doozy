@@ -22,6 +22,16 @@
                     }
                 });
             },
+            getAction: function (actionId) {
+                return $.ajax({
+                    context: this,
+                    url: clientApp.HOST_NAME + '/api/actions/' + encodeURIComponent(actionId),
+                    dataType: 'json',
+                    headers: {
+                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    }
+                });
+            },
             postAction: function (action) {
                 return $.ajax({
                     context: this,
@@ -113,6 +123,27 @@
             }, function () {
                 updates.onNext(updates.value.concat(action));
             });
+        };
+
+        this.refreshActions = function (actionIds) {
+            if (!actionIds || actionIds.length === 0) {
+                return;
+            }
+            actionIds.forEach(function (actionId) {
+                _api.getAction(actionId)
+                .done( function (action) {
+                    if (action) {
+                        var actionToUpdate = _.find(updates.value, function(item) {
+                            return item.id === action.id;
+                        });
+                        if (actionToUpdate) {
+                            actionToUpdate = Object.assign(actionToUpdate, action);
+                            updates.onNext(updates.value);
+                        }
+                    }
+                });
+            });
+
         };
 
         this.update = function (action) {

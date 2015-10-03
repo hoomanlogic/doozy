@@ -72,12 +72,19 @@
             window['ui'].addAction = this.addAction;
             window['ui'].editAction = this.editAction;
             window['ui'].logEntry = this.logEntry;
+            window['ui'].logNewAction = this.logNewAction;
             window['ui'].editLogEntry = this.editLogEntry;
             window['ui'].goTo = this.goTo;
             window['ui'].goBack = this.goBack;
             window['ui'].openConversation = this.selectConversation;
             window['ui'].getHeightBuffer = this.getHeightBuffer;
             window['ui'].queueRequest = this.queueRequest;
+            window['ui'].message = function (text, kind) {
+                if (!kind) {
+                    kind = 'info';
+                }
+                toastr[kind](text);
+            }
 
             // let error logger know which user
             errl.config.getUser = function () {
@@ -313,19 +320,18 @@
 
         addAction: function (action) {
             this.goTo('Manage Action', { actionId: (action ? action.id : null), mode: 'Add'});
-            //this.refs.addeditaction.add(action);
         },
         editAction: function (action) {
             this.goTo('Manage Action', { actionId: (action ? action.id : null), mode: 'Edit'});
-            //this.refs.addeditaction.edit(action);
         },
         editLogEntry: function (logEntry) {
             this.goTo('Manage Log Entry', { logEntryId: logEntry.id });
-            //this.refs.logaction.log(action);
         },
         logEntry: function (action) {
             this.goTo('Log Recent Action', { actionId: action.id });
-            //this.refs.logaction.log(action);
+        },
+        logNewAction: function (actionName) {
+            this.goTo('Log New Action', { actionName: actionName });
         },
         goTo: function (page, options) {
             if (this.state.page !== page) {
@@ -540,7 +546,7 @@
             window['ui'].page = this.state.page;
 
             //var weatherBackdrop = this.renderWeatherBackdrop();
-            var action, mode, actionId, logEntry, logEntryId, planId, tagId, targetId;
+            var action, mode, actionId, actionName, logEntry, logEntryId, planId, tagId, targetId;
 
             var page = null,
                 hideMain = true;
@@ -561,12 +567,15 @@
                     action = actionStore.getActionById(actionId);
                 }
                 page = (<ManageLogEntry action={action} focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : ''} />);
+            } else if (this.state.page === 'Log New Action') {
+                actionName = (this.state.pageOptions || {}).actionName || null;
+                page = (<ManageLogEntry actionName={actionName} focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : ''} />);
             } else if (this.state.page === 'Manage Log Entry') {
                 logEntryId = (this.state.pageOptions || {}).logEntryId || null;
                 if (logEntryId) {
                     logEntry = logEntryStore.getLogEntryById(logEntryId);
                 }
-                page = (<ManageLogEntry logEntry={logEntry} mode={mode} focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : ''}  />);
+                page = (<ManageLogEntry logEntry={logEntry} mode={''} focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : ''}  />);
             } else if (this.state.page === 'Conversation' && typeof this.state.activeConversation !== 'undefined' && this.state.activeConversation !== null) {
                 page = (<Conversation conversation={this.state.activeConversation} send={this.send} userName={this.props.settings.userName} onClose={this.handleConversationClose} />);
             } else if (this.state.page === 'Notifications') {

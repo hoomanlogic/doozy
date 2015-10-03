@@ -79,7 +79,7 @@
             if (event.target === this.refs.name.getDOMNode()) {
                 this.setState({name: event.target.value});
             } else if (event.target === this.refs.entityType.getDOMNode()) {
-                this.setState({entityType: event.target.value});
+                this.setState({entityType: event.target.value, entityId: null});
             } else if (event.target === this.refs.measure.getDOMNode()) {
                 this.setState({measure: parseInt(event.target.value)});
             } else if (event.target === this.refs.period.getDOMNode()) {
@@ -104,6 +104,11 @@
             } else if (this.state.entityType === 'Action') {
                 entity = actionStore.getActionByName(entity);
             }
+            if (!entity) {
+                ui.message('Cannot save target without a tag or action assigned', 'error');
+                return;
+            }
+
             this.state.entityId = entity.id;
             if (this.state.isNew) {
                 targetStore.create(this.state);
@@ -138,7 +143,9 @@
             // set current value
             if (this.state.entityId) {
                 var action = actionStore.getActionById(this.state.entityId);
-                selectize.setValue(action.name);
+                if (action) {
+                    selectize.setValue(action.name);
+                }
             }
         },
         setOptionsTag: function (selectize) {
@@ -164,7 +171,9 @@
             // set current value
             if (this.state.entityId) {
                 var tag = tagStore.getTagById(this.state.entityId);
-                selectize.setValue(doozy.getTagValue(tag));
+                if (tag) {
+                    selectize.setValue(doozy.getTagValue(tag));
+                }
             }
         },
         setupActionsControl: function () {

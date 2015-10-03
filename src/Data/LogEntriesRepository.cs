@@ -191,6 +191,7 @@ namespace HoomanLogic.Data
                     var action = db.Actions.Where(a => a.Id == model.ActionId).FirstOrDefault();
                     if (action != null)
                     {
+                        row.ActionId = model.ActionId;
                         var tags = action.Tags.Select(tag => tag.TagKind.Symbol + tag.Name).ToList();
                         if (model.Tags == null)
                         {
@@ -201,6 +202,10 @@ namespace HoomanLogic.Data
                             model.Tags = model.Tags.Concat(tags).Distinct().ToList();
                         }
                     }
+                }
+                else
+                {
+                    row.ActionId = null;
                 }
 
                 SyncTags(db, userId, model, row);

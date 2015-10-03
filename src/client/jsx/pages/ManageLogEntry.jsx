@@ -16,6 +16,7 @@
             var state = {
                 id: '',
                 name: '',
+                actionName: '',
                 isNewAction: false,
                 date: Date.create('today'),
                 dateInput: 'today',
@@ -27,7 +28,7 @@
                 kind: 'performed'
             };
 
-            if (this.props.logEntry) {
+            if (this.props.logEntry) { // Log Entry
 
                 // create a copy of the action for editing
                 var editableCopy = {};
@@ -41,7 +42,7 @@
 
                 state.id = editableCopy.id;
                 if (editableCopy.actionId) {
-
+                    state.actionName = actionStore.getActionById(editableCopy.actionId).name;
                 }
 
                 state.details = editableCopy.details;
@@ -51,15 +52,14 @@
                 state.dateInput = state.date.toLocaleDateString();
                 state.dateFeedback = '';
             }
-
-            return state;
-        },
-
-        componentWillMount: function () {
-            if (this.props.action) {
-                this.log(this.props.action);
+            else if (this.props.action) { // Log Action
+                state.actionName = this.props.action.name || '';
+            }
+            else if (this.props.actionName) { // Log New Action
+                state.actionName = actionName;
             }
 
+            return state;
         },
 
         componentDidMount: function () {
@@ -67,8 +67,8 @@
              * Setup Action selector
              */
             this.setupActionsControl();
-            var selectize = $(this.refs.name.getDOMNode())[0].selectize;
-            this.setOptionsAction(selectize);
+            var selectActions = $(this.refs.name.getDOMNode())[0].selectize;
+            this.setOptionsAction(selectActions);
 
             /**
              * Setup Tag selector
@@ -78,14 +78,8 @@
             /**
              * Set Action Value
              */
-            if (this.props.action && this.props.action.name) {
-                if (this.state.isNewAction && this.props.action.name.length > 0) {
-                    selectize.addOption({
-                        value: this.props.action.name,
-                        text: this.props.action.name
-                    });
-                }
-                selectize.setValue(this.props.action.name);
+            if (this.state.actionName) {
+                selectActions.setValue(this.state.actionName);
             }
 
             /**
@@ -98,11 +92,6 @@
             }
         },
 
-        componentDidUpdate: function () {
-            if (this.state.isNewAction) {
-                this.setupTagsControl();
-            }
-        },
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
@@ -169,15 +158,8 @@
                 tags,
                 validationApology;
 
-            // call method to save the action
-            names = this.refs.name.getDOMNode().value.split('|');
-
             validationApology = 'Sorry, we don\'t have enough information yet.\n\n';
 
-            //if (names.length === 1 && names[0] === '') {
-            //    toastr.error(validationApology + 'What did you do?');
-            //    return;
-            //}
 
             if (String(this.state.date.getTime()) === 'NaN') {
                 toastr.error(validationApology + 'When did you do this?');
@@ -198,7 +180,12 @@
                 tags: tags
             };
 
+            //if (names.length === 1 && names[0] === '') {
+            //    toastr.error(validationApology + 'What did you do?');
+            //    return;
+            //}
             // get action info
+            names = this.refs.name.getDOMNode().value.split('|');
             if (names.length > 0 && names[0] !== '') {
                 actionName = names[0];
                 existingAction = actionStore.getActionByName(actionName);
@@ -234,18 +221,18 @@
         /*************************************************************
          * MISC
          *************************************************************/
-        setOptionsAction: function (selectize) {
+        setOptionsAction: function (selectActions) {
             // clear previously set options
-            selectize.clearOptions();
+            selectActions.clearOptions();
 
             // get actions sorted by name
-            var actions = actionStore.updates.value;
-            actions = _.sortBy(actions, function(action) {
+            var actions = _.sortBy(actionStore.updates.value, function(action) {
                 action.name;
             });
+
             // add actions to selection control
             actions.forEach( function (action) {
-                selectize.addOption({
+                selectActions.addOption({
                     value: action.name,
                     text: action.name
                 });
@@ -279,28 +266,26 @@
                 },
                 maxItems: 1,
                 openOnFocus: false,
-                onItemAdd: function (value, $item) {
-                    var existingAction = actionStore.getActionByName(value);
-                    if (existingAction !== void 0 && existingAction !== null) {
-                        var duration = new babble.Duration(existingAction.duration * 60000);
-                        this.setState({
-                            isNewAction: false,
-                            duration: duration.toMinutes(),
-                            durationInput: duration.toString(),
-                            durationFeedback: duration.toString()
-                        });
-                    }
-                    else {
-                        this.setState({
-                            isNewAction: true
-                        });
-                    }
-                }.bind(this),
                 onChange: function (value) {
                     var existingAction = actionStore.getActionByName(value);
                     if (existingAction !== void 0 && existingAction !== null) {
+                        // merge tags
                         var selectize = $(this.refs.tags.getDOMNode())[0].selectize;
-                        selectize.setValue(existingAction.tags);
+                        var tags = [].concat(existingAction.tags)
+                        if (this.refs.tags.getDOMNode().value) {
+                            tags = tags.concat(this.refs.tags.getDOMNode().value.split(','));
+                        }
+                        selectize.setValue(tags);
+
+                        // set default duration if it is not already set
+                        var duration = new babble.Duration(existingAction.duration * 60000);
+                        if (this.state.duration > 0 && this.state.duration !== duration.toMinutes()) {
+                            this.setState({
+                                duration: duration.toMinutes(),
+                                durationInput: duration.toString(),
+                                durationFeedback: duration.toString()
+                            });
+                        }
                     }
                 }.bind(this)
             });
@@ -373,45 +358,6 @@
         },
 
         /*************************************************************
-         * API
-         *************************************************************/
-        log: function (action) {
-
-            var actionName = '';
-
-            var state = {
-                date: Date.create('today'),
-                dateInput: 'today',
-                dateFeedback: Date.create('today').toLocaleDateString(),
-                duration: 0,
-                durationInput: '',
-                durationFeedback: '',
-                details: '',
-            };
-
-            if (typeof action === 'object' && action.hasOwnProperty('duration') && action.duration) {
-                var duration = new babble.Duration(action.duration * 60 * 1000);
-                Object.assign(state, {
-                    duration: duration.toMinutes(),
-                    durationInput: duration.toString(),
-                    durationFeedback: duration.toString()
-                });
-            }
-
-            if (action.hasOwnProperty('name')) {
-                actionName = action.name || '';
-            } else if (typeof action === 'string') {
-                actionName = action || '';
-            }
-
-            if (!actionStore.getActionByName(actionName)) {
-                state.isNewAction = true;
-            }
-
-            this.setState(state);
-        },
-
-        /*************************************************************
          * RENDERING
          *************************************************************/
         render: function () {
@@ -446,20 +392,36 @@
                 left: '285px'
             };
 
-            var tags;
+            var slot1, slot2, action, log;
+
+            log = (
+                <div className="form-group">
+                    <label htmlFor="logentry-details">Entry</label>
+                    <textarea id="logentry-details" ref="details" type="text" className="form-control" onChange={this.handleChange} value={this.state.details} />
+                </div>
+            );
+            action = (
+                <div className="form-group">
+                    <label htmlFor="f1">Action</label>
+                    <input id="f1" ref="name" type="text" />
+                </div>
+            );
+
+            if (this.props.action || this.props.actionName || (this.props.logEntry && this.props.logEntry.actionId)) {
+                slot1 = action;
+                slot2 = log;
+            }
+            else {
+                slot1 = log;
+                slot2 = action;
+            }
 
             return (
                 <div style={{padding: '5px'}}>
                     <h2>{this.state.id ? 'Update Log' : 'Log Recent Action'}</h2>
                     <form role="form">
-                        <div className="form-group">
-                            <label htmlFor="logentry-details">Entry</label>
-                            <textarea id="logentry-details" ref="details" type="text" className="form-control" onChange={this.handleChange} value={this.state.details} />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="f1">Action</label>
-                            <input id="f1" ref="name" type="text" />
-                        </div>
+                        {slot1}
+                        {slot2}
                         <div className="form-group">
                             <label htmlFor="action-tags">Tags</label>
                             <input id="action-tags" ref="tags" type="text" />

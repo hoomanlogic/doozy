@@ -143,60 +143,33 @@
         };
 
         this.create = function (logEntry) {
-
-            var actionToUpdate = null;
-
-            if (logEntry.actionId) {
-                actionToUpdate = _.find(actionStore.updates.value, function(item) {
-                    return logEntry.actionId === item.id;
-                });
-            }
-
             _api.postLogEntry(logEntry)
             .done(function (result) {
                 // add log entry to collection
                 me.updates.value = me.updates.value.concat(result);
                 me.notify();
 
-                if (logEntry.actionId) {
-                    // find last performed
-                    var lastPerformed = null;
-
-                    me.updates.value
-                    .filter( function (item) {
-                        return item.actionId === actionToUpdate.id && ['performed','skipped'].indexOf(item.entry) > -1;
-                    })
-                    .forEach( function (item) {
-                        if (lastPerformed === null || new Date(item.date) > new Date(lastPerformed)) {
-                            lastPerformed = item.date;
-                        }
-                    });
-
-                    // update action and notify
-                    if (actionToUpdate.lastPerformed !== lastPerformed) {
-                        actionToUpdate.lastPerformed = lastPerformed;
-                        if (result.nextDate === "0001-01-01T00:00:00") {
-                            result.nextDate = null;
-                        }
-                        if (actionToUpdate.nextDate !== result.nextDate) {
-                            actionToUpdate.nextDate = result.nextDate;
-                        }
-                        actionStore.updates.onNext(actionStore.updates.value);
-                    }
-                }
+                actionStore.refreshActions([].concat(result.actionId));
 
                 toastr.success('Logged entry');
             })
             .fail(function (err) {
                 toastr.error(err.responseText);
             });
-
         };
 
         this.update = function (logEntry) {
 
             var logEntryToUpdate = _.find(me.updates.value, {id: logEntry.id});
             var original = Object.assign({}, logEntry);
+            var actionsToUpdate = [];
+
+            if (logEntryToUpdate.actionId) {
+                actionsToUpdate.push(logEntryToUpdate.actionId);
+            }
+            if (logEntry.actionId && logEntry.actionId !== logEntryToUpdate.actionId) {
+                actionsToUpdate.push(logEntry.actionId);
+            }
 
             // optimistic concurrency
             Object.assign(logEntryToUpdate, logEntry);
@@ -208,6 +181,7 @@
                     Object.assign(logEntryToUpdate, result);
                     me.notify();
                     hlio.saveLocal('hl.' + user + '.logentries', me.updates.value, secret);
+                    actionStore.refreshActions(actionsToUpdate);
                 })
                 .fail(function  (err) {
                     Object.assign(logEntryToUpdate, original);
@@ -240,9 +214,7 @@
 
         this.destroy = function (logEntry) {
 
-            var actionToUpdate = _.find(actionStore.updates.value, function(item) {
-                return logEntry.actionId === item.id;
-            });
+            var actionIdToUpdate = logEntry.actionId;
 
             // optimistic concurrency
             var filtered = me.updates.value.filter( function (item) { return item.id !== logEntry.id; });
@@ -252,32 +224,9 @@
             ui.queueRequest('Log Entry', logEntry.id, 'Deleted log entry', function () {
                 _api.deleteLogEntry(logEntry)
                 .done( function (result) {
-
-                    // find last performed
-                    var lastPerformed = null;
-
-                    me.updates.value
-                    .filter( function (item) {
-                        return item.actionId === actionToUpdate.id && ['performed','skipped'].indexOf(item.entry) > -1;
-                    })
-                    .forEach( function (item) {
-                        if (lastPerformed === null || new Date(item.date) > new Date(lastPerformed)) {
-                            lastPerformed = item.date;
-                        }
-                    });
-
-                    // update action and notify
-                    if (actionToUpdate.lastPerformed !== lastPerformed) {
-                        actionToUpdate.lastPerformed = lastPerformed;
-                        if (result.nextDate === "0001-01-01T00:00:00") {
-                            result.nextDate = null;
-                        }
-                        if (actionToUpdate.nextDate !== result.nextDate) {
-                            actionToUpdate.nextDate = result.nextDate;
-                        }
-                        actionStore.updates.onNext(actionStore.updates.value);
+                    if (actionIdToUpdate) {
+                        actionStore.refreshActions([actionIdToUpdate]);
                     }
-
                     hlio.saveLocal('hl.' + user + '.logentries', me.updates.value, secret);
                 })
                 .fail( function (err) {
