@@ -53,10 +53,11 @@
                 nextProps.action = doozy.action('New ToDo', tags);
                 nextProps.action.name = null;
                 nextProps.action.created = new Date().toISOString();
-            } else {
+            } else if (nextProps.action.id !== this.props.action.id) {
                 nextProps.action = this.edit(nextProps.action);
             }
         },
+
         componentWillMount: function () {
 
             if (!this.props.action) {
@@ -73,23 +74,12 @@
                 this.props.action = this.edit(this.props.action);
             }
 
-            var detailsChange = EventHandler.create();
-            detailsChange
-                .throttle(1000)
-                .subscribe(this.handleDetailsChange);
-
-            this.handlers = {
-                detailsChange: detailsChange
-            };
-
             logEntryStore.subscribe(this.handleLogEntryStoreUpdate);
         },
         componentWillUnmount: function () {
             /**
              * Clean up objects and bindings
              */
-            this.handlers.detailsChange.dispose();
-
             logEntryStore.dispose(this.handleLogEntryStoreUpdate);
         },
 
@@ -120,6 +110,13 @@
             // flag to call modal's graceful open dialog function
             this.show = true;
 
+            var id = editableCopy.id
+            if (!actionStore.getActionById(id)) {
+                id = null;
+            }
+            var name = editableCopy.name;
+            var content = editableCopy.content;
+
             var durationParse = babble.get('durations').translate(editableCopy.duration + ' min');
             if (durationParse.tokens.length === 0) {
                 var durationInput = null;
@@ -135,6 +132,9 @@
 
             // build state
             var state = {
+                id: id,
+                name: name,
+                content: content,
                 durationInput: durationInput,
                 durationDisplay: null,
                 dateInput: date,
@@ -258,9 +258,10 @@
 
         handleChange: function (event) {
             if (event.target === this.refs.name.getDOMNode()) {
-                this.props.action.name = event.target.value;
+                var actionName = event.target.value;
+                this.state.name = event.target.value;
             } else if (event.target === this.refs.content.getDOMNode()) {
-                this.props.action.content = event.target.value;
+                this.state.content = event.target.value;
             } else if (event.target === this.refs.duration.getDOMNode()) {
                 var durationParsed = babble.get('durations').translate(this.refs.duration.getDOMNode().value.trim());
                 var duration = 0;
@@ -329,7 +330,8 @@
                 this.setState({ordinal: ord});
             }
             this.setState({
-                action: this.props.action,
+                name: this.state.name,
+                content: this.state.content,
                 durationInput: this.state.durationInput,
                 durationDisplay: this.state.durationDisplay,
                 ordinal: ord,
@@ -351,14 +353,6 @@
             actionStore.destroy(this.props.action);
             ui.goBack();
         },
-        handleDetailsChange: function(event) {
-            for (var i = 0; i < this.props.action.logEntries.length; i++) {
-                if (this.props.action.logEntries[i].id === event.target.id) {
-                    actionStore.updateLogEntry(this.props.action.logEntries[i], { details: event.target.value});
-                    break;
-                }
-            }
-        },
         handleToggleViewModeClick: function(event) {
             if (this.state.viewMode === 'general') {
                 this.setState({ viewMode: 'history' });
@@ -368,12 +362,26 @@
         },
         handleSaveClick: function(event) {
 
+            var action;
+            if (this.state.id) {
+                action = actionStore.getActionById(this.state.id);
+            }
+            if (!action) {
+                action = doozy.action(this.state.name);
+            }
+            else {
+                action = Object.assign({}, action);
+                action.name = this.state.name;
+            }
+
             // set state of tags
             var tags = [];
             if (this.refs.tags.getDOMNode().value) {
                 tags = this.refs.tags.getDOMNode().value.split(',');
             }
-            this.props.action.tags = tags;
+            action.tags = tags;
+
+
 
             // build recurrence rules
             var recurrenceRules = [];
@@ -434,19 +442,19 @@
                 }
                 recurrenceRules.push(yearlyRule);
             }
-            this.props.action.recurrenceRules = recurrenceRules;
-            this.props.action.ordinal = this.state.ordinal;
+            action.recurrenceRules = recurrenceRules;
+            action.ordinal = this.state.ordinal;
 
             // build next date
-            if (this.props.action.nextDate !== null) {
-                this.props.action.nextDate = babble.moments.parseLocalDate(this.props.action.nextDate).toISOString();
+            if (action.nextDate !== null) {
+                action.nextDate = babble.moments.parseLocalDate(action.nextDate).toISOString();
             }
 
             // call method to save the action
             if (this.props.mode === 'Edit') {
-                actionStore.update(this.props.action);
+                actionStore.update(action);
             } else {
-                actionStore.create(this.props.action);
+                actionStore.create(action);
             }
 
             ui.goBack();
@@ -538,7 +546,7 @@
                 <form role="form">
                     <div className="form-group">
                         <label htmlFor="action-name">Name</label>
-                        <input id="action-name" ref="name" type="text" className="form-control" placeholder="Name of action" value={name} onChange={this.handleChange} />
+                        <input id="action-name" ref="name" type="text" className="form-control" placeholder="Name of action" value={this.state.name} onChange={this.handleChange} />
                     </div>
                     <div className="form-group">
                         <label htmlFor="action-tags">Tags</label>
@@ -562,7 +570,7 @@
                     {repeatOptions}
                     <div className="form-group">
                         <label htmlFor="action-content">Please add details here</label>
-                        <textarea id="action-content" ref="content" type="text" className="form-control" value={content} onChange={this.handleChange} />
+                        <textarea id="action-content" ref="content" type="text" className="form-control" value={this.state.content} onChange={this.handleChange} />
                     </div>
                     <div className="form-group">
                         <label htmlFor="action-nextdate">Hold off on this until</label>

@@ -161,7 +161,7 @@
         this.update = function (logEntry) {
 
             var logEntryToUpdate = _.find(me.updates.value, {id: logEntry.id});
-            var original = Object.assign({}, logEntry);
+            var original = Object.assign({}, logEntryToUpdate);
             var actionsToUpdate = [];
 
             if (logEntryToUpdate.actionId) {

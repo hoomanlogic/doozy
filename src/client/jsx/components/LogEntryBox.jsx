@@ -126,12 +126,14 @@
             });
         },
         handleDetailsChange: function (details) {
-            this.props.data.details = details;
-            logEntryStore.update(this.props.data);
+            var logEntry = Object.assign({}, this.props.data);
+            logEntry.details = details;
+            logEntryStore.update(logEntry);
         },
         handleDurationChange: function (duration) {
-            this.props.data.duration = duration;
-            logEntryStore.update(this.props.data);
+            var logEntry = Object.assign({}, this.props.data);
+            logEntry.duration = duration;
+            logEntryStore.update(logEntry);
         },
         handleDropDownClick: function () {
             this.setState({

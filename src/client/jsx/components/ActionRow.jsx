@@ -4,9 +4,10 @@
         require('react/addons'),
         require('../../../../../react_components/src/ContentEditable'),
         require('./RelativeTime'),
-        require('../../js/app/doozy')
+        require('../../js/app/doozy'),
+        require('../../js/stores/ActionStore'),
     );
-}(function (React, addons, ContentEditable, RelativeTime, doozy) {
+}(function (React, addons, ContentEditable, RelativeTime, doozy, actionStore) {
     var ActionRow = React.createClass({
         mixins: [addons.PureRenderMixin],
         propTypes: {
