@@ -271,7 +271,7 @@
                 openOnFocus: false,
                 onChange: function (value) {
                     var existingAction = actionStore.getActionByName(value);
-                    if (existingAction !== void 0 && existingAction !== null) {
+                    if (!this.state.duration && existingAction !== void 0 && existingAction !== null) {
                         // merge tags
                         var selectize = $(this.refs.tags.getDOMNode())[0].selectize;
                         var tags = [].concat(existingAction.tags)

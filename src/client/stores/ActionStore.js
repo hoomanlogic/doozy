@@ -210,7 +210,7 @@
                 updates.onNext(result);
             })
             .fail(function (err) {
-                ui.message(err., 'error');
+                ui.message(err.responseText, 'error');
             });
 
             var actions = hlio.loadLocal('hl.' + user + '.actions', secret);
