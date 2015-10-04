@@ -5,6 +5,9 @@
     );
 }(function (React, babble) {
     var RelativeTime = React.createClass({
+        /*************************************************************
+         * DEFINITIONS
+         *************************************************************/
         propTypes: {
             isoTime: React.PropTypes.string,
             accuracy: React.PropTypes.oneOf([
@@ -20,7 +23,7 @@
         },
 
         /*************************************************************
-         * CALCULATIONS
+         * RENDERING HELPERS
          *************************************************************/
         calcRelativeTime: function () {
             var time = new Date(this.props.isoTime);

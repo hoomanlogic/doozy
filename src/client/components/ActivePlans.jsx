@@ -7,7 +7,14 @@
 }(function (React, focusStore, planStore) {
     var ActivePlans = React.createClass({
         /*************************************************************
-         * CALCULATIONS
+         * EVENT HANDLING
+         *************************************************************/
+        handlePlanClick: function (plan) {
+            ui.goTo('Plan View', {planId: plan.id});
+        },
+
+        /*************************************************************
+         * RENDERING HELPERS
          *************************************************************/
         getActivePlans: function () {
             var focusTag = this.props.focusTag.slice(1);
@@ -20,14 +27,7 @@
             var plans = _.where(planStore.updates.value, { focusId: focus.id });
             return plans;
         },
-
-        /*************************************************************
-         * EVENT HANDLING
-         *************************************************************/
-        handlePlanClick: function (plan) {
-            ui.goTo('Plan View', {planId: plan.id});
-        },
-
+        
         /*************************************************************
          * RENDERING
          *************************************************************/

@@ -5,7 +5,7 @@
 }(function (React) {
     var Uploader = React.createClass({
         /*************************************************************
-         * COMPONENT LIFECYCLE
+         * DEFINITIONS
          *************************************************************/
         getInitialState: function () {
             return {

@@ -9,7 +9,7 @@
 }(function (React, doozy, actionStore, targetStore, tagStore) {
     var ManageTarget = React.createClass({
         /*************************************************************
-         * COMPONENT LIFECYCLE
+         * DEFINITIONS
          *************************************************************/
         getInitialState: function () {
             if (!this.props.targetId) {
@@ -32,6 +32,9 @@
             };
         },
 
+        /*************************************************************
+         * COMPONENT LIFECYCLE
+         *************************************************************/
         componentDidMount: function () {
             /**
              * Setup Entity selector

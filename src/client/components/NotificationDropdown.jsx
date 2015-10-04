@@ -6,6 +6,9 @@
 }(function (React, notificationStore) {
 
     var NotificationDropdown = React.createClass({
+        /*************************************************************
+         * DEFINITIONS
+         *************************************************************/
         propTypes: {
             isOpen: React.PropTypes.bool
         },

@@ -5,13 +5,18 @@
     );
 }(function (React, planStepStore) {
     var PlanStep = React.createClass({
-
+        /*************************************************************
+         * DEFINITIONS
+         *************************************************************/
         getInitialState: function () {
             return {
                 planStepsLastUpdated: (new Date()).toISOString()
             };
         },
 
+        /*************************************************************
+         * COMPONENT LIFECYCLE
+         *************************************************************/
         componentWillMount: function () {
             /**
              * Subscribe to Tag Store to be

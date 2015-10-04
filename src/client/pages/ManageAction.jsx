@@ -11,7 +11,7 @@
     var ManageAction = React.createClass({
 
         /*************************************************************
-         * TYPES AND ENUMERATIONS
+         * DEFINITIONS
          *************************************************************/
         VIEW_MODE: {
             GENERAL: 'general',

@@ -4,15 +4,15 @@
     );
 }(function (React) {
     var Indicator = React.createClass({
+        /*************************************************************
+         * DEFINITIONS
+         *************************************************************/
         mixins: [React.addons.PureRenderMixin],
         propTypes: {
             value: React.PropTypes.string.isRequired,
             change: React.PropTypes.any.isRequired
         },
 
-        /*************************************************************
-         * COMPONENT LIFECYCLE
-         *************************************************************/
         getDefaultProps: function () {
             return {
                 width: '100px',

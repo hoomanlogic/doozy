@@ -7,7 +7,7 @@
 }(function (React, LogEntryBox, logEntryStore) {
     var RecentActivity = React.createClass({
         /*************************************************************
-         * COMPONENT LIFECYCLE
+         * DEFINITIONS
          *************************************************************/
         getInitialState: function () {
             return {
@@ -15,6 +15,10 @@
                 logEntriesLastUpdated: new Date().toISOString()
             };
         },
+
+        /*************************************************************
+         * COMPONENT LIFECYCLE
+         *************************************************************/
         componentWillMount: function () {
             /**
              * Subscribe to Action Store to be

@@ -12,7 +12,7 @@
 }(function (React, actionStore, TagList, ActivePlans, NextActions, UpcomingActions, RecentActivity, BoxedActions) {
     var FocusActions = React.createClass({
         /*************************************************************
-         * COMPONENT LIFECYCLE
+         * DEFINITIONS
          *************************************************************/
         getInitialState: function () {
             return {
@@ -23,6 +23,9 @@
             };
         },
 
+        /*************************************************************
+         * COMPONENT LIFECYCLE
+         *************************************************************/
         componentWillMount: function () {
             /**
              * Subscribe to Action Store to be

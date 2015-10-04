@@ -6,7 +6,7 @@
 }(function (React, hlio) {
     var SendMessage = React.createClass({
         /*************************************************************
-         * COMPONENT LIFECYCLE
+         * DEFINITIONS
          *************************************************************/
         getInitialState: function () {
             return {

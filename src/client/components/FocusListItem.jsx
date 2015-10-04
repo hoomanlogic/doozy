@@ -16,7 +16,7 @@
         },
 
         /*************************************************************
-         * CALCULATIONS
+         * RENDERING HELPERS
          *************************************************************/
         calcFocusTitle: function (focus) {
             if (focus.kind === 'Role') {

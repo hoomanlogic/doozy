@@ -6,7 +6,7 @@
 }(function (React, tagStore) {
     var ManageTag = React.createClass({
         /*************************************************************
-         * COMPONENT LIFECYCLE
+         * DEFINITIONS
          *************************************************************/
         getInitialState: function () {
             if (!this.props.tagId) {
@@ -26,6 +26,9 @@
             };
         },
 
+        /*************************************************************
+         * COMPONENT LIFECYCLE
+         *************************************************************/
         componentWillReceiveProps: function (nextProps) {
             var tag = _.find(tagStore.updates.value, { id: nextProps.tagId });
             if (!tag) {

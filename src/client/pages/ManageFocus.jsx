@@ -7,7 +7,7 @@
 }(function (React, Uploader, focusStore) {
     var ManageFocus = React.createClass({
         /*************************************************************
-         * COMPONENT LIFECYCLE
+         * DEFINITIONS
          *************************************************************/
         getInitialState: function () {
             return {
@@ -20,6 +20,11 @@
                 filesSelected: false
             };
         },
+
+
+        /*************************************************************
+         * COMPONENT LIFECYCLE
+         *************************************************************/
         componentWillReceiveProps: function (nextProps) {
             if (nextProps.currentFocus.id !== this.state.id) {
                 this.setState({

@@ -9,16 +9,20 @@
     );
 }(function (React, addons, doozy, actionStore, logEntryStore, babble) {
     var Microphone = React.createClass({
-        mixins: [addons.PureRenderMixin],
         /*************************************************************
-         * COMPONENT LIFECYCLE
+         * DEFINITIONS
          *************************************************************/
+        mixins: [addons.PureRenderMixin],
+
         getInitialState: function () {
             return {
                 isListening: false
             };
         },
 
+        /*************************************************************
+         * COMPONENT LIFECYCLE
+         *************************************************************/
         componentDidMount: function () {
             if (typeof webkitSpeechRecognition !== 'undefined') {
                 var recognition = this.recognition = new webkitSpeechRecognition();

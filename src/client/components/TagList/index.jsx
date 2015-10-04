@@ -6,7 +6,7 @@
 }(function (React, TagListItem) {
     var TagList = React.createClass({
         /*************************************************************
-         * COMPONENT LIFECYCLE
+         * DEFINITIONS
          *************************************************************/
         getDefaultProps: function () {
           return {

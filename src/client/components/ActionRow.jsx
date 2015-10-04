@@ -9,6 +9,9 @@
     );
 }(function (React, addons, ContentEditable, RelativeTime, doozy, actionStore) {
     var ActionRow = React.createClass({
+        /*************************************************************
+         * DEFINITIONS
+         *************************************************************/
         mixins: [addons.PureRenderMixin],
         propTypes: {
             // required

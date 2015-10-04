@@ -15,9 +15,8 @@
     FocusListItem, DropdownMenu, Microphone, NotificationDropdown, Timer) {
 
     var PrimaryNavigation = React.createClass({
-
         /*************************************************************
-         * COMPONENT LIFECYCLE
+         * DEFINITIONS
          *************************************************************/
         getInitialState: function () {
             return {
@@ -28,6 +27,9 @@
             };
         },
 
+        /*************************************************************
+         * COMPONENT LIFECYCLE
+         *************************************************************/
         componentDidMount: function() {
             window.addEventListener('resize', this.handleResize);
         },

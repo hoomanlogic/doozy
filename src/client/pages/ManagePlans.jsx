@@ -5,13 +5,18 @@
     );
 }(function (React, planStore) {
     var ManagePlans = React.createClass({
-
+        /*************************************************************
+         * DEFINITIONS
+         *************************************************************/
         getInitialState: function () {
             return {
                 plansLastUpdated: (new Date()).toISOString()
             };
         },
 
+        /*************************************************************
+         * COMPONENT LIFECYCLE
+         *************************************************************/
         componentWillMount: function () {
             /**
              * Subscribe to Tag Store to be

@@ -6,16 +6,20 @@
     );
 }(function (React, timerStore, babble) {
     var TimerBar = React.createClass({
-        mixins: [React.addons.PureRenderMixin],
         /*************************************************************
-         * COMPONENT LIFECYCLE
+         * DEFINITIONS
          *************************************************************/
+        mixins: [React.addons.PureRenderMixin],
+
         getInitialState: function () {
             return {
                 timerLastUpdated: new Date().toISOString()
             };
         },
 
+        /*************************************************************
+         * COMPONENT LIFECYCLE
+         *************************************************************/
         componentWillMount: function () {
             timerStore.subscribe(this.handleTimerStoreUpdate);
             this.handleTimerStoreUpdate(timerStore.updates.value);

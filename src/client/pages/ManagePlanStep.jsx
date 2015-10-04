@@ -7,7 +7,7 @@
 }(function (React, planStepStore, babble) {
     var ManagePlanStep = React.createClass({
         /*************************************************************
-         * COMPONENT LIFECYCLE
+         * DEFINITIONS
          *************************************************************/
         getInitialState: function () {
             if (this.props.isNew) {
@@ -62,6 +62,9 @@
             }
         },
 
+        /*************************************************************
+         * COMPONENT LIFECYCLE
+         *************************************************************/
         componentWillReceiveProps: function (nextProps) {
             var planStep = _.find(planStepStore.updates.value, { id: nextProps.planStepId });
             if (!planStep) {

@@ -7,7 +7,14 @@
 }(function (React, ActionRow, babble) {
     var NextActions = React.createClass({
         /*************************************************************
-         * CALCULATIONS
+         * EVENT HANDLING
+         *************************************************************/
+        handleAddActionClick: function () {
+            ui.addAction();
+        },
+
+        /*************************************************************
+         * RENDERING HELPERS
          *************************************************************/
         isNextAction: function (item, index) {
             /**
@@ -29,13 +36,6 @@
              * Keep Actions logged as performed today in Next Actions until tomorrow
              */
             return babble.durations.hourDiff(new Date(item.lastPerformed), new Date()) < 24 && new Date(item.lastPerformed).getDate() === (new Date()).getDate();
-        },
-
-        /*************************************************************
-         * EVENT HANDLING
-         *************************************************************/
-        handleAddActionClick: function () {
-            ui.addAction();
         },
 
         /*************************************************************

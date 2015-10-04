@@ -6,7 +6,7 @@
 }(function (React, ActionRow) {
     var UpcomingActions = React.createClass({
         /*************************************************************
-         * CALCULATIONS
+         * RENDERING HELPERS
          *************************************************************/
         calcIsUpcomingAction: function (item, index) {
             /**

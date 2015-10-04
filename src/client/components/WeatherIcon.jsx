@@ -5,12 +5,16 @@
 }(function (React) {
     var WeatherIcon = React.createClass({
         /*************************************************************
-         * COMPONENT LIFECYCLE
+         * DEFINITIONS
          *************************************************************/
+        skycons: new Skycons(),
         getDefaultProps : function () {
             return { color: "black", width: 64, height: 80, style: { }};
         },
 
+        /*************************************************************
+         * COMPONENT LIFECYCLE
+         *************************************************************/
         componentWillUnmount: function () {
             this.skycons.remove(this.props.id);
         },
@@ -23,13 +27,12 @@
         },
 
         /*************************************************************
-         * MISC
+         * RENDERING HELPERS
          *************************************************************/
         draw: function () {
             this.skycons.set(this.props.id, this.props.icon, this.props.color);
             //skycons.play();
         },
-        skycons: new Skycons(),
 
         /*************************************************************
          * RENDERING

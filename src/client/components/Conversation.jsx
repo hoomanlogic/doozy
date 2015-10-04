@@ -7,7 +7,7 @@
 }(function (React, babble, SendMessage) {
     var Conversation = React.createClass({
         /*************************************************************
-         * COMPONENT LIFECYCLE
+         * DEFINITIONS
          *************************************************************/
         getInitialState: function () {
             return {
@@ -16,6 +16,9 @@
             };
         },
 
+        /*************************************************************
+         * COMPONENT LIFECYCLE
+         *************************************************************/
         componentDidMount: function () {
             this.firstLook = true;
             this.goToEndOfConversation();

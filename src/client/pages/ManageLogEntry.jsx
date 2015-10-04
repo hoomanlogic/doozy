@@ -9,7 +9,7 @@
 }(function (React, doozy, actionStore, logEntryStore, babble) {
     var ManageLogEntry = React.createClass({
         /*************************************************************
-         * COMPONENT LIFECYCLE
+         * DEFINITIONS
          *************************************************************/
         getInitialState: function () {
 
@@ -62,6 +62,9 @@
             return state;
         },
 
+        /*************************************************************
+         * COMPONENT LIFECYCLE
+         *************************************************************/
         componentDidMount: function () {
             /**
              * Setup Action selector

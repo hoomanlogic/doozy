@@ -5,7 +5,7 @@
 }(function (React) {
     var LogEntries = React.createClass({
         /*************************************************************
-         * COMPONENT LIFECYCLE
+         * DEFINITIONS
          *************************************************************/
         getInitialState: function () {
             return {
@@ -14,6 +14,9 @@
             };
         },
 
+        /*************************************************************
+         * COMPONENT LIFECYCLE
+         *************************************************************/
         componentWillMount: function () {
             logEntryStore.subscribe(this.handleLogEntryStoreUpdate);
             this.handleLogEntryStoreUpdate(logEntryStore.updates.value);
@@ -37,6 +40,7 @@
         handleLogEntryStoreUpdate: function (connections) {
             this.setState({logEntriesLastUpdated: new Date().toISOString()});
         },
+        
         /*************************************************************
          * RENDERING
          *************************************************************/

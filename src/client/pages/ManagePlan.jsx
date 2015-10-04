@@ -6,7 +6,7 @@
 }(function (React, planStore) {
     var ManagePlan = React.createClass({
         /*************************************************************
-         * COMPONENT LIFECYCLE
+         * DEFINITIONS
          *************************************************************/
         getInitialState: function () {
             if (!this.props.planId) {
@@ -28,6 +28,9 @@
             };
         },
 
+        /*************************************************************
+         * COMPONENT LIFECYCLE
+         *************************************************************/
         componentWillReceiveProps: function (nextProps) {
             var plan = _.find(planStore.updates.value, { id: nextProps.planId });
             this.setState({

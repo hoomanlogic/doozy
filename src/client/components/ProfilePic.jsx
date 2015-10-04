@@ -6,7 +6,7 @@
 }(function (React, Uploader) {
     var ProfilePic = React.createClass({
         /*************************************************************
-         * COMPONENT LIFECYCLE
+         * DEFINITIONS
          *************************************************************/
         getInitialState: function () {
             return {

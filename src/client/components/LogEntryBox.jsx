@@ -12,16 +12,20 @@
     );
 }(function (React, LayeredComponentMixin, RelativeTime, ContentEditable, actionStore, logEntryStore, userStore, doozy, babble) {
     var LogEntryBox = React.createClass({
-        mixins: [LayeredComponentMixin],
         /*************************************************************
-         * COMPONENT LIFECYCLE
+         * DEFINITIONS
          *************************************************************/
+        mixins: [LayeredComponentMixin],
+
         getInitialState: function () {
             return {
                 isDropDownOpen: false
             };
         },
 
+        /*************************************************************
+         * COMPONENT LIFECYCLE
+         *************************************************************/
         componentWillMount: function () {
             var detailsChange = EventHandler.create();
             detailsChange

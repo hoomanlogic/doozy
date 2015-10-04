@@ -4,6 +4,9 @@
     );
 }(function (React) {
     var CommentForm = React.createClass({
+        /*************************************************************
+         * DEFINITIONS
+         *************************************************************/
         propTypes: {
             userName: React.PropTypes.string.isRequired,
             articleId: React.PropTypes.number.isRequired,
@@ -59,6 +62,7 @@
             }
             this.refs.comment.getDOMNode().value = '';
         },
+        
         /*************************************************************
          * RENDERING
          *************************************************************/

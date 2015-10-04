@@ -6,7 +6,7 @@
 }(function (React, ActionRow) {
     var BoxedActions = React.createClass({
         /*************************************************************
-         * COMPONENT LIFECYCLE
+         * DEFINITIONS
          *************************************************************/
         getInitialState: function () {
             var boxTags = this.getBoxTags(this.props.actions);
@@ -17,6 +17,9 @@
             };
         },
 
+        /*************************************************************
+         * COMPONENT LIFECYCLE
+         *************************************************************/
         componentWillReceiveProps: function (nextProps) {
             var nextBoxTags = this.getBoxTags(nextProps.actions);
             var boxTags = [];

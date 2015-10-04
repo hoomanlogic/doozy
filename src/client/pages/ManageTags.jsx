@@ -5,13 +5,18 @@
     );
 }(function (React, tagStore) {
     var ManageTags = React.createClass({
-
+        /*************************************************************
+         * DEFINITIONS
+         *************************************************************/
         getInitialState: function () {
             return {
                 tagsLastUpdated: (new Date()).toISOString()
             };
         },
 
+        /*************************************************************
+         * COMPONENT LIFECYCLE
+         *************************************************************/
         componentWillMount: function () {
             /**
              * Subscribe to Tag Store to be

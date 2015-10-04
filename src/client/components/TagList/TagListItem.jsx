@@ -6,6 +6,9 @@
     );
 }(function (React, doozy, ContentEditable) {
     var TagListItem = React.createClass({
+        /*************************************************************
+         * DEFINITIONS
+         *************************************************************/
         mixins: [React.addons.PureRenderMixin],
         propTypes: {
             // required
