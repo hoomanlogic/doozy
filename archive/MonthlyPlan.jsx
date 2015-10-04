@@ -31,8 +31,8 @@ var MonthlyPlan = React.createClass({
         // html
         return (
             <div>
-            <div style={{width: '100%', height: '100%'}}>
-                <div className="week-header">Month of {hldatetime.monthsOfYear[today.getMonth()]}</div>
+                <div style={{width: '100%', height: '100%'}}>
+                    <div className="week-header">Month of {hldatetime.monthsOfYear[today.getMonth()]}</div>
                     {monthdays.map( function(item, index) {
                         return (<CalendarDay key={index} data={item} />);
                     })}

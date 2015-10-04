@@ -172,6 +172,7 @@
             }
 
             var menuItems = ([
+                <li key="view-calendar"><a href="javascript:;" onClick={ui.goTo.bind(null, 'Calendar')} title="View Calendar">View Calendar</a></li>,
                 <li key="manage-focuses"><a href="javascript:;" onClick={ui.goTo.bind(null, 'Focus Management')} title="Manage Focuses">Manage Focuses</a></li>,
                 <li key="manage-plans"><a href="javascript:;" onClick={ui.goTo.bind(null, 'Manage Plans')} title="Manage Plans">Manage Plans</a></li>,
                 <li key="manage-tags"><a href="javascript:;" onClick={ui.goTo.bind(null, 'Manage Tags')} title="Manage Tags">Manage Tags</a></li>,

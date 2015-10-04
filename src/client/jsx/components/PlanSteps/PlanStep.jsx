@@ -1,8 +1,9 @@
 (function (factory) {
     module.exports = exports = factory(
-        require('react')
+        require('react'),
+        require('../../../js/stores/PlanStepStore')
     );
-}(function (React) {
+}(function (React, planStepStore) {
     var PlanStep = React.createClass({
 
         getInitialState: function () {

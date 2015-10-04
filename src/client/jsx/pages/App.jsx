@@ -18,6 +18,8 @@
         require('../components/TimerBar'),
         require('../components/WeatherIcon'),
         require('../components/FocusActions'),
+        require('../components/PlanSteps'),
+        require('../components/Calendar'),
         require('./ManageFocus'),
         require('./ManageAction'),
         require('./ManageLogEntry'),
@@ -32,12 +34,12 @@
     );
 }(function (React, actionStore, connectionStore, userStore, focusStore, logEntryStore, notificationStore, planStore,
     planStepStore, tagStore, timerStore, targetStore, weatherStore, doozyNotifications, PrimaryNavigation,
-    TimerBar, WeatherIcon, FocusActions, ManageFocus, ManageAction, ManageLogEntry, ManagePlan,
+    TimerBar, WeatherIcon, FocusActions, PlanSteps, Calendar, ManageFocus, ManageAction, ManageLogEntry, ManagePlan,
     ManagePlans, ManagePreferences, ManageTarget, ManageTag, ManageTargets, ManageTags, Conversation) {
 
     var DoozyApp = React.createClass({
         /*************************************************************
-         * COMPONENT LIFECYCLE
+         * DEFINITIONS
          *************************************************************/
         getInitialState: function () {
             // get last saved state of application
@@ -64,6 +66,9 @@
             };
         },
 
+        /*************************************************************
+         * COMPONENT LIFECYCLE
+         *************************************************************/
         componentWillMount: function () {
             /**
              * Global UI Handles
@@ -552,6 +557,8 @@
                 hideMain = true;
             if (this.state.page === 'Focus Management') {
                 page = (<ManageFocus currentFocus={this.state.currentFocus || focusStore.updates.value[0]} />);
+            } else if (this.state.page === 'Calendar') {
+                page = (<Calendar weekStarts={userStore.updates.value.weekStarts} />);
             } else if (this.state.page === 'Preferences') {
                 page = (<ManagePreferences />);
             } else if (this.state.page === 'Manage Action') {
