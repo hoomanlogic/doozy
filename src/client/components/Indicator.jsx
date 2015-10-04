@@ -107,7 +107,7 @@
             }
 
             return (
-                <div style={{minWidth: this.props.width, margin: '5px'}}>
+                <div className={this.props.className} style={{minWidth: this.props.width, margin: '5px'}} onClick={this.props.onClick}>
                     <div style={{textAlign: 'center', borderRadius: '8px 8px 0 0', backgroundColor: 'rgb(68, 68, 68)', color: 'white', marginBottom: '2px'}}>{this.props.title}</div>
                     {content}
                     <div style={{textAlign: 'center', borderRadius: '0 0 8px 8px', backgroundColor: 'rgb(68, 68, 68)', color: changeColor, marginTop: '2px'}}>{changePrefix + this.props.change + suffix}</div>

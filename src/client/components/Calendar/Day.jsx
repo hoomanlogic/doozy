@@ -56,9 +56,9 @@
 
             return (
                 <div style={style}>
-                    <div className="calendar-box-header">
-                        <span className="calendar-day">{this.props.data.dayName.slice(0,3)}</span>
-                        <span style={{float: 'right'}}>{this.props.data.date.getDate()}</span>
+                    <div className="calendar-box-header" style={{display: 'flex'}}>
+                        <span style={{flexGrow: '1', fontSize: '1.6em'}} className="calendar-day">{this.props.data.dayName.slice(0,3)}</span>
+                        <span style={{fontSize: '1.6em', fontWeight: 'bold'}}>{this.props.data.date.getDate()}</span>
                     </div>
                     {targetInfo}
                 </div>

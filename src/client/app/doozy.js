@@ -388,6 +388,14 @@
                 periodStarts = new Date(target.starts);
                 periodStarts.setHours(0,0,0,0);
 
+                if (today <= periodStarts) {
+                    targetsStats.push({
+                        targetId: target.id,
+                        error: 'Today is before Period Starts'
+                    });
+                    return;
+                }
+
                 // populate array of action ids related to this target
                 if (target.entityType === 'Tag') {
                     var tag = tagStore.getTagById(target.entityId);

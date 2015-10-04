@@ -110,7 +110,7 @@
                             if (typeof stats === 'undefined') {
                                 // new target has no stats
                                 return (
-                                    <div key={item.id} className="clickable" style={targetStyle} onClick={this.handleTargetClick.bind(null, item)}>
+                                    <div key={item.id} className="clickable" style={targetStyle} onClick={this.handleEditClick.bind(null, item)}>
                                         <div>{item.name}</div>
                                     </div>
                                 );
@@ -129,29 +129,36 @@
 
                                 // existing targets
                                 return (
-                                    <div key={item.id} className="clickable" style={targetStyle} onClick={this.handleTargetClick.bind(null, item)}>
+                                    <div key={item.id} style={targetStyle}>
                                         <div style={{width: '100%', fontSize: 'x-large'}}>{item.name}</div>
                                         <div style={{display: 'flex'}}>
-                                            <Indicator kind={progress.kind} title={'Progress'}
+                                            <Indicator className="clickable" kind={progress.kind} title={'Progress'}
                                                     backgroundColor={progress.backgroundColor}
                                                     value={progress.value}
                                                     compareValue={progress.compare}
-                                                    change={progress.change} />
-                                            <Indicator kind={'comparison'} title={'Streak'}
+                                                    change={progress.change}
+                                                    onClick={this.handleTargetClick.bind(null, item)} />
+                                            <Indicator className="clickable" kind={'comparison'} title={'Streak'}
                                                     backgroundColor={streak.backgroundColor}
                                                     value={stats.periodActive.streak}
                                                     compareValue={stats.periodLongestStreak.streak}
-                                                    change={streak.change} />
-                                            <Indicator kind={'percent'} title={'Accuracy'}
+                                                    change={streak.change}
+                                                    onClick={this.handleTargetClick.bind(null, item)} />
+                                                <Indicator className="clickable" kind={'percent'} title={'Accuracy'}
                                                     backgroundColor={Indicator.calcColor(stats.accuracy)}
                                                     value={stats.accuracy}
-                                                    change={stats.change} />
-                                            <Indicator kind={'simple'} title={'Average'}
-                                                    backgroundColor={Indicator.calcColor(stats.accuracy)}
-                                                    value={stats.average} />
+                                                    change={stats.change}
+                                                    onClick={this.handleTargetClick.bind(null, item)} />
+                                            {/*
+                                                <Indicator kind={'simple'} title={'Average'}
+                                                        backgroundColor={Indicator.calcColor(stats.accuracy)}
+                                                        value={stats.average}
+                                                        onClick={this.handleTargetClick.bind(null, item)} />
+                                            */}
+                                            <div style={{textAlign: 'right'}}>{timeLeft}</div>
+                                            <div className="clickable" onClick={this.handleEditClick.bind(null, item)}><i className="fa fa-pencil fa-2x"></i></div>
                                         </div>
-                                        <div style={{textAlign: 'right'}}>{timeLeft}</div>
-                                        <div className="clickable" onClick={this.handleEditClick.bind(null, item)}><i className="fa fa-pencil"></i></div>
+
                                     </div>
                                 );
                             }

@@ -33,6 +33,20 @@
         handleCloseClick: function () {
             ui.goBack();
         },
+        handleLeftClick: function () {
+            var date = this.state.date;
+            date.setMonth(date.getMonth() - 1);
+            this.setState({
+                date: date
+            });
+        },
+        handleRightClick: function () {
+            var date = this.state.date;
+            date.setMonth(date.getMonth() + 1);
+            this.setState({
+                date: date
+            });
+        },
 
         /*************************************************************
          * RENDERING HELPERS
@@ -98,6 +112,9 @@
                     var nextDay = Date.create(day.date);
                     nextDay.setDate(nextDay.getDate() + 1);
                     targetsStats = doozy.targetsStats(targetId, nextDay);
+                    if (targetsStats[0].error) {
+                        targetsStats = undefined;
+                    }
                 }
                 day.isMonth = this.calcIsMonth(date, day.date);
                 day.isWeek = day.isMonth && beginningOfWeek <= day.date && day.date <= endOfWeek;
@@ -131,7 +148,9 @@
             return (
                 <div>
                     <div style={headerStyle}>
+                        <div style={{paddingRight: '5px'}} onClick={this.handleLeftClick}><i className="clickable fa fa-chevron-left fa-2x"></i></div>
                         <div style={{flexGrow: '1'}}>Month of {Calendar.months[date.getMonth()] + appendTargetName}</div>
+                        <div style={{paddingRight: '5px'}} onClick={this.handleRightClick}><i className="clickable fa fa-chevron-right fa-2x"></i></div>
                         <div style={{paddingRight: '5px'}}><button type="button" className="close" onClick={this.handleCloseClick}><span aria-hidden="true">&times;</span></button></div>
                     </div>
                     <div>
