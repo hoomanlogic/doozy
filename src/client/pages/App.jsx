@@ -31,12 +31,14 @@
         require('./ManageTag'),
         require('./ManageTargets'),
         require('./ManageTags'),
-        require('components/Conversation')
+        require('components/Conversation'),
+        require('components/NotificationList')
     );
 }(function (React, actionStore, connectionStore, userStore, focusStore, logEntryStore, notificationStore, planStore,
     planStepStore, tagStore, timerStore, targetStore, weatherStore, doozyNotifications, PrimaryNavigation,
-    TimerBar, WeatherIcon, FocusActions, PlanSteps, Calendar, ManageFocus, ManageAction, ManageLogEntry, ManagePlan,
-    ManagePlans, ManagePlanStep, ManagePreferences, ManageTarget, ManageTag, ManageTargets, ManageTags, Conversation) {
+    TimerBar, WeatherIcon, FocusActions, PlanSteps, Calendar, ManageFocus, ManageAction, ManageLogEntry,
+    ManagePlan, ManagePlans, ManagePlanStep, ManagePreferences, ManageTarget, ManageTag, ManageTargets,
+    ManageTags, Conversation, NotificationList) {
 
     var DoozyApp = React.createClass({
         /*************************************************************
