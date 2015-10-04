@@ -1,10 +1,10 @@
 (function (factory) {
     module.exports = exports = factory(
         require('hl-common-js/src/store'),
-        require('jquery'),
-        require('toastr')
+        require('jquery')
     );
-}(function (hlstore, $, toastr) {
+}(function (hlstore, $) {
+    /* global ui */
     var ConnectionStore = function () {
         hlstore.Store.call(this);
         this.updates.value = [];
@@ -40,10 +40,10 @@
                 contentType: 'application/json',
                 data: JSON.stringify({ userName: userName }),
                 success: function() {
-                    toastr.success('Connection requested!');
+                    ui.message('Connection requested!', 'success');
                 },
                 error: function(xhr, status, err) {
-                    toastr.error('Oh no! There was a problem requesting this connection' + status + err);
+                    ui.message('Oh no! There was a problem requesting this connection' + status + err, 'error');
                 }
             });
         };
@@ -64,12 +64,12 @@
                     me.updates.value.push(result);
                     me.notify();
 
-                    toastr.success('Connection accepted!');
+                    ui.message('Connection accepted!', 'success');
 
                     notificationStore.removeNotification(userName, 'Connection Request');
                 },
                 error: function(xhr, status, err) {
-                    toastr.error('Oh no! There was a problem accepting this connection' + status + err);
+                    ui.message('Oh no! There was a problem accepting this connection' + status + err, 'error');
                 }
             });
         };
@@ -103,12 +103,12 @@
                         me.notify();
                     }
 
-                    toastr.success('Connection rejected!');
+                    ui.message('Connection rejected!', 'success');
 
                     notificationStore.removeNotification(userName, 'Connection Request');
                 },
                 error: function(xhr, status, err) {
-                    toastr.error('Oh no! There was a problem rejecting this connection' + status + err);
+                    ui.message('Oh no! There was a problem rejecting this connection' + status + err, 'error');
                 }
             });
         };

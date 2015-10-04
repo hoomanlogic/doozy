@@ -261,7 +261,7 @@
 
             requests.push(request);
             this.setState({requests: requests});
-            toastr.info(msg);
+            ui.message(msg, 'info');
         },
         processRequest: function (fn, id) {
             fn();
@@ -407,7 +407,7 @@
                         this.setState({ conversations: conversations });
                     },
                     error: function(xhr, status, err) {
-                        toastr.error('Oh no! There was a problem sending this message' + status + err);
+                        ui.message('Oh no! There was a problem sending this message.\r\n' + status + err, 'error');
                     }
                 });
             }

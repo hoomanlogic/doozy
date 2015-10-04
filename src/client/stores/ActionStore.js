@@ -2,12 +2,11 @@
     module.exports = exports = factory(
         require('jquery'),
         require('rx'),
-        require('toastr'),
         require('hl-common-js/src/io')
     );
-}(function ($, Rx, toastr, hlio) {
+}(function ($, Rx, hlio) {
+    /* global ui */
     var ActionStore = function () {
-
         /**
          * REST API
          */
@@ -91,7 +90,7 @@
                 Object.assign(newAction, result);
                 updates.onNext(updates.value);
                 hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
-                toastr.success('Added action ' + newAction.name);
+                ui.message('Added action ' + newAction.name, 'success');
                 if (typeof done !== 'undefined' && done !== null) {
                     done(newAction);
                 }
@@ -99,7 +98,7 @@
             .fail( function (err) {
                 var filtered = updates.value.filter( function (item) { return item !== newAction; });
                 updates.onNext(filtered);
-                toastr.error(err.responseText);
+                ui.message(err.responseText, 'error');
                 if (typeof fail !== 'undefined' && fail !== null) {
                     fail(err);
                 }
@@ -118,7 +117,7 @@
                 })
                 .fail( function (err) {
                     updates.onNext(updates.value.concat(action));
-                    toastr.error(err.responseText);
+                    ui.message(err.responseText, 'error');
                 });
             }, function () {
                 updates.onNext(updates.value.concat(action));
@@ -170,7 +169,7 @@
                 .fail(function  (err) {
                     Object.assign(actionToSave, original);
                     updates.onNext(updates.value);
-                    toastr.error(err.responseText);
+                    ui.message(err.responseText, 'error');
                 });
             }, function () {
                 Object.assign(actionToSave, original);
@@ -211,7 +210,7 @@
                 updates.onNext(result);
             })
             .fail(function (err) {
-                toastr.error(err.responseText);
+                ui.message(err., 'error');
             });
 
             var actions = hlio.loadLocal('hl.' + user + '.actions', secret);

@@ -2,11 +2,10 @@
     module.exports = exports = factory(
         require('jquery'),
         require('rx'),
-        require('toastr'),
         require('hl-common-js/src/io')
     );
-}(function ($, Rx, toastr, hlio) {
-
+}(function ($, Rx, hlio) {
+    /* global ui */
     var UserStore = function () {
 
         /**
@@ -87,7 +86,7 @@
                 /**
                  * Notify user of successful update
                  */
-                toastr.success('Updated preferences');
+                ui.message('Updated preferences', 'success');
             })
             .fail(function (err) {
                 /**
@@ -101,7 +100,7 @@
                 /**
                  * Notify user of failed attempt to update
                  */
-                toastr.error(err.responseText);
+                ui.message(err.responseText, 'error');
             });
         };
 

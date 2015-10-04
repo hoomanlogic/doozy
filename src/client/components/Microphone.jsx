@@ -97,7 +97,7 @@
                     existingAction = actionStore.getActionByName(spokenArgs.actionName);
 
                     if (existingAction) {
-                        toastr.error('An action by this name already exists');
+                        ui.message('An action by this name already exists', 'error');
                     } else {
 
                         newAction = this.createActionObjectLiteral(spokenArgs.actionName, spokenArgs.date);
@@ -108,7 +108,7 @@
                         actionStore.create(newAction);
                     }
                 } else {
-                    toastr.error('Sorry, I did not understand. I heard, "' + event.results[0][0].transcript + '"');
+                    ui.message('Sorry, I did not understand. I heard, "' + event.results[0][0].transcript + '"', 'error');
                 }
             }
 

@@ -2,10 +2,10 @@
     module.exports = exports = factory(
         require('jquery'),
         require('rx'),
-        require('toastr'),
         require('hl-common-js/src/io')
     );
-}(function ($, Rx, toastr, hlio) {
+}(function ($, Rx, hlio) {
+    /* global ui */
     var TagStore = function () {
 
         /**
@@ -81,7 +81,7 @@
                 Object.assign(newTag, result);
                 updates.onNext(updates.value);
                 hlio.saveLocal('hl.' + user + '.tags', updates.value, secret);
-                toastr.success('Added tag ' + newTag.name);
+                ui.message('Added tag ' + newTag.name, 'success');
                 if (typeof done !== 'undefined' && done !== null) {
                     done(newTag);
                 }
@@ -89,7 +89,7 @@
             .fail( function (err) {
                 var filtered = updates.value.filter( function (item) { return item !== newTag; });
                 updates.onNext(filtered);
-                toastr.error(err.responseText);
+                ui.message(err.responseText, 'error');
                 if (typeof fail !== 'undefined' && fail !== null) {
                     fail(err);
                 }
@@ -108,7 +108,7 @@
                 })
                 .fail( function (err) {
                     updates.onNext(updates.value.concat(tag));
-                    toastr.error(err.responseText);
+                    ui.message(err.responseText, 'error');
                 });
             }, function () {
                 updates.onNext(updates.value.concat(tag));
@@ -139,7 +139,7 @@
                 .fail(function  (err) {
                     Object.assign(tagToSave, original);
                     updates.onNext(updates.value);
-                    toastr.error(err.responseText);
+                    ui.message(err.responseText, 'error');
                 });
             }, function () {
                 Object.assign(tagToSave, original);
@@ -180,7 +180,7 @@
                 updates.onNext(result);
             })
             .fail(function (err) {
-                toastr.error(err.responseText);
+                ui.message(err.responseText, 'error');
             });
 
             var tags = hlio.loadLocal('hl.' + user + '.tags', secret);

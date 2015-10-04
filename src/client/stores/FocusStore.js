@@ -2,10 +2,10 @@
     module.exports = exports = factory(
         require('jquery'),
         require('rx'),
-        require('toastr'),
         require('hl-common-js/src/io')
     );
-}(function ($, Rx, toastr, hlio) {
+}(function ($, Rx, hlio) {
+    /* global ui */
     var FocusStore = function () {
 
         /**
@@ -86,12 +86,12 @@
                 });
                 updates.onNext(updates.value);
                 hlio.saveLocal('hl.' + user + '.focuses', updates.value, secret);
-                toastr.success('Added focus ' + newFocus.name);
+                ui.message('Added focus ' + newFocus.name, 'success');
             })
             .fail( function (err) {
                 var filtered = updates.value.filter( function (item) { return item !== newFocus; });
                 updates.onNext(filtered);
-                toastr.error(err.responseText);
+                ui.message(err.responseText, 'error');
             });
         };
 
@@ -102,12 +102,12 @@
 
             _api.deleteFocus(focus)
             .done( function () {
-                toastr.success('Deleted focus ' + focus.name);
+                ui.message('Deleted focus ' + focus.name, 'success');
                 hlio.saveLocal('hl.' + user + '.focuses', updates.value, secret);
             })
             .fail( function (err) {
                 updates.onNext(updates.value.concat(focus));
-                toastr.error(err.responseText);
+                ui.message(err.responseText, 'error');
             });
         };
 
@@ -128,12 +128,12 @@
                 Object.assign(val, result);
                 updates.onNext(updates.value);
                 hlio.saveLocal('hl.' + user + '.focuses', updates.value, secret);
-                toastr.success('Updated focus ' + val.name);
+                ui.message('Updated focus ' + val.name, 'success');
             })
             .fail(function  (err) {
                 Object.assign(val, original);
                 updates.onNext(updates.value);
-                toastr.error(err.responseText);
+                ui.message(err.responseText, 'error');
             });
         };
 
@@ -160,7 +160,7 @@
                 hlio.saveLocal('hl.' + user + '.focuses', updates.value, secret);
             })
             .fail(function (err) {
-                toastr.error(err.responseText);
+                ui.message(err.responseText, 'error');
             });
 
             var focuses = hlio.loadLocal('hl.' + user + '.focuses', secret);

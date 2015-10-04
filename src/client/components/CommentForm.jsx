@@ -48,7 +48,7 @@
         },
 
         handleCommentChange: function (comment) {
-            toastr.success('Comment changed');
+            ui.message('Comment changed', 'success');
         },
 
         handlePostCommentClick: function () {

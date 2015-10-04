@@ -2,11 +2,10 @@
     module.exports = exports = factory(
         require('jquery'),
         require('rx'),
-        require('toastr'),
         require('hl-common-js/src/io')
     );
-}(function ($, Rx, toastr, hlio) {
-
+}(function ($, Rx, hlio) {
+    /* global ui */
     var PlanStore = function () {
 
         /**
@@ -87,12 +86,12 @@
                 });
                 updates.onNext(updates.value);
                 hlio.saveLocal('hl.' + user + '.plans', updates.value, secret);
-                toastr.success('Added plan ' + newPlan.name);
+                ui.message('Added plan ' + newPlan.name, 'success');
             })
             .fail( function (err) {
                 var filtered = updates.value.filter( function (item) { return item !== newPlan; });
                 updates.onNext(filtered);
-                toastr.error(err.responseText);
+                ui.message(err.responseText, 'error');
             });
         };
 
@@ -103,12 +102,12 @@
 
             _api.deletePlan(plan)
             .done( function () {
-                toastr.success('Deleted plan ' + plan.name);
+                ui.message('Deleted plan ' + plan.name, 'success');
                 hlio.saveLocal('hl.' + user + '.plans', updates.value, secret);
             })
             .fail( function (err) {
                 updates.onNext(updates.value.concat(plan));
-                toastr.error(err.responseText);
+                ui.message(err.responseText, 'error');
             });
         };
 
@@ -129,12 +128,12 @@
                 Object.assign(val, result);
                 updates.onNext(updates.value);
                 hlio.saveLocal('hl.' + user + '.plans', updates.value, secret);
-                toastr.success('Updated plan ' + val.name);
+                ui.message('Updated plan ' + val.name, 'success');
             })
             .fail(function  (err) {
                 Object.assign(val, original);
                 updates.onNext(updates.value);
-                toastr.error(err.responseText);
+                ui.message(err.responseText, 'error');
             });
         };
 
@@ -161,7 +160,7 @@
                 hlio.saveLocal('hl.' + user + '.plans', updates.value, secret);
             })
             .fail(function (err) {
-                toastr.error(err.responseText);
+                ui.message(err.responseText, 'error');
             });
 
             var plans = hlio.loadLocal('hl.' + user + '.plans', secret);

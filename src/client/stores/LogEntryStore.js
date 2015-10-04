@@ -2,12 +2,11 @@
     module.exports = exports = factory(
         require('hl-common-js/src/store'),
         require('jquery'),
-        require('toastr'),
         require('hl-common-js/src/io'),
         require('./ActionStore')
     );
-}(function (hlstore, $, toastr, hlio, actionStore) {
-
+}(function (hlstore, $, hlio, actionStore) {
+    /* global ui */
     var LogEntryStore = function () {
         hlstore.Store.call(this);
         this.updates.value = [];
@@ -130,7 +129,7 @@
                     me.notify();
                 },
                 error: function(xhr, status, err) {
-                    toastr.error('Oh no! There was a problem getting log entries.' + status + err);
+                    ui.message('Oh no! There was a problem getting log entries.' + status + err, 'error');
                 }
             });
         };
@@ -151,10 +150,10 @@
 
                 actionStore.refreshActions([].concat(result.actionId));
 
-                toastr.success('Logged entry');
+                ui.message('Logged entry', 'success');
             })
             .fail(function (err) {
-                toastr.error(err.responseText);
+                ui.message(err.responseText, 'error');
             });
         };
 
@@ -186,7 +185,7 @@
                 .fail(function  (err) {
                     Object.assign(logEntryToUpdate, original);
                     me.notify();
-                    toastr.error(err.responseText);
+                    ui.message(err.responseText, 'error');
                 });
             }, function () {
                 Object.assign(logEntryToUpdate, original);
@@ -232,7 +231,7 @@
                 .fail( function (err) {
                     me.updates.value = me.updates.value.concat(logEntry);
                     me.notify();
-                    toastr.error(err.responseText);
+                    ui.message(err.responseText, 'error');
                 });
             }, function () {
                 me.updates.value = me.updates.value.concat(logEntry);
@@ -271,7 +270,7 @@
                     me.notify();
                 },
                 error: function(xhr, status, err) {
-                    toastr.error('Oh no! There was a problem with the request!' + status + err);
+                    ui.message('Oh no! There was a problem with the request!' + status + err, 'error');
                 }
             });
         };
@@ -288,7 +287,7 @@
                 me.notify();
             })
             .fail( function(xhr, status, err) {
-                toastr.error('Oh no! There was a problem with the request!' + status + err);
+                ui.message('Oh no! There was a problem with the request!' + status + err, 'error');
             });
         };
 
@@ -306,7 +305,7 @@
                 me.notify();
             })
             .fail( function(xhr, status, err) {
-                toastr.error('Oh no! There was a problem with the request!' + status + err);
+                ui.message('Oh no! There was a problem with the request!' + status + err, 'error');
             });
         };
 
@@ -321,7 +320,7 @@
 
             })
             .fail( function(xhr, status, err) {
-                toastr.error('Oh no! There was a problem with the request!' + status + err);
+                ui.message('Oh no! There was a problem with the request!' + status + err, 'error');
             });
         };
 
@@ -341,7 +340,7 @@
                 me.notify();
             })
             .fail( function(xhr, status, err) {
-                toastr.error(err.responseText);
+                ui.message(err.responseText, 'error');
             });
 
             var logentries = hlio.loadLocal('hl.' + user + '.logentries', secret);

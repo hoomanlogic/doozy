@@ -162,7 +162,7 @@
 
 
             if (String(this.state.date.getTime()) === 'NaN') {
-                toastr.error(validationApology + 'When did you do this?');
+                ui.message(validationApology + 'When did you do this?', 'error');
                 return;
             }
 
@@ -181,7 +181,7 @@
             };
 
             //if (names.length === 1 && names[0] === '') {
-            //    toastr.error(validationApology + 'What did you do?');
+            //    ui.message(validationApology + 'What did you do?', 'error');
             //    return;
             //}
             // get action info

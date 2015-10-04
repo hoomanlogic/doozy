@@ -1,10 +1,10 @@
 (function (factory) {
     module.exports = exports = factory(
         require('hl-common-js/src/store'),
-        require('jquery'),
-        require('toastr')
+        require('jquery')
     );
-}(function (hlstore, $, toastr) {
+}(function (hlstore, $) {
+    /* global ui */
     var NotificationStore = function () {
         hlstore.Store.call(this);
         this.updates.value = [];
@@ -25,7 +25,7 @@
 
             // if it hasn't been read, then give an extra visible indicator
             if (notification.readAt === null) {
-                toastr.success('You\'ve got a new notification!');
+                ui.message('You\'ve got a new notification!', 'success');
             }
         };
 

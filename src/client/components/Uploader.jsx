@@ -100,11 +100,11 @@
         },
 
         uploadFailed: function (evt) {
-            toastr.error("There was an error attempting to upload the file.");
+            ui.message('There was an error attempting to upload the file.', 'error');
         },
 
         uploadCanceled: function (evt) {
-            toastr.error("The upload has been canceled by the user or the browser dropped the connection.");
+            ui.message('The upload has been canceled by the user or the browser dropped the connection.', 'error');
         },
 
         /*************************************************************

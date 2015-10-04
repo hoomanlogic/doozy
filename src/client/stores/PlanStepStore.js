@@ -2,10 +2,10 @@
     module.exports = exports = factory(
         require('jquery'),
         require('rx'),
-        require('toastr'),
         require('hl-common-js/src/io')
     );
-}(function ($, Rx, toastr, hlio) {
+}(function ($, Rx, hlio) {
+    /* global ui */
     var PlanStepStore = function () {
 
         /**
@@ -81,7 +81,7 @@
                 Object.assign(newPlanStep, result);
                 updates.onNext(updates.value);
                 hlio.saveLocal('hl.' + user + '.plansteps', updates.value, secret);
-                toastr.success('Added plan step ' + newPlanStep.name);
+                ui.message('Added plan step ' + newPlanStep.name, 'success');
                 if (typeof done !== 'undefined' && done !== null) {
                     done(newPlanStep);
                 }
@@ -89,7 +89,7 @@
             .fail( function (err) {
                 var filtered = updates.value.filter( function (item) { return item !== newPlanStep; });
                 updates.onNext(filtered);
-                toastr.error(err.responseText);
+                ui.message(err.responseText, 'error');
                 if (typeof fail !== 'undefined' && fail !== null) {
                     fail(err);
                 }
@@ -108,7 +108,7 @@
                 })
                 .fail( function (err) {
                     updates.onNext(updates.value.concat(planStep));
-                    toastr.error(err.responseText);
+                    ui.message(err.responseText, 'error');
                 });
             }, function () {
                 updates.onNext(updates.value.concat(planStep));
@@ -139,7 +139,7 @@
                 .fail(function  (err) {
                     Object.assign(planStepToSave, original);
                     updates.onNext(updates.value);
-                    toastr.error(err.responseText);
+                    ui.message(err.responseText, 'error');
                 });
             }, function () {
                 Object.assign(planStepToSave, original);
@@ -180,7 +180,7 @@
                 updates.onNext(result);
             })
             .fail(function (err) {
-                toastr.error(err.responseText);
+                ui.message(err.responseText, 'error');
             });
 
             var planSteps = hlio.loadLocal('hl.' + user + '.plansteps', secret);
