@@ -25,6 +25,7 @@
         require('./ManageLogEntry'),
         require('./ManagePlan'),
         require('./ManagePlans'),
+        require('./ManagePlanStep'),
         require('./ManagePreferences'),
         require('./ManageTarget'),
         require('./ManageTag'),
@@ -35,7 +36,7 @@
 }(function (React, actionStore, connectionStore, userStore, focusStore, logEntryStore, notificationStore, planStore,
     planStepStore, tagStore, timerStore, targetStore, weatherStore, doozyNotifications, PrimaryNavigation,
     TimerBar, WeatherIcon, FocusActions, PlanSteps, Calendar, ManageFocus, ManageAction, ManageLogEntry, ManagePlan,
-    ManagePlans, ManagePreferences, ManageTarget, ManageTag, ManageTargets, ManageTags, Conversation) {
+    ManagePlans, ManagePlanStep, ManagePreferences, ManageTarget, ManageTag, ManageTargets, ManageTags, Conversation) {
 
     var DoozyApp = React.createClass({
         /*************************************************************

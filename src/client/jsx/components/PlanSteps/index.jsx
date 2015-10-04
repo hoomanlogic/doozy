@@ -106,6 +106,11 @@
                 return item.id === planId;
             });
 
+            if (!plan) {
+                ui.goBack();
+                return <div></div>;
+            }
+
             /**
              * Inline Styles
              */
