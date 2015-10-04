@@ -1,7 +1,7 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
-        require('../../js/stores/NotificationStore')
+        require('../stores/NotificationStore')
     );
 }(function (React, notificationStore) {
 

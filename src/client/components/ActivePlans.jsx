@@ -1,8 +1,8 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
-        require('../../js/stores/FocusStore'),
-        require('../../js/stores/PlanStore')
+        require('../stores/FocusStore'),
+        require('../stores/PlanStore')
     );
 }(function (React, focusStore, planStore) {
     var ActivePlans = React.createClass({

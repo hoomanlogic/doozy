@@ -2,9 +2,9 @@
     module.exports = exports = factory(
         require('react'),
         require('react/addons'),
-        require('../../js/app/doozy'),
-        require('../../js/stores/ActionStore'),
-        require('../../js/stores/LogEntryStore'),
+        require('../app/doozy'),
+        require('../stores/ActionStore'),
+        require('../stores/LogEntryStore'),
         require('babble')
     );
 }(function (React, addons, doozy, actionStore, logEntryStore, babble) {

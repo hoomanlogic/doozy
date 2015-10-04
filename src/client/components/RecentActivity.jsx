@@ -2,7 +2,7 @@
     module.exports = exports = factory(
         require('react'),
         require('./LogEntryBox'),
-        require('../../js/stores/LogEntryStore')
+        require('../stores/LogEntryStore')
     );
 }(function (React, LogEntryBox, logEntryStore) {
     var RecentActivity = React.createClass({

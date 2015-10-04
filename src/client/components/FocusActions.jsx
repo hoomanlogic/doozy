@@ -1,7 +1,7 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
-        require('../../js/stores/ActionStore'),
+        require('../stores/ActionStore'),
         require('./TagList'),
         require('./ActivePlans'),
         require('./NextActions'),

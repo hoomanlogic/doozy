@@ -1,7 +1,7 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
-        require('../../js/app/doozy'),
+        require('../app/doozy'),
         require('./RelativeTime')
     );
 }(function (React, doozy, RelativeTime) {

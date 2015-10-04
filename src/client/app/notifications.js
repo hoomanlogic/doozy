@@ -1,6 +1,6 @@
 (function(factory) {
     module.exports = exports = factory(
-        require('../../js/stores/UserStore')
+        require('../stores/UserStore')
     );
 }(function(userStore) {
 

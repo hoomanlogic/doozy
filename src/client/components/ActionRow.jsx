@@ -2,10 +2,10 @@
     module.exports = exports = factory(
         require('react'),
         require('react/addons'),
-        require('../../../../../react_components/src/ContentEditable'),
+        require('../../../../react_components/src/ContentEditable'),
         require('./RelativeTime'),
-        require('../../js/app/doozy'),
-        require('../../js/stores/ActionStore'),
+        require('../app/doozy'),
+        require('../stores/ActionStore'),
     );
 }(function (React, addons, ContentEditable, RelativeTime, doozy, actionStore) {
     var ActionRow = React.createClass({
