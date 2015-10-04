@@ -43,57 +43,14 @@
         handleCloseClick: function () {
             ui.goBack();
         },
-        handleTargetClick: function (target) {
+        handleEditClick: function (target) {
             ui.goTo('Manage Target', {targetId: target.id});
+        },
+        handleTargetClick: function (target) {
+            ui.goTo('Calendar', {targetId: target.id});
         },
         handleTargetStoreUpdate: function (targets) {
             this.setState({ targetsLastUpdated: (new Date()).toISOString() });
-        },
-
-        /*************************************************************
-         * CALCULATIONS
-         *************************************************************/
-        calcColor: function (percent) {
-            if (typeof percent === 'undefined' || percent === '') {
-                return null;
-            }
-
-            var multiplier = 120 / 100;
-            var offBy = 100 - percent;
-
-            var color = 'hsl(' + (120 - Math.round(offBy * multiplier)) + ',90%,40%)';
-            var suffix = '%';
-
-            return color;
-        },
-
-        calcProgressProps: function (target, stats) {
-            var progress = {
-                kind: 'comparison',
-                value: stats.periodActive.number,
-                backgroundColor: 'white',
-                compare: target.number,
-                change: stats.periodActive.number > target.number ? stats.periodActive.number - target.number : 0
-            };
-
-            var diff = target.number - stats.periodActive.number;
-            var expectedRate = target.number / stats.periodActive.daysInPeriod;
-            if (diff <= 0) {
-                Object.assign(progress, {
-                    kind: 'simple',
-                    backgroundColor: this.calcColor(100),
-                    value: "MET",
-                    compare: null
-                });
-            } else if (Math.ceil(stats.periodActive.daysLeft * expectedRate) >= diff) {
-                // do nothing
-            } else {
-                Object.assign(progress, {
-                    backgroundColor: this.calcColor(Math.round((Math.ceil(stats.periodActive.daysLeft * expectedRate) / diff) * 100) - 50)
-                });
-            }
-
-            return progress;
         },
 
         /*************************************************************
@@ -159,7 +116,7 @@
                                 );
                             } else {
 
-                                var progress = this.calcProgressProps(item, stats);
+                                var progress = Indicator.calcProgressProps(item, stats);
 
                                 var streak = {
                                     backgroundColor: stats.periodActive.streak >= stats.periodLongestStreak.streak ? 'hsl(120,90%,40%)' : (stats.periodActive.streak === 0 ? 'hsl(0,90%,40%)' : 'white'),
@@ -186,14 +143,15 @@
                                                     compareValue={stats.periodLongestStreak.streak}
                                                     change={streak.change} />
                                             <Indicator kind={'percent'} title={'Accuracy'}
-                                                    backgroundColor={this.calcColor(stats.accuracy)}
+                                                    backgroundColor={Indicator.calcColor(stats.accuracy)}
                                                     value={stats.accuracy}
                                                     change={stats.change} />
                                             <Indicator kind={'simple'} title={'Average'}
-                                                    backgroundColor={this.calcColor(stats.accuracy)}
+                                                    backgroundColor={Indicator.calcColor(stats.accuracy)}
                                                     value={stats.average} />
                                         </div>
                                         <div style={{textAlign: 'right'}}>{timeLeft}</div>
+                                        <div className="clickable" onClick={this.handleEditClick.bind(null, item)}><i className="fa fa-pencil"></i></div>
                                     </div>
                                 );
                             }

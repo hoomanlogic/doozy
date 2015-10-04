@@ -1,8 +1,9 @@
 (function (factory) {
     module.exports = exports = factory(
-        require('react')
+        require('react'),
+        require('components/Indicator')
     );
-}(function (React) {
+}(function (React, Indicator) {
     var Day = React.createClass({
         /*************************************************************
          * RENDERING
@@ -28,10 +29,29 @@
             }
 
             var styleIsDay = {
-                boxShadow: '#e2ff63 0 0 100px inset'
+                boxShadow: '#e263ff 0 0 100px inset'
             };
             if (this.props.data.isDay) {
                 style = Object.assign(style, styleIsDay);
+            }
+
+            // just show first one
+            var targetInfo;
+            var today = Date.create('today');
+            if (this.props.data.targetsStats) {
+                var stats = this.props.data.targetsStats[0];
+                var targetInfo = (
+                    <Indicator kind={'percent'} title={'Accuracy'}
+                            backgroundColor={Indicator.calcColor(stats.accuracy)}
+                            value={stats.accuracy}
+                            change={stats.change} />
+                );
+                var  styleIsMet = {
+                    boxShadow: '#e2ff63 0 0 100px inset'
+                };
+                if (stats.change > 0.0) {
+                    style = Object.assign(style, styleIsMet);
+                }
             }
 
             return (
@@ -40,6 +60,7 @@
                         <span className="calendar-day">{this.props.data.dayName.slice(0,3)}</span>
                         <span style={{float: 'right'}}>{this.props.data.date.getDate()}</span>
                     </div>
+                    {targetInfo}
                 </div>
             );
         }

@@ -12,6 +12,50 @@
             value: React.PropTypes.string.isRequired,
             change: React.PropTypes.any.isRequired
         },
+        statics: {
+            calcColor: function (percent) {
+                if (typeof percent === 'undefined' || percent === '') {
+                    return null;
+                }
+
+                var multiplier = 120 / 100;
+                var offBy = 100 - percent;
+
+                var color = 'hsl(' + (120 - Math.round(offBy * multiplier)) + ',90%,40%)';
+                var suffix = '%';
+
+                return color;
+            },
+
+            calcProgressProps: function (target, stats) {
+                var progress = {
+                    kind: 'comparison',
+                    value: stats.periodActive.number,
+                    backgroundColor: 'white',
+                    compare: target.number,
+                    change: stats.periodActive.number > target.number ? stats.periodActive.number - target.number : 0
+                };
+
+                var diff = target.number - stats.periodActive.number;
+                var expectedRate = target.number / stats.periodActive.daysInPeriod;
+                if (diff <= 0) {
+                    Object.assign(progress, {
+                        kind: 'simple',
+                        backgroundColor: Indicator.calcColor(100),
+                        value: "MET",
+                        compare: null
+                    });
+                } else if (Math.ceil(stats.periodActive.daysLeft * expectedRate) >= diff) {
+                    // do nothing
+                } else {
+                    Object.assign(progress, {
+                        backgroundColor: Indicator.calcColor(Math.round((Math.ceil(stats.periodActive.daysLeft * expectedRate) / diff) * 100) - 50)
+                    });
+                }
+
+                return progress;
+            }
+        },
 
         getDefaultProps: function () {
             return {

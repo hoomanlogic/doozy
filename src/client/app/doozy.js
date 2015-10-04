@@ -349,16 +349,21 @@
             };
         },
 
-        targetsStats: function (targetId) {
+        targetsStats: function (targetId, today) {
             var targets,
                 targetsStats = [];
 
-            if (typeof targetId === 'undefined' || target === null) {
-                targets = targetStore.updates.value;
+            if (typeof targetId === 'undefined' || targetId === null) {
+                targets = [].concat(targetStore.updates.value);
             } else {
                 targets = _.find(targetStore.updates.value, function (target) {
                     return target.id === targetId;
                 });
+                targets = [targets];
+            }
+
+            if (!today) {
+                today = new Date();
             }
 
             targets.forEach( function (target) {
@@ -372,11 +377,11 @@
                     change = 0,
                     longestStreakPeriod,
                     periodStarts,
-                    periodsStats = [],
-                    today;
+                    periodsStats = [];
 
                 // today
-                today = new Date();
+
+
                 today.setHours(0,0,0,0);
 
                 // first period starts

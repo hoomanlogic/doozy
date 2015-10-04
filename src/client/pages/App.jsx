@@ -561,7 +561,8 @@
             if (this.state.page === 'Focus Management') {
                 page = (<ManageFocus currentFocus={this.state.currentFocus || focusStore.updates.value[0]} />);
             } else if (this.state.page === 'Calendar') {
-                page = (<Calendar weekStarts={userStore.updates.value.weekStarts} />);
+                targetId = (this.state.pageOptions || {}).targetId || null;
+                page = (<Calendar weekStarts={userStore.updates.value.weekStarts} targetId={targetId} />);
             } else if (this.state.page === 'Preferences') {
                 page = (<ManagePreferences />);
             } else if (this.state.page === 'Manage Action') {
