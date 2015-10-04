@@ -1,7 +1,7 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
-        require('../../stores/NotificationStore'),
+        require('stores/NotificationStore'),
         require('../../../../../react_components/src/DropDownMenu'),
         require('./NotificationListItem')
     );

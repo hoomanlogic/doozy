@@ -1,7 +1,7 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
-        require('../stores/TimerStore'),
+        require('stores/TimerStore'),
         require('babble')
     );
 }(function (React, timerStore, babble) {

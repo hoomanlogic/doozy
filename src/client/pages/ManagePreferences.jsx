@@ -1,10 +1,10 @@
 (function (factory) {
         module.exports = exports = factory(
             require('react'),
-            require('../../js/app/doozy'),
-            require('../../js/app/notifications'),
-            require('../../js/stores/UserStore'),
-            require('../components/ProfilePic')
+            require('app/doozy'),
+            require('app/notifications'),
+            require('stores/UserStore'),
+            require('components/ProfilePic')
         );
 }(function (React, doozy, doozyNotifications, userStore, ProfilePic) {
     var ManagePreferences = React.createClass({

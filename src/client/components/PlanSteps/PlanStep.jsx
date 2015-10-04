@@ -1,7 +1,7 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
-        require('../../stores/PlanStepStore')
+        require('stores/PlanStepStore')
     );
 }(function (React, planStepStore) {
     var PlanStep = React.createClass({

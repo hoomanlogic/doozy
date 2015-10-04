@@ -1,7 +1,7 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
-        require('../../js/stores/PlanStepStore'),
+        require('stores/PlanStepStore'),
         require('babble')
     );
 }(function (React, planStepStore, babble) {

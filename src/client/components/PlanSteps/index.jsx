@@ -2,8 +2,8 @@
     module.exports = exports = factory(
         require('react'),
         require('./PlanStep'),
-        require('../../stores/PlanStore'),
-        require('../../stores/PlanStepStore')
+        require('stores/PlanStore'),
+        require('stores/PlanStepStore')
     );
 }(function (React, PlanStep, planStore, planStepStore) {
     var PlanSteps = React.createClass({

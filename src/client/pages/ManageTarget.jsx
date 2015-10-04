@@ -1,10 +1,10 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
-        require('../../js/app/doozy'),
-        require('../../js/stores/ActionStore'),
-        require('../../js/stores/TargetStore'),
-        require('../../js/stores/TagStore')
+        require('app/doozy'),
+        require('stores/ActionStore'),
+        require('stores/TargetStore'),
+        require('stores/TagStore')
     );
 }(function (React, doozy, actionStore, targetStore, tagStore) {
     var ManageTarget = React.createClass({

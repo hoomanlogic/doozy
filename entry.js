@@ -35,7 +35,7 @@ var errl = require('./bower_components/errl_js/src/errl.js');
 //require('Libs/object-assign');
 
 //JS App
-var DoozyApp = require('jsx/pages/App');
+var DoozyApp = require('pages/App');
 
 // make accessible for browser initialization
 if (window) {

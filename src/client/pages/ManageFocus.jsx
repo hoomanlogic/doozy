@@ -1,8 +1,8 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
-        require('../components/Uploader'),
-        require('../../js/stores/FocusStore'),
+        require('components/Uploader'),
+        require('stores/FocusStore'),
     );
 }(function (React, Uploader, focusStore) {
     var ManageFocus = React.createClass({

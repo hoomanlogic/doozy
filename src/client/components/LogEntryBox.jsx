@@ -1,13 +1,13 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
-        require('../mixins/LayeredComponentMixin'),
+        require('mixins/LayeredComponentMixin'),
         require('./RelativeTime'),
         require('../../../../react_components/src/ContentEditable'),
-        require('../stores/ActionStore'),
-        require('../stores/LogEntryStore'),
-        require('../stores/UserStore'),
-        require('../app/doozy'),
+        require('stores/ActionStore'),
+        require('stores/LogEntryStore'),
+        require('stores/UserStore'),
+        require('app/doozy'),
         require('babble')
     );
 }(function (React, LayeredComponentMixin, RelativeTime, ContentEditable, actionStore, logEntryStore, userStore, doozy, babble) {

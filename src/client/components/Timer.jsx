@@ -1,7 +1,7 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
-        require('../stores/TimerStore')
+        require('stores/TimerStore')
     );
 }(function (React, timerStore) {
     var Timer = React.createClass({

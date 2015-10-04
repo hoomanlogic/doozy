@@ -1,15 +1,15 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
-        require('../../js/stores/ConnectionStore'),
-        require('../../js/stores/FocusStore'),
-        require('../../js/stores/NotificationStore'),
-        require('../../js/stores/UserStore'),
-        require('../components/FocusListItem'),
-        require('../../../../../react_components/src/DropdownMenu'),
-        require('../components/Microphone'),
-        require('../components/NotificationDropdown'),
-        require('../components/Timer')
+        require('stores/ConnectionStore'),
+        require('stores/FocusStore'),
+        require('stores/NotificationStore'),
+        require('stores/UserStore'),
+        require('components/FocusListItem'),
+        require('../../../../react_components/src/DropdownMenu'),
+        require('components/Microphone'),
+        require('components/NotificationDropdown'),
+        require('components/Timer')
     );
 }(function (React, connectionStore, focusStore, notificationStore, userStore,
     FocusListItem, DropdownMenu, Microphone, NotificationDropdown, Timer) {

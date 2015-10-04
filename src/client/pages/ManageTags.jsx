@@ -1,7 +1,7 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
-        require('../../js/stores/TagStore')
+        require('stores/TagStore')
     );
 }(function (React, tagStore) {
     var ManageTags = React.createClass({

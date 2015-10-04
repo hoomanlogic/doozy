@@ -1,9 +1,9 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
-        require('../../js/app/doozy'),
-        require('../../js/stores/TargetStore'),
-        require('../components/Indicator'),
+        require('app/doozy'),
+        require('stores/TargetStore'),
+        require('components/Indicator'),
         require('babble')
     );
 }(function (React, doozy, targetStore, Indicator, babble) {
