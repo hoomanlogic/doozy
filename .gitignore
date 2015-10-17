@@ -6,6 +6,9 @@
 *.user
 *.sln.docstates
 
+# Visual Studio 2015 User Settings
+.vs
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
