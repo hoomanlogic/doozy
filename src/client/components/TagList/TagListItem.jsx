@@ -2,7 +2,7 @@
     module.exports = exports = factory(
         require('react'),
         require('app/doozy'),
-        require('../../../../../react_components/src/ContentEditable')
+        require('components/ContentEditable')
     );
 }(function (React, doozy, ContentEditable) {
     var TagListItem = React.createClass({

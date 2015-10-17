@@ -29,7 +29,7 @@ var React = require('react');
 var toastr = require('toastr');
 
 // libs
-var errl = require('./bower_components/errl_js/src/errl.js');
+var errl = require('errl-js/src/errl.js');
 
 // shim Object.assign
 //require('Libs/object-assign');

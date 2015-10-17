@@ -2,7 +2,7 @@
     module.exports = exports = factory(
         require('react'),
         require('stores/NotificationStore'),
-        require('../../../../../react_components/src/DropDownMenu'),
+        require('components/DropDownMenu'),
         require('./NotificationListItem')
     );
 }(function (React, notificationStore, NotificationListItem) {

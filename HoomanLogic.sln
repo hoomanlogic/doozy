@@ -6,11 +6,16 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Config", "Config", "{51B202E2-6046-4144-B428-73E353580870}"
 	ProjectSection(SolutionItems) = preProject
 		bower.json = bower.json
+		Data.config = Data.config
+		entry.js = entry.js
 		gulpfile.js = gulpfile.js
 		package.json = package.json
 		README.md = README.md
+		Server.config = Server.config
+		VISION.md = VISION.md
 		WebEssentials-Settings.json = WebEssentials-Settings.json
 		webpack.config.js = webpack.config.js
+		Worker.config = Worker.config
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "src\Data\Data.csproj", "{EB0B4295-B0E3-4E47-AC00-CB49900E9E64}"

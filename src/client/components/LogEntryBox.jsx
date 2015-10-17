@@ -3,7 +3,7 @@
         require('react'),
         require('mixins/LayeredComponentMixin'),
         require('./RelativeTime'),
-        require('../../../../react_components/src/ContentEditable'),
+        require('components/ContentEditable'),
         require('stores/ActionStore'),
         require('stores/LogEntryStore'),
         require('stores/UserStore'),

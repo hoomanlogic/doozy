@@ -6,7 +6,7 @@
         require('stores/NotificationStore'),
         require('stores/UserStore'),
         require('components/FocusListItem'),
-        require('../../../../react_components/src/DropdownMenu'),
+        require('components/DropdownMenu'),
         require('components/Microphone'),
         require('components/NotificationDropdown'),
         require('components/Timer')
