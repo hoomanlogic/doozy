@@ -222,6 +222,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="css\all.css" />
+    <Content Include="css\all.min.css" />
     <Content Include="css\font-awesome.css" />
     <Content Include="css\font-awesome.min.css" />
     <Content Include="js\jquery.js" />

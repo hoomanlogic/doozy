@@ -77,6 +77,11 @@ gulp.task('concat-css-all', ['compile-less'], function () {
             errorHandler: onError
         }))
         .pipe(concat('all.css'))
+        .pipe(gulp.dest('src/server/css'))
+        .pipe(rename(function (path) {
+            path.basename += '.min';
+        }))
+        .pipe(minifyCSS())
         .pipe(gulp.dest('src/server/css'));
 });
 
