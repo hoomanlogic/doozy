@@ -1,10 +1,10 @@
 (function (factory) {
     module.exports = exports = factory(
         require('hl-common-js/src/common'),
-        require('../stores/ActionStore'),
-        require('../stores/LogEntryStore'),
-        require('../stores/TagStore'),
-        require('../stores/TargetStore'),
+        require('stores/ActionStore'),
+        require('stores/LogEntryStore'),
+        require('stores/TagStore'),
+        require('stores/TargetStore'),
         require('babble')
     );
 }(function (hlcommon, actionStore, logEntryStore, tagStore, targetStore, babble) {
@@ -130,19 +130,31 @@
             d.setDate(d.getDate() + target.multiplier);
         }
         d.setDate(d.getDate() - 1);
+        d.setHours(23, 59, 59, 999);
         return d;
     };
 
-    var targetPeriodStats = function (target, actionIds, periodStarts, periodEnds, prevPeriodStats, isActive) {
+    var targetPeriodStats = function (target, periodStarts, periodEnds, prevPeriodStats, isActive) {
         var number, performed, streak = 0;
 
         // get performed log entries relevant to the target period
+        var tag;
+        if (target.entityType === 'Tag') {
+            tag = getTagValue(tagStore.getTagById(target.entityId));
+        }
         performed = logEntryStore.updates.value.filter(function (item) {
             var logDate = new Date(item.date);
-            return item.entry === 'performed' &&
-                actionIds.indexOf(item.actionId) !== -1 &&
-                logDate >= periodStarts &&
-                logDate <= periodEnds;
+
+            if (item.entry !== 'performed' || logDate < periodStarts || logDate > periodEnds) {
+                return false;
+            }
+
+            if (target.entityType === 'Action') {
+                return target.entityId === item.actionId;
+            }
+            else if (target.entityType === 'Tag') {
+                return item.tags.indexOf(tag) !== -1;
+            }
         });
 
         // calculate number based on log history
@@ -191,6 +203,10 @@
             daysLeft: daysLeft,
             daysInPeriod: daysInPeriod
         };
+    };
+
+    var getTagValue = function (tag) {
+        return TAG_KIND[tag.kind.toUpperCase()] + tag.name;
     };
 
     return {
@@ -397,17 +413,17 @@
                 }
 
                 // populate array of action ids related to this target
-                if (target.entityType === 'Tag') {
-                    var tag = tagStore.getTagById(target.entityId);
-                    var actions = actionStore.updates.value.filter(function (item) {
-                        return item.tags.indexOf((TAG_KIND[tag.kind.toUpperCase()] + tag.name)) !== -1;
-                    });
-                    actions.forEach(function (item) {
-                        actionIds.push(item.id);
-                    });
-                } else if (target.entityType === 'Action') {
-                    actionIds.push(target.entityId);
-                }
+                //if (target.entityType === 'Tag') {
+                //    var tag = tagStore.getTagById(target.entityId);
+                //    var actions = actionStore.updates.value.filter(function (item) {
+                //        return item.tags.indexOf((TAG_KIND[tag.kind.toUpperCase()] + tag.name)) !== -1;
+                //    });
+                //    actions.forEach(function (item) {
+                //        actionIds.push(item.id);
+                //    });
+                //} else if (target.entityType === 'Action') {
+                //    actionIds.push(target.entityId);
+                //}
 
                 // steps through all periods for this target
                 while (periodStarts <= today) {
@@ -419,7 +435,6 @@
                         // add period tally
                         periodsStats.push(
                             targetPeriodStats(target,
-                                              actionIds,
                                               periodStarts,
                                               periodEnds,
                                               prevPeriodStats,
@@ -427,7 +442,6 @@
                         );
                     } else {
                         activePeriod = targetPeriodStats(target,
-                                                         actionIds,
                                                          periodStarts,
                                                          periodEnds,
                                                          prevPeriodStats,
@@ -527,9 +541,7 @@
         /**
          * Get raw tag value from a tag object
          */
-        getTagValue: function (tag) {
-            return TAG_KIND[tag.kind.toUpperCase()] + tag.name;
-        },
+        getTagValue: getTagValue,
 
         startsWithAVowel: function (word) {
             if (['a','e','i','o','u'].contains(word[0].toLowerCase())) {

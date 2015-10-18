@@ -14,7 +14,7 @@ var onError = function (err) {
 
 var jsLibs = [
     'node_modules/jquery/dist/jquery.js',
-    'nuget_packages/Microsoft.AspNet.SignalR.JS.2.1.2/content/Scripts/jquery.signalR-2.1.2.js',
+    'packages/Microsoft.AspNet.SignalR.JS.2.1.2/content/Scripts/jquery.signalR-2.1.2.js',
 
     'bower_components/underscore/underscore.js',
     'node_modules/json2/lib/JSON2/static/json2.js',

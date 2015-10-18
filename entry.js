@@ -78,7 +78,3 @@ Object.assign(errl.config, {
         toastr.error("<p><string>Oops!</strong></p><p>We're really sorry about that.</p><p>We'll get this fixed as soon as possible.</p>" + '<a class="btn btn-default btn-link" target="_blank" href="' + errl.getErrorDetailUrl(err.errorId) + '">Show me details</a> ');
     }
 });
-
-/**
- * Configure client app (hostname and access token)
- */

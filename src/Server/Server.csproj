@@ -20,6 +20,7 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -244,7 +245,6 @@
     <Content Include="media\apple-icon-precomposed.png" />
     <Content Include="media\apple-icon.png" />
     <Content Include="browserconfig.xml" />
-    <Content Include="css\all.min.css" />
     <Content Include="css\login.css" />
     <Content Include="css\login.min.css">
       <DependentUpon>login.css</DependentUpon>
@@ -259,8 +259,6 @@
     <Content Include="fonts\fontawesome-webfont.woff" />
     <Content Include="fonts\FontAwesome.otf" />
     <Content Include="Global.asax" />
-    <Content Include="js\app.js" />
-    <Content Include="js\app.min.js" />
     <Content Include="js\libs.js" />
     <Content Include="js\libs.min.js" />
     <Content Include="js\react-with-addons.js" />
