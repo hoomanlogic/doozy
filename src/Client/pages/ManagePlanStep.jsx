@@ -111,7 +111,7 @@
                 this.setState({content: event.target.value});
             } else if (event.target === this.refs.duration.getDOMNode()) {
                 var durationParsed = babble.get('durations').translate(this.refs.duration.getDOMNode().value.trim());
-                var duration = 0
+                var duration = 0;
                 var durationDisplay = '';
                 if (durationParsed.tokens.length > 0) {
                     duration = durationParsed.tokens[0].value.toMinutes();
@@ -180,8 +180,8 @@
                  buttonStyle: deleteButtonStyle}
             ];
 
-            var buttonsDom = buttons.map(function(button, index) {
-                return <button key={index} style={button.buttonStyle} type="button" className={'btn btn-' + button.type} onClick={button.handler}>{button.text}</button>
+            var buttonsDom = buttons.map(function (button, index) {
+                return <button key={index} style={button.buttonStyle} type="button" className={'btn btn-' + button.type} onClick={button.handler}>{button.text}</button>;
             });
 
             // html

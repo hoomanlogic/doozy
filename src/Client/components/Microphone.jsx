@@ -14,11 +14,59 @@
          *************************************************************/
         mixins: [addons.PureRenderMixin],
 
+        statics: {
+            START_TIME: ['start', 'begin'],
+            STOP_TIME: ['stop', 'done', 'end'],
+            stringify: function (logs) {
+                return logs.map(function (log) {
+                    var count = Microphone.count(log);
+                    if (count > 0) {
+                        return count + ' x ' + log.text[0] + ' (' + Microphone.duration(log) + ' ms)';
+                    }
+                    else {
+                        return log.text[0] + ' (' + Microphone.duration(log) + ' ms)';
+                    }
+                }).join('\r\n');
+            },
+            totalDuration: function (logs) {
+                var duration = 0;
+                logs.forEach(function (log) {
+                    duration += Microphone.duration(log);
+                });
+                return (duration / 1000) / 60; // we don't log anything less than minutes here
+            },
+            duration: function (log) {
+                var d1 = Date.create(log.started);
+                var d2 = Date.create(log.stopped);
+
+                return d2.getTime() - d1.getTime();
+            },
+            count: function (log) {
+                var count = 0;
+                if (log.text.length > 1) {
+                    var lastOne = log.text[log.text.length - 1];
+                    lastOne = lastOne.split(' ');
+                    lastOne = lastOne[lastOne.length - 1];
+
+                    if (!isNaN(parseInt(lastOne))) {
+                        count = parseInt(lastOne);
+                    }
+                    else {
+                        count = log.text.length - 1;
+                    }
+                }
+                return count;
+            }
+        },
+
         getInitialState: function () {
             return {
                 isListening: false
             };
         },
+
+        current: null,
+        timerLogs: [],
 
         /*************************************************************
          * COMPONENT LIFECYCLE
@@ -26,7 +74,7 @@
         componentDidMount: function () {
             if (typeof webkitSpeechRecognition !== 'undefined') {
                 var recognition = this.recognition = new webkitSpeechRecognition();
-                recognition.continuous = false;
+                recognition.continuous = true;
                 recognition.interimResults = false;
                 recognition.onresult = this.handleSpeech;
                 recognition.onend = this.handleNoSpeech;
@@ -57,12 +105,62 @@
 
             if (event.results.length > 0) {
 
-                speech = event.results[0][0].transcript.trim().toLowerCase();
+                speech = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
 
                 if (speech.indexOf('i did ') > -1) {
                     context = 'log-action';
-                } else if (speech.indexOf('i will ') > -1 || speech.indexOf('i want to ') > -1) {
+                }
+                else if (speech.indexOf('i will ') > -1 || speech.indexOf('i want to ') > -1) {
                     context = 'new-action';
+                }
+                else if (Microphone.START_TIME.filter(function (item) { return speech.indexOf(item) > -1; }).length > 0) {
+                    this.current = {
+                        isListening: true,
+                        started: new Date().toISOString(),
+                        stopped: null,
+                        text: [speech.slice(5).trim()]
+                    };
+                    context = 'start-logging';
+                    ui.message(this.current.text.join('<br />'), 'success');
+                }
+                else if (Microphone.STOP_TIME.filter(function (item) { return speech.indexOf(item) > -1; }).length > 0 && this.current !== null && this.current.isListening) {
+                    context = 'stop-logging';
+                    this.current.isListening = false;
+                    this.current.stopped = new Date().toISOString();
+                    this.timerLogs.push(this.current);
+
+                    ui.message('stopped ' + this.current.text[0], 'success');
+
+                    this.current = {
+                        isListening: false,
+                    };
+                }
+                else if (this.current !== null && this.current.isListening) {
+                    context = 'is-logging';
+                    this.current.text.push(speech);
+                    ui.message(this.current.text.join('\r\n'), 'success');
+                }
+                else if (speech.indexOf('finish') > -1 && this.timerLogs.length > 0) {
+                    /**
+                     * Create log entry for existing action
+                     */
+                    logEntryStore.create({
+                        date: this.timerLogs[0].started,
+                        duration: Microphone.totalDuration(this.timerLogs),
+                        entry: 'performed',
+                        details: Microphone.stringify(this.timerLogs),
+                        tags: ['$sweat']
+                    });
+                    this.current = null;
+                    this.timerLogs = [];
+                }
+                else if (speech.indexOf('go away') > -1) {
+                    this.current = null;
+                }
+
+                if (context === undefined) {
+                    ui.message('Sorry, I did not understand. I heard, "' + speech + '"', 'error');
+                    return;
                 }
 
                 if (context === 'log-action') {
@@ -111,16 +209,19 @@
 
                         actionStore.create(newAction);
                     }
-                } else {
-                    ui.message('Sorry, I did not understand. I heard, "' + event.results[0][0].transcript + '"', 'error');
                 }
             }
 
-            this.setState({isListening: false});
+            //this.setState({isListening: false});
         },
 
         handleNoSpeech: function () {
-            this.setState({isListening: false});
+            if (this.current !== null) {
+                setTimeout(function () { this.recognition.start(); }.bind(this), 10);
+            }
+            else {
+                this.setState({ isListening: false });
+            }
         },
 
         /*************************************************************
