@@ -129,7 +129,7 @@
         render: function () {
             // props
             var weekStarts = this.props.weekStarts;
-            var target = _.find(targetStore.updates.value, {id: this.props.targetId})
+            var target = _.find(targetStore.updates.value, { id: this.props.targetId });
             var appendTargetName = '';
 
             if (target) {

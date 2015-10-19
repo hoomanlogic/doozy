@@ -142,11 +142,11 @@
                 outlineColor: 'rgb(40, 40, 40)'
             };
 
-            var stepsDom = steps.map( function (step) {
+            var stepsDom = steps.map(function (step) {
                 return (
                     <PlanStep planId={this.props.planId} data={step} level={1} />
                 );
-            }.bind(this))
+            }.bind(this));
 
             stepsDom.push((
                 <PlanStep planId={this.props.planId} data={this.calculateNewStep()} level={1} />

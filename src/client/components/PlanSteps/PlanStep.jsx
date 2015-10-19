@@ -139,7 +139,8 @@
                 borderStyle: 'dashed',
                 textAlign: 'center',
                 verticalAlign: 'middle'
-            }
+            };
+
             if (this.props.level > 2) {
                 Object.assign(newStepStyle, {
                     height: '40px'
