@@ -23,6 +23,24 @@
                 }
             );
         });
+
+        app.get('/doozy/api/*', function (req, res) {
+            /**
+             * Set header to tell client that we're
+             * sending json data in our response body
+             */
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({ path: 'GET ' + req.path }));
+        });
+
+        app.post('/doozy/api/*', function (req, res) {
+            /**
+             * Set header to tell client that we're
+             * sending json data in our response body
+             */
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({ path: 'POST ' + req.path }));
+        });
     }
 
 }));
