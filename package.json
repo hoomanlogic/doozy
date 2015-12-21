@@ -1,8 +1,8 @@
 {
-  "name": "hoomanlogic",
+  "name": "doozy",
   "version": "0.3.0",
   "description": "",
-  "main": "gulpfile.js",
+  "main": "index.js",
   "directories": {
     "doc": "doc"
   },
@@ -60,6 +60,7 @@
     "lint": "jshint src/client/js",
     "start": "npm run serve | npm run dev",
     "serve": "./node_modules/.bin/http-server -p 8080",
-    "dev": "webpack-dev-server --progress --colors --port 8090"
+    "dev": "webpack-dev-server --progress --colors --port 8090",
+    "express": "webpack --config webpack-express.config.js"
   }
 }

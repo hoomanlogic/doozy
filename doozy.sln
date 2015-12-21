@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Config", "Config", "{51B202E2-6046-4144-B428-73E353580870}"
 	ProjectSection(SolutionItems) = preProject
@@ -9,11 +9,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Config", "Config", "{51B202
 		Data.config = Data.config
 		entry.js = entry.js
 		gulpfile.js = gulpfile.js
+		index.js = index.js
 		package.json = package.json
 		README.md = README.md
 		Server.config = Server.config
 		VISION.md = VISION.md
 		WebEssentials-Settings.json = WebEssentials-Settings.json
+		webpack-express.config.js = webpack-express.config.js
+		webpack-express.entry.js = webpack-express.entry.js
 		webpack.config.js = webpack.config.js
 		Worker.config = Worker.config
 	EndProjectSection
