@@ -2,11 +2,11 @@
     module.exports = exports = factory();
 }(function () {
 
-    return function (app, renderer, stats) {
+    return function (app, authenticate, renderer, stats) {
         /**
          * Serve up main page of doozy UI 
          */
-        app.get('/doozy', function (req, res) {
+        app.get('/doozy', authenticate, function (req, res) {
             renderer.renderWithScript(
                 stats.publicPath + 'doozy.js',
                 req.path,
@@ -24,22 +24,22 @@
             );
         });
 
-        app.get('/doozy/api/*', function (req, res) {
+        app.get('/doozy/api/*', authenticate, function (req, res) {
             /**
              * Set header to tell client that we're
              * sending json data in our response body
              */
             res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify({ path: 'GET ' + req.path }));
+            res.end(JSON.stringify({ path: 'GET ' + req.user.userName }));
         });
 
-        app.post('/doozy/api/*', function (req, res) {
+        app.post('/doozy/api/*', authenticate, function (req, res) {
             /**
              * Set header to tell client that we're
              * sending json data in our response body
              */
             res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify({ path: 'POST ' + req.path }));
+            res.end(JSON.stringify({ path: 'POST ' + req.user.userName }));
         });
     }
 
