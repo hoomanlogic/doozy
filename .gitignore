@@ -8,6 +8,7 @@
 
 # Visual Studio 2015 User Settings
 .vs
+.vscode
 
 # Build results
 [Dd]ebug/
