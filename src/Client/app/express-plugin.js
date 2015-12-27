@@ -55,29 +55,130 @@
              * Set header to tell client that we're
              * sending json data in our response body
              */
-            legacy.getActions(importActions);
+            legacy.get('Actions', importActions);
             
             res.setHeader('Content-Type', 'application/json');
             res.end(JSON.stringify({ path: 'IMPORT FOR ' + req.user.userName }));
         });
         
-        function importActions (actions) {
-            actions.forEach(function (action) {
-                db.add(new db.Gnode(action.Name, 'doozy.action', camelize(action)));
+        function importActions (table) {
+            table.forEach(function (row) {
+                var gnode = new db.Gnode(row.Name, 'doozy.action', camelize(row));
+                gnode.born = gnode.state.created || gnode.state.enlist || gnode.born;
+                db.add(gnode);
             });
             
             // Next
-            legacy.getTags(importTags);
+            legacy.get('Tags', importTags);
         }
         
-        function importTags (tags) {
-            tags.forEach(function (tag) {
-                db.add(new db.Gnode(tag.Name, 'doozy.tag', camelize(tag)));
+        function importTags (table) {
+            table.forEach(function (row) {
+                var gnode = new db.Gnode(row.Name, 'doozy.tag', camelize(row));
+                gnode.born = gnode.state.created || gnode.state.enlist || gnode.born;
+                db.add(gnode);
+            });
+            
+            // Next
+            legacy.get('ActionsTags', importActionsTags);
+        }
+        
+        function importActionsTags (table) {
+            table.forEach(function (row) {
+                var node1 = db.find({ id: row.ActionId }, 'doozy.action').first();
+                var node2 = db.find({ id: row.TagId }, 'doozy.tag').first();
+                if (node1 && node2) {
+                    console.log('Connecting nodes: ' + node1.tag + ':' + node2.tag);
+                    node2.connect(node1, db.RELATION.ASSOCIATE);
+                }
+            });
+            
+            // Next
+            legacy.get('Focuses', importFocuses);
+        }
+        
+        function importFocuses (table) {
+            table.forEach(function (row) {
+                var gnode = new db.Gnode(row.Name, 'doozy.focus', camelize(row));
+                gnode.born = gnode.state.created || gnode.state.enlist || gnode.born;
+                db.add(gnode);
+            });
+            
+            // Next
+            legacy.get('Plans', importPlans);
+        }
+        
+        function importPlans (table) {
+            table.forEach(function (row) {
+                var gnode = new db.Gnode(row.Name, 'doozy.plan', camelize(row));
+                gnode.born = gnode.state.created || gnode.state.enlist || gnode.born;
+                db.add(gnode);
+            });
+            
+            // Next
+            legacy.get('PlanSteps', importPlanSteps);
+        }
+        
+        function importPlanSteps (table) {
+            var gnodes = [];
+            table.forEach(function (row) {
+                var gnode = new db.Gnode(row.Name, 'doozy.planstep', camelize(row));
+                gnode.born = gnode.state.created || gnode.state.enlist || gnode.born;
+                db.add(gnode);
+                
+                // Get Plan Association/Parent
+                var associate = db.find({ id: row.ProjectId }, 'doozy.plan').first();
+                if (associate) {
+                    console.log('Connecting nodes: ' + gnode.tag + ':' + associate.tag);
+                    associate.connect(gnode, db.RELATION.ASSOCIATE);
+                    if (gnode.state.parentId === null) {
+                        console.log('also as parent');
+                        associate.connect(gnode, db.RELATION.PARENT_CHILD);    
+                    }
+                }
+                
+                gnodes.push(gnode);
+                
+            });
+            
+            gnodes.forEach(function (gnode) {
+               if (gnode.state.parentId !== null) {
+                   var parent = db.find({ id: gnode.state.parentId }, 'doozy.planstep').first();
+                   if (parent) {
+                       console.log('Connecting nodes: ' + parent.tag + ':' + gnode.tag);
+                       parent.connect(gnode, db.RELATION.PARENT_CHILD);
+                   }
+               } 
+            });
+            
+            // Next
+            legacy.get('Targets', importTargets);
+        }
+        
+        function importTargets (table) {
+            table.forEach(function (row) {
+                var gnode = new db.Gnode(row.Name, 'doozy.target', camelize(row));
+                gnode.born = gnode.state.created || gnode.state.enlist || gnode.born;
+                db.add(gnode);
             });
             
             db.commitChanges();
+            // TODO: Handle importing log entries
+            // Next
+            // legacy.get('LogEntries', importLogs);
         }
         
+        // function importLogs (table) {
+        //     table.forEach(function (row) {
+        //         var name = row.Date;
+                // var gnode = new db.Gnode(row.Name, 'doozy.logentry', camelize(row));
+                // gnode.born = gnode.state.created || gnode.state.enlist || gnode.born;
+                // db.add(gnode);
+        //     });
+            
+        //     db.commitChanges();
+        // }
+               
         function camelize(obj) {
             var camelized = {};
             for (var p in obj) {

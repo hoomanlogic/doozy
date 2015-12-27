@@ -4,54 +4,53 @@
 	);
 }(function (sql) {
     
-    function getActions (callback) {
-        sql.connect('mssql://gmanning:l00k0ut@basil.arvixe.com/hoomanlogic').then(function() {
-            // Query
-            new sql.Request().query('select * from dbo.Actions order by name').then(function(recordset) {
-                callback(recordset);
-            }).catch(function(err) {
-                // ... query error checks
-                console.log(err);
-            });
-
-            // Stored Procedure
-            // new sql.Request()
-            // .input('input_parameter', sql.Int, value)
-            // .output('output_parameter', sql.VarChar(50))
-            // .execute('procedure_name').then(function(recordset) {
-            //     console.dir(recordset);
-            // }).catch(function(err) {
-            //     // ... execute error checks
-            // });
-            
-            
-        }).catch(function(err) {
-            // ... connect error checks
-            console.log(err);
-        });
+    function join(records, prop, value) {
+        var matches = [];
+        for (var i = 0; i < records.length; i++) {
+            if (records[i][prop] === value) {
+                matches.push(records[i]);
+            }
+        }
+        return matches;
     }
     
-    function getTags (callback) {
+    function get (entityKind, callback) {
+       
         sql.connect('mssql://gmanning:l00k0ut@basil.arvixe.com/hoomanlogic').then(function() {
-            // Query
-            new sql.Request().query('select * from dbo.Tags order by name').then(function(recordset) {
-                callback(recordset);
-            }).catch(function(err) {
-                // ... query error checks
-                console.log(err);
-            });
-
-            // Stored Procedure
-            // new sql.Request()
-            // .input('input_parameter', sql.Int, value)
-            // .output('output_parameter', sql.VarChar(50))
-            // .execute('procedure_name').then(function(recordset) {
-            //     console.dir(recordset);
-            // }).catch(function(err) {
-            //     // ... execute error checks
-            // });
-            
-            
+            switch (entityKind) {
+                case 'Actions':
+                    // Query
+                    new sql.Request().query('select * from dbo.' + entityKind + ' order by name').then(function(actionSet) {
+                        new sql.Request().query('select * from dbo.RecurrenceRules').then(function(recurrenceSet) {
+                            for (var i = 0; i < recurrenceSet.length; i++) {
+                                join(actionSet, 'Id', recurrenceSet[i].ActionId).forEach(function (action) {
+                                    console.log('Adding recurrence rules to action');
+                                    action.recurrenceRules = action.recurrenceRules || [];
+                                    action.recurrenceRules.push(recurrenceSet[i].Rule);
+                                });
+                            }
+                            console.log('Returning action set');
+                            callback(actionSet);
+                        }).catch(function(er) {
+                            // ... query error checks
+                            console.log(er);
+                        });
+                    }).catch(function(err) {
+                        // ... query error checks
+                        console.log(err);
+                    });  
+                    break;
+                default:
+                    // Query
+                    new sql.Request().query('select * from dbo.' + entityKind).then(function(recordset) {
+                        callback(recordset);
+                    }).catch(function(err) {
+                        // ... query error checks
+                        console.log(err);
+                    });
+                break;                
+            }
+          
         }).catch(function(err) {
             // ... connect error checks
             console.log(err);
@@ -59,7 +58,6 @@
     }
     
     return {
-      getActions: getActions,
-      getTags: getTags
+      get: get
     };
 }));
