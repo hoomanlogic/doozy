@@ -17,14 +17,16 @@
   },
   "homepage": "https://github.com/hoomanlogic/doozy.git",
   "dependencies": {
+    "babble": "https://github.com/hoomanlogic/babble.git#master",
+    "hl-common-js": "https://github.com/hoomanlogic/common_js.git#master",
     "jquery": "^2.1.4",
     "json2": "^0.4.0",
     "lodash": "^3.7.0",
+    "mssql": "^2.5.0",
     "react": "^0.13.2",
+    "react_components": "https://github.com/hoomanlogic/react_components.git#master",
     "rx": "^2.5.2",
-    "babble": "https://github.com/hoomanlogic/babble.git#master",
-    "hl-common-js": "https://github.com/hoomanlogic/common_js.git#master",
-    "react_components": "https://github.com/hoomanlogic/react_components.git#master"
+    "tedious": "^1.13.1"
   },
   "devDependencies": {
     "babel-core": "^5.5.8",
