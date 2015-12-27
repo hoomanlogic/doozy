@@ -1,14 +1,15 @@
  (function (factory) {
 	module.exports = exports = factory(
-		require('gnodes')
+		require('gnodes'),
+        require('../../../../gnodes.config.js')
 	);
-}(function (Gnodes) {
+}(function (Gnodes, config) {
 	
 	/**
 	 * Set the context for data access
 	 */
-	function open (name, email, repoPath, remoteUrl) {
-		return Gnodes.open(name, email, repoPath, remoteUrl).then(function (db) {
+	function open () {
+		return Gnodes.open(config).then(function (db) {
 			db.api = new DoozyApi(db);
 			return db;
 		});

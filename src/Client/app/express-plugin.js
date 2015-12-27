@@ -6,7 +6,7 @@
 }(function (dataAccess, legacy) {
 
     var db = null;
-    dataAccess.open('Geoffrey Floyd', 'geoffreyfloyd@hoomanlogic.com', '../../test-db', 'https://github.com/geoffreyfloyd/tdb.git').then(function (gnodb) {
+    dataAccess.open().then(function (gnodb) {
         db = gnodb;
     });
     
