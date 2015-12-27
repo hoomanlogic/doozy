@@ -94,6 +94,40 @@
             });
             
             // Next
+            legacy.get('LogEntries', importLogEntries);
+        }
+        
+        function importLogEntries (table) {
+            table.forEach(function (row) {
+                var name = row.Date.toISOString().split('T')[0] + '-';
+                if (row.ActionId !== null) {
+                    var actionNode = db.find({ id: row.ActionId }, 'doozy.action').first();
+                    name += actionNode.tag;
+                }
+                else {
+                    name += row.Details;
+                }
+                console.log('naming logentry ' + name);
+                var gnode = new db.Gnode(name, 'doozy.logentry', camelize(row));
+                gnode.born = gnode.state.created || gnode.state.enlist || gnode.born;
+                db.add(gnode);
+            });
+            
+            // Next
+            legacy.get('LogEntriesTags', importLogEntriesTags);
+        }
+        
+        function importLogEntriesTags (table) {
+            table.forEach(function (row) {
+                var node1 = db.find({ id: row.LogEntryId }, 'doozy.logentry').first();
+                var node2 = db.find({ id: row.TagId }, 'doozy.tag').first();
+                if (node1 && node2) {
+                    console.log('Connecting nodes: ' + node1.tag + ':' + node2.tag);
+                    node2.connect(node1, db.RELATION.ASSOCIATE);
+                }
+            });
+            
+            // Next
             legacy.get('Focuses', importFocuses);
         }
         
