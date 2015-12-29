@@ -1,23 +1,26 @@
 (function (factory) {
     module.exports = exports = factory(
         require('hl-common-js/src/store'),
-        require('jquery')
+        require('jquery'),
+        require('NotificationStore'),
+        require('components/MessageBox')
     );
-}(function (hlstore, $) {
-    /* global ui */
+}(function (hlstore, $, notificationStore, MessageBox) {
+
     var ConnectionStore = function () {
         hlstore.Store.call(this);
         this.updates.value = [];
         var me = this;
-
+        var baseUrl = window.location.href.split('/').slice(0,3).join('/') + '/doozy';
+        
         this.getConnections = function () {
             $.ajax({
                 context: me,
-                url: clientApp.HOST_NAME + '/api/connections',
+                url: baseUrl + '/api/connections',
                 dataType: 'json',
-                headers: {
-                    'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                },
+                // headers: {
+                //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                // },
                 success: function(result) {
                     me.updates.value = result;
                     me.notify();
@@ -31,19 +34,19 @@
         this.requestConnection = function (userName) {
             $.ajax({
                 context: me,
-                url: clientApp.HOST_NAME + '/api/requestconnection',
+                url: baseUrl + '/api/requestconnection',
                 dataType: 'json',
-                headers: {
-                    'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                },
+                // headers: {
+                //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                // },
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({ userName: userName }),
                 success: function() {
-                    ui.message('Connection requested!', 'success');
+                    MessageBox.notify('Connection requested!', 'success');
                 },
                 error: function(xhr, status, err) {
-                    ui.message('Oh no! There was a problem requesting this connection' + status + err, 'error');
+                    MessageBox.notify('Oh no! There was a problem requesting this connection' + status + err, 'error');
                 }
             });
         };
@@ -51,11 +54,11 @@
         this.acceptConnection = function (userName) {
             $.ajax({
                 context: me,
-                url: clientApp.HOST_NAME + '/api/acceptconnection',
+                url: baseUrl + '/api/acceptconnection',
                 dataType: 'json',
-                headers: {
-                    'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                },
+                // headers: {
+                //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                // },
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({ username: userName }),
@@ -64,12 +67,12 @@
                     me.updates.value.push(result);
                     me.notify();
 
-                    ui.message('Connection accepted!', 'success');
+                    MessageBox.notify('Connection accepted!', 'success');
 
                     notificationStore.removeNotification(userName, 'Connection Request');
                 },
                 error: function(xhr, status, err) {
-                    ui.message('Oh no! There was a problem accepting this connection' + status + err, 'error');
+                    MessageBox.notify('Oh no! There was a problem accepting this connection' + status + err, 'error');
                 }
             });
         };
@@ -77,11 +80,11 @@
         this.rejectConnection = function (userName) {
             $.ajax({
                 context: me,
-                url: clientApp.HOST_NAME + '/api/rejectconnection',
+                url: baseUrl + '/api/rejectconnection',
                 dataType: 'json',
-                headers: {
-                    'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                },
+                // headers: {
+                //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                // },
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({ userName: userName }),
@@ -103,12 +106,12 @@
                         me.notify();
                     }
 
-                    ui.message('Connection rejected!', 'success');
+                    MessageBox.notify('Connection rejected!', 'success');
 
                     notificationStore.removeNotification(userName, 'Connection Request');
                 },
                 error: function(xhr, status, err) {
-                    ui.message('Oh no! There was a problem rejecting this connection' + status + err, 'error');
+                    MessageBox.notify('Oh no! There was a problem rejecting this connection' + status + err, 'error');
                 }
             });
         };

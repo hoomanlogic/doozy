@@ -2,10 +2,11 @@
     module.exports = exports = factory(
         require('jquery'),
         require('rx'),
-        require('hl-common-js/src/io')
+        require('hl-common-js/src/io'),
+        require('components/MessageBox')
     );
-}(function ($, Rx, hlio) {
-    /* global ui */
+}(function ($, Rx, hlio, MessageBox) {
+
     var PlanStepStore = function () {
 
         /**
@@ -15,21 +16,21 @@
             getPlanSteps: function () {
                 return $.ajax({
                     context: this,
-                    url: clientApp.HOST_NAME + '/api/plansteps',
+                    url: baseUrl + '/api/plansteps',
                     dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                    }
+                    // headers: {
+                    //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    // }
                 });
             },
             postPlanStep: function (planStep) {
                 return $.ajax({
                     context: this,
-                    url: clientApp.HOST_NAME + '/api/plansteps',
+                    url: baseUrl + '/api/plansteps',
                     dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                    },
+                    // headers: {
+                    //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    // },
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify(planStep)
@@ -38,11 +39,11 @@
             putPlanStep: function (planStep) {
                 return $.ajax({
                     context: this,
-                    url: clientApp.HOST_NAME + '/api/plansteps',
+                    url: baseUrl + '/api/plansteps',
                     dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                    },
+                    // headers: {
+                    //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    // },
                     type: 'PUT',
                     contentType: 'application/json',
                     data: JSON.stringify(planStep)
@@ -51,11 +52,11 @@
             deletePlanStep: function (planStep) {
                 return $.ajax({
                     context: this,
-                    url: clientApp.HOST_NAME + '/api/plansteps/' + encodeURIComponent(planStep.id),
+                    url: baseUrl + '/api/plansteps/' + encodeURIComponent(planStep.id),
                     dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                    },
+                    // headers: {
+                    //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    // },
                     type: 'DELETE',
                     contentType: 'application/json'
                 });
@@ -81,7 +82,7 @@
                 Object.assign(newPlanStep, result);
                 updates.onNext(updates.value);
                 hlio.saveLocal('hl.' + user + '.plansteps', updates.value, secret);
-                ui.message('Added plan step ' + newPlanStep.name, 'success');
+                MessageBox.notify('Added plan step ' + newPlanStep.name, 'success');
                 if (typeof done !== 'undefined' && done !== null) {
                     done(newPlanStep);
                 }
@@ -89,7 +90,7 @@
             .fail( function (err) {
                 var filtered = updates.value.filter( function (item) { return item !== newPlanStep; });
                 updates.onNext(filtered);
-                ui.message(err.responseText, 'error');
+                MessageBox.notify(err.responseText, 'error');
                 if (typeof fail !== 'undefined' && fail !== null) {
                     fail(err);
                 }
@@ -108,7 +109,7 @@
                 })
                 .fail( function (err) {
                     updates.onNext(updates.value.concat(planStep));
-                    ui.message(err.responseText, 'error');
+                    MessageBox.notify(err.responseText, 'error');
                 });
             }, function () {
                 updates.onNext(updates.value.concat(planStep));
@@ -139,7 +140,7 @@
                 .fail(function  (err) {
                     Object.assign(planStepToSave, original);
                     updates.onNext(updates.value);
-                    ui.message(err.responseText, 'error');
+                    MessageBox.notify(err.responseText, 'error');
                 });
             }, function () {
                 Object.assign(planStepToSave, original);
@@ -163,7 +164,8 @@
 
         var user = 'my';
         var secret = 'hash';
-
+        var baseUrl = null;
+        
         var cleanPlanStepName = function (name) {
             return name.replace(/:/g, '').replace(/  /g, ' ').trim().toLowerCase();
         };
@@ -172,7 +174,8 @@
 
             user = userName;
             secret = userId;
-
+            baseUrl = window.location.href.split('/').slice(0,3).join('/') + '/doozy';
+            
             // populate store - call to database
             _api.getPlanSteps()
             .done(function (result) {
@@ -180,7 +183,7 @@
                 updates.onNext(result);
             })
             .fail(function (err) {
-                ui.message(err.responseText, 'error');
+                MessageBox.notify(err.responseText, 'error');
             });
 
             var planSteps = hlio.loadLocal('hl.' + user + '.plansteps', secret);

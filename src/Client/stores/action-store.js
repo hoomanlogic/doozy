@@ -11,6 +11,21 @@
         var baseUrl;
         this.init = function (url) {
             baseUrl = url || window.location.href.split('/').slice(0,3).join('/') + '/doozy';
+            // populate store - call to database
+            _api.getActions()
+            .done(function (result) {
+                hlio.saveLocal('hl.' + user + '.actions', result, secret);
+                updates.onNext(result);
+            })
+            .fail(function (err) {
+                console.log(err);
+                // ui.message(err.responseText, 'error');
+            });
+
+            var actions = hlio.loadLocal('hl.' + user + '.actions', secret);
+            if (actions) {
+                updates.onNext(actions);
+            }            
         };
         //this.init = function (userName, userId) {
 

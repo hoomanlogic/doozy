@@ -2,10 +2,11 @@
     module.exports = exports = factory(
         require('jquery'),
         require('rx'),
-        require('hl-common-js/src/io')
+        require('hl-common-js/src/io'),
+        require('components/MessageBox')
     );
-}(function ($, Rx, hlio) {
-    /* global ui */
+}(function ($, Rx, hlio, MessageBox) {
+
     var UserStore = function () {
 
         /**
@@ -21,21 +22,21 @@
             getPreferences: function () {
                 return $.ajax({
                     context: this,
-                    url: clientApp.HOST_NAME + '/api/settings',
+                    url: baseUrl + '/api/settings',
                     dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                    }
+                    // headers: {
+                    //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    // }
                 });
             },
             putPreference: function (model) {
                 return $.ajax({
                     context: this,
-                    url: clientApp.HOST_NAME + '/api/settings',
+                    url: baseUrl + '/api/settings',
                     dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                    },
+                    // headers: {
+                    //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    // },
                     type: 'PUT',
                     contentType: 'application/json',
                     data: JSON.stringify(model)
@@ -86,7 +87,7 @@
                 /**
                  * Notify user of successful update
                  */
-                ui.message('Updated preferences', 'success');
+                MessageBox.notify('Updated preferences', 'success');
             })
             .fail(function (err) {
                 /**
@@ -100,18 +101,20 @@
                 /**
                  * Notify user of failed attempt to update
                  */
-                ui.message(err.responseText, 'error');
+                MessageBox.notify(err.responseText, 'error');
             });
         };
 
         var user = 'my';
         var secret = 'hash';
-
+        var baseUrl = null;
+        
         this.init = function (userName, userId) {
 
             user = userName;
             secret = userId;
-
+            baseUrl = window.location.href.split('/').slice(0,3).join('/') + '/doozy';
+            
             /**
              * Get preferences from the server
              */

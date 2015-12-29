@@ -3,10 +3,11 @@
         require('hl-common-js/src/store'),
         require('jquery'),
         require('hl-common-js/src/io'),
-        require('./ActionStore')
+        require('./ActionStore'),
+        require('components/MessageBox')
     );
-}(function (hlstore, $, hlio, actionStore) {
-    /* global ui */
+}(function (hlstore, $, hlio, actionStore, MessageBox) {
+
     var LogEntryStore = function () {
         hlstore.Store.call(this);
         this.updates.value = [];
@@ -16,11 +17,11 @@
             postAction: function (action) {
                 return $.ajax({
                     context: this,
-                    url: clientApp.HOST_NAME + '/api/actions',
+                    url: baseUrl + '/api/actions',
                     dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                    },
+                    // headers: {
+                    //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    // },
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify(action)
@@ -29,21 +30,21 @@
             getLogEntries: function () {
                 return $.ajax({
                     context: me,
-                    url: clientApp.HOST_NAME + '/api/logentries',
+                    url: baseUrl + '/api/logentries',
                     dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                    }
+                    // headers: {
+                    //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    // }
                 });
             },
             postLogEntry: function (logEntry) {
                 return $.ajax({
                     context: this,
-                    url: clientApp.HOST_NAME + '/api/logentries',
+                    url: baseUrl + '/api/logentries',
                     dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                    },
+                    // headers: {
+                    //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    // },
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify(logEntry)
@@ -52,11 +53,11 @@
             putLogEntry: function (logEntry) {
                 return $.ajax({
                     context: this,
-                    url: clientApp.HOST_NAME + '/api/logentries',
+                    url: baseUrl + '/api/logentries',
                     dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                    },
+                    // headers: {
+                    //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    // },
                     type: 'PUT',
                     contentType: 'application/json',
                     data: JSON.stringify(logEntry)
@@ -65,11 +66,11 @@
             deleteLogEntry: function (logEntry) {
                 return $.ajax({
                     context: this,
-                    url: clientApp.HOST_NAME + '/api/logentries/' + logEntry.id,
+                    url: baseUrl + '/api/logentries/' + logEntry.id,
                     dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                    },
+                    // headers: {
+                    //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    // },
                     type: 'DELETE',
                     contentType: 'application/json'
                 });
@@ -77,11 +78,11 @@
             postComment: function (logEntryId, comment) {
                 return $.ajax({
                     context: me,
-                    url: clientApp.HOST_NAME + '/api/comment',
+                    url: baseUrl + '/api/comment',
                     dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                    },
+                    // headers: {
+                    //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    // },
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify({ id: logEntryId, comment: comment })
@@ -90,11 +91,11 @@
             putComment: function (logEntryPeanutId, comment) {
                 return $.ajax({
                     context: this,
-                    url: clientApp.HOST_NAME + '/api/comment',
+                    url: baseUrl + '/api/comment',
                     dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                    },
+                    // headers: {
+                    //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    // },
                     type: 'PUT',
                     contentType: 'application/json',
                     data: JSON.stringify({ id: logEntryPeanutId, comment: comment })
@@ -103,11 +104,11 @@
             deleteComment: function (logEntryPeanutId) {
                 return $.ajax({
                     context: me,
-                    url: clientApp.HOST_NAME + '/api/comment',
+                    url: baseUrl + '/api/comment',
                     dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                    },
+                    // headers: {
+                    //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    // },
                     type: 'DELETE',
                     contentType: 'application/json',
                     data: JSON.stringify({ id: id })
@@ -118,18 +119,18 @@
         this.getLogEntriesByUserName = function (userName) {
             $.ajax({
                 context: me,
-                url: clientApp.HOST_NAME + '/api/logentries?userName=' + encodeURIComponent(userName),
+                url: baseUrl + '/api/logentries?userName=' + encodeURIComponent(userName),
                 dataType: 'json',
-                headers: {
-                    'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                },
+                // headers: {
+                //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                // },
                 success: function(result) {
                     var logEntries = me.updates.value;
                     me.updates.value = logEntries.concat(result);
                     me.notify();
                 },
                 error: function(xhr, status, err) {
-                    ui.message('Oh no! There was a problem getting log entries.' + status + err, 'error');
+                    MessageBox.notify('Oh no! There was a problem getting log entries.' + status + err, 'error');
                 }
             });
         };
@@ -150,10 +151,10 @@
 
                 actionStore.refreshActions([].concat(result.actionId));
 
-                ui.message('Logged entry', 'success');
+                MessageBox.notify('Logged entry', 'success');
             })
             .fail(function (err) {
-                ui.message(err.responseText, 'error');
+                MessageBox.notify(err.responseText, 'error');
             });
         };
 
@@ -185,7 +186,7 @@
                 .fail(function  (err) {
                     Object.assign(logEntryToUpdate, original);
                     me.notify();
-                    ui.message(err.responseText, 'error');
+                    MessageBox.notify(err.responseText, 'error');
                 });
             }, function () {
                 Object.assign(logEntryToUpdate, original);
@@ -231,7 +232,7 @@
                 .fail( function (err) {
                     me.updates.value = me.updates.value.concat(logEntry);
                     me.notify();
-                    ui.message(err.responseText, 'error');
+                    MessageBox.notify(err.responseText, 'error');
                 });
             }, function () {
                 me.updates.value = me.updates.value.concat(logEntry);
@@ -243,11 +244,11 @@
 
             $.ajax({
                 context: me,
-                url: clientApp.HOST_NAME + '/api/toggleupvote',
+                url: baseUrl + '/api/toggleupvote',
                 dataType: 'json',
-                headers: {
-                    'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                },
+                // headers: {
+                //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                // },
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({ id: id }),
@@ -270,7 +271,7 @@
                     me.notify();
                 },
                 error: function(xhr, status, err) {
-                    ui.message('Oh no! There was a problem with the request!' + status + err, 'error');
+                    MessageBox.notify('Oh no! There was a problem with the request!' + status + err, 'error');
                 }
             });
         };
@@ -287,7 +288,7 @@
                 me.notify();
             })
             .fail( function(xhr, status, err) {
-                ui.message('Oh no! There was a problem with the request!' + status + err, 'error');
+                MessageBox.notify('Oh no! There was a problem with the request!' + status + err, 'error');
             });
         };
 
@@ -305,7 +306,7 @@
                 me.notify();
             })
             .fail( function(xhr, status, err) {
-                ui.message('Oh no! There was a problem with the request!' + status + err, 'error');
+                MessageBox.notify('Oh no! There was a problem with the request!' + status + err, 'error');
             });
         };
 
@@ -320,18 +321,20 @@
 
             })
             .fail( function(xhr, status, err) {
-                ui.message('Oh no! There was a problem with the request!' + status + err, 'error');
+                MessageBox.notify('Oh no! There was a problem with the request!' + status + err, 'error');
             });
         };
 
         var user = 'my';
         var secret = 'hash';
-
+        var baseUrl = null;
+        
         this.init = function (userName, userId) {
 
             user = userName;
             secret = userId;
-
+            baseUrl = window.location.href.split('/').slice(0,3).join('/') + '/doozy';
+            
             // populate store - call to database
             _api.getLogEntries()
             .done( function(result) {
@@ -340,7 +343,7 @@
                 me.notify();
             })
             .fail( function(xhr, status, err) {
-                ui.message(err.responseText, 'error');
+                MessageBox.notify(err.responseText, 'error');
             });
 
             var logentries = hlio.loadLocal('hl.' + user + '.logentries', secret);

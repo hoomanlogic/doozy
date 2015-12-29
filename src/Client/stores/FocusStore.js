@@ -2,10 +2,11 @@
     module.exports = exports = factory(
         require('jquery'),
         require('rx'),
-        require('hl-common-js/src/io')
+        require('hl-common-js/src/io'),
+        require('components/MessageBox')
     );
-}(function ($, Rx, hlio) {
-    /* global ui */
+}(function ($, Rx, hlio, MessageBox) {
+
     var FocusStore = function () {
 
         /**
@@ -15,21 +16,21 @@
             getFocuses: function () {
                 return $.ajax({
                     context: this,
-                    url: clientApp.HOST_NAME + '/api/focuses',
+                    url: baseUrl + '/api/focuses',
                     dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                    }
+                    // headers: {
+                    //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    // }
                 });
             },
             postFocus: function (focus) {
                 return $.ajax({
                     context: this,
-                    url: clientApp.HOST_NAME + '/api/focuses',
+                    url: baseUrl + '/api/focuses',
                     dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                    },
+                    // headers: {
+                    //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    // },
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify(focus)
@@ -38,11 +39,11 @@
             putFocus: function (focus) {
                 return $.ajax({
                     context: this,
-                    url: clientApp.HOST_NAME + '/api/focuses',
+                    url: baseUrl + '/api/focuses',
                     dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                    },
+                    // headers: {
+                    //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    // },
                     type: 'PUT',
                     contentType: 'application/json',
                     data: JSON.stringify(focus)
@@ -51,11 +52,11 @@
             deleteFocus: function (focus) {
                 return $.ajax({
                     context: this,
-                    url: clientApp.HOST_NAME + '/api/focuses/' + encodeURIComponent(focus.id),
+                    url: baseUrl + '/api/focuses/' + encodeURIComponent(focus.id),
                     dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                    },
+                    // headers: {
+                    //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    // },
                     type: 'DELETE',
                     contentType: 'application/json'
                 });
@@ -86,12 +87,12 @@
                 });
                 updates.onNext(updates.value);
                 hlio.saveLocal('hl.' + user + '.focuses', updates.value, secret);
-                ui.message('Added focus ' + newFocus.name, 'success');
+                MessageBox.notify('Added focus ' + newFocus.name, 'success');
             })
             .fail( function (err) {
                 var filtered = updates.value.filter( function (item) { return item !== newFocus; });
                 updates.onNext(filtered);
-                ui.message(err.responseText, 'error');
+                MessageBox.notify(err.responseText, 'error');
             });
         };
 
@@ -102,12 +103,12 @@
 
             _api.deleteFocus(focus)
             .done( function () {
-                ui.message('Deleted focus ' + focus.name, 'success');
+                MessageBox.notify('Deleted focus ' + focus.name, 'success');
                 hlio.saveLocal('hl.' + user + '.focuses', updates.value, secret);
             })
             .fail( function (err) {
                 updates.onNext(updates.value.concat(focus));
-                ui.message(err.responseText, 'error');
+                MessageBox.notify(err.responseText, 'error');
             });
         };
 
@@ -128,12 +129,12 @@
                 Object.assign(val, result);
                 updates.onNext(updates.value);
                 hlio.saveLocal('hl.' + user + '.focuses', updates.value, secret);
-                ui.message('Updated focus ' + val.name, 'success');
+                MessageBox.notify('Updated focus ' + val.name, 'success');
             })
             .fail(function  (err) {
                 Object.assign(val, original);
                 updates.onNext(updates.value);
-                ui.message(err.responseText, 'error');
+                MessageBox.notify(err.responseText, 'error');
             });
         };
 
@@ -147,12 +148,14 @@
 
         var user = 'my';
         var secret = 'hash';
-
+        var baseUrl = null;
+        
         this.init = function (userName, userId) {
 
             user = userName;
             secret = userId;
-
+            baseUrl = window.location.href.split('/').slice(0,3).join('/') + '/doozy';
+            
             // populate store - call to database
             _api.getFocuses()
             .done(function (result) {
@@ -160,7 +163,7 @@
                 hlio.saveLocal('hl.' + user + '.focuses', updates.value, secret);
             })
             .fail(function (err) {
-                ui.message(err.responseText, 'error');
+                MessageBox.notify(err.responseText, 'error');
             });
 
             var focuses = hlio.loadLocal('hl.' + user + '.focuses', secret);

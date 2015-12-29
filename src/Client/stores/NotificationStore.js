@@ -1,15 +1,17 @@
 (function (factory) {
     module.exports = exports = factory(
         require('hl-common-js/src/store'),
-        require('jquery')
+        require('jquery'),
+        require('components/MessageBox')
     );
-}(function (hlstore, $) {
-    /* global ui */
+}(function (hlstore, $, MessageBox) {
+
     var NotificationStore = function () {
         hlstore.Store.call(this);
         this.updates.value = [];
         var me = this;
-
+        var baseUrl = window.location.href.split('/').slice(0,3).join('/') + '/doozy';
+        
         this.addNotificationFromSignalR = function (notification) {
             var notifications = me.updates.value;
 
@@ -25,7 +27,7 @@
 
             // if it hasn't been read, then give an extra visible indicator
             if (notification.readAt === null) {
-                ui.message('You\'ve got a new notification!', 'success');
+                MessageBox.notify('You\'ve got a new notification!', 'success');
             }
         };
 
@@ -47,14 +49,14 @@
         this.acknowledgeNotification = function (notification) {
             $.ajax({
                 context: me,
-                url: clientApp.HOST_NAME + '/api/acknowledgenotification/' + notification.id,
+                url: baseUrl + '/api/acknowledgenotification/' + notification.id,
                 dataType: 'json',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({ userName: 'dummy' }),
-                headers: {
-                    'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                },
+                // headers: {
+                //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                // },
                 success: function(result) {
                     // find notification
                     var notifications = me.updates.value;

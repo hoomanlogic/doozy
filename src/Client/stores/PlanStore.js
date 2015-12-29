@@ -2,10 +2,11 @@
     module.exports = exports = factory(
         require('jquery'),
         require('rx'),
-        require('hl-common-js/src/io')
+        require('hl-common-js/src/io'),
+        require('components/MessageBox')
     );
-}(function ($, Rx, hlio) {
-    /* global ui */
+}(function ($, Rx, hlio, MessageBox) {
+
     var PlanStore = function () {
 
         /**
@@ -15,21 +16,21 @@
             getPlans: function () {
                 return $.ajax({
                     context: this,
-                    url: clientApp.HOST_NAME + '/api/plans',
+                    url: baseUrl + '/api/plans',
                     dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                    }
+                    // headers: {
+                    //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    // }
                 });
             },
             postPlan: function (plan) {
                 return $.ajax({
                     context: this,
-                    url: clientApp.HOST_NAME + '/api/plans',
+                    url: baseUrl + '/api/plans',
                     dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                    },
+                    // headers: {
+                    //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    // },
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify(plan)
@@ -38,11 +39,11 @@
             putPlan: function (plan) {
                 return $.ajax({
                     context: this,
-                    url: clientApp.HOST_NAME + '/api/plans',
+                    url: baseUrl + '/api/plans',
                     dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                    },
+                    // headers: {
+                    //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    // },
                     type: 'PUT',
                     contentType: 'application/json',
                     data: JSON.stringify(plan)
@@ -51,11 +52,11 @@
             deletePlan: function (plan) {
                 return $.ajax({
                     context: this,
-                    url: clientApp.HOST_NAME + '/api/plans/' + encodeURIComponent(plan.id),
+                    url: baseUrl + '/api/plans/' + encodeURIComponent(plan.id),
                     dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                    },
+                    // headers: {
+                    //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    // },
                     type: 'DELETE',
                     contentType: 'application/json'
                 });
@@ -86,12 +87,12 @@
                 });
                 updates.onNext(updates.value);
                 hlio.saveLocal('hl.' + user + '.plans', updates.value, secret);
-                ui.message('Added plan ' + newPlan.name, 'success');
+                MessageBox.notify('Added plan ' + newPlan.name, 'success');
             })
             .fail( function (err) {
                 var filtered = updates.value.filter( function (item) { return item !== newPlan; });
                 updates.onNext(filtered);
-                ui.message(err.responseText, 'error');
+                MessageBox.notify(err.responseText, 'error');
             });
         };
 
@@ -102,12 +103,12 @@
 
             _api.deletePlan(plan)
             .done( function () {
-                ui.message('Deleted plan ' + plan.name, 'success');
+                MessageBox.notify('Deleted plan ' + plan.name, 'success');
                 hlio.saveLocal('hl.' + user + '.plans', updates.value, secret);
             })
             .fail( function (err) {
                 updates.onNext(updates.value.concat(plan));
-                ui.message(err.responseText, 'error');
+                MessageBox.notify(err.responseText, 'error');
             });
         };
 
@@ -128,12 +129,12 @@
                 Object.assign(val, result);
                 updates.onNext(updates.value);
                 hlio.saveLocal('hl.' + user + '.plans', updates.value, secret);
-                ui.message('Updated plan ' + val.name, 'success');
+                MessageBox.notify('Updated plan ' + val.name, 'success');
             })
             .fail(function  (err) {
                 Object.assign(val, original);
                 updates.onNext(updates.value);
-                ui.message(err.responseText, 'error');
+                MessageBox.notify(err.responseText, 'error');
             });
         };
 
@@ -147,12 +148,14 @@
 
         var user = 'my';
         var secret = 'hash';
-
+        var baseUrl = null;
+        
         this.init = function (userName, userId) {
 
             user = userName;
             secret = userId;
-
+            baseUrl = window.location.href.split('/').slice(0,3).join('/') + '/doozy';
+            
             // populate store - call to database
             _api.getPlans()
             .done(function (result) {
@@ -160,7 +163,7 @@
                 hlio.saveLocal('hl.' + user + '.plans', updates.value, secret);
             })
             .fail(function (err) {
-                ui.message(err.responseText, 'error');
+                MessageBox.notify(err.responseText, 'error');
             });
 
             var plans = hlio.loadLocal('hl.' + user + '.plans', secret);

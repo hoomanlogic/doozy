@@ -2,10 +2,11 @@
     module.exports = exports = factory(
         require('jquery'),
         require('rx'),
-        require('hl-common-js/src/io')
+        require('hl-common-js/src/io'),
+        require('components/MessageBox')
     );
-}(function ($, Rx, hlio) {
-    /* global ui */
+}(function ($, Rx, hlio, MessageBox) {
+
     var TagStore = function () {
 
         /**
@@ -15,21 +16,21 @@
             getTags: function () {
                 return $.ajax({
                     context: this,
-                    url: clientApp.HOST_NAME + '/api/tags',
+                    url: baseUrl + '/api/tags',
                     dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                    }
+                    // headers: {
+                    //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    // }
                 });
             },
             postTag: function (tag) {
                 return $.ajax({
                     context: this,
-                    url: clientApp.HOST_NAME + '/api/tags',
+                    url: baseUrl + '/api/tags',
                     dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                    },
+                    // headers: {
+                    //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    // },
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify(tag)
@@ -38,11 +39,11 @@
             putTag: function (tag) {
                 return $.ajax({
                     context: this,
-                    url: clientApp.HOST_NAME + '/api/tags',
+                    url: baseUrl + '/api/tags',
                     dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                    },
+                    // headers: {
+                    //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    // },
                     type: 'PUT',
                     contentType: 'application/json',
                     data: JSON.stringify(tag)
@@ -51,11 +52,11 @@
             deleteTag: function (tag) {
                 return $.ajax({
                     context: this,
-                    url: clientApp.HOST_NAME + '/api/tags/' + encodeURIComponent(tag.id),
+                    url: baseUrl + '/api/tags/' + encodeURIComponent(tag.id),
                     dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                    },
+                    // headers: {
+                    //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    // },
                     type: 'DELETE',
                     contentType: 'application/json'
                 });
@@ -81,7 +82,7 @@
                 Object.assign(newTag, result);
                 updates.onNext(updates.value);
                 hlio.saveLocal('hl.' + user + '.tags', updates.value, secret);
-                ui.message('Added tag ' + newTag.name, 'success');
+                MessageBox.notify('Added tag ' + newTag.name, 'success');
                 if (typeof done !== 'undefined' && done !== null) {
                     done(newTag);
                 }
@@ -89,7 +90,7 @@
             .fail( function (err) {
                 var filtered = updates.value.filter( function (item) { return item !== newTag; });
                 updates.onNext(filtered);
-                ui.message(err.responseText, 'error');
+                MessageBox.notify(err.responseText, 'error');
                 if (typeof fail !== 'undefined' && fail !== null) {
                     fail(err);
                 }
@@ -101,18 +102,18 @@
             var filtered = updates.value.filter( function (item) { return item.id !== tag.id; });
             updates.onNext(filtered);
 
-            ui.queueRequest('Tag', tag.id, 'Deleted tag ' + tag.name, function () {
+            // ui.queueRequest('Tag', tag.id, 'Deleted tag ' + tag.name, function () {
                 _api.deleteTag(tag)
                 .done( function () {
                     hlio.saveLocal('hl.' + user + '.tags', updates.value, secret);
                 })
                 .fail( function (err) {
                     updates.onNext(updates.value.concat(tag));
-                    ui.message(err.responseText, 'error');
+                    MessageBox.notify(err.responseText, 'error');
                 });
-            }, function () {
-                updates.onNext(updates.value.concat(tag));
-            });
+            // }, function () {
+            //     updates.onNext(updates.value.concat(tag));
+            // });
         };
 
         this.update = function (tag) {
@@ -129,7 +130,7 @@
             Object.assign(tagToSave, tag);
             updates.onNext(updates.value);
 
-            ui.queueRequest('Tag', tag.id, 'Updated tag ' + tagToSave.name, function () {
+            // ui.queueRequest('Tag', tag.id, 'Updated tag ' + tagToSave.name, function () {
                 _api.putTag(tagToSave)
                 .done(function (result) {
                     Object.assign(tagToSave, result);
@@ -139,12 +140,12 @@
                 .fail(function  (err) {
                     Object.assign(tagToSave, original);
                     updates.onNext(updates.value);
-                    ui.message(err.responseText, 'error');
+                    MessageBox.notify(err.responseText, 'error');
                 });
-            }, function () {
-                Object.assign(tagToSave, original);
-                updates.onNext(updates.value);
-            });
+            // }, function () {
+            //     Object.assign(tagToSave, original);
+            //     updates.onNext(updates.value);
+            // });
         };
 
         this.getTagByName = function (name) {
@@ -163,7 +164,8 @@
 
         var user = 'my';
         var secret = 'hash';
-
+        var baseUrl = null;
+        
         var cleanTagName = function (name) {
             return name.replace(/:/g, '').replace(/  /g, ' ').trim().toLowerCase();
         };
@@ -172,7 +174,8 @@
 
             user = userName;
             secret = userId;
-
+            baseUrl = window.location.href.split('/').slice(0,3).join('/') + '/doozy';
+            
             // populate store - call to database
             _api.getTags()
             .done(function (result) {
@@ -180,7 +183,7 @@
                 updates.onNext(result);
             })
             .fail(function (err) {
-                ui.message(err.responseText, 'error');
+                MessageBox.notify(err.responseText, 'error');
             });
 
             var tags = hlio.loadLocal('hl.' + user + '.tags', secret);

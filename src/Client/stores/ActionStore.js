@@ -2,10 +2,11 @@
     module.exports = exports = factory(
         require('jquery'),
         require('rx'),
-        require('hl-common-js/src/io')
+        require('hl-common-js/src/io'),
+        require('components/MessageBox')
     );
-}(function ($, Rx, hlio) {
-    /* global ui */
+}(function ($, Rx, hlio, MessageBox) {
+
     var ActionStore = function () {
         /**
          * REST API
@@ -14,31 +15,31 @@
             getActions: function () {
                 return $.ajax({
                     context: this,
-                    url: clientApp.HOST_NAME + '/api/actions',
+                    url: baseUrl + '/api/actions',
                     dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                    }
+                    // headers: {
+                    //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    // }
                 });
             },
             getAction: function (actionId) {
                 return $.ajax({
                     context: this,
-                    url: clientApp.HOST_NAME + '/api/actions/' + encodeURIComponent(actionId),
+                    url: baseUrl + '/api/actions/' + encodeURIComponent(actionId),
                     dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                    }
+                    // headers: {
+                    //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    // }
                 });
             },
             postAction: function (action) {
                 return $.ajax({
                     context: this,
-                    url: clientApp.HOST_NAME + '/api/actions',
+                    url: baseUrl + '/api/actions',
                     dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                    },
+                    // headers: {
+                    //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    // },
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify(action)
@@ -47,11 +48,11 @@
             putAction: function (action) {
                 return $.ajax({
                     context: this,
-                    url: clientApp.HOST_NAME + '/api/actions',
+                    url: baseUrl + '/api/actions',
                     dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                    },
+                    // headers: {
+                    //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    // },
                     type: 'PUT',
                     contentType: 'application/json',
                     data: JSON.stringify(action)
@@ -60,11 +61,11 @@
             deleteAction: function (action) {
                 return $.ajax({
                     context: this,
-                    url: clientApp.HOST_NAME + '/api/actions/' + encodeURIComponent(action.id),
+                    url: baseUrl + '/api/actions/' + encodeURIComponent(action.id),
                     dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                    },
+                    // headers: {
+                    //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    // },
                     type: 'DELETE',
                     contentType: 'application/json'
                 });
@@ -90,7 +91,7 @@
                 Object.assign(newAction, result);
                 updates.onNext(updates.value);
                 hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
-                ui.message('Added action ' + newAction.name, 'success');
+                MessageBox.notify('Added action ' + newAction.name, 'success');
                 if (typeof done !== 'undefined' && done !== null) {
                     done(newAction);
                 }
@@ -98,7 +99,7 @@
             .fail( function (err) {
                 var filtered = updates.value.filter( function (item) { return item !== newAction; });
                 updates.onNext(filtered);
-                ui.message(err.responseText, 'error');
+                MessageBox.notify(err.responseText, 'error');
                 if (typeof fail !== 'undefined' && fail !== null) {
                     fail(err);
                 }
@@ -110,18 +111,18 @@
             var filtered = updates.value.filter( function (item) { return item.id !== action.id; });
             updates.onNext(filtered);
 
-            ui.queueRequest('Action', action.id, 'Deleted action ' + action.name, function () {
-                _api.deleteAction(action)
-                .done( function () {
-                    hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
-                })
-                .fail( function (err) {
-                    updates.onNext(updates.value.concat(action));
-                    ui.message(err.responseText, 'error');
-                });
-            }, function () {
+            // ui.queueRequest('Action', action.id, 'Deleted action ' + action.name, function () {
+            _api.deleteAction(action)
+            .done( function () {
+                hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
+            })
+            .fail( function (err) {
                 updates.onNext(updates.value.concat(action));
+                MessageBox.notify(err.responseText, 'error');
             });
+            // }, function () {
+            //     updates.onNext(updates.value.concat(action));
+            // });
         };
 
         this.refreshActions = function (actionIds) {
@@ -159,22 +160,22 @@
             Object.assign(actionToSave, action);
             updates.onNext(updates.value);
 
-            ui.queueRequest('Action', action.id, 'Updated action ' + actionToSave.name, function () {
-                _api.putAction(actionToSave)
-                .done(function (result) {
-                    Object.assign(actionToSave, result);
-                    updates.onNext(updates.value);
-                    hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
-                })
-                .fail(function  (err) {
-                    Object.assign(actionToSave, original);
-                    updates.onNext(updates.value);
-                    ui.message(err.responseText, 'error');
-                });
-            }, function () {
+            // ui.queueRequest('Action', action.id, 'Updated action ' + actionToSave.name, function () {
+            _api.putAction(actionToSave)
+            .done(function (result) {
+                Object.assign(actionToSave, result);
+                updates.onNext(updates.value);
+                hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
+            })
+            .fail(function  (err) {
                 Object.assign(actionToSave, original);
                 updates.onNext(updates.value);
+                MessageBox.notify(err.responseText, 'error');
             });
+            // }, function () {
+            //     Object.assign(actionToSave, original);
+            //     updates.onNext(updates.value);
+            // });
         };
 
         this.getActionByName = function (name) {
@@ -193,6 +194,7 @@
 
         var user = 'my';
         var secret = 'hash';
+        var baseUrl = null;
 
         var cleanActionName = function (name) {
             return name.replace(/:/g, '').replace(/  /g, ' ').trim().toLowerCase();
@@ -202,6 +204,7 @@
 
             user = userName;
             secret = userId;
+            baseUrl = window.location.href.split('/').slice(0,3).join('/') + '/doozy';
 
             // populate store - call to database
             _api.getActions()
@@ -210,7 +213,7 @@
                 updates.onNext(result);
             })
             .fail(function (err) {
-                ui.message(err.responseText, 'error');
+                MessageBox.notify(err.responseText, 'error');
             });
 
             var actions = hlio.loadLocal('hl.' + user + '.actions', secret);

@@ -2,10 +2,11 @@
     module.exports = exports = factory(
         require('jquery'),
         require('rx'),
-        require('hl-common-js/src/io')
+        require('hl-common-js/src/io'),
+        require('components/MessageBox')
     );
-}(function ($, Rx, hlio) {
-    /* global ui */
+}(function ($, Rx, hlio, MessageBox) {
+
     var TargetStore = function () {
 
         /**
@@ -15,21 +16,21 @@
             getTargets: function () {
                 return $.ajax({
                     context: this,
-                    url: clientApp.HOST_NAME + '/api/targets',
+                    url: baseUrl + '/api/targets',
                     dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                    }
+                    // headers: {
+                    //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    // }
                 });
             },
             postTarget: function (target) {
                 return $.ajax({
                     context: this,
-                    url: clientApp.HOST_NAME + '/api/targets',
+                    url: baseUrl + '/api/targets',
                     dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                    },
+                    // headers: {
+                    //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    // },
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify(target)
@@ -38,11 +39,11 @@
             putTarget: function (target) {
                 return $.ajax({
                     context: this,
-                    url: clientApp.HOST_NAME + '/api/targets',
+                    url: baseUrl + '/api/targets',
                     dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                    },
+                    // headers: {
+                    //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    // },
                     type: 'PUT',
                     contentType: 'application/json',
                     data: JSON.stringify(target)
@@ -51,11 +52,11 @@
             deleteTarget: function (target) {
                 return $.ajax({
                     context: this,
-                    url: clientApp.HOST_NAME + '/api/targets/' + encodeURIComponent(target.id),
+                    url: baseUrl + '/api/targets/' + encodeURIComponent(target.id),
                     dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + clientApp.getAccessToken()
-                    },
+                    // headers: {
+                    //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
+                    // },
                     type: 'DELETE',
                     contentType: 'application/json'
                 });
@@ -81,7 +82,7 @@
                 Object.assign(newTarget, result);
                 updates.onNext(updates.value);
                 hlio.saveLocal('hl.' + user + '.targets', updates.value, secret);
-                ui.message('Added target ' + newTarget.name, 'success');
+                MessageBox.notify('Added target ' + newTarget.name, 'success');
                 if (typeof done !== 'undefined' && done !== null) {
                     done(newTarget);
                 }
@@ -89,7 +90,7 @@
             .fail( function (err) {
                 var filtered = updates.value.filter( function (item) { return item !== newTarget; });
                 updates.onNext(filtered);
-                ui.message(err.responseText, 'error');
+                MessageBox.notify(err.responseText, 'error');
                 if (typeof fail !== 'undefined' && fail !== null) {
                     fail(err);
                 }
@@ -108,7 +109,7 @@
                 })
                 .fail( function (err) {
                     updates.onNext(updates.value.concat(target));
-                    ui.message(err.responseText, 'error');
+                    MessageBox.notify(err.responseText, 'error');
                 });
             }, function () {
                 updates.onNext(updates.value.concat(target));
@@ -139,7 +140,7 @@
                 .fail(function  (err) {
                     Object.assign(targetToSave, original);
                     updates.onNext(updates.value);
-                    ui.message(err.responseText, 'error');
+                    MessageBox.notify(err.responseText, 'error');
                 });
             }, function () {
                 Object.assign(targetToSave, original);
@@ -163,7 +164,8 @@
 
         var user = 'my';
         var secret = 'hash';
-
+        var baseUrl = null;
+        
         var cleanTargetName = function (name) {
             return name.replace(/:/g, '').replace(/  /g, ' ').trim().toLowerCase();
         };
@@ -172,7 +174,8 @@
 
             user = userName;
             secret = userId;
-
+            baseUrl = window.location.href.split('/').slice(0,3).join('/') + '/doozy';
+            
             // populate store - call to database
             _api.getTargets()
             .done(function (result) {
@@ -180,7 +183,7 @@
                 updates.onNext(result);
             })
             .fail(function (err) {
-                ui.message(err.responseText, 'error');
+                MessageBox.notify(err.responseText, 'error');
             });
 
             var targets = hlio.loadLocal('hl.' + user + '.targets', secret);

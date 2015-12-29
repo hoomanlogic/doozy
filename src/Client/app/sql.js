@@ -3,7 +3,12 @@
 		require('mssql')
 	);
 }(function (sql) {
-    
+   
+    // app.get('/doozy/import', authenticate, function (req, res) {
+    //     legacy.importTo(db);
+    //     res.end(JSON.stringify({ path: 'IMPORT STARTED FOR ' + req.user.userName }));
+    // });
+        
     function join(records, prop, value) {
         var matches = [];
         for (var i = 0; i < records.length; i++) {
