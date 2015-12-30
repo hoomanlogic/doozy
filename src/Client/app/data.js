@@ -1,18 +1,13 @@
  (function (factory) {
-	module.exports = exports = factory(
-		require('gnodes'),
-        require('../../../../gnodes.config.js')
-	);
-}(function (Gnodes, config) {
+	module.exports = exports = factory();
+}(function () {
 	
 	/**
 	 * Set the context for data access
 	 */
-	function open () {
-		return Gnodes.open(config).then(function (db) {
-			db.api = new DoozyApi(db);
-			return db;
-		});
+	function init (db) {
+	    db.api = new DoozyApi(db);
+        return db;
 	};
     
     var KIND = {
@@ -42,7 +37,7 @@
 	}
 
 	return {
-		open: open	
+		init: init	
 	};
 
 }));

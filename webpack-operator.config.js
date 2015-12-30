@@ -2,7 +2,7 @@ var webpack = require("webpack");
 var path = require("path");
 module.exports = {
     entry: {
-        doozy: path.resolve(__dirname, 'webpack-express.entry.js'),
+        doozy: path.resolve(__dirname, 'webpack-operator.entry.js'),
     },
     eslint: {
         configFile: '.eslintrc'
@@ -31,6 +31,6 @@ module.exports = {
     },
     output: {
         filename: 'doozy.js',
-        path: '../webprompt/build/public'
+        path: '../operator/build/public'
     }
 };
