@@ -7,9 +7,10 @@
         require('./NextActions'),
         require('./UpcomingActions'),
         require('./RecentActivity'),
-        require('./BoxedActions')
+        require('./BoxedActions'),
+        require('lodash')
     );
-}(function (React, actionStore, TagList, ActivePlans, NextActions, UpcomingActions, RecentActivity, BoxedActions) {
+}(function (React, actionStore, TagList, ActivePlans, NextActions, UpcomingActions, RecentActivity, BoxedActions, _) {
     var FocusActions = React.createClass({
         /*************************************************************
          * DEFINITIONS
@@ -97,14 +98,20 @@
             /**
              * Filter actions in store to those that belong to this focus
              */
-            var focusActions = actions.filter(function (action) {
-                if (action.tags.indexOf(focusTag) > -1) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }, this);
-
+            var focusActions;
+            if (focusTag) {
+                focusActions = actions.filter(function (action) {
+                    if (action.tags.indexOf(focusTag) > -1) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }, this);
+            }
+            else {
+                focusActions = [].concat(actions);
+            }
+            
             /**
              * Update state
              */

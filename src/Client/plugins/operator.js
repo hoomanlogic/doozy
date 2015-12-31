@@ -57,14 +57,28 @@
         });
         
         
+        var TAG_KIND = {
+            FOCUS: '!',
+            PLACE: '@',
+            GOAL: '>',
+            NEED: '$',
+            BOX: '#',
+            TAG: ''
+        };
+        
         /*****************************************************
          * ACTIONS
          ****************************************************/
         operator.express.get('/doozy/api/actions', operator.authenticate, jsonResponse, function (req, res) {
             var result = [];
             operator.db.allOf('doozy.action').forEach(function (each) {
+                var tags = [];
+                each.siblings('doozy.tag').forEach(function (gnapse) {
+                    tags.push(TAG_KIND[gnapse.target.state.kind.toUpperCase()] + gnapse.target.state.name);
+                });
+                each.state.tags = tags;
                 result.push(each.state); 
-            });       
+            });
             res.end(JSON.stringify(result));
         });
 
@@ -135,7 +149,6 @@
         operator.express.get('/doozy/api/tags', operator.authenticate, jsonResponse, function (req, res) {
             var result = [];
             operator.db.allOf('doozy.tag').forEach(function (each) {
-                console.log(each.state);
                 result.push(each.state); 
             });
             res.end(JSON.stringify(result));
@@ -172,7 +185,6 @@
         operator.express.get('/doozy/api/targets', operator.authenticate, jsonResponse, function (req, res) {
             var result = [];
             operator.db.allOf('doozy.target').forEach(function (each) {
-                console.log(each.state);
                 result.push(each.state); 
             });
             res.end(JSON.stringify(result));
@@ -209,7 +221,6 @@
         operator.express.get('/doozy/api/plans', operator.authenticate, jsonResponse, function (req, res) {
             var result = [];
             operator.db.allOf('doozy.plan').forEach(function (each) {
-                console.log(each.state);
                 result.push(each.state); 
             });
             res.end(JSON.stringify(result));

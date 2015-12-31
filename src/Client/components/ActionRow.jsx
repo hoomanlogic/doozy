@@ -5,9 +5,10 @@
         require('components/ContentEditable'),
         require('./RelativeTime'),
         require('app/doozy'),
-        require('stores/ActionStore')
+        require('stores/ActionStore'),
+        require('hl-common-js/src/EventHandler')
     );
-}(function (React, addons, ContentEditable, RelativeTime, doozy, actionStore) {
+}(function (React, addons, ContentEditable, RelativeTime, doozy, actionStore, EventHandler) {
     var ActionRow = React.createClass({
         /*************************************************************
          * DEFINITIONS

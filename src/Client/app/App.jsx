@@ -3,9 +3,10 @@
         require('react'),
         require('stores/ActionStore'),
         require('stores/FocusStore'),
-        require('stores/TagStore')
+        require('stores/TagStore'),
+        require('components/FocusActions'),
     );
-}(function (React, actionStore, focusStore, tagStore) {
+}(function (React, actionStore, focusStore, tagStore, FocusActions) {
 
     var initializeStores = function () {
         actionStore.init('kat', 'foo');
@@ -71,9 +72,7 @@
             }
             return (
                 <div>
-                    {tagStore.updates.value.map(function (each) {
-                        return (<div>{each.name}</div>);
-                    })}
+                    <FocusActions focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : undefined} />
                 </div>
             );
         },

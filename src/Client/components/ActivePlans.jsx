@@ -17,9 +17,9 @@
          * RENDERING HELPERS
          *************************************************************/
         getActivePlans: function () {
-            var focusTag = this.props.focusTag.slice(1);
-            var focus = _.find(focusStore.updates.value, function (item) {
-                return item.tagName === focusTag;
+            var focusTag = this.props.focusTag ? this.props.focusTag.slice(1) : undefined;
+            var focuses = _.find(focusStore.updates.value, function (item) {
+                return focusTag ? item.tagName === focusTag : true;
             });
             if (!focus) {
                 return [];
