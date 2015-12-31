@@ -49,7 +49,7 @@
             }
 
             return (
-                <ul className="list-tags">
+                <ul className={'tag-list'}>
                     {domTags}
                 </ul>
             );

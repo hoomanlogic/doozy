@@ -35,7 +35,7 @@
          *************************************************************/
         render: function () {
             var data = this.props.data;
-            var latestDate = data.latestEntry === null ? null : data.latestEntry.date;
+            var latestDate = data.latestEntry !== undefined && data.latestEntry !== null ? data.latestEntry.date : null;
 
             var menuItemStyle = {
                 display: 'block',

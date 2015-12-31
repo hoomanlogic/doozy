@@ -544,7 +544,7 @@
         getTagValue: getTagValue,
 
         startsWithAVowel: function (word) {
-            if (['a','e','i','o','u'].contains(word[0].toLowerCase())) {
+            if (['a','e','i','o','u'].indexOf(word[0].toLowerCase()) > -1) {
                 return true;
             } else {
                 return false;

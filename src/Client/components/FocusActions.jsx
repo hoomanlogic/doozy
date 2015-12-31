@@ -42,7 +42,7 @@
              * focus when the focus changes
              */
             if (nextProps.focusTag !== this.props.focusTag) {
-                this.handleActionStoreUpdate(actionStore.updates.value, nextProps.focusTag);
+                this.handleActionStoreUpdate(actionStore.updates.value, nextProps.focusTag, true);
             }
         },
         componentWillUnmount: function () {
@@ -84,14 +84,14 @@
             window['ui'].tags = tagsFilter;
         },
 
-        handleActionStoreUpdate: function (actions, focusTag) {
+        handleActionStoreUpdate: function (actions, focusTag, focusChange) {
             /**
              * actionsObserver does not pass focusTag
              * so we default to the props.focusTag
              * but when we receive new props we
              * need to pass those props (componentWillReceiveProps)
              */
-            if (typeof focusTag === 'undefined') {
+            if (!focusChange && typeof focusTag === 'undefined') {
                 focusTag = this.props.focusTag;
             }
 
@@ -188,9 +188,9 @@
                 tagFilter = (
                     <div style={{marginTop: '2px'}}>
                         <ul style={{ marginLeft: '2px'}} className="toggle-switch">
-                            <li className={'clickable' + (this.state.tagsFilterType === 'any' ? ' selected' : '')} onClick={this.handleTagsFilterTypeClick.bind(null, 'any')}>Any</li>
-                            <li className={'clickable' + (this.state.tagsFilterType === 'all' ? ' selected' : '')} onClick={this.handleTagsFilterTypeClick.bind(null, 'all')}>All</li>
-                            <li className={'clickable' + (this.state.tagsFilterType === 'not' ? ' selected' : '')} onClick={this.handleTagsFilterTypeClick.bind(null, 'not')}>Not</li>
+                            <li className={['clickable'].concat(this.state.tagsFilterType === 'any' ? ['selected'] : []).join(' ')} onClick={this.handleTagsFilterTypeClick.bind(null, 'any')}>Any</li>
+                            <li className={['clickable'].concat(this.state.tagsFilterType === 'all' ? ['selected'] : []).join(' ')} onClick={this.handleTagsFilterTypeClick.bind(null, 'all')}>All</li>
+                            <li className={['clickable'].concat(this.state.tagsFilterType === 'not' ? ['selected'] : []).join(' ')} onClick={this.handleTagsFilterTypeClick.bind(null, 'not')}>Not</li>
                         </ul>
                         <TagList tags={this.state.tags}
                           selectedTags={this.state.tagsFilter}

@@ -80,7 +80,7 @@
         render: function () {
             var tag = doozy.parseTag(this.props.tag);
 
-            var isSelected = this.props.isSelected ? ' selected' : '';
+            var isSelected = this.props.isSelected ? ' ' + 'selected' : '';
 
             var closeButton = null;
             if (this.props.canRemove) {
@@ -93,7 +93,7 @@
             }
 
             return (
-                <li onClick={this.handleClick} className={'tag-item clickable' + isSelected} >
+                <li onClick={this.handleClick} className={'tag-item' + ' ' + 'clickable' + isSelected} >
                     <i className={"fa " + tag.className}></i>{domTag}{closeButton}
                 </li>
             );

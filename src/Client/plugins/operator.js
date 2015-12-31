@@ -29,9 +29,9 @@
         /**
          * Serve up main page of doozy UI 
          */
-        operator.express.get('/doozy', operator.authenticate, function (req, res) {
+        operator.express.get('/doozy/actions', operator.authenticate, function (req, res) {
             operator.renderer.renderWithScript(
-                operator.stats.publicPath + 'doozy.js',
+                operator.stats.publicPath + 'doozy/actions.js',
                 req.path,
                 null,
                 function (err, html) {

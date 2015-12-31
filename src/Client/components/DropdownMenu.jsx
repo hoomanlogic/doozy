@@ -5,9 +5,10 @@
  */
  (function (factory) {
     module.exports = exports = factory(
-        require('react')
+        require('react'),
+        require('jquery')
     );
- }(function (React) {
+ }(function (React, $) {
     var DropdownMenu = React.createClass({
         /***********************************
          * DEFINITIONS
