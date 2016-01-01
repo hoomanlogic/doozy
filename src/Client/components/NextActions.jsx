@@ -1,10 +1,11 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
-        require('./ActionRow'),
-        require('babble')
+        require('babble'),
+        require('lodash'),
+        require('./ActionRow')        
     );
-}(function (React, ActionRow, babble) {
+}(function (React, babble, _, ActionRow) {
     var NextActions = React.createClass({
         /*************************************************************
          * EVENT HANDLING

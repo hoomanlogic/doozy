@@ -1,9 +1,10 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
+        require('those'),
         require('stores/NotificationStore')
     );
-}(function (React, notificationStore) {
+}(function (React, those, notificationStore) {
 
     var NotificationDropdown = React.createClass({
         /*************************************************************
@@ -30,7 +31,7 @@
          *************************************************************/
         render: function () {
             var badge,
-                unreadCount = _.where(notificationStore.updates.value, {readAt: null}).length;
+                unreadCount = those(notificationStore.updates.value).where({readAt: null}).length;
 
             var badgeStyle = {
                 display: 'inline',

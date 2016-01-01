@@ -1,8 +1,9 @@
 (function (factory) {
     module.exports = exports = factory(
-        require('react')
+        require('react'),
+        require('those')
     );
-}(function (React) {
+}(function (React, those) {
     var LogEntries = React.createClass({
         /*************************************************************
          * DEFINITIONS
@@ -48,10 +49,10 @@
             var userName = this.props.userName;
 
             // find log entries for this user
-            var logEntries = _.where(logEntryStore.updates.value, {userName: userName});
-            logEntries = _.sortBy(logEntries, function (item) { return item.date.split('T')[0] + '-' + (['performed','skipped'].indexOf(item.entry) > -1 ? '1' : '0')});
+            var logEntries = those(logEntryStore.updates.value).like({userName: userName});
+            logEntries = those(logEntries).order(function (item) { return item.date.split('T')[0] + '-' + (['performed','skipped'].indexOf(item.entry) > -1 ? '1' : '0')});
             logEntries.reverse();
-            logEntries = logEntries.slice(0, this.state.maxReturn);
+            logEntries = those(logEntries).top(this.state.maxReturn);
 
             /**
              * Inline Styles

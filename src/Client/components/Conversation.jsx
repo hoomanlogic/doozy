@@ -59,7 +59,7 @@
              * to there being no active conversation open or if
              * there are no messages in the conversation
              */
-            if (_.isUndefined(this.refs.scrollWindow) || !this.props.conversation || !this.props.conversation.messages) {
+            if (this.refs.scrollWindow === undefined || !this.props.conversation || !this.props.conversation.messages) {
               return;
             }
 

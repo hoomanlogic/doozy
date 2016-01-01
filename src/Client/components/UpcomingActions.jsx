@@ -1,9 +1,10 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
-        require('./ActionRow')
+        require('./ActionRow'),
+        require('lodash')
     );
-}(function (React, ActionRow) {
+}(function (React, ActionRow, _) {
     var UpcomingActions = React.createClass({
         /*************************************************************
          * RENDERING HELPERS

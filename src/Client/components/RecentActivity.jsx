@@ -1,16 +1,19 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
-        require('./LogEntryBox'),
-        require('stores/LogEntryStore'),
         require('jquery'),
-        require('lodash')
+        require('lodash'),
+        require('those'),
+        require('stores/LogEntryStore'),
+        require('mixins/StoresMixin'),
+        require('./LogEntryBox')
     );
-}(function (React, LogEntryBox, logEntryStore, $, _) {
+}(function (React, $, _, those, logEntryStore, LogEntryBox) {
     var RecentActivity = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
+        mixins: [StoresMixin([logEntryStore])],
         getInitialState: function () {
             return {
                 maxReturn: 5,
@@ -22,11 +25,6 @@
          * COMPONENT LIFECYCLE
          *************************************************************/
         componentWillMount: function () {
-            /**
-             * Subscribe to Action Store to be
-             * notified of updates to the store
-             */
-            logEntryStore.subscribe(this.handleLogEntryStoreUpdate);
             var me = this;
             $(window).scroll(function() {
                if ($(window).scrollTop() + $(window).height() == $(document).height()) {
@@ -46,12 +44,6 @@
                 });
             }
         },
-        componentWillUnmount: function () {
-            /**
-             * Clean up objects and bindings
-             */
-            logEntryStore.dispose(this.handleLogEntryStoreUpdate);
-        },
 
         /*************************************************************
          * EVENT HANDLING
@@ -61,16 +53,13 @@
                 id: '00000000-0000-0000-0000-000000000000'
             });
         },
-        handleLogEntryStoreUpdate: function (logEntries) {
-            this.setState({logEntriesLastUpdated: new Date().toISOString()});
-        },
 
         /*************************************************************
          * RENDERING
          *************************************************************/
         render: function () {
 
-            var actionIds = _.pluck(this.props.actions, 'id');
+            var actionIds = those(this.props.actions).pluck('id');
 
             /**
              * Get all distinct tags of all this focus'
