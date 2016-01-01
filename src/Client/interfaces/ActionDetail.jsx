@@ -10,36 +10,11 @@
         require('stores/TagStore'),
         require('stores/TargetStore'),
         require('mixins/StoresMixin'),
-        require('components/FocusBar'),
-        require('components/TimerBar'),
-        require('components/FocusActions'),
+        require('pages/ManageAction'),
     );
-}(function (React, actionStore, focusStore, logEntryStore, planStore, planStepStore, tagStore, targetStore, StoresMixin, FocusBar, TimerBar, FocusActions) {
-
-    var initializeGlobals = function (host) {
-        /**
-            * Global UI Handles
-            */
-        window['ui'] = window['ui'] || {};
-        //window['ui'].addAction = host.addAction;
-        //window['ui'].editAction = host.editAction;
-        //window['ui'].logEntry = host.logEntry;
-        //window['ui'].logNewAction = host.logNewAction;
-        //window['ui'].editLogEntry = host.editLogEntry;
-        // window['ui'].goTo = host.goTo;
-        // window['ui'].goBack = host.goBack;
-        // window['ui'].openConversation = host.selectConversation;
-        // window['ui'].getHeightBuffer = host.getHeightBuffer;
-        // window['ui'].queueRequest = host.queueRequest;
-        // window['ui'].message = host (text, kind) {
-        //     if (!kind) {
-        //         kind = 'info';
-        //     }
-        //     toastr[kind](text);
-        // }  
-    };
+}(function (React, actionStore, focusStore, logEntryStore, planStore, planStepStore, tagStore, targetStore, StoresMixin, ManageAction) {
     
-    var ActionsInterface = React.createClass({
+    var ActionsDetailInterface = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
@@ -49,7 +24,6 @@
                 currentFocus: null   
             };
         },
-
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
@@ -60,7 +34,7 @@
         handleFocusClick: function (item) {
             this.setState({ currentFocus: item.name === null ? undefined : item });
         },
-
+        
         /*************************************************************
          * RENDERING
          *************************************************************/
@@ -70,16 +44,17 @@
                 return (<div>No results</div>);
             }
             
+            // let other components know what page we're on
+            var mode = 'Edit';
+            var page = (<ManageAction action={this.props.action} mode={mode} focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : ''} />);
+        
             return (
                 <div>
-                    <FocusBar currentFocus={this.state.currentFocus}
-                        handleFocusClick={this.handleFocusClick} />
-                    <TimerBar />
-                    <FocusActions focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : undefined} />
+                    {page}    
                 </div>
             );
         },
     });
 
-    return ActionsInterface;
+    return ActionsDetailInterface;
 }));

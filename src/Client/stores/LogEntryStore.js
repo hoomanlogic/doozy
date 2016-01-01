@@ -4,9 +4,10 @@
         require('jquery'),
         require('hl-common-js/src/io'),
         require('./ActionStore'),
-        require('components/MessageBox')
+        require('components/MessageBox'),
+        require('lodash')
     );
-}(function (hlstore, $, hlio, actionStore, MessageBox) {
+}(function (hlstore, $, hlio, actionStore, MessageBox, _) {
 
     var LogEntryStore = function () {
         hlstore.Store.call(this);

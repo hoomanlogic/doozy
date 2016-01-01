@@ -2,7 +2,8 @@ var webpack = require("webpack");
 var path = require("path");
 module.exports = {
     entry: {
-        actions: path.resolve(__dirname, 'webpack-interfaces.actions.js'),
+        'action-detail': path.resolve(__dirname, 'src/Client/interfaces/mount.action-detail.js'),
+        actions: path.resolve(__dirname, 'src/Client/interfaces/mount.actions.js'),
     },
     eslint: {
         configFile: '.eslintrc'

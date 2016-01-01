@@ -3,9 +3,10 @@
         require('jquery'),
         require('rx'),
         require('hl-common-js/src/io'),
-        require('components/MessageBox')
+        require('components/MessageBox'),
+        require('lodash')
     );
-}(function ($, Rx, hlio, MessageBox) {
+}(function ($, Rx, hlio, MessageBox, _) {
 
     var ActionStore = function () {
         /**

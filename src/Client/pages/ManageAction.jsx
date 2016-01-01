@@ -110,7 +110,7 @@
             // flag to call modal's graceful open dialog function
             this.show = true;
 
-            var id = editableCopy.id
+            var id = editableCopy.id;
             if (!actionStore.getActionById(id)) {
                 id = null;
             }

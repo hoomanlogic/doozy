@@ -2,9 +2,10 @@
     module.exports = exports = factory(
         require('react'),
         require('stores/FocusStore'),
-        require('stores/PlanStore')
+        require('stores/PlanStore'),
+        require('lodash')
     );
-}(function (React, focusStore, planStore) {
+}(function (React, focusStore, planStore, _) {
     var ActivePlans = React.createClass({
         /*************************************************************
          * EVENT HANDLING
@@ -17,14 +18,20 @@
          * RENDERING HELPERS
          *************************************************************/
         getActivePlans: function () {
+            var focus, plans;
             var focusTag = this.props.focusTag ? this.props.focusTag.slice(1) : undefined;
-            var focuses = _.find(focusStore.updates.value, function (item) {
-                return focusTag ? item.tagName === focusTag : true;
-            });
-            if (!focus) {
-                return [];
+            if (focusTag) {
+                focus = _.find(focusStore.updates.value, function (item) {
+                    return item.tagName === focusTag;
+                });    
             }
-            var plans = _.where(planStore.updates.value, { focusId: focus.id });
+            
+            if (!focus) {
+                plans = planStore.updates.value;
+            }
+            else {
+                plans = _.where(planStore.updates.value, { focusId: focus.id });
+            }
             return plans;
         },
         

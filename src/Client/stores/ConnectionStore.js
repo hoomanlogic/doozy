@@ -3,9 +3,10 @@
         require('hl-common-js/src/store'),
         require('jquery'),
         require('NotificationStore'),
-        require('components/MessageBox')
+        require('components/MessageBox'),
+        require('lodash')
     );
-}(function (hlstore, $, notificationStore, MessageBox) {
+}(function (hlstore, $, notificationStore, MessageBox, _) {
 
     var ConnectionStore = function () {
         hlstore.Store.call(this);

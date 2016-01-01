@@ -27,11 +27,21 @@
         // });
         
         /**
-         * Serve up main page of doozy UI 
+         * Serve up interfaces
          */
+        var fs = require('fs');
+        var path = require('path');
+        var defaultHtmlTemplate = fs.readFileSync(path.resolve(__dirname, '../interfaces/_default.html'), 'utf-8');
+        
+        // ACTIONS INTERFACE
         operator.express.get('/doozy/actions', operator.authenticate, function (req, res) {
-            operator.renderer.renderWithScript(
-                operator.stats.publicPath + 'doozy/actions.js',
+            operator.renderer.renderHtml(
+                defaultHtmlTemplate
+                    .replace('SCRIPT_URL', operator.stats.publicPath + 'doozy/actions.js')
+                    .replace('SELECTIZE_URL', operator.stats.publicPath + 'selectize.js')
+                    .replace('SELECTIZE_CSS_1', operator.stats.publicPath + 'selectize.css')
+                    .replace('SELECTIZE_CSS_2', operator.stats.publicPath + 'selectize.default.css')
+                    .replace('INTERFACE_PROPS', JSON.stringify({})),
                 req.path,
                 null,
                 function (err, html) {
@@ -46,7 +56,39 @@
                 }
             );
         });
-
+        
+        // ACTION EDIT
+        operator.express.get('/doozy/action/:tag', operator.authenticate, function (req, res) {
+            var result = operator.db.find(req.params.tag, 'doozy.action').first();
+            if (!result) {
+                result = operator.db.find({id: req.params.tag}, 'doozy.action').first();
+            }
+            if (result) {
+                operator.renderer.renderHtml(
+                    defaultHtmlTemplate
+                        .replace('SCRIPT_URL', operator.stats.publicPath + 'doozy/action-detail.js')
+                        .replace('SELECTIZE_URL', operator.stats.publicPath + 'selectize.js')
+                        .replace('SELECTIZE_CSS_1', operator.stats.publicPath + 'selectize.css')
+                        .replace('SELECTIZE_CSS_2', operator.stats.publicPath + 'selectize.default.css')
+                        .replace('INTERFACE_PROPS', JSON.stringify({action: result.state})),
+                    req.path,
+                    null,
+                    function (err, html) {
+                        if (err) {
+                            res.statusCode = 500;
+                            res.contentType = 'text; charset=utf8';
+                            res.end(err.message);
+                            return;
+                        }
+                        res.contentType = 'text/html; charset=utf8';
+                        res.end(html);
+                    }
+                );
+            }
+            
+            res.end(JSON.stringify(result ? result.toGnon() : null));
+        });
+        
         /**
          * Get a gnode by path
          * TODO: Move this to Gnodes express plugin
@@ -86,7 +128,7 @@
                     }
                 });
                 each.state.lastPerformed = lastPerformed;
-                
+                each.state.recurrenceRules = each.state.recurrenceRules || [];
                 result.push(each.state); 
             });
             res.end(JSON.stringify(result));
