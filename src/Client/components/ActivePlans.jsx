@@ -3,9 +3,9 @@
         require('react'),
         require('stores/FocusStore'),
         require('stores/PlanStore'),
-        require('lodash')
+        require('hl-common-js/src/those')
     );
-}(function (React, focusStore, planStore, _) {
+}(function (React, focusStore, planStore, those) {
     var ActivePlans = React.createClass({
         /*************************************************************
          * EVENT HANDLING
@@ -21,16 +21,14 @@
             var focus, plans;
             var focusTag = this.props.focusTag ? this.props.focusTag.slice(1) : undefined;
             if (focusTag) {
-                focus = _.find(focusStore.updates.value, function (item) {
-                    return item.tagName === focusTag;
-                });    
+                focus = those(focusStore.updates.value).first({tagName: focusTag});
             }
-            
+
             if (!focus) {
                 plans = planStore.updates.value;
             }
             else {
-                plans = _.where(planStore.updates.value, { focusId: focus.id });
+                plans = those(planStore.updates.value).like({ focusId: focus.id });
             }
             return plans;
         },
@@ -43,11 +41,9 @@
             var activePlans = this.getActivePlans();
 
             /**
-             * Sort the actions by completed and name
+             * Sort the plans name
              */
-            activePlans = _.sortBy(activePlans, function(plan) {
-                return plan.name.toLowerCase();
-            });
+            activePlans = those(activePlans).order('name');
 
             /**
              * Return null if there are no active plans for this focus

@@ -8,9 +8,10 @@
         require('./UpcomingActions'),
         require('./RecentActivity'),
         require('./BoxedActions'),
-        require('lodash')
+        require('lodash'),
+        require('hl-common-js/src/those')
     );
-}(function (React, actionStore, TagList, ActivePlans, NextActions, UpcomingActions, RecentActivity, BoxedActions, _) {
+}(function (React, actionStore, TagList, ActivePlans, NextActions, UpcomingActions, RecentActivity, BoxedActions, _, those) {
     var FocusActions = React.createClass({
         /*************************************************************
          * DEFINITIONS
@@ -64,13 +65,9 @@
             var tagsFilter = this.state.tagsFilter;
 
             /**
-             * Toggle tag selection (remove if exists, add if doesn't)
+             * Toggle tag selection
              */
-            if (_.contains(tagsFilter, tag)) {
-                tagsFilter.splice(_.indexOf(tagsFilter, tag), 1);
-            } else {
-                tagsFilter.push(tag);
-            }
+            those(tagsFilter).toggle(tag);
 
             /**
              * Update filter state

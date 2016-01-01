@@ -1,8 +1,9 @@
 (function (factory) {
     module.exports = exports = factory(
-        require('react')
+        require('react'),
+        require('hl-common-js/src/those')
     );
-}(function (React) {
+}(function (React, those) {
     var CommentForm = React.createClass({
         /*************************************************************
          * DEFINITIONS
@@ -71,14 +72,15 @@
 
             // find existing connection
             var connections = connectionStore.updates.value;
-                        // find log entries for this user
-            var logEntry = _.find( logEntryStore.updates.value, { id: this.props.articleId } );
+            
+            // find log entries for this user
+            var logEntry = those(logEntryStore.updates.value).first({ id: this.props.articleId });
 
             if (!logEntry) {
                 return null;
             }
 
-            var comments = _.sortBy(logEntry.comments, function (item) { return item.date; });
+            var comments = those(logEntry.comments).order('date');
 
             var headerStyle = {
                 display: 'flex',

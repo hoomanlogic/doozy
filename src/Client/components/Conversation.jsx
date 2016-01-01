@@ -2,9 +2,10 @@
     module.exports = exports = factory(
         require('react'),
         require('babble'),
-        require('./SendMessage')
+        require('./SendMessage'),
+        require('lodash')
     );
-}(function (React, babble, SendMessage) {
+}(function (React, babble, SendMessage. _) {
     var Conversation = React.createClass({
         /*************************************************************
          * DEFINITIONS
