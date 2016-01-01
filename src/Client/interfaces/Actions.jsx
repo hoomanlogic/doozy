@@ -4,17 +4,19 @@
         require('react'),
         require('stores/ActionStore'),
         require('stores/FocusStore'),
+        require('stores/LogEntryStore'),
         require('stores/TagStore'),
         require('components/FocusBar'),
         require('components/TimerBar'),
         require('components/FocusActions'),
     );
-}(function (React, actionStore, focusStore, tagStore, FocusBar, TimerBar, FocusActions) {
+}(function (React, actionStore, focusStore, logEntryStore, tagStore, FocusBar, TimerBar, FocusActions) {
 
     var initializeStores = function () {
         actionStore.init('kat', 'foo');
         focusStore.init('kat', 'foo');
         tagStore.init('kat', 'foo');
+        logEntryStore.init('kat', 'foo');
     };
 
     var ActionsInterface = React.createClass({
@@ -53,6 +55,12 @@
                     return result.length > 0;
                 })
                 .subscribe(this.handleStoreUpdate);
+                
+            /**
+             * Subscribe to Log Entry Store so we can
+             * update the current focus when necessary
+             */
+            logEntryStore.subscribe(this.handleStoreUpdate);
         },
         componentWillUnmount: function () {
             /**
@@ -61,6 +69,7 @@
             this.actionsObserver.dispose();
             this.focusesObserver.dispose();
             this.tagsObserver.dispose();
+            logEntryStore.dispose(this.handleStoreUpdate);
         },
         
         /*************************************************************

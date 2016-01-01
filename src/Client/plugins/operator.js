@@ -77,6 +77,16 @@
                     tags.push(TAG_KIND[gnapse.target.state.kind.toUpperCase()] + gnapse.target.state.name);
                 });
                 each.state.tags = tags;
+                
+                var lastPerformed = null;
+                
+                each.siblings('doozy.logentry').forEach(function (gnapse) {
+                    if (!lastPerformed || lastPerformed < gnapse.target.state.date) {
+                        lastPerformed = gnapse.target.state.date;
+                    }
+                });
+                each.state.lastPerformed = lastPerformed;
+                
                 result.push(each.state); 
             });
             res.end(JSON.stringify(result));
@@ -291,10 +301,28 @@
          * LOG ENTRIES
          ****************************************************/
         operator.express.get('/doozy/api/logentries', operator.authenticate, jsonResponse, function (req, res) {
+
             var result = [];
+            var commit = false;
             operator.db.allOf('doozy.logentry').forEach(function (each) {
+                var actionGnapse = each.siblings('doozy.action').first();
+                if (actionGnapse) {
+                    each.state.actionName = actionGnapse.target.state.name;
+                }
+                else if (each.state.actionId) {
+                    var actionNode = operator.db.find({id: each.state.actionId}, 'doozy.action').first();
+                    if (actionNode) {
+                        each.state.actionName = actionNode.state.name;
+                        each.connect(actionNode, operator.db.RELATION.ASSOCIATE);
+                        commit = true;
+                    }
+                }
+                
                 result.push(each.state); 
             });
+            if (commit) {
+                operator.db.commitChanges();   
+            }
             res.end(JSON.stringify(result));
         });
 

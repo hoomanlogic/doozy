@@ -8,9 +8,11 @@
         require('stores/LogEntryStore'),
         require('stores/UserStore'),
         require('app/doozy'),
-        require('babble')
+        require('babble'),
+        require('hl-common-js/src/EventHandler'),
+        require('jquery')
     );
-}(function (React, LayeredComponentMixin, RelativeTime, ContentEditable, actionStore, logEntryStore, userStore, doozy, babble) {
+}(function (React, LayeredComponentMixin, RelativeTime, ContentEditable, actionStore, logEntryStore, userStore, doozy, babble, EventHandler, $) {
     var LogEntryBox = React.createClass({
         /*************************************************************
          * DEFINITIONS
