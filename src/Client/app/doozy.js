@@ -1,13 +1,14 @@
 (function (factory) {
     module.exports = exports = factory(
         require('hl-common-js/src/common'),
+        require('hl-common-js/src/those'),
         require('stores/ActionStore'),
         require('stores/LogEntryStore'),
         require('stores/TagStore'),
         require('stores/TargetStore'),
         require('babble')
     );
-}(function (hlcommon, actionStore, logEntryStore, tagStore, targetStore, babble) {
+}(function (those, hlcommon, actionStore, logEntryStore, tagStore, targetStore, babble) {
 
     var TAG_KIND = {
         FOCUS: '!',
@@ -208,6 +209,18 @@
     var getTagValue = function (tag) {
         return TAG_KIND[tag.kind.toUpperCase()] + tag.name;
     };
+    
+    var extendAction = function (action) {
+        // action.getLastPerformed = function () {
+            
+        // };
+        // action.getTags = function () {
+        //     if (!action.__tags) {
+        //         those(tagStore.updates.value).like()
+        //     } 
+        // }
+        return action;
+    };
 
     return {
 
@@ -241,12 +254,13 @@
                         FR: false,
                         SA: false
                     };
+                    
                     // build days object
-                    for (var i = 0; i < recurrenceObj.byday.length; i++) {
-                        days[recurrenceObj.byday[i].day] = true;
-                    }
+                    recurrenceObj.byday.forEach(function (byday) {
+                         days[byday.day] = true;
+                    });
 
-                    var twoCharDays = _.pluck(recurrenceObj.byday, 'day');
+                    var twoCharDays = those(recurrenceObj.byday).pluck('day');
                     var fullnameDays = babble.moments.daysOfWeek.filter(function(item) {
                         return twoCharDays.indexOf(item.slice(0,2).toUpperCase()) > -1;
                     });
@@ -282,33 +296,41 @@
         },
 
         action: function (name, tags) {
-
-            // add tags any were supplied
-            var t = [];
-            if (typeof tags !== 'undefined') {
-                if (typeof tags === 'string') {
-                    t.push(tags);
-                } else if (Object.prototype.toString.call(tags) === '[object Array]') {
-                    t = tags;
-                }
+            
+            if (typeof name === 'object' && name.id && name.kind === 'Action') {
+                // give action object magical powers
+                return extendAction(name);
             }
+            else {
+                // add tags any were supplied
+                var t = [];
+                if (typeof tags !== 'undefined') {
+                    if (typeof tags === 'string') {
+                        t.push(tags);
+                    } else if (Object.prototype.toString.call(tags) === '[object Array]') {
+                        t = tags;
+                    }
+                }
 
-            // return object literal
-            return {
-                id: hlcommon.uuid(),
-                kind: 'Action',
-                name: name || '',
-                created: new Date().toISOString(),
-                duration: 0,
-                content: null,
-                nextDate: null,
-                isPublic: false,
-                lastPerformed: null,
-                tags: t,
-                recurrenceRules: [],
-                items: []
-            };
+                // return object literal
+                return extendAction({
+                    id: hlcommon.uuid(),
+                    kind: 'Action',
+                    name: name || '',
+                    created: new Date().toISOString(),
+                    duration: 0,
+                    content: null,
+                    nextDate: null,
+                    isPublic: false,
+                    lastPerformed: null,
+                    tags: t,
+                    recurrenceRules: [],
+                    items: []
+                });                
+            }
         },
+        
+        
 
         plan: function (name) {
             // return object literal

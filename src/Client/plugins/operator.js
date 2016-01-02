@@ -114,16 +114,17 @@
         operator.express.get('/doozy/api/actions', operator.authenticate, jsonResponse, function (req, res) {
             var result = [];
             operator.db.allOf('doozy.action').forEach(function (each) {
+                // calc tags data
                 var tags = [];
                 each.siblings('doozy.tag').forEach(function (gnapse) {
                     tags.push(TAG_KIND[gnapse.target.state.kind.toUpperCase()] + gnapse.target.state.name);
                 });
                 each.state.tags = tags;
                 
+                // calc latest logentry
                 var lastPerformed = null;
-                
                 each.siblings('doozy.logentry').forEach(function (gnapse) {
-                    if (!lastPerformed || lastPerformed < gnapse.target.state.date) {
+                    if (gnapse.target.state.entry === 'performed' && (!lastPerformed || lastPerformed < gnapse.target.state.date)) {
                         lastPerformed = gnapse.target.state.date;
                     }
                 });

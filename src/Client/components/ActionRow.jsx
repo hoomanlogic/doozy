@@ -95,7 +95,7 @@
             });
         },
         handleResize: function(e) {
-            this.setState({windowWidth: window.innerWidth});
+            this.setState({collapse: window.innerWidth < 600 ? true : false});
         },
 
         /*************************************************************
@@ -154,7 +154,7 @@
                         {details}
                         {repeats}
                     </td>
-                    <td width="150px" hidden={this.state.windowWidth < 600 ? true : false}><RelativeTime accuracy="d" isoTime={this.props.actionLastPerformed} /></td>
+                    <td width="150px" hidden={this.state.collapse}><RelativeTime accuracy="d" isoTime={this.props.actionLastPerformed} /></td>
                 </tr>
             );
         }
