@@ -3,7 +3,7 @@
         require('react'),
         require('jquery'),
         require('lodash'),
-        require('those'),
+        require('hl-common-js/src/those'),
         require('stores/LogEntryStore'),
         require('mixins/StoresMixin'),
         require('./LogEntryBox')

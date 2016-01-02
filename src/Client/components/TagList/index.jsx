@@ -1,9 +1,10 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
+        require('hl-common-js/src/those'),
         require('./TagListItem')
     );
-}(function (React, TagListItem) {
+}(function (React, those, TagListItem) {
     var TagList = React.createClass({
         /*************************************************************
          * DEFINITIONS
@@ -29,7 +30,7 @@
                                    tag={tag}
                                    canEdit={this.props.canEdit}
                                    canRemove={this.props.canRemove}
-                                   isSelected={_.contains(this.props.selectedTags, tag)}
+                                   isSelected={those(this.props.selectedTags).has(tag)}
                                    handleClick={this.props.selectionChanged.bind(null,tag)}
                                    onTagUpdated={this.props.onTagUpdated} />
                           );

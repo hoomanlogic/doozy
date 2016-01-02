@@ -20,8 +20,8 @@
             actionName: React.PropTypes.string.isRequired,
 
             // optional
-            actionLastPerformed:  React.PropTypes.string,
-            actionNextDate:  React.PropTypes.string,
+            actionLastPerformed: React.PropTypes.string,
+            actionNextDate: React.PropTypes.string,
             overrideIsDone: React.PropTypes.bool,
         },
 
@@ -61,7 +61,7 @@
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
-        handleCheck: function(event) {
+        handleCheck: function (event) {
             if (ui.logEntry && event.target.checked) {
                 ui.logEntry({
                     id: this.props.action.id
@@ -71,16 +71,16 @@
         handleCheckTouch: function () {
             this.preventTouch = true;
         },
-        handleClick: function(event) {
+        handleClick: function () {
             ui.editAction(this.props.action);
         },
-        handleTouchStart: function(event) {
+        handleTouchStart: function () {
             this.isTap = true;
         },
-        handleTouchMove: function(event) {
+        handleTouchMove: function () {
             this.isTap = false;
         },
-        handleTouchEnd: function(event) {
+        handleTouchEnd: function (event) {
             if (this.isTap && !this.preventTouch) {
                 this.handleClick();
                 event.preventDefault();
@@ -94,7 +94,7 @@
                 name: name
             });
         },
-        handleResize: function(e) {
+        handleResize: function () {
             this.setState({collapse: window.innerWidth < 600 ? true : false});
         },
 
@@ -104,7 +104,8 @@
         calcIsDone: function () {
             if (typeof this.props.overrideIsDone !== 'undefined' && this.props.overrideIsDone !== null) {
                 return this.props.overrideIsDone;
-            } else {
+            }
+            else {
                 return this.props.actionLastPerformed !== null && (this.props.actionNextDate === null || new Date(this.props.actionNextDate) > new Date());
             }
         },

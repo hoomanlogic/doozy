@@ -13,6 +13,7 @@
         require('jquery')
     );
 }(function (React, LayeredComponentMixin, RelativeTime, ContentEditable, actionStore, logEntryStore, userStore, doozy, babble, EventHandler, $) {
+    /* globals window */
     var LogEntryBox = React.createClass({
         /*************************************************************
          * DEFINITIONS
@@ -83,17 +84,17 @@
             var $box = $('#dropdown-' + this.props.data.id);
 
             if (typeof this.refs.dropDown === 'undefined') {
-                $win.off("click.Bst", this.handleOutsideClick);
+                $win.off('click.Bst', this.handleOutsideClick);
                 return;
             }
 
             // handle click outside of the dropdown
             var $toggle = $(this.refs.dropDown.getDOMNode());
-            if ($box.has(event.target).length == 0 && !$toggle.is(event.target) && !$box.is(event.target)) {
+            if ($box.has(event.target).length === 0 && !$toggle.is(event.target) && !$box.is(event.target)) {
                 this.setState({
                     isDropDownOpen: false
                 });
-                $win.off("click.Bst", this.handleOutsideClick);
+                $win.off('click.Bst', this.handleOutsideClick);
             }
         },
         handleUpvoteClick: function () {
@@ -154,57 +155,28 @@
 
             if (!this.state.isDropDownOpen) {
                 return null;
-            };
-
-            var style = {
-                position: 'absolute',
-                top: $(this.refs.dropDown.getDOMNode()).offset().top + 22 + 'px',
-                padding: '5px',
-                backgroundColor: '#fff',
-                minWidth: '100%',
-                borderRadius: '4px',
-                border: '2px solid #e0e0e0',
-                boxShadow: '0 0 10px #000000'
-            };
-
-            var listStyle = {
-                listStyle: 'none',
-                margin: '0',
-                padding: '0'
-            };
+            }
 
             var options = [];
-
-            var aStyle = {
-                fontSize: '20px',
-                display: 'block',
-                padding: '3px 20px',
-                clear: 'both',
-                fontWeight: '400',
-                lineHeight: '1.42857143',
-                color: '#333',
-                whiteSpace: 'nowrap'
-            };
-
-            if (userStore.updates.value.userId === this.props.data.userId) {
+            // if (userStore.updates.value.userId === this.props.data.userId) {
                 options.push((
-                    <li><a className="clickable hoverable" style={aStyle} onClick={this.handleDeleteClick}><i className="fa fa-trash"></i> Delete Log Entry</a></li>
+                    <li><a className="clickable hoverable" style={styles.userOptionsItem} onClick={this.handleDeleteClick}><i className="fa fa-trash"></i> Delete Log Entry</a></li>
                 ));
                 options.push((
-                    <li><a className="clickable hoverable" style={aStyle} onClick={this.handleEditLogEntryClick}><i className="fa fa-pencil"></i> Edit Entry</a></li>
+                    <li><a className="clickable hoverable" style={styles.userOptionsItem} onClick={this.handleEditLogEntryClick}><i className="fa fa-pencil"></i> Edit Entry</a></li>
                 ));
                 if (this.props.data.actionId !== null) {
                     options.push((
-                        <li><a className="clickable hoverable" style={aStyle} onClick={this.handleEditActionClick}><i className="fa fa-pencil"></i> Edit Action</a></li>
+                        <li><a className="clickable hoverable" style={styles.userOptionsItem} onClick={this.handleEditActionClick}><i className="fa fa-pencil"></i> Edit Action</a></li>
                     ));
                 }
                 options.push((
-                    <li><a className="clickable hoverable" style={aStyle} onClick={this.handleEditDetailsClick}><i className="fa fa-pencil"></i> Edit Details</a></li>
+                    <li><a className="clickable hoverable" style={styles.userOptionsItem} onClick={this.handleEditDetailsClick}><i className="fa fa-pencil"></i> Edit Details</a></li>
                 ));
                 options.push((
-                    <li><a className="clickable hoverable" style={aStyle} onClick={this.handleEditDurationClick}><i className="fa fa-pencil"></i> Edit Duration</a></li>
+                    <li><a className="clickable hoverable" style={styles.userOptionsItem} onClick={this.handleEditDurationClick}><i className="fa fa-pencil"></i> Edit Duration</a></li>
                 ));
-            }
+            // }
 
             if (options.length === 0) {
                 return null;
@@ -212,8 +184,8 @@
             var data = this.props.data;
 
             return (
-                <div id={"dropdown-" + data.id} style={style}>
-                    <ul style={listStyle}>
+                <div id={'dropdown-' + data.id} style={styles.userOptionsDropdown}>
+                    <ul style={styles.userOptionsList}>
                         {options}
                     </ul>
                 </div>
@@ -222,7 +194,7 @@
         render: function () {
             var data = this.props.data;
 
-            var upvoteCounter, commentCounter;
+            var duration, upvoteCounter, commentCounter, typeOfLogEntry;
 
             if (data.upvotes && data.upvotes.length > 0) {
                 upvoteCounter = (<span>{data.upvotes.length + ' ' + doozy.formatNoun('Cheer', data.upvotes.length)}</span>);
@@ -232,71 +204,10 @@
                 commentCounter = (<span className="clickable" onClick={this.handleCommentClick}>{(upvoteCounter ? ' - ' : '') + data.comments.length + ' ' + doozy.formatNoun('Comment', data.comments.length)}</span>);
             }
 
-            /**
-             * Inline Styles
-             */
-            var logEntryBoxStle = {
-                display: 'flex',
-                flexDirection: 'column',
-                backgroundColor: '#fff',
-                padding: '5px',
-                borderRadius: '4px',
-                marginBottom: '5px'
-            };
-
-            var logEntryActionsStyle = {
-                display: 'flex',
-                flexDirection: 'row',
-                backgroundColor: '#b2b2b2',
-                borderBottomLeftRadius: '4px',
-                borderBottomRightRadius: '4px'
-            };
-
-            var cheerButtonStyle = {
-                borderRadius: '0',
-                flexGrow: '1',
-                paddingTop: '3px',
-                paddingBottom: '3px',
-                color: '#fff',
-                backgroundImage: 'none',
-                backgroundColor: '#444',
-                borderColor: '#222',
-                fontWeight: 'bold',
-                outlineColor: 'rgb(40, 40, 40)',
-
-                borderBottomLeftRadius: '4px'
-            };
-
-            var heartColorStyle = {
-                color: 'rgb(250, 133, 133)'
-            };
-
-            var commentButtonStyle = {
-                borderRadius: '0',
-                flexGrow: '1',
-                paddingTop: '3px',
-                paddingBottom: '3px',
-                color: '#fff',
-                backgroundImage: 'none',
-                backgroundColor: '#444',
-                borderColor: '#222',
-                fontWeight: 'bold',
-                outlineColor: 'rgb(40, 40, 40)',
-
-                borderLeft: '0',
-                borderBottomRightRadius: '4px'
-            };
-
-            var pencilColorStyle = {
-                color: '#e2ff63'
-            };
-
-            var duration;
             if (data.duration) {
                 duration = new babble.Duration(data.duration * 60000).toString();
             }
 
-            var typeOfLogEntry;
             if (data.actionName && data.actionName.length > 0) {
                 typeOfLogEntry = ([
                     <span style={{fontWeight: 'bold'}}>
@@ -317,7 +228,7 @@
                 ]);
             }
             return (
-                <article key={data.id} style={logEntryBoxStle}>
+                <article key={data.id} style={styles.logEntryBox}>
                     <div>
 
                         <header style={{display: 'flex', flexDirection: 'row'}}>
@@ -345,10 +256,10 @@
                              {upvoteCounter}
                              {commentCounter}
                         </div>
-                        <div style={logEntryActionsStyle}>
-                            <button type="button" className="btn" style={cheerButtonStyle} onClick={this.handleUpvoteClick}><i className="fa fa-heart" style={heartColorStyle}></i> Cheer
+                        <div style={styles.logEntryActions}>
+                            <button type="button" className="btn" style={styles.cheerButton} onClick={this.handleUpvoteClick}><i className="fa fa-heart" style={styles.heartColor}></i> Cheer
                         </button>
-                            <button type="button" className="btn" style={commentButtonStyle} onClick={this.handleCommentClick}><i className="fa fa-pencil" style={pencilColorStyle}></i> Comment
+                            <button type="button" className="btn" style={styles.commentButton} onClick={this.handleCommentClick}><i className="fa fa-pencil" style={styles.pencilColor}></i> Comment
                         </button>
                         </div>
                     </footer>
@@ -356,5 +267,86 @@
             );
         }
     });
+
+
+    /**
+     * Inline Styles
+     */   
+    var styles = {
+        cheerButton: {
+            borderRadius: '0',
+            flexGrow: '1',
+            paddingTop: '3px',
+            paddingBottom: '3px',
+            color: '#fff',
+            backgroundImage: 'none',
+            backgroundColor: '#444',
+            borderColor: '#222',
+            fontWeight: 'bold',
+            outlineColor: 'rgb(40, 40, 40)',
+            borderBottomLeftRadius: '4px'
+        },
+        commentButton: {
+            borderRadius: '0',
+            flexGrow: '1',
+            paddingTop: '3px',
+            paddingBottom: '3px',
+            color: '#fff',
+            backgroundImage: 'none',
+            backgroundColor: '#444',
+            borderColor: '#222',
+            fontWeight: 'bold',
+            outlineColor: 'rgb(40, 40, 40)',
+            borderLeft: '0',
+            borderBottomRightRadius: '4px'
+        },
+        logEntryBox: {
+            display: 'flex',
+            flexDirection: 'column',
+            backgroundColor: '#fff',
+            padding: '5px',
+            borderRadius: '4px',
+            marginBottom: '5px'
+        },
+        logEntryActions: {
+            display: 'flex',
+            flexDirection: 'row',
+            backgroundColor: '#b2b2b2',
+            borderBottomLeftRadius: '4px',
+            borderBottomRightRadius: '4px'
+        },
+        heartColor: {
+            color: 'rgb(250, 133, 133)'
+        },
+        pencilColor: {
+            color: '#e2ff63'
+        },
+        userOptionsDropdown: {
+            position: 'absolute',
+            top: $(this.refs.dropDown.getDOMNode()).offset().top + 22 + 'px',
+            padding: '5px',
+            backgroundColor: '#fff',
+            minWidth: '100%',
+            borderRadius: '4px',
+            border: '2px solid #e0e0e0',
+            boxShadow: '0 0 10px #000000'
+        },
+        userOptionsList: {
+            listStyle: 'none',
+            margin: '0',
+            padding: '0'
+        },
+        userOptionsItem: {
+            fontSize: '20px',
+            display: 'block',
+            padding: '3px 20px',
+            clear: 'both',
+            fontWeight: '400',
+            lineHeight: '1.42857143',
+            color: '#333',
+            whiteSpace: 'nowrap'
+        }
+    };
+    
     return LogEntryBox;
 }));

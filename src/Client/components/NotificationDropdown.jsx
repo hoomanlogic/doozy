@@ -1,7 +1,7 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
-        require('those'),
+        require('hl-common-js/src/those'),
         require('stores/NotificationStore')
     );
 }(function (React, those, notificationStore) {

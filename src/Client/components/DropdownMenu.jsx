@@ -3,12 +3,12 @@
  * ClassNames: dropdown, dropdown-[default,primary,success,info,warning,danger], dropdown-menu, open
  * Dependencies: jQuery, Bootstrap(CSS)
  */
- (function (factory) {
+(function (factory) {
     module.exports = exports = factory(
         require('react'),
         require('jquery')
     );
- }(function (React, $) {
+}(function (React, $) {
     var DropdownMenu = React.createClass({
         /***********************************
          * DEFINITIONS
@@ -25,13 +25,13 @@
 
         getDefaultProps: function () {
             return {
-              className: '',
-              dropDownMenuStyle: null,
-              buttonContent: null,
-              menuItems: [],
-              open: false,
-              style: null,
-              useDiv: false
+                className: '',
+                dropDownMenuStyle: null,
+                buttonContent: null,
+                menuItems: [],
+                open: false,
+                style: null,
+                useDiv: false
             };
         },
 
@@ -42,16 +42,16 @@
             var $win = $(window);
             var $box = $(this.refs.dropdown.getDOMNode());
 
-            var handler = function(event) {
+            var handler = function (event) {
                 // handle click outside of the dropdown
-                if ($box.has(event.target).length == 0 && !$box.is(event.target)) {
-                  $box.removeClass('open');
-                  $win.off("click.Bst", handler);
+                if ($box.has(event.target).length === 0 && !$box.is(event.target)) {
+                    $box.removeClass('open');
+                    $win.off('click.Bst', handler);
                 }
             };
 
             $box.toggleClass('open');
-            $win.on("click.Bst", handler);
+            $win.on('click.Bst', handler);
         },
 
         /***********************************
@@ -76,7 +76,8 @@
                         </ul>
                     </div>
                 );
-            } else {
+            }
+            else {
                 return (
                     <li ref="dropdown" className={'dropdown' + className} onClick={this.handleToggle}>
                         <a href="#" data-toggle="dropdown" className="dropdown-toggle" style={style}>{buttonContent}</a>

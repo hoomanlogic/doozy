@@ -26,11 +26,11 @@
          * COMPONENT LIFECYCLE
          *************************************************************/
         getDefaultProps: function () {
-          return {
-              canEdit: false,
-              canRemove: false,
-              isSelected: false
-          };
+            return {
+                canEdit: false,
+                canRemove: false,
+                isSelected: false
+            };
         },
 
         /*************************************************************
@@ -40,7 +40,8 @@
             if (this.props.canEdit && this.props.tag === '') {
                 this.props.tag = 'new tag';
                 this.forceUpdate();
-            } else {
+            }
+            else {
                 this.props.handleClick();
             }
         },
@@ -49,14 +50,14 @@
             // don't update if value is the same
             if (this.props.tag === event.target.value) {
                 // cancel existing interval
-                if (_.isNull(this.intervalId) === false) {
+                if (this.intervalId) {
                     clearInterval(this.intervalId);
                 }
                 return;
             }
 
             // cancel existing interval
-            if (_.isNull(this.intervalId) === false) {
+            if (this.intervalId) {
                 clearInterval(this.intervalId);
             }
 
@@ -94,7 +95,7 @@
 
             return (
                 <li onClick={this.handleClick} className={'tag-item' + ' ' + 'clickable' + isSelected} >
-                    <i className={"fa " + tag.className}></i>{domTag}{closeButton}
+                    <i className={'fa ' + tag.className}></i>{domTag}{closeButton}
                 </li>
             );
         },

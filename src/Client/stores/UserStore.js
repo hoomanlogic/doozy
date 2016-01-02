@@ -6,7 +6,7 @@
         require('components/MessageBox')
     );
 }(function ($, Rx, hlio, MessageBox) {
-
+    /* globals window */
     var UserStore = function () {
 
         /**
@@ -48,16 +48,16 @@
          * Store Methods
          */
         this.updateProfileUriFromSignalR = function (uri) {
-            var val =  updates.value;
+            var val = updates.value;
             Object.assign(val, { profileUri: uri });
             updates.onNext(val);
         };
 
         this.updatePrefs = function (prefs) {
 
-            var updated = prefs,
-                original = Object.assign({}, updates.value),
-                val = updates.value;
+            var updated = prefs;
+            var original = Object.assign({}, updates.value);
+            var val = updates.value;
 
             /**
              * Optimistic Concurrency
@@ -74,7 +74,7 @@
                  * of what we thought the server would return
                  * and Notify subscribers
                  */
-                if (typeof result !== 'undefined' && result != null) {
+                if (result !== undefined && result !== null) {
                     Object.assign(val, result);
                     updates.onNext(val);
                 }
@@ -108,13 +108,13 @@
         var user = 'my';
         var secret = 'hash';
         var baseUrl = null;
-        
+
         this.init = function (userName, userId) {
 
             user = userName;
             secret = userId;
             baseUrl = window.location.href.split('/').slice(0,3).join('/') + '/doozy';
-            
+
             /**
              * Get preferences from the server
              */

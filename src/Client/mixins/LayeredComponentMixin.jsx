@@ -5,7 +5,7 @@
 }(function (React) {
 
     var LayeredComponentMixin = {
-        componentDidMount: function() {
+        componentDidMount: function () {
             // Appending to the body is easier than managing the z-index of
             // everything on the page.  It's also better for accessibility and
             // makes stacking a snap (since components will stack in mount order).
@@ -14,16 +14,16 @@
             this._renderLayer();
         },
 
-        componentDidUpdate: function() {
+        componentDidUpdate: function () {
             this._renderLayer();
         },
 
-        componentWillUnmount: function() {
+        componentWillUnmount: function () {
             this._unrenderLayer();
             document.body.removeChild(this._layer);
         },
 
-        _renderLayer: function() {
+        _renderLayer: function () {
             // By calling this method in componentDidMount() and
             // componentDidUpdate(), you're effectively creating a "wormhole" that
             // funnels React's hierarchical updates through to a DOM node on an
@@ -36,7 +36,8 @@
             // null.
             if (layerElement === null) {
                 React.render(<noscript />, this._layer);
-            } else {
+            }
+            else {
                 React.render(layerElement, this._layer);
             }
 
@@ -45,7 +46,7 @@
             }
         },
 
-        _unrenderLayer: function() {
+        _unrenderLayer: function () {
             if (this.layerWillUnmount) {
                 this.layerWillUnmount(this._layer);
             }

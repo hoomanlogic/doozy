@@ -2,16 +2,17 @@
     module.exports = exports = factory(
         require('hl-common-js/src/store'),
         require('jquery'),
+        require('hl-common-js/src/those'),
         require('components/MessageBox')
     );
-}(function (hlstore, $, MessageBox) {
+}(function (hlstore, $, those, MessageBox) {
 
     var NotificationStore = function () {
         hlstore.Store.call(this);
         this.updates.value = [];
         var me = this;
         var baseUrl = window.location.href.split('/').slice(0,3).join('/') + '/doozy';
-        
+
         this.addNotificationFromSignalR = function (notification) {
             var notifications = me.updates.value;
 
@@ -32,18 +33,9 @@
         };
 
         this.removeNotification = function (userName, kind) {
-            var notifications = me.updates.value;
-            var index = -1;
-            for (var i = 0; i < notifications.length; i++) {
-                if (notifications[i].userName === userName && notifications[i].kind === kind) {
-                    index = i;
-                    break;
-                }
-            }
-            if (index > -1) {
-                notifications.splice(index, 1);
+            those(me.updates.value).flick({userName: userName, kind: kind}, function () {
                 me.notify();
-            }
+            });
         };
 
         this.acknowledgeNotification = function (notification) {
@@ -57,24 +49,20 @@
                 // headers: {
                 //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
                 // },
-                success: function(result) {
-                    // find notification
-                    var notifications = me.updates.value;
-                    var index = -1;
-                    for (var i = 0; i < notifications.length; i++) {
-                        if (notifications[i].id === result.id) {
-                            notifications[i].readAt = result.readAt;
-                            me.notify();
-                            break;
-                        }
-                    }
+                success: function (result) {
+                    // update notification object
+                    those(me.updates.value).forFirst({id: result.id}, function (item) {
+                        item.readAt = result.readAt;
+                        me.notify();
+                    });
                 },
-                error: function(xhr, status, err) {
+                error: function (xhr, status, err) {
                     console.error('acknowledgeNotification', status, err.toString());
                 }
             });
         };
     };
+
     NotificationStore.prototype = Object.create(hlstore.Store.prototype);
     NotificationStore.prototype.constructor = NotificationStore;
 

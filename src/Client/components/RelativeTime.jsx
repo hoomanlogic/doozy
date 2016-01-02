@@ -11,8 +11,8 @@
         propTypes: {
             isoTime: React.PropTypes.string,
             accuracy: React.PropTypes.oneOf([
-                'd', //day
-                'a'  //auto
+                'd', // day
+                'a'  // auto
             ])
         },
 
@@ -38,29 +38,38 @@
                 if (time < now) {
                     if (diffDays === 0) {
                         return 'Today';
-                    } else if (diffDays === 1) {
+                    }
+                    else if (diffDays === 1) {
                         return 'Yesterday';
-                    } else if (diffDays < 7) {
+                    }
+                    else if (diffDays < 7) {
                         return babble.moments.daysOfWeek[time.getDay()];
-                    } else {
+                    }
+                    else {
                         return diffDays + ' day' + (diffDays > 1 ? 's' : '') + ' ago';
                     }
-                } else {
+                }
+                else {
                     if (diffDays === 0) {
                         return 'Today';
-                    } else if (diffDays === 1) {
+                    }
+                    else if (diffDays === 1) {
                         return 'Tomorrow';
-                    } else if (diffDays < 7) {
+                    }
+                    else if (diffDays < 7) {
                         return babble.moments.daysOfWeek[time.getDay()];
-                    } else {
+                    }
+                    else {
                         return 'in ' + diffDays + ' day' + (diffDays > 1 ? 's' : '');
                     }
                 }
-            } else {
+            }
+            else {
                 var duration = new babble.Duration(new Date() - new Date(this.props.isoTime));
                 if (time < now) {
                     return duration.toString().split(', ')[0] + ' ago';
-                } else {
+                }
+                else {
                     return 'in ' + duration.toString().split(', ')[0];
                 }
             }
@@ -73,7 +82,8 @@
 
             if (!this.props.isoTime) {
                 return null;
-            } else {
+            }
+            else {
                 return (<span>{this.calcRelativeTime(this.props.isoTime)}</span>);
             }
         },

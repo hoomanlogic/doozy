@@ -58,7 +58,8 @@
                 if (item.length === 10) {
                     // not standard but easier for me
                     dates.push(babble.moments.getLocalDate(item).getTime());
-                } else {
+                }
+                else {
                     // standard based
                     dates.push(new Date(item).getTime());
                 }
@@ -90,16 +91,19 @@
                 for (var j = 0; j < byday.length; j++) {
                     if (byday[j].length === 2) {
                         rule.byday.push({ day: byday[j], digit: 0 });
-                    } else {
+                    }
+                    else {
                         // handle digit
                         var day = byday[j].slice(-2);
-                        var digit = parseInt(byday[j].slice(0, byday[j].length - 2));
+                        var digit = parseInt(byday[j].slice(0, byday[j].length - 2), 10);
                         rule.byday.push({ day: day, digit: digit });
                     }
                 }
-            } else if (keyval[0] === 'INTERVAL') {
-                rule[keyval[0].toLowerCase()] = parseInt(keyval[1]);
-            } else {
+            }
+            else if (keyval[0] === 'INTERVAL') {
+                rule[keyval[0].toLowerCase()] = parseInt(keyval[1], 10);
+            }
+            else {
                 rule[keyval[0].toLowerCase()] = keyval[1];
             }
         }
@@ -110,11 +114,14 @@
     var nextTargetPeriod = function (target, starts) {
         if (target.period === TARGET_PERIOD.YEARS) {
             starts.setFullYear(starts.getFullYear() + target.multiplier);
-        } else if (target.period === TARGET_PERIOD.MONTHS) {
+        }
+        else if (target.period === TARGET_PERIOD.MONTHS) {
             starts.setMonth(starts.getMonth() + target.multiplier);
-        } else if (target.period === TARGET_PERIOD.WEEKS) {
+        }
+        else if (target.period === TARGET_PERIOD.WEEKS) {
             starts.setDate(starts.getDate() + (target.multiplier * 7));
-        } else if (target.period === TARGET_PERIOD.DAYS) {
+        }
+        else if (target.period === TARGET_PERIOD.DAYS) {
             starts.setDate(starts.getDate() + target.multiplier);
         }
     };
@@ -123,11 +130,14 @@
         var d = new Date(starts.toISOString());
         if (target.period === TARGET_PERIOD.YEARS) {
             d.setFullYear(d.getFullYear() + target.multiplier);
-        } else if (target.period === TARGET_PERIOD.MONTHS) {
+        }
+        else if (target.period === TARGET_PERIOD.MONTHS) {
             d.setMonth(d.getMonth() + target.multiplier);
-        } else if (target.period === TARGET_PERIOD.WEEKS) {
+        }
+        else if (target.period === TARGET_PERIOD.WEEKS) {
             d.setDate(d.getDate() + (target.multiplier * 7));
-        } else if (target.period === TARGET_PERIOD.DAYS) {
+        }
+        else if (target.period === TARGET_PERIOD.DAYS) {
             d.setDate(d.getDate() + target.multiplier);
         }
         d.setDate(d.getDate() - 1);
@@ -136,10 +146,10 @@
     };
 
     var targetPeriodStats = function (target, periodStarts, periodEnds, prevPeriodStats, isActive) {
-        var number, performed, streak = 0;
+        var daysLeft, daysInPeriod, number, performed, tag, today;
+        var streak = 0;
 
         // get performed log entries relevant to the target period
-        var tag;
         if (target.entityType === 'Tag') {
             tag = getTagValue(tagStore.getTagById(target.entityId));
         }
@@ -161,7 +171,8 @@
         // calculate number based on log history
         if (target.measure === TARGET_MEASURE.EXECUTION) {
             number = performed.length;
-        } else if (target.measure === TARGET_MEASURE.DURATION) {
+        }
+        else if (target.measure === TARGET_MEASURE.DURATION) {
             performed.forEach(function (item) {
                 number += item.duration;
             });
@@ -171,23 +182,26 @@
         if (target.number <= number) { // is target met?
             if (typeof prevPeriodStats !== 'undefined' && prevPeriodStats !== null) {
                 streak = prevPeriodStats.streak + 1;
-            } else {
+            }
+            else {
                 streak += 1;
             }
-        } else if (isActive && typeof prevPeriodStats !== 'undefined' && prevPeriodStats !== null) {
+        }
+        else if (isActive && typeof prevPeriodStats !== 'undefined' && prevPeriodStats !== null) {
             streak = prevPeriodStats.streak;
         }
 
         // for current period, a few more indicators
         if (isActive) {
-            var daysInPeriod = (periodEnds.getTime() - periodStarts.getTime()) / 86400000;
-            var today = new Date();
+            today = new Date();
+            daysInPeriod = (periodEnds.getTime() - periodStarts.getTime()) / 86400000;
             today.setHours(0,0,0,0);
 
             if (periodEnds.getTime() === today.getTime()) {
-                var daysLeft = ((new Date()).getTime() - periodEnds.getTime()) / (86400000 * 0.7);
-            } else {
-                var daysLeft = (periodEnds.getTime() - today.getTime()) / 86400000;
+                daysLeft = ((new Date()).getTime() - periodEnds.getTime()) / (86400000 * 0.7);
+            }
+            else {
+                daysLeft = (periodEnds.getTime() - today.getTime()) / 86400000;
             }
 
         }
@@ -209,17 +223,27 @@
     var getTagValue = function (tag) {
         return TAG_KIND[tag.kind.toUpperCase()] + tag.name;
     };
-    
+
     var extendAction = function (action) {
         // action.getLastPerformed = function () {
-            
+
         // };
         // action.getTags = function () {
         //     if (!action.__tags) {
         //         those(tagStore.updates.value).like()
-        //     } 
+        //     }
         // }
         return action;
+    };
+
+    var plural = function (noun) {
+        var vowels = ['a','e','i','o','u'];
+        if (noun[noun.length - 1] === 'y' && vowels.indexOf(noun[noun.length - 2].toLowerCase()) === -1) {
+            return noun.substring(0, noun.length - 1) + 'ies';
+        }
+        else {
+            return noun + 's';
+        }
     };
 
     return {
@@ -240,7 +264,7 @@
             }
 
             var summary = '';
-            recurrenceRules.forEach(function(item, index, array) {
+            recurrenceRules.forEach(function (item) {
                 var recurrenceObj = parseRecurrenceRule(item);
 
 
@@ -254,41 +278,43 @@
                         FR: false,
                         SA: false
                     };
-                    
+
                     // build days object
                     recurrenceObj.byday.forEach(function (byday) {
-                         days[byday.day] = true;
+                        days[byday.day] = true;
                     });
 
                     var twoCharDays = those(recurrenceObj.byday).pluck('day');
-                    var fullnameDays = babble.moments.daysOfWeek.filter(function(item) {
-                        return twoCharDays.indexOf(item.slice(0,2).toUpperCase()) > -1;
+                    var fullnameDays = babble.moments.daysOfWeek.filter(function (dayOfWeek) {
+                        return twoCharDays.indexOf(dayOfWeek.slice(0,2).toUpperCase()) > -1;
                     });
 
                     if (recurrenceObj.interval > 1) {
                         if (days.SU && days.SA && !days.MO && !days.TU && !days.WE && !days.TH && !days.FR) {
                             summary = 'Every ' + recurrenceObj.interval + ' ' + getFrequencyName(recurrenceObj.freq).toLowerCase() + ' on the weekend';
-                        } else if (!days.SU && !days.SA && days.MO && days.TU && days.WE && days.TH && days.FR) {
+                        }
+                        else if (!days.SU && !days.SA && days.MO && days.TU && days.WE && days.TH && days.FR) {
                             summary = 'Every ' + recurrenceObj.interval + ' ' + getFrequencyName(recurrenceObj.freq).toLowerCase() + ' on the weekdays';
-                        } else {
+                        }
+                        else {
                             summary = 'Every ' + recurrenceObj.interval + ' ' + getFrequencyName(recurrenceObj.freq).toLowerCase() + ' on ' + fullnameDays.join(', ');
                         }
-                    } else {
-                        if (days.SU && days.SA && !days.MO && !days.TU && !days.WE && !days.TH && !days.FR) {
-                            summary = 'Weekends';
-                        } else if (!days.SU && !days.SA && days.MO && days.TU && days.WE && days.TH && days.FR) {
-                            summary = 'Weekdays';
-                        } else {
-                            summary = 'Every ' + fullnameDays.join(', ');
-                        }
                     }
-                } else {
-                    if (recurrenceObj.interval > 1) {
-                        summary = 'Every ' + recurrenceObj.interval + ' ' + getFrequencyName(recurrenceObj.freq).toLowerCase() + 's';
-                    } else {
-                        summary = 'Every ' + getFrequencyName(recurrenceObj.freq).toLowerCase();
+                    else if (days.SU && days.SA && !days.MO && !days.TU && !days.WE && !days.TH && !days.FR) {
+                        summary = 'Weekends';
                     }
-
+                    else if (!days.SU && !days.SA && days.MO && days.TU && days.WE && days.TH && days.FR) {
+                        summary = 'Weekdays';
+                    }
+                    else {
+                        summary = 'Every ' + fullnameDays.join(', ');
+                    }
+                }
+                else if (recurrenceObj.interval > 1) {
+                    summary = 'Every ' + recurrenceObj.interval + ' ' + getFrequencyName(recurrenceObj.freq).toLowerCase() + 's';
+                }
+                else {
+                    summary = 'Every ' + getFrequencyName(recurrenceObj.freq).toLowerCase();
                 }
             });
 
@@ -296,7 +322,7 @@
         },
 
         action: function (name, tags) {
-            
+
             if (typeof name === 'object' && name.id && name.kind === 'Action') {
                 // give action object magical powers
                 return extendAction(name);
@@ -307,7 +333,8 @@
                 if (typeof tags !== 'undefined') {
                     if (typeof tags === 'string') {
                         t.push(tags);
-                    } else if (Object.prototype.toString.call(tags) === '[object Array]') {
+                    }
+                    else if (Object.prototype.toString.call(tags) === '[object Array]') {
                         t = tags;
                     }
                 }
@@ -326,11 +353,11 @@
                     tags: t,
                     recurrenceRules: [],
                     items: []
-                });                
+                });
             }
         },
-        
-        
+
+
 
         plan: function (name) {
             // return object literal
@@ -346,12 +373,12 @@
             };
         },
 
-        planStep: function (planId) {
+        planStep: function () {
             // return object literal
             return {
                 id: hlcommon.uuid(),
                 kind: 'Step',
-                name:'',
+                name: '',
                 created: new Date().toISOString(),
                 duration: 0,
                 content: null,
@@ -363,7 +390,7 @@
         },
 
         target: function () {
-            //REMEMBER KEYWORD: Timeline
+            // REMEMBER KEYWORD: Timeline
 
             // return object literal
             var dateIso = new Date().toISOString();
@@ -388,39 +415,38 @@
         },
 
         targetsStats: function (targetId, today) {
-            var targets,
-                targetsStats = [];
+            var targets;
+            var targetsStats = [];
 
             if (typeof targetId === 'undefined' || targetId === null) {
-                targets = [].concat(targetStore.updates.value);
-            } else {
-                targets = _.find(targetStore.updates.value, function (target) {
-                    return target.id === targetId;
-                });
+                targets = those(targetStore.updates.value).copy();
+            }
+            else {
+                targets = those(targetStore.updates.value).first({ id: targetId });
                 targets = [targets];
             }
 
+            // today
+            /* eslint-disable no-param-reassign */
             if (!today) {
                 today = new Date();
             }
+            today.setHours(0,0,0,0);
+            /* eslint-enable no-param-reassign */
 
             targets.forEach( function (target) {
 
                 var accuracy,
                     accuracyBeforeLatestPeriod,
-                    actionIds = [],
                     activePeriod,
                     allButLatestPeriod,
                     average,
-                    change = 0,
                     longestStreakPeriod,
-                    periodStarts,
-                    periodsStats = [];
+                    periodStarts;
 
-                // today
-
-
-                today.setHours(0,0,0,0);
+                // var actionIds = [];
+                var change = 0;
+                var periodsStats = [];
 
                 // first period starts
                 periodStarts = new Date(target.starts);
@@ -435,7 +461,7 @@
                 }
 
                 // populate array of action ids related to this target
-                //if (target.entityType === 'Tag') {
+                // if (target.entityType === 'Tag') {
                 //    var tag = tagStore.getTagById(target.entityId);
                 //    var actions = actionStore.updates.value.filter(function (item) {
                 //        return item.tags.indexOf((TAG_KIND[tag.kind.toUpperCase()] + tag.name)) !== -1;
@@ -443,9 +469,9 @@
                 //    actions.forEach(function (item) {
                 //        actionIds.push(item.id);
                 //    });
-                //} else if (target.entityType === 'Action') {
+                // } else if (target.entityType === 'Action') {
                 //    actionIds.push(target.entityId);
-                //}
+                // }
 
                 // steps through all periods for this target
                 while (periodStarts <= today) {
@@ -462,7 +488,8 @@
                                               prevPeriodStats,
                                               false)
                         );
-                    } else {
+                    }
+                    else {
                         activePeriod = targetPeriodStats(target,
                                                          periodStarts,
                                                          periodEnds,
@@ -480,12 +507,13 @@
 
                 if (periodsStats.length === 1) {
                     average = periodsStats[0].number;
-                } else {
+                }
+                else {
                     average = 0;
                     periodsStats.forEach( function (item) {
-                       average += item.number;
+                        average += item.number;
                     });
-                    average = average / periodsStats.length;
+                    average /= periodsStats.length;
                     average = Math.round(average * 100) / 100;
                 }
 
@@ -495,7 +523,7 @@
                     change = Math.round((accuracy - accuracyBeforeLatestPeriod) * 100) / 100;
                 }
 
-                longestStreakPeriod = _.max(periodsStats, 'streak');
+                longestStreakPeriod = those(periodsStats).max('streak');
 
                 targetsStats.push({
                     targetId: target.id,
@@ -515,9 +543,9 @@
          * Parses a tag value string to an object
          */
         parseTag: function (tagValue) {
-            var kind = 'Tag',
-                name = tagValue,
-                className = 'fa-tag';
+            var kind = 'Tag';
+            var name = tagValue;
+            var className = 'fa-tag';
 
             /**
              * Compare first char of tag to
@@ -527,16 +555,20 @@
             if (firstChar === TAG_KIND.FOCUS) {
                 kind = 'Focus'; // part of
                 className = 'fa-eye';
-            } else if (firstChar === TAG_KIND.PLACE) {
+            }
+            else if (firstChar === TAG_KIND.PLACE) {
                 kind = 'Place'; // where
                 className = 'fa-anchor';
-            } else if (firstChar === TAG_KIND.GOAL) {
+            }
+            else if (firstChar === TAG_KIND.GOAL) {
                 kind = 'Goal'; // to what end
                 className = 'fa-trophy';
-            } else if (firstChar === TAG_KIND.NEED) {
+            }
+            else if (firstChar === TAG_KIND.NEED) {
                 kind = 'Need'; // why
                 className = 'fa-recycle';
-            } else if (firstChar === TAG_KIND.BOX) {
+            }
+            else if (firstChar === TAG_KIND.BOX) {
                 kind = 'Box'; // when
                 className = 'fa-cube';
             }
@@ -568,7 +600,8 @@
         startsWithAVowel: function (word) {
             if (['a','e','i','o','u'].indexOf(word[0].toLowerCase()) > -1) {
                 return true;
-            } else {
+            }
+            else {
                 return false;
             }
         },
@@ -576,7 +609,8 @@
         hasPossessiveNoun: function (words) {
             if (words.indexOf('\'s ') > 0 || words.indexOf('s\' ') > 0) {
                 return true;
-            } else {
+            }
+            else {
                 return false;
             }
         },
@@ -586,20 +620,13 @@
          */
         formatNoun: function (noun, howMany) {
 
-            var plural = function (noun) {
-                var vowels = ['a','e','i','o','u'];
-                if (noun[noun.length - 1] === 'y' && vowels.indexOf(noun[noun.length - 2].toLowerCase()) === -1) {
-                    return noun.substring(0, noun.length - 1) + 'ies';
-                } else {
-                    return noun + 's';
-                }
-            };
-
             if (howMany === 0) {
                 return 'no ' + plural(noun);
-            } else if (howMany === 1) {
+            }
+            else if (howMany === 1) {
                 return noun;
-            } else {
+            }
+            else {
                 return plural(noun);
             }
         },
@@ -620,21 +647,28 @@
             if (date1 < date2) {
                 if (diffDays === 0) {
                     return 'Today';
-                } else if (diffDays === 1) {
+                }
+                else if (diffDays === 1) {
                     return 'Yesterday';
-                } else if (diffDays < 7) {
+                }
+                else if (diffDays < 7) {
                     return babble.moments.daysOfWeek[date1.getDay()];
-                } else {
+                }
+                else {
                     return diffDays + ' day' + (diffDays > 1 ? 's' : '') + ' ago';
                 }
-            } else {
+            }
+            else {
                 if (diffDays === 0) {
                     return 'Today';
-                } else if (diffDays === 1) {
+                }
+                else if (diffDays === 1) {
                     return 'Tomorrow';
-                } else if (diffDays < 7) {
+                }
+                else if (diffDays < 7) {
                     return babble.moments.daysOfWeek[date1.getDay()];
-                } else {
+                }
+                else {
                     return 'in ' + diffDays + ' day' + (diffDays > 1 ? 's' : '');
                 }
             }
