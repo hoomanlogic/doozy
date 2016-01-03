@@ -75,7 +75,7 @@
             /**
              * Sort the actions by completed and name
              */
-            tags = _.sortBy(tags, function(tag) {
+            tags = _.sortBy(tags, function (tag) {
                 return tag.kind + '-' + tag.name.toLowerCase();
             });
 
@@ -106,7 +106,7 @@
                         <div style={{paddingRight: '5px'}}><button type="button" className="close" onClick={this.handleCloseClick}><span aria-hidden="true">&times;</span></button></div>
                     </div>
                     <div style={{display: 'flex', flexDirection: 'column'}}>
-                        {tags.map(function(item, index) {
+                        {tags.map(function (item, index) {
                             return (
                                 <div key={item.id} className="clickable" style={tagStyle} onClick={this.handleTagClick.bind(null, item)}>
                                     {this.renderTagIcon(item)}<span> {item.name}</span>

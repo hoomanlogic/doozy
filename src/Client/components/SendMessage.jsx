@@ -21,7 +21,8 @@
         handleFileChange: function () {
             if ($('#theFile').prop('files').length > 0 && this.state.filesSelected === false) {
                 this.setState({ filesSelected: true });
-            } else if ($('#theFile').prop('files').length === 0 && this.state.filesSelected === true) {
+            }
+            else if ($('#theFile').prop('files').length === 0 && this.state.filesSelected === true) {
                 this.setState({ filesSelected: false });
             }
         },
@@ -36,7 +37,8 @@
         handlePrivateConnectionClick: function () {
             if (this.state.mode === 'inbox') {
                 this.setState({ mode: 'relay' });
-            } else {
+            }
+            else {
                 this.setState({ mode: 'inbox' });
             }
         },
@@ -56,7 +58,8 @@
                         this.props.send(this.state.mode, this.props.userName, $('#msg').val(), dataUrl, fileName);
                     }.bind(this));
                 }
-            } else {
+            }
+            else {
                 this.props.send(this.state.mode, this.props.userName, $('#msg').val(), null, null);
             }
             $('#msg').val('');

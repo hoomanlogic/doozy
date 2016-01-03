@@ -61,7 +61,7 @@
                 this.setState({ tagsFilterType: type });
             }
         },
-        handleTagFilterClick: function(tag) {
+        handleTagFilterClick: function (tag) {
             var tagsFilter = this.state.tagsFilter;
 
             /**
@@ -89,7 +89,7 @@
              * need to pass those props (componentWillReceiveProps)
              */
             if (!focusChange && typeof focusTag === 'undefined') {
-                focusTag = this.props.focusTag;
+                focusTag = this.props.focusTag; // eslint-disable-line no-param-reassign
             }
 
             /**
@@ -100,7 +100,8 @@
                 focusActions = actions.filter(function (action) {
                     if (action.tags.indexOf(focusTag) > -1) {
                         return true;
-                    } else {
+                    }
+                    else {
                         return false;
                     }
                 }, this);
@@ -108,7 +109,7 @@
             else {
                 focusActions = [].concat(actions);
             }
-            
+
             /**
              * Update state
              */
@@ -130,7 +131,7 @@
         /*************************************************************
          * HELPERS
          *************************************************************/
-        getFocusTags: function (focusActions, focusTag) {
+        getFocusTags: function (focusActions) {
 
             var distinctTags = [];
 
@@ -139,7 +140,7 @@
              * actions except for the special tags
              */
             var specialPrefixes = ['!','#'];
-            focusActions.map(function(action) {
+            focusActions.map(function (action) {
                 distinctTags = _.union(distinctTags, _.reject(action.tags, function (tag) {
                     return specialPrefixes.indexOf(tag.slice(0,1)) > -1;
                 }));
@@ -152,25 +153,27 @@
         },
         filterActions: function (actions, tags, type) {
             // no filter, return all
-            if (typeof tags === 'undefined' || tags === null|| tags.length === 0) {
+            if (typeof tags === 'undefined' || tags === null || tags.length === 0) {
                 return actions;
             }
 
             if (typeof type !== 'string') {
-                type = 'any';
+                type = 'any'; // eslint-disable-line no-param-reassign
             }
 
             // filter is a string, convert to array
             if (typeof tags === 'string') {
-                tags = [tags];
+                tags = [tags]; // eslint-disable-line no-param-reassign
             }
 
             // get actions that match at least one of the filter tags
             if (type === 'any') {
                 return actions.filter(function (item) { return _.intersection(tags, item.tags).length > 0; });
-            } else if (type === 'all') {
+            }
+            else if (type === 'all') {
                 return actions.filter(function (item) { return _.intersection(tags, item.tags).length === tags.length; });
-            }  else if (type === 'not') {
+            }
+            else if (type === 'not') {
                 return actions.filter(function (item) { return _.intersection(tags, item.tags).length === 0; });
             }
         },

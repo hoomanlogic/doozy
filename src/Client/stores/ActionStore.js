@@ -134,7 +134,7 @@
                 _api.getAction(actionId)
                 .done( function (action) {
                     if (action) {
-                        var actionToUpdate = _.find(updates.value, function(item) {
+                        var actionToUpdate = _.find(updates.value, function (item) {
                             return item.id === action.id;
                         });
                         if (actionToUpdate) {
@@ -150,7 +150,7 @@
         this.update = function (action) {
 
             // get object reference to action in store
-            var actionToSave = _.find(updates.value, function(item) {
+            var actionToSave = _.find(updates.value, function (item) {
                 return item.id === action.id;
             });
 
@@ -168,7 +168,7 @@
                 updates.onNext(updates.value);
                 hlio.saveLocal('hl.' + user + '.actions', updates.value, secret);
             })
-            .fail(function  (err) {
+            .fail(function (err) {
                 Object.assign(actionToSave, original);
                 updates.onNext(updates.value);
                 MessageBox.notify(err.responseText, 'error');
@@ -180,14 +180,14 @@
         };
 
         this.getActionByName = function (name) {
-            var existingAction = _.find(updates.value, function(item) {
+            var existingAction = _.find(updates.value, function (item) {
                 return cleanActionName(item.name) === cleanActionName(name.toLowerCase());
             });
             return existingAction;
         };
 
         this.getActionById = function (id) {
-            var existingAction = _.find(updates.value, function(item) {
+            var existingAction = _.find(updates.value, function (item) {
                 return item.id.toLowerCase() === id.toLowerCase();
             });
             return existingAction;

@@ -120,7 +120,7 @@
         this.update = function (planStep) {
 
             // get object reference to planStep in store
-            var planStepToSave = _.find(updates.value, function(item) {
+            var planStepToSave = _.find(updates.value, function (item) {
                 return item.id === planStep.id;
             });
 
@@ -138,7 +138,7 @@
                     updates.onNext(updates.value);
                     hlio.saveLocal('hl.' + user + '.plansteps', updates.value, secret);
                 })
-                .fail(function  (err) {
+                .fail(function (err) {
                     Object.assign(planStepToSave, original);
                     updates.onNext(updates.value);
                     MessageBox.notify(err.responseText, 'error');
@@ -150,14 +150,14 @@
         };
 
         this.getPlanStepByName = function (name) {
-            var existingPlanStep = _.find(updates.value, function(item) {
+            var existingPlanStep = _.find(updates.value, function (item) {
                 return cleanPlanStepName(item.name) === cleanPlanStepName(name.toLowerCase());
             });
             return existingPlanStep;
         };
 
         this.getPlanStepById = function (id) {
-            var existingPlanStep = _.find(updates.value, function(item) {
+            var existingPlanStep = _.find(updates.value, function (item) {
                 return item.id.toLowerCase() === id.toLowerCase();
             });
             return existingPlanStep;
@@ -166,7 +166,7 @@
         var user = 'my';
         var secret = 'hash';
         var baseUrl = null;
-        
+
         var cleanPlanStepName = function (name) {
             return name.replace(/:/g, '').replace(/  /g, ' ').trim().toLowerCase();
         };
@@ -176,7 +176,7 @@
             user = userName;
             secret = userId;
             baseUrl = window.location.href.split('/').slice(0,3).join('/') + '/doozy';
-            
+
             // populate store - call to database
             _api.getPlanSteps()
             .done(function (result) {

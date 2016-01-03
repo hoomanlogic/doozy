@@ -63,7 +63,7 @@
             }
             this.refs.comment.getDOMNode().value = '';
         },
-        
+
         /*************************************************************
          * RENDERING
          *************************************************************/
@@ -72,7 +72,7 @@
 
             // find existing connection
             var connections = connectionStore.updates.value;
-            
+
             // find log entries for this user
             var logEntry = those(logEntryStore.updates.value).first({ id: this.props.articleId });
 

@@ -130,7 +130,7 @@
 
             // get actions sorted by name
             var actions = actionStore.updates.value;
-            actions = _.sortBy(actions, function(action) {
+            actions = _.sortBy(actions, function (action) {
                 action.name;
             });
 
@@ -189,10 +189,10 @@
                 labelField: 'name',
                 searchField: ['name'],
                 render: {
-                    item: function(item, escape) {
+                    item: function (item, escape) {
                         return '<div class="item">' + escape(item.value) + '</div>';
                     },
-                    option: function(item, escape) {
+                    option: function (item, escape) {
                         var label = item.name;
                         return '<div>' +
                             '<span class="label">' + escape(label) + '</span>' +
@@ -217,10 +217,10 @@
                 labelField: 'name',
                 searchField: ['name', 'kind'],
                 render: {
-                    item: function(item, escape) {
+                    item: function (item, escape) {
                         return '<div class="item">' + escape(item.value) + '</div>';
                     },
-                    option: function(item, escape) {
+                    option: function (item, escape) {
                         var label = item.name || item.kind;
                         var caption = item.kind ? item.kind : null;
                         return '<div>' +
@@ -266,7 +266,7 @@
                  buttonStyle: deleteButtonStyle}
             ];
 
-            var buttonsDom = buttons.map(function(button, index) {
+            var buttonsDom = buttons.map(function (button, index) {
                 return (<button key={index} style={button.buttonStyle} type="button" className={'btn btn-' + button.type} onClick={button.handler}>{button.text}</button>);
             });
 

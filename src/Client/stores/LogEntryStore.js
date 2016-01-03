@@ -112,7 +112,7 @@
                     // },
                     type: 'DELETE',
                     contentType: 'application/json',
-                    data: JSON.stringify({ id: id })
+                    data: JSON.stringify({ id: logEntryPeanutId })
                 });
             }
         };
@@ -125,19 +125,19 @@
                 // headers: {
                 //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
                 // },
-                success: function(result) {
+                success: function (result) {
                     var logEntries = me.updates.value;
                     me.updates.value = logEntries.concat(result);
                     me.notify();
                 },
-                error: function(xhr, status, err) {
+                error: function (xhr, status, err) {
                     MessageBox.notify('Oh no! There was a problem getting log entries.' + status + err, 'error');
                 }
             });
         };
 
         this.getLogEntryById = function (id) {
-            var existingLogEntry = _.find(this.updates.value, function(item) {
+            var existingLogEntry = _.find(this.updates.value, function (item) {
                 return item.id.toLowerCase() === id.toLowerCase();
             });
             return existingLogEntry;
@@ -184,7 +184,7 @@
                     hlio.saveLocal('hl.' + user + '.logentries', me.updates.value, secret);
                     actionStore.refreshActions(actionsToUpdate);
                 })
-                .fail(function  (err) {
+                .fail(function (err) {
                     Object.assign(logEntryToUpdate, original);
                     me.notify();
                     MessageBox.notify(err.responseText, 'error');
@@ -224,7 +224,7 @@
 
             ui.queueRequest('Log Entry', logEntry.id, 'Deleted log entry', function () {
                 _api.deleteLogEntry(logEntry)
-                .done( function (result) {
+                .done( function () {
                     if (actionIdToUpdate) {
                         actionStore.refreshActions([actionIdToUpdate]);
                     }
@@ -253,7 +253,7 @@
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({ id: id }),
-                success: function(result) {
+                success: function (result) {
 
                     // find existing logEntry
                     var logEntries = me.updates.value;
@@ -266,12 +266,13 @@
                             comment: null,
                             attachmentUri: null
                         });
-                    } else {
+                    }
+                    else {
                         logEntry.upvotes = logEntry.upvotes.slice(1);
                     }
                     me.notify();
                 },
-                error: function(xhr, status, err) {
+                error: function (xhr, status, err) {
                     MessageBox.notify('Oh no! There was a problem with the request!' + status + err, 'error');
                 }
             });
@@ -280,7 +281,7 @@
         this.addComment = function (userName, id, comment) {
 
             _api.postComment(id, comment)
-            .done( function(result) {
+            .done( function (result) {
 
                 // find existing logEntry
                 var logEntries = me.updates.value;
@@ -288,7 +289,7 @@
                 logEntry.comments.push(result);
                 me.notify();
             })
-            .fail( function(xhr, status, err) {
+            .fail( function (xhr, status, err) {
                 MessageBox.notify('Oh no! There was a problem with the request!' + status + err, 'error');
             });
         };
@@ -296,24 +297,24 @@
         this.updateComment = function (userName, logEntryId, id, comment) {
 
             _api.postComment(id, comment)
-            .done( function(result) {
+            .done( function () {
 
                 // find existing logEntry
                 var logEntries = me.updates.value;
                 var logEntry = _.find(logEntries, {id: logEntryId});
                 // find comment to update
-                var comment = _.find(logEntry.comments, {id: id});
-                comment.comment = comment;
+                var findComment = _.find(logEntry.comments, {id: id});
+                findComment.comment = comment;
                 me.notify();
             })
-            .fail( function(xhr, status, err) {
+            .fail( function (xhr, status, err) {
                 MessageBox.notify('Oh no! There was a problem with the request!' + status + err, 'error');
             });
         };
 
         this.deleteComment = function (userName, logEntryId, id) {
             _api.deleteComment(id)
-            .done( function(result) {
+            .done( function () {
 
                 var logEntries = me.updates.value;
                 var logEntry = _.find(logEntries, {id: logEntryId});
@@ -321,7 +322,7 @@
                 me.notify();
 
             })
-            .fail( function(xhr, status, err) {
+            .fail( function (xhr, status, err) {
                 MessageBox.notify('Oh no! There was a problem with the request!' + status + err, 'error');
             });
         };
@@ -329,21 +330,21 @@
         var user = 'my';
         var secret = 'hash';
         var baseUrl = null;
-        
+
         this.init = function (userName, userId) {
 
             user = userName;
             secret = userId;
             baseUrl = window.location.href.split('/').slice(0,3).join('/') + '/doozy';
-            
+
             // populate store - call to database
             _api.getLogEntries()
-            .done( function(result) {
+            .done( function (result) {
                 me.updates.value = result;
                 hlio.saveLocal('hl.' + user + '.logentries', result, secret);
                 me.notify();
             })
-            .fail( function(xhr, status, err) {
+            .fail( function (xhr, status, err) {
                 MessageBox.notify(err.responseText, 'error');
             });
 

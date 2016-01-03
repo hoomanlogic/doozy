@@ -1,19 +1,19 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
-        require('./ActionRow'),
-        require('lodash')
+        require('hl-common-js/src/those'),
+        require('./ActionRow')
     );
-}(function (React, ActionRow, _) {
+}(function (React, those, ActionRow) {
     var UpcomingActions = React.createClass({
         /*************************************************************
          * RENDERING HELPERS
          *************************************************************/
-        calcIsUpcomingAction: function (item, index) {
+        calcIsUpcomingAction: function (item) {
             /**
              * Exclude boxed actions
              */
-            var boxTags = _.filter(item.tags, function(tag) { return tag.slice(0,1) === '#'; });
+            var boxTags = item.tags.filter(function (tag) { return tag.slice(0,1) === '#'; });
             if (boxTags.length > 0) {
                 return false;
             }
@@ -46,7 +46,7 @@
             return (
                 <table className="table table-striped">
                     <tbody>
-                        {upcomingActions.map(function(item, index) {
+                        {upcomingActions.map(function (item) {
                             return (
                                 <ActionRow key={item.id}
                                     overrideIsDone={false}
@@ -57,7 +57,7 @@
                                                                         // TODO: ActionRow prop should be named something more suitable and generic
                                     actionNextDate={item.nextDate} />
                             );
-                        }.bind(this))}
+                        })}
                     </tbody>
                 </table>
             );
@@ -78,27 +78,18 @@
             /**
              * Sort the actions by next date and name
              */
-            upcomingActions = _.sortBy(upcomingActions, function(action) {
+            upcomingActions = those(upcomingActions).order(function (action) {
                 return (action.nextDate + '-' + action.name);
             });
 
             upcomingActionsTable = this.renderUpcomingActionsTable(upcomingActions);
 
             /**
-             * Inline Styles
-             */
-            var headerStyle = {
-                padding: '2px 2px 2px 8px',
-                fontWeight: 'bold',
-                fontSize: '1.5em'
-            };
-
-            /**
              * HTML
              */
             return (
                 <div>
-                    <div style={headerStyle}>
+                    <div style={styles.header}>
                         <span>Upcoming Actions</span>
                     </div>
                     {upcomingActionsTable}
@@ -106,5 +97,17 @@
             );
         }
     });
+
+    /**
+        * Inline Styles
+        */
+    var styles = {
+        header: {
+            padding: '2px 2px 2px 8px',
+            fontWeight: 'bold',
+            fontSize: '1.5em'
+        }
+    };
+
     return UpcomingActions;
- }));
+}));

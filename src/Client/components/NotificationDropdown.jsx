@@ -21,7 +21,8 @@
             var isOpen = !this.props.isOpen;
             if (isOpen) {
                 ui.goTo('Notifications');
-            } else {
+            }
+            else {
                 ui.goTo('Do');
             }
         },
@@ -30,33 +31,38 @@
          * RENDERING
          *************************************************************/
         render: function () {
-            var badge,
-                unreadCount = those(notificationStore.updates.value).where({readAt: null}).length;
-
-            var badgeStyle = {
-                display: 'inline',
-                position: 'relative',
-                top: '-10px',
-                left: '-25px',
-                fontSize: '75%',
-                fontWeight: '700',
-                lineHeight: '1',
-                textAlign: 'center',
-                whiteSpace: 'nowrap',
-                verticalAlign: 'baseline',
-                marginRight: '-10px'
-            };
+            var badge;
+            var unreadCount = those(notificationStore.updates.value).where({readAt: null}).length;
 
             if (unreadCount > 0) {
-                badge = (<span style={badgeStyle}>{unreadCount}</span>);
+                badge = (<span style={styles.badge}>{unreadCount}</span>);
             }
 
+            /* eslint-disable no-script-url */
             return (
                 <li ref="root" onClick={this.handleToggleClick}>
                     <a className={this.props.isOpen ? 'active' : ''} href="javascript:;" style={{padding: '5px'}}><span><i className="fa fa-2x fa-bell-o"></i>{badge}</span></a>
                 </li>
             );
+            /* eslint-enable no-script-url */
         }
     });
+
+    var styles = {
+        badge: {
+            display: 'inline',
+            position: 'relative',
+            top: '-10px',
+            left: '-25px',
+            fontSize: '75%',
+            fontWeight: '700',
+            lineHeight: '1',
+            textAlign: 'center',
+            whiteSpace: 'nowrap',
+            verticalAlign: 'baseline',
+            marginRight: '-10px'
+        }
+    };
+
     return NotificationDropdown;
 }));

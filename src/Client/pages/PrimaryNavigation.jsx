@@ -30,7 +30,7 @@
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
-        componentDidMount: function() {
+        componentDidMount: function () {
             window.addEventListener('resize', this.handleResize);
         },
 
@@ -63,7 +63,7 @@
         handleFocusClick: function (item) {
             this.props.handleFocusClick(item);
         },
-        handleResize: function(e) {
+        handleResize: function (e) {
             this.setState({windowWidth: window.innerWidth});
         },
 

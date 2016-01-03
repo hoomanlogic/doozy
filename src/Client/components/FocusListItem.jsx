@@ -22,10 +22,12 @@
             if (focus.kind === 'Role') {
                 if (doozy.hasPossessiveNoun(focus.name)) {
                     return 'You\'re ' + focus.name;
-                } else {
+                }
+                else {
                     return 'You\'re ' + (doozy.startsWithAVowel(focus.name) ? 'an' : 'a') + ' ' + focus.name;
                 }
-            } else if (focus.kind === 'Path') {
+            }
+            else if (focus.kind === 'Path') {
                 return 'You\'re on a path of ' + focus.name;
             }
         },

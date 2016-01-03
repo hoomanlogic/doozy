@@ -120,7 +120,7 @@
         this.update = function (tag) {
 
             // get object reference to tag in store
-            var tagToSave = _.find(updates.value, function(item) {
+            var tagToSave = _.find(updates.value, function (item) {
                 return item.id === tag.id;
             });
 
@@ -138,7 +138,7 @@
                     updates.onNext(updates.value);
                     hlio.saveLocal('hl.' + user + '.tags', updates.value, secret);
                 })
-                .fail(function  (err) {
+                .fail(function (err) {
                     Object.assign(tagToSave, original);
                     updates.onNext(updates.value);
                     MessageBox.notify(err.responseText, 'error');
@@ -150,14 +150,14 @@
         };
 
         this.getTagByName = function (name) {
-            var existingTag = _.find(updates.value, function(item) {
+            var existingTag = _.find(updates.value, function (item) {
                 return cleanTagName(item.name) === cleanTagName(name.toLowerCase());
             });
             return existingTag;
         };
 
         this.getTagById = function (id) {
-            var existingTag = _.find(updates.value, function(item) {
+            var existingTag = _.find(updates.value, function (item) {
                 return item.id.toLowerCase() === id.toLowerCase();
             });
             return existingTag;
@@ -166,7 +166,7 @@
         var user = 'my';
         var secret = 'hash';
         var baseUrl = null;
-        
+
         var cleanTagName = function (name) {
             return name.replace(/:/g, '').replace(/  /g, ' ').trim().toLowerCase();
         };
@@ -176,7 +176,7 @@
             user = userName;
             secret = userId;
             baseUrl = window.location.href.split('/').slice(0,3).join('/') + '/doozy';
-            
+
             // populate store - call to database
             _api.getTags()
             .done(function (result) {

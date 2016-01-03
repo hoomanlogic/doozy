@@ -120,7 +120,7 @@
         this.update = function (target) {
 
             // get object reference to target in store
-            var targetToSave = _.find(updates.value, function(item) {
+            var targetToSave = _.find(updates.value, function (item) {
                 return item.id === target.id;
             });
 
@@ -138,7 +138,7 @@
                     updates.onNext(updates.value);
                     hlio.saveLocal('hl.' + user + '.targets', updates.value, secret);
                 })
-                .fail(function  (err) {
+                .fail(function (err) {
                     Object.assign(targetToSave, original);
                     updates.onNext(updates.value);
                     MessageBox.notify(err.responseText, 'error');
@@ -150,14 +150,14 @@
         };
 
         this.getTargetByName = function (name) {
-            var existingTarget = _.find(updates.value, function(item) {
+            var existingTarget = _.find(updates.value, function (item) {
                 return cleanTargetName(item.name) === cleanTargetName(name.toLowerCase());
             });
             return existingTarget;
         };
 
         this.getTargetById = function (id) {
-            var existingTarget = _.find(updates.value, function(item) {
+            var existingTarget = _.find(updates.value, function (item) {
                 return item.id.toLowerCase() === id.toLowerCase();
             });
             return existingTarget;
@@ -166,7 +166,7 @@
         var user = 'my';
         var secret = 'hash';
         var baseUrl = null;
-        
+
         var cleanTargetName = function (name) {
             return name.replace(/:/g, '').replace(/  /g, ' ').trim().toLowerCase();
         };
@@ -176,7 +176,7 @@
             user = userName;
             secret = userId;
             baseUrl = window.location.href.split('/').slice(0,3).join('/') + '/doozy';
-            
+
             // populate store - call to database
             _api.getTargets()
             .done(function (result) {

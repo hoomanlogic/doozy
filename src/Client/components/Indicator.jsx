@@ -45,9 +45,11 @@
                         value: "MET",
                         compare: null
                     });
-                } else if (Math.ceil(stats.periodActive.daysLeft * expectedRate) >= diff) {
+                }
+                else if (Math.ceil(stats.periodActive.daysLeft * expectedRate) >= diff) {
                     // do nothing
-                } else {
+                }
+                else {
                     Object.assign(progress, {
                         backgroundColor: Indicator.calcColor(Math.round((Math.ceil(stats.periodActive.daysLeft * expectedRate) / diff) * 100) - 50)
                     });
@@ -77,7 +79,8 @@
 
             if (this.props.change > 0) {
                 changeColor = 'hsl(120,90%,40%)';
-            } else if (this.props.change < 0) {
+            }
+            else if (this.props.change < 0) {
                 changeColor = 'hsl(0,90%,40%)';
             }
 
@@ -97,7 +100,8 @@
                         {this.props.value + suffix}
                     </div>
                 );
-            } else if (this.props.kind === 'comparison') {
+            }
+            else if (this.props.kind === 'comparison') {
                 content = (
                     <div style={{textAlign: 'center', backgroundColor: this.props.backgroundColor, color: (this.props.backgroundColor === 'white' ? 'black' : 'white')}}>
                         <div style={{display: 'inline', fontSize: 'x-large'}}>{this.props.value + suffix}</div>

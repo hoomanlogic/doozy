@@ -13,7 +13,7 @@
         require('pages/ManageAction'),
     );
 }(function (React, actionStore, focusStore, logEntryStore, planStore, planStepStore, tagStore, targetStore, StoresMixin, ManageAction) {
-    
+
     var ActionsDetailInterface = React.createClass({
         /*************************************************************
          * DEFINITIONS
@@ -21,7 +21,7 @@
         mixins: [StoresMixin([actionStore, focusStore, logEntryStore, planStore, planStepStore, tagStore, targetStore], true)],
         getInitialState: function () {
             return {
-                currentFocus: null   
+                currentFocus: null
             };
         },
         /*************************************************************
@@ -34,23 +34,23 @@
         handleFocusClick: function (item) {
             this.setState({ currentFocus: item.name === null ? undefined : item });
         },
-        
+
         /*************************************************************
          * RENDERING
          *************************************************************/
         render: function () {
-            
+
             if (!actionStore.updates.value) {
                 return (<div>No results</div>);
             }
-            
+
             // let other components know what page we're on
             var mode = 'Edit';
             var page = (<ManageAction action={this.props.action} mode={mode} focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : ''} />);
-        
+
             return (
                 <div>
-                    {page}    
+                    {page}
                 </div>
             );
         },

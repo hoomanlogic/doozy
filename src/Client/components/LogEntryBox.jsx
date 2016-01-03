@@ -72,7 +72,7 @@
 
         componentDidUpdate: function () {
             if (this.state.isDropDownOpen) {
-                $(window).on("click.Bst", this.handleOutsideClick);
+                $(window).on('click.Bst', this.handleOutsideClick);
             }
         },
 
@@ -159,23 +159,23 @@
 
             var options = [];
             // if (userStore.updates.value.userId === this.props.data.userId) {
+            options.push((
+                <li><a className="clickable hoverable" style={styles.userOptionsItem} onClick={this.handleDeleteClick}><i className="fa fa-trash"></i> Delete Log Entry</a></li>
+            ));
+            options.push((
+                <li><a className="clickable hoverable" style={styles.userOptionsItem} onClick={this.handleEditLogEntryClick}><i className="fa fa-pencil"></i> Edit Entry</a></li>
+            ));
+            if (this.props.data.actionId !== null) {
                 options.push((
-                    <li><a className="clickable hoverable" style={styles.userOptionsItem} onClick={this.handleDeleteClick}><i className="fa fa-trash"></i> Delete Log Entry</a></li>
+                    <li><a className="clickable hoverable" style={styles.userOptionsItem} onClick={this.handleEditActionClick}><i className="fa fa-pencil"></i> Edit Action</a></li>
                 ));
-                options.push((
-                    <li><a className="clickable hoverable" style={styles.userOptionsItem} onClick={this.handleEditLogEntryClick}><i className="fa fa-pencil"></i> Edit Entry</a></li>
-                ));
-                if (this.props.data.actionId !== null) {
-                    options.push((
-                        <li><a className="clickable hoverable" style={styles.userOptionsItem} onClick={this.handleEditActionClick}><i className="fa fa-pencil"></i> Edit Action</a></li>
-                    ));
-                }
-                options.push((
-                    <li><a className="clickable hoverable" style={styles.userOptionsItem} onClick={this.handleEditDetailsClick}><i className="fa fa-pencil"></i> Edit Details</a></li>
-                ));
-                options.push((
-                    <li><a className="clickable hoverable" style={styles.userOptionsItem} onClick={this.handleEditDurationClick}><i className="fa fa-pencil"></i> Edit Duration</a></li>
-                ));
+            }
+            options.push((
+                <li><a className="clickable hoverable" style={styles.userOptionsItem} onClick={this.handleEditDetailsClick}><i className="fa fa-pencil"></i> Edit Details</a></li>
+            ));
+            options.push((
+                <li><a className="clickable hoverable" style={styles.userOptionsItem} onClick={this.handleEditDurationClick}><i className="fa fa-pencil"></i> Edit Duration</a></li>
+            ));
             // }
 
             if (options.length === 0) {
@@ -184,7 +184,7 @@
             var data = this.props.data;
 
             return (
-                <div id={'dropdown-' + data.id} style={styles.userOptionsDropdown}>
+                <div id={'dropdown-' + data.id} style={styles.userOptionsDropdown(this)}>
                     <ul style={styles.userOptionsList}>
                         {options}
                     </ul>
@@ -271,7 +271,7 @@
 
     /**
      * Inline Styles
-     */   
+     */
     var styles = {
         cheerButton: {
             borderRadius: '0',
@@ -321,15 +321,17 @@
         pencilColor: {
             color: '#e2ff63'
         },
-        userOptionsDropdown: {
-            position: 'absolute',
-            top: $(this.refs.dropDown.getDOMNode()).offset().top + 22 + 'px',
-            padding: '5px',
-            backgroundColor: '#fff',
-            minWidth: '100%',
-            borderRadius: '4px',
-            border: '2px solid #e0e0e0',
-            boxShadow: '0 0 10px #000000'
+        userOptionsDropdown: function (component) {
+            return {
+                position: 'absolute',
+                top: $(component.refs.dropDown.getDOMNode()).offset().top + 22 + 'px',
+                padding: '5px',
+                backgroundColor: '#fff',
+                minWidth: '100%',
+                borderRadius: '4px',
+                border: '2px solid #e0e0e0',
+                boxShadow: '0 0 10px #000000'
+            };
         },
         userOptionsList: {
             listStyle: 'none',
@@ -347,6 +349,6 @@
             whiteSpace: 'nowrap'
         }
     };
-    
+
     return LogEntryBox;
 }));

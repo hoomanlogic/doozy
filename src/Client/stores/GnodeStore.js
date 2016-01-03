@@ -47,13 +47,13 @@
             }
             // TODO: how can we decide if the data in gnodes is the newest, and send a timestamp
             // through getGnodes() so it only sends any changes since then.
-            
-            // Also, we should have a strategy to query the gnodes db and prioritize relevance and 'nearness' to keep the query quick, and 
-            
+
+            // Also, we should have a strategy to query the gnodes db and prioritize relevance and 'nearness' to keep the query quick, and
+
             // I guesstimate that about 2000 gnodes and gnapes is about 1mb of data. So we should start to think about only bringing in recent log entries
             // These 'omissions'  or chopping of gnodes and gnapses could result in a gnode not knowing it is actually connected to something else that COULD be relevant
-            // to the user, gnapse.target() should be a function so we can support delayed connecting to gnodes that aren't yet loaded in memory 
-            
+            // to the user, gnapse.target() should be a function so we can support delayed connecting to gnodes that aren't yet loaded in memory
+
             // populate store - call to database
             _api.getGnodes()
             .done(function (result) {

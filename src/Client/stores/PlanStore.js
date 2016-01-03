@@ -83,7 +83,7 @@
                 updates.value.forEach(function (item) {
                     if (item === newPlan) {
                         Object.assign(item, result);
-                        newPlan = item;
+                        newPlan = item; // eslint-disable-line no-param-reassign
                     }
                 });
                 updates.onNext(updates.value);
@@ -115,11 +115,11 @@
 
         this.update = function (plan) {
 
-            var planToSave = _.find(updates.value, function(item) {
+            var planToSave = _.find(updates.value, function (item) {
                 return item.id === plan.id;
             });
-            var state = plan,
-                original = Object.assign({}, planToSave);
+            var state = plan;
+            var original = Object.assign({}, planToSave);
 
             var val = planToSave;
             Object.assign(val, state);
@@ -132,7 +132,7 @@
                 hlio.saveLocal('hl.' + user + '.plans', updates.value, secret);
                 MessageBox.notify('Updated plan ' + val.name, 'success');
             })
-            .fail(function  (err) {
+            .fail(function (err) {
                 Object.assign(val, original);
                 updates.onNext(updates.value);
                 MessageBox.notify(err.responseText, 'error');
@@ -140,7 +140,7 @@
         };
 
         this.updateFromServer = function (planId, newState) {
-            var planToUpdate = _.find(updates.value, function(item) {
+            var planToUpdate = _.find(updates.value, function (item) {
                 return item.id === planId;
             });
             Object.assign(planToUpdate, newState);
@@ -150,13 +150,13 @@
         var user = 'my';
         var secret = 'hash';
         var baseUrl = null;
-        
+
         this.init = function (userName, userId) {
 
             user = userName;
             secret = userId;
             baseUrl = window.location.href.split('/').slice(0,3).join('/') + '/doozy';
-            
+
             // populate store - call to database
             _api.getPlans()
             .done(function (result) {

@@ -64,7 +64,7 @@
             var menuItems = this.props.menuItems;
 
             if (className.length > 0) {
-              className = ' ' + className;
+                className = ' ' + className;
             }
 
             if (this.props.useDiv === true) {

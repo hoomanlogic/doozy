@@ -59,7 +59,7 @@
             /**
              * Sort the actions by completed and name
              */
-            plans = _.sortBy(plans, function(plan) {
+            plans = _.sortBy(plans, function (plan) {
                 return plan.name.toLowerCase();
             });
 
@@ -103,7 +103,7 @@
                         <div style={{paddingRight: '5px'}}><button type="button" className="close" onClick={this.handleCloseClick}><span aria-hidden="true">&times;</span></button></div>
                     </div>
                     <div style={{display: 'flex', flexDirection: 'column'}}>
-                        {plans.map(function(item, index) {
+                        {plans.map(function (item, index) {
                             return (
                                 <div key={item.id} style={listItemStyle}>
                                     <div style={{flexGrow: '1'}}>

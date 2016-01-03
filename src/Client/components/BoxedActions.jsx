@@ -12,7 +12,6 @@
         getInitialState: function () {
             var boxTags = this.getBoxTags(this.props.actions);
             var boxes = this.getBoxes(boxTags, this.props.actions);
-
             return {
                 boxes: boxes
             };
@@ -23,14 +22,8 @@
          *************************************************************/
         componentWillReceiveProps: function (nextProps) {
             var nextBoxTags = this.getBoxTags(nextProps.actions);
-            var boxTags = [];
-            for (var i = 0; i < this.state.boxes.length; i++) {
-                boxTags.push(this.state.boxes[i].box);
-            }
-            //if (nextBoxTags.sort().join(',') !== boxTags.sort().join(',') || nextProps.actions.length !== this.props.actions.length) {
             var nextBoxes = this.getBoxes(nextBoxTags, nextProps.actions);
             this.setState({ boxes: nextBoxes });
-            //}
         },
 
         /*************************************************************
@@ -47,14 +40,14 @@
         getBoxTags: function (actions) {
             // get distinct list of box tags
             var boxTags = [];
-            actions.map(function(action) {
-                boxTags = _.union(boxTags, _.filter(action.tags, function(tag) { return tag.slice(0,1) === '#'; }));
+            actions.map(function (action) {
+                boxTags = _.union(boxTags, _.filter(action.tags, function (tag) { return tag.slice(0,1) === '#'; }));
             });
             return boxTags;
         },
         getBoxes: function (boxTags, actions) {
             return boxTags.map( function (boxTag) {
-                var boxActions = _.filter(actions, function(action) { return action.tags.indexOf(boxTag) > -1 && action.lastPerformed === null; });
+                var boxActions = _.filter(actions, function (action) { return action.tags.indexOf(boxTag) > -1 && action.lastPerformed === null; });
                 boxActions = _.sortBy(boxActions, function (action) { return action.name.toLowerCase(); });
                 return {
                     box: boxTag,
@@ -74,7 +67,7 @@
             }
 
             var boxesDom = null;
-            boxesDom = this.state.boxes.map( function(box) {
+            boxesDom = this.state.boxes.map( function (box) {
 
                 var headerStyle = {
                     fontWeight: 'bold',
@@ -89,7 +82,7 @@
                 };
 
                 var boxActions = box.actions;
-                boxActions = _.sortBy(boxActions, function(action) {
+                boxActions = _.sortBy(boxActions, function (action) {
                     return (action.ordinal === null ? '' : action.ordinal + '-') + action.name.toLowerCase();
                 });
 
@@ -97,13 +90,14 @@
                     return null;
                 }
 
-                var list = null, nextInQueue = '';
+                var list = null;
+                var nextInQueue = '';
                 if (box.expanded) {
                     headerStyle.marginRight = '5px';
                     list = (
                         <table className="table table-striped">
                             <tbody>
-                                {boxActions.map(function(item, index) {
+                                {boxActions.map(function (item) {
                                     return (
                                         <ActionRow key={item.id}
                                             action={item}
@@ -111,7 +105,7 @@
                                             actionLastPerformed={item.lastPerformed}
                                             actionNextDate={item.nextDate} />
                                     );
-                                }.bind(this))}
+                                })}
                             </tbody>
                         </table>
                     );

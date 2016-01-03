@@ -2,12 +2,14 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
+        require('jquery'),
+        require('lodash'),
         require('app/doozy'),
         require('stores/ActionStore'),
         require('stores/LogEntryStore'),
         require('babble')
     );
-}(function (React, doozy, actionStore, logEntryStore, babble) {
+}(function (React, $, _, doozy, actionStore, logEntryStore, babble) {
     var ManageAction = React.createClass({
 
         /*************************************************************
@@ -46,14 +48,15 @@
             if (!nextProps.action) {
                 // get tags from UI filter
                 var tags = ui.tags || [];
-                tags = tags.slice(); //copy
+                tags = tags.slice(); // copy
                 tags.push(this.props.focusTag);
 
                 // create a new action
                 nextProps.action = doozy.action('New ToDo', tags);
                 nextProps.action.name = null;
                 nextProps.action.created = new Date().toISOString();
-            } else if (nextProps.action.id !== this.props.action.id) {
+            }
+            else if (nextProps.action.id !== this.props.action.id) {
                 nextProps.action = this.edit(nextProps.action);
             }
         },
@@ -63,14 +66,15 @@
             if (!this.props.action) {
                 // get tags from UI filter
                 var tags = ui.tags || [];
-                tags = tags.slice(); //copy
+                tags = tags.slice(); // copy
                 tags.push(this.props.focusTag);
 
                 // create a new action
                 this.props.action = doozy.action('New ToDo', tags);
                 this.props.action.name = null;
                 this.props.action.created = new Date().toISOString();
-            } else {
+            }
+            else {
                 this.props.action = this.edit(this.props.action);
             }
 
@@ -103,6 +107,8 @@
          * API
          *************************************************************/
         edit: function (action) {
+            var date, durationInput;
+
             // create a copy of the action for editing
             var editableCopy = {};
             Object.assign(editableCopy, action);
@@ -119,15 +125,17 @@
 
             var durationParse = babble.get('durations').translate(editableCopy.duration + ' min');
             if (durationParse.tokens.length === 0) {
-                var durationInput = null;
-            } else {
-                var durationInput = durationParse.tokens[0].value.toString();
+                durationInput = null;
+            }
+            else {
+                durationInput = durationParse.tokens[0].value.toString();
             }
 
             if (action.nextDate === null || String(action.nextDate) === 'NaN') {
-                var date = null;
-            } else {
-                var date = (new Date(action.nextDate)).toLocaleDateString();
+                date = null;
+            }
+            else {
+                date = (new Date(action.nextDate)).toLocaleDateString();
             }
 
             // build state
@@ -199,7 +207,7 @@
             // get distinct tags user has assigned to other actions
             var actions = actionStore.updates.value;
             var distinctTags = [];
-            actions.map(function(item) {
+            actions.map(function (item) {
                 distinctTags = _.union(distinctTags, item.tags);
             });
             // { kind: 'Tag', name: tag }
@@ -219,10 +227,10 @@
                     labelField: 'name',
                     searchField: ['name', 'kind'],
                     render: {
-                        item: function(item, escape) {
+                        item: function (item, escape) {
                             return '<div class="item"><i class="fa ' + item.className + '"></i> ' + escape(item.name) + '</div>';
                         },
-                        option: function(item, escape) {
+                        option: function (item, escape) {
                             var label = item.name || item.kind;
                             var caption = item.kind ? item.kind : null;
                             return '<div>' +
@@ -231,7 +239,7 @@
                             '</div>';
                         }
                     },
-                    create: function(input) {
+                    create: function (input) {
                         return doozy.parseTag(input);
                     }
                 });
@@ -250,7 +258,7 @@
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
-        handleLogEntryStoreUpdate: function (logEntries) {
+        handleLogEntryStoreUpdate: function () {
             if (this.state.viewMode === this.VIEW_MODE.HISTORY) {
                 this.setState({logEntriesLastUpdated: new Date().toISOString()});
             }
@@ -258,11 +266,12 @@
 
         handleChange: function (event) {
             if (event.target === this.refs.name.getDOMNode()) {
-                var actionName = event.target.value;
                 this.state.name = event.target.value;
-            } else if (event.target === this.refs.content.getDOMNode()) {
+            }
+            else if (event.target === this.refs.content.getDOMNode()) {
                 this.state.content = event.target.value;
-            } else if (event.target === this.refs.duration.getDOMNode()) {
+            }
+            else if (event.target === this.refs.duration.getDOMNode()) {
                 var durationParsed = babble.get('durations').translate(this.refs.duration.getDOMNode().value.trim());
                 var duration = 0;
                 var durationDisplay = '';
@@ -274,18 +283,22 @@
                 this.props.action.duration = duration;
                 this.state.durationInput = this.refs.duration.getDOMNode().value;
                 this.state.durationDisplay = durationDisplay;
-            } else if (event.target === this.refs.repeat.getDOMNode()) {
+            }
+            else if (event.target === this.refs.repeat.getDOMNode()) {
                 this.state.repeat = event.target.value;
-            } else if (event.target === this.refs.nextdate.getDOMNode()) {
+            }
+            else if (event.target === this.refs.nextdate.getDOMNode()) {
 
                 var dateValue = Date.create(event.target.value);
                 var dateDisplay = '';
                 try {
                     dateDisplay = dateValue.toISOString();
-                } catch (e) {
+                }
+                catch (e) {
                     if (e instanceof RangeError) {
                         dateValue = null;
-                    } else {
+                    }
+                    else {
                         throw e;
                     }
                 }
@@ -293,7 +306,8 @@
                 if (dateValue !== null) {
                     if (dateValue.getHours() === 0 && dateValue.getMinutes() === 0) {
                         dateDisplay = dateValue.toLocaleDateString();
-                    } else {
+                    }
+                    else {
                         dateDisplay = dateValue.toLocaleDateString() + ' ' + dateValue.toLocaleTimeString();
                     }
                 }
@@ -302,30 +316,38 @@
                 this.setState({dateInput: event.target.value, dateDisplay: dateDisplay});
 
                 this.props.action.nextDate = event.target.value;
-            } else if (this.refs.repeatInterval && event.target === this.refs.repeatInterval.getDOMNode()) {
-                this.state.repeatInterval = parseInt(event.target.value);
-            } else if (this.refs.repeatSun && event.target === this.refs.repeatSun.getDOMNode()) {
+            }
+            else if (this.refs.repeatInterval && event.target === this.refs.repeatInterval.getDOMNode()) {
+                this.state.repeatInterval = parseInt(event.target.value, 10);
+            }
+            else if (this.refs.repeatSun && event.target === this.refs.repeatSun.getDOMNode()) {
                 this.state.repeatSun = event.target.checked;
-            } else if (this.refs.repeatMon && event.target === this.refs.repeatMon.getDOMNode()) {
+            }
+            else if (this.refs.repeatMon && event.target === this.refs.repeatMon.getDOMNode()) {
                 this.state.repeatMon = event.target.checked;
-            } else if (this.refs.repeatTue && event.target === this.refs.repeatTue.getDOMNode()) {
+            }
+            else if (this.refs.repeatTue && event.target === this.refs.repeatTue.getDOMNode()) {
                 this.state.repeatTue = event.target.checked;
-            } else if (this.refs.repeatWed && event.target === this.refs.repeatWed.getDOMNode()) {
+            }
+            else if (this.refs.repeatWed && event.target === this.refs.repeatWed.getDOMNode()) {
                 this.state.repeatWed = event.target.checked;
-            } else if (this.refs.repeatThu && event.target === this.refs.repeatThu.getDOMNode()) {
+            }
+            else if (this.refs.repeatThu && event.target === this.refs.repeatThu.getDOMNode()) {
                 this.state.repeatThu = event.target.checked;
-            } else if (this.refs.repeatFri && event.target === this.refs.repeatFri.getDOMNode()) {
+            }
+            else if (this.refs.repeatFri && event.target === this.refs.repeatFri.getDOMNode()) {
                 this.state.repeatFri = event.target.checked;
-            } else if (this.refs.repeatSat && event.target === this.refs.repeatSat.getDOMNode()) {
+            }
+            else if (this.refs.repeatSat && event.target === this.refs.repeatSat.getDOMNode()) {
                 this.state.repeatSat = event.target.checked;
-            } else if (event.target === this.refs.ispublic.getDOMNode()) {
+            }
+            else if (event.target === this.refs.ispublic.getDOMNode()) {
                 this.props.action.isPublic = event.target.checked;
-            } else if (event.target === this.refs.ordinal.getDOMNode()) {
+            }
+            else if (event.target === this.refs.ordinal.getDOMNode()) {
                 var ord = null;
-                try {
-                    ord = parseInt(event.target.value);
-                } catch (e) {
-
+                if (!isNaN(parseInt(event.target.value, 10))) {
+                    ord = parseInt(event.target.value, 10);
                 }
                 this.setState({ordinal: ord});
             }
@@ -346,21 +368,22 @@
                 repeatSat: this.state.repeatSat
             });
         },
-        handleCancelClick: function(event) {
+        handleCancelClick: function () {
             ui.goBack();
         },
-        handleDeleteClick: function() {
+        handleDeleteClick: function () {
             actionStore.destroy(this.props.action);
             ui.goBack();
         },
-        handleToggleViewModeClick: function(event) {
+        handleToggleViewModeClick: function () {
             if (this.state.viewMode === 'general') {
                 this.setState({ viewMode: 'history' });
-            } else {
+            }
+            else {
                 this.setState({ viewMode: 'general' });
             }
         },
-        handleSaveClick: function(event) {
+        handleSaveClick: function () {
 
             var action;
             if (this.state.id) {
@@ -381,8 +404,6 @@
             }
             action.tags = tags;
 
-
-
             // build recurrence rules
             var recurrenceRules = [];
             if (this.state.repeat === 'd') {
@@ -391,14 +412,15 @@
                     dailyRule += ';INTERVAL=' + this.state.repeatInterval;
                 }
                 recurrenceRules.push(dailyRule);
-            } else if (this.state.repeat === 'w' && (
-            this.state.repeatSun ||
-            this.state.repeatMon ||
-            this.state.repeatTue ||
-            this.state.repeatWed ||
-            this.state.repeatThu ||
-            this.state.repeatFri ||
-            this.state.repeatSat)) {
+            }
+            else if (this.state.repeat === 'w' && (
+                    this.state.repeatSun ||
+                    this.state.repeatMon ||
+                    this.state.repeatTue ||
+                    this.state.repeatWed ||
+                    this.state.repeatThu ||
+                    this.state.repeatFri ||
+                    this.state.repeatSat)) {
 
                 var weeklyRule = 'RRULE:FREQ=WEEKLY;BYDAY=';
                 var days = [];
@@ -429,13 +451,15 @@
                     weeklyRule += ';INTERVAL=' + this.state.repeatInterval;
                 }
                 recurrenceRules.push(weeklyRule);
-            } else if (this.state.repeat === 'm') {
+            }
+            else if (this.state.repeat === 'm') {
                 var monthlyRule = 'RRULE:FREQ=MONTHLY';
                 if (this.state.repeatInterval > 1) {
                     monthlyRule += ';INTERVAL=' + this.state.repeatInterval;
                 }
                 recurrenceRules.push(monthlyRule);
-            } else if (this.state.repeat === 'y') {
+            }
+            else if (this.state.repeat === 'y') {
                 var yearlyRule = 'RRULE:FREQ=YEARLY';
                 if (this.state.repeatInterval > 1) {
                     yearlyRule += ';INTERVAL=' + this.state.repeatInterval;
@@ -453,7 +477,8 @@
             // call method to save the action
             if (this.props.mode === 'Edit') {
                 actionStore.update(action);
-            } else {
+            }
+            else {
                 actionStore.create(action);
             }
 
@@ -490,7 +515,7 @@
                  * Render day of week checkboxes in order
                  * based on the user's start of week
                  */
-                var dayIndex = userStore.updates.value.weekStarts;
+                var dayIndex = 0; // TODO: reimplement preferences store - userStore.updates.value.weekStarts;
                 var daysOfWeek = [];
                 while (daysOfWeek.length < 7) {
                     daysOfWeek.push(this.renderDayCheckbox(babble.moments.daysOfWeek[dayIndex].slice(0,3)));
@@ -510,7 +535,8 @@
                         {daysOfWeek}
                     </div>
                 ]);
-            } else if (repeat === 'd' || repeat === 'm' || repeat === 'y') {
+            }
+            else if (repeat === 'd' || repeat === 'm' || repeat === 'y') {
                 return (
                     <div className="form-group">
                         <label htmlFor="action-repeat-interval">Every</label>
@@ -518,7 +544,8 @@
                         <label>{doozy.getFrequencyName(this.state.repeat) + '(s)'}</label>
                     </div>
                 );
-            } else {
+            }
+            else {
                 return null;
             }
         },
@@ -529,8 +556,6 @@
              */
             var action = this.props.action;
             var isPublic = action.isPublic;
-            var name = action.name || '';
-            var content = action.content || '';
             var durationInput = this.state.durationInput;
             var dateInput = this.state.dateInput;
 
@@ -594,7 +619,7 @@
                 return item.actionId === actionId;
             });
 
-            logEntries = _.sortBy(logEntries, function(item) { return item.date.split('T')[0] + '-' + (['performed','skipped'].indexOf(item.entry) > -1 ? '1' : '0'); });
+            logEntries = _.sortBy(logEntries, function (item) { return item.date.split('T')[0] + '-' + (['performed','skipped'].indexOf(item.entry) > -1 ? '1' : '0'); });
             logEntries.reverse();
 
             return (
@@ -602,9 +627,9 @@
                     <h2 style={{ margin: '0 0 5px 5px'}}>Action History Log</h2>
                     <div className={this.props.hidden ? 'hidden' : ''} style={{backgroundColor: '#444', padding: '5px', marginLeft: '-5px', marginRight: '-5px'}}>
                         {logEntries.map(
-                            function(item) {
+                            function (item) {
                                 return (<LogEntryBox data={item} />);
-                            }.bind(this)
+                            }
                         )}
                     </div>
                 </div>
@@ -615,12 +640,14 @@
             /**
              * Render view based on the current view mode
              */
-            var currentView = null,
-                toggleTitle = null;
+            var currentView = null;
+            var toggleTitle = null;
+
             if (this.state.viewMode === this.VIEW_MODE.GENERAL) {
                 currentView = this.renderGeneralView();
                 toggleTitle = 'View Action Log';
-            } else if (this.state.viewMode === this.VIEW_MODE.HISTORY) {
+            }
+            else if (this.state.viewMode === this.VIEW_MODE.HISTORY) {
                 currentView = this.renderHistoryView();
                 toggleTitle = 'View General';
             }
@@ -671,7 +698,7 @@
                            ];
             }
 
-            var buttonsDom = buttons.map(function(button, index) {
+            var buttonsDom = buttons.map(function (button, index) {
                 return (<button key={index} style={button.buttonStyle} type="button" className={'btn btn-' + button.type} onClick={button.handler}>{button.text}</button>);
             });
 

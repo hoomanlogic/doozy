@@ -83,7 +83,7 @@
                 updates.value.forEach(function (item) {
                     if (item === newFocus) {
                         Object.assign(item, result);
-                        newFocus = item;
+                        newFocus = item; // eslint-disable-line no-param-reassign
                     }
                 });
                 updates.onNext(updates.value);
@@ -115,11 +115,12 @@
 
         this.update = function (focus) {
 
-            var focusToSave = _.find(updates.value, function(item) {
+            var focusToSave = _.find(updates.value, function (item) {
                 return item.id === focus.id;
             });
-            var state = focus,
-                original = Object.assign({}, focusToSave);
+
+            var state = focus;
+            var original = Object.assign({}, focusToSave);
 
             var val = focusToSave;
             Object.assign(val, state);
@@ -132,7 +133,7 @@
                 hlio.saveLocal('hl.' + user + '.focuses', updates.value, secret);
                 MessageBox.notify('Updated focus ' + val.name, 'success');
             })
-            .fail(function  (err) {
+            .fail(function (err) {
                 Object.assign(val, original);
                 updates.onNext(updates.value);
                 MessageBox.notify(err.responseText, 'error');
@@ -140,7 +141,7 @@
         };
 
         this.updateFromServer = function (focusId, newState) {
-            var focusToUpdate = _.find(updates.value, function(item) {
+            var focusToUpdate = _.find(updates.value, function (item) {
                 return item.id === focusId;
             });
             Object.assign(focusToUpdate, newState);
@@ -150,13 +151,13 @@
         var user = 'my';
         var secret = 'hash';
         var baseUrl = null;
-        
+
         this.init = function (userName, userId) {
 
             user = userName;
             secret = userId;
             baseUrl = window.location.href.split('/').slice(0,3).join('/') + '/doozy';
-            
+
             // populate store - call to database
             _api.getFocuses()
             .done(function (result) {

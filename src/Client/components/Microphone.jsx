@@ -8,6 +8,7 @@
         require('babble')
     );
 }(function (React, addons, doozy, actionStore, logEntryStore, babble) {
+    /* globals webkitSpeechRecognition */
     var Microphone = React.createClass({
         /*************************************************************
          * DEFINITIONS
@@ -48,8 +49,8 @@
                     lastOne = lastOne.split(' ');
                     lastOne = lastOne[lastOne.length - 1];
 
-                    if (!isNaN(parseInt(lastOne))) {
-                        count = parseInt(lastOne);
+                    if (!isNaN(parseInt(lastOne, 10))) {
+                        count = parseInt(lastOne, 10);
                     }
                     else {
                         count = log.text.length - 1;
@@ -72,7 +73,7 @@
          * COMPONENT LIFECYCLE
          *************************************************************/
         componentDidMount: function () {
-            if (typeof webkitSpeechRecognition !== 'undefined') {
+            if (webkitSpeechRecognition !== undefined) {
                 var recognition = this.recognition = new webkitSpeechRecognition();
                 recognition.continuous = true;
                 recognition.interimResults = false;
@@ -179,7 +180,8 @@
                             entry: 'performed',
                             details: null
                         });
-                    } else {
+                    }
+                    else {
                         newAction = this.createActionObjectLiteral(spokenArgs.actionName, spokenArgs.date);
 
                         /**
@@ -193,14 +195,16 @@
                         });
                     }
 
-                } else if (context === 'new-action') {
+                }
+                else if (context === 'new-action') {
                     spokenArgs = this.parseSpeech(speech, context);
 
                     existingAction = actionStore.getActionByName(spokenArgs.actionName);
 
                     if (existingAction) {
                         ui.message('An action by this name already exists', 'error');
-                    } else {
+                    }
+                    else {
 
                         newAction = this.createActionObjectLiteral(spokenArgs.actionName, spokenArgs.date);
 
@@ -211,8 +215,6 @@
                     }
                 }
             }
-
-            //this.setState({isListening: false});
         },
 
         handleNoSpeech: function () {
@@ -248,20 +250,20 @@
         },
 
         parseSpeech: function (speech, context) {
-            var actionIndex = 0,
-                actionName,
+            var actionName,
                 contextWord,
                 commandArgs,
-                commandWord,
                 date,
-                dateSignal = false,
                 duration,
-                durationSignal = false,
                 parseDuration;
+            var actionIndex = 0;
+            var dateSignal = false;
+            var durationSignal = false;
 
             if (context === 'new-action') {
                 contextWord = 'will';
-            } else if (context === 'log-action') {
+            }
+            else if (context === 'log-action') {
                 contextWord = 'did';
             }
 
@@ -324,9 +326,11 @@
              */
             if (commandArgs.length === 3) {
                 actionIndex = 1;
-            } else if (commandArgs.length === 2 && dateSignal) {
+            }
+            else if (commandArgs.length === 2 && dateSignal) {
                 actionIndex = 1;
-            } else if  (commandArgs.length === 2 && durationSignal) {
+            }
+            else if (commandArgs.length === 2 && durationSignal) {
                 actionIndex = 0;
             }
 
@@ -349,28 +353,34 @@
          * RENDERING
          *************************************************************/
         render: function () {
-            if (typeof webkitSpeechRecognition === 'undefined') {
+            if (webkitSpeechRecognition === undefined) {
                 return null;
             }
 
-            var iconStyle = { minWidth: '40px' };
-
-            var listItemContentStyle = {
-                padding: '5px',
-                textAlign: 'center'
-            };
-
+            /* eslint-disable no-script-url */
             return (
                 <li key="mic">
                     <a className={this.state.isListening ? 'active' : ''}
-                            style={listItemContentStyle}
+                            style={styles.listItemContent}
                             href="javascript:;"
                             onClick={this.handleSpeakReadyClick}>
-                        <i style={iconStyle} className="fa fa-2x fa-microphone"></i>
+                        <i style={styles.icon} className="fa fa-2x fa-microphone"></i>
                     </a>
                 </li>
             );
+            /* eslint-enable no-script-url */
         },
     });
+
+    var styles = {
+        icon: {
+            minWidth: '40px'
+        },
+        listItemContent: {
+            padding: '5px',
+            textAlign: 'center'
+        }
+    };
+
     return Microphone;
 }));

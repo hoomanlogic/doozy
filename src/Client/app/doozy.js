@@ -8,7 +8,7 @@
         require('stores/TargetStore'),
         require('babble')
     );
-}(function (those, hlcommon, actionStore, logEntryStore, tagStore, targetStore, babble) {
+}(function (hlcommon, those, actionStore, logEntryStore, tagStore, targetStore, babble) {
 
     var TAG_KIND = {
         FOCUS: '!',

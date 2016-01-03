@@ -16,29 +16,29 @@
     );
 }(function (React, actionStore, focusStore, logEntryStore, planStore, planStepStore, tagStore, targetStore, StoresMixin, FocusBar, TimerBar, FocusActions) {
 
-    var initializeGlobals = function (host) {
-        /**
-            * Global UI Handles
-            */
-        window['ui'] = window['ui'] || {};
-        //window['ui'].addAction = host.addAction;
-        //window['ui'].editAction = host.editAction;
-        //window['ui'].logEntry = host.logEntry;
-        //window['ui'].logNewAction = host.logNewAction;
-        //window['ui'].editLogEntry = host.editLogEntry;
-        // window['ui'].goTo = host.goTo;
-        // window['ui'].goBack = host.goBack;
-        // window['ui'].openConversation = host.selectConversation;
-        // window['ui'].getHeightBuffer = host.getHeightBuffer;
-        // window['ui'].queueRequest = host.queueRequest;
-        // window['ui'].message = host (text, kind) {
-        //     if (!kind) {
-        //         kind = 'info';
-        //     }
-        //     toastr[kind](text);
-        // }  
-    };
-    
+    // var initializeGlobals = function (host) {
+    //     /**
+    //         * Global UI Handles
+    //         */
+    //     window['ui'] = window['ui'] || {};
+    //     //window['ui'].addAction = host.addAction;
+    //     //window['ui'].editAction = host.editAction;
+    //     //window['ui'].logEntry = host.logEntry;
+    //     //window['ui'].logNewAction = host.logNewAction;
+    //     //window['ui'].editLogEntry = host.editLogEntry;
+    //     // window['ui'].goTo = host.goTo;
+    //     // window['ui'].goBack = host.goBack;
+    //     // window['ui'].openConversation = host.selectConversation;
+    //     // window['ui'].getHeightBuffer = host.getHeightBuffer;
+    //     // window['ui'].queueRequest = host.queueRequest;
+    //     // window['ui'].message = host (text, kind) {
+    //     //     if (!kind) {
+    //     //         kind = 'info';
+    //     //     }
+    //     //     toastr[kind](text);
+    //     // }
+    // };
+
     var ActionsInterface = React.createClass({
         /*************************************************************
          * DEFINITIONS
@@ -46,7 +46,7 @@
         mixins: [StoresMixin([actionStore, focusStore, logEntryStore, planStore, planStepStore, tagStore, targetStore], true)],
         getInitialState: function () {
             return {
-                currentFocus: null   
+                currentFocus: null
             };
         },
 
@@ -65,11 +65,11 @@
          * RENDERING
          *************************************************************/
         render: function () {
-            
+
             if (!actionStore.updates.value) {
                 return (<div>No results</div>);
             }
-            
+
             return (
                 <div>
                     <FocusBar currentFocus={this.state.currentFocus}

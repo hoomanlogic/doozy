@@ -26,7 +26,7 @@
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
-        componentDidMount: function() {
+        componentDidMount: function () {
             window.addEventListener('resize', this.handleResize);
         },
 
@@ -51,7 +51,7 @@
         handleFocusClick: function (item) {
             this.props.handleFocusClick(item);
         },
-        handleResize: function(e) {
+        handleResize: function () {
             this.setState({windowWidth: window.innerWidth});
         },
 
@@ -88,21 +88,10 @@
                 iconUri: null
             };
 
-            var menuItemStyle = {
-                display: 'block',
-                padding: '3px 5px',
-                borderBottom: '1px solid #e0e0e0',
-                clear: 'both',
-                fontWeight: '400',
-                lineHeight: '1.42857143',
-                color: '#333',
-                whiteSpace: 'nowrap',
-                cursor: 'pointer'
-            };
             if (this.props.currentPage === 'Focus Management') {
                 menuItems.push((
                     <li key="newfocus" >
-                        <a onClick={this.handleFocusClick.bind(null, f)} style={menuItemStyle}>
+                        <a onClick={this.handleFocusClick.bind(null, f)} style={styles.menuItem}>
                             <div>
                                 <div style={{display: 'inline', verticalAlign: 'inherit'}}>
                                     <i className="fa fa-eye fa-2x" style={{width: '50px'}}></i>
@@ -118,7 +107,7 @@
                 f.tagName = 'nofocus';
                 menuItems.push((
                     <li key="nofocus" >
-                        <a onClick={this.handleFocusClick.bind(null, f)} style={menuItemStyle}>
+                        <a onClick={this.handleFocusClick.bind(null, f)} style={styles.menuItem}>
                             <div>
                                 <div style={{display: 'inline', verticalAlign: 'inherit'}}>
                                     <i className="fa fa-eye fa-2x" style={{width: '50px'}}></i>
@@ -129,7 +118,7 @@
                     </li>
                 ));
             }
-            
+
             var button = null;
             if (typeof currentFocus !== 'undefined' && currentFocus !== null) {
 
@@ -144,7 +133,7 @@
                 );
             }
             else {
-                
+
                 button = (
                     <div><i className="fa fa-eye fa-2x" style={{width: '50px'}}></i></div>
                 );
@@ -158,9 +147,9 @@
 
             var focusesDropDownMenu = this.renderFocusesDropDownMenu();
 
-            if (this.state.windowWidth < 500) {
-                var adjustDropDownMenu = { marginRight: '-103px'};
-            }
+            // if (this.state.windowWidth < 500) {
+            //     var adjustDropDownMenu = { marginRight: '-103px'};
+            // }
 
             return (
                 <div className="navbar navbar-hl-theme">
@@ -173,5 +162,20 @@
             );
         }
     });
+
+    var styles = {
+        menuItem: {
+            display: 'block',
+            padding: '3px 5px',
+            borderBottom: '1px solid #e0e0e0',
+            clear: 'both',
+            fontWeight: '400',
+            lineHeight: '1.42857143',
+            color: '#333',
+            whiteSpace: 'nowrap',
+            cursor: 'pointer'
+        }
+    };
+
     return FocusBar;
 }));

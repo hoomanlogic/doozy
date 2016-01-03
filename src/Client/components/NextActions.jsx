@@ -3,7 +3,7 @@
         require('react'),
         require('babble'),
         require('lodash'),
-        require('./ActionRow')        
+        require('./ActionRow')
     );
 }(function (React, babble, _, ActionRow) {
     var NextActions = React.createClass({
@@ -17,11 +17,11 @@
         /*************************************************************
          * RENDERING HELPERS
          *************************************************************/
-        isNextAction: function (item, index) {
+        isNextAction: function (item) {
             /**
              * Exclude boxed actions
              */
-            var boxTags = _.filter(item.tags, function(tag) { return tag.slice(0,1) === '#'; });
+            var boxTags = item.tags.filter(function (tag) { return tag.slice(0,1) === '#'; });
             if (boxTags.length > 0) {
                 return false;
             }
@@ -46,7 +46,7 @@
             return (
                 <table className="table table-striped">
                     <tbody>
-                        {nextActions.map(function(item, index) {
+                        {nextActions.map(function (item) {
                             return (
                                 <ActionRow key={item.id}
                                     action={item}
@@ -54,20 +54,20 @@
                                     actionLastPerformed={item.lastPerformed}
                                     actionNextDate={item.nextDate} />
                             );
-                        }.bind(this))}
+                        })}
                     </tbody>
                 </table>
             );
         },
         render: function () {
 
-            var nextActionsTable = null,
-                nextActions = this.props.actions.filter(this.isNextAction);
+            var nextActionsTable = null;
+            var nextActions = this.props.actions.filter(this.isNextAction);
 
             /**
              * Sort the actions by completed and name
              */
-            nextActions = _.sortBy(nextActions, function(action) {
+            nextActions = _.sortBy(nextActions, function (action) {
                 var checked =
                     (action.lastPerformed !== null && (action.nextDate === null ||
                                                        new Date(action.nextDate) > new Date()));
@@ -81,34 +81,12 @@
                 nextActionsTable = this.renderNextActionsTable(nextActions);
             }
 
-            /**
-             * Inline Styles
-             */
-            var headerStyle = {
-                color: '#e2ff63',
-                backgroundColor: '#444',
-                padding: '2px 2px 0 8px',
-                fontWeight: 'bold',
-                fontSize: '1.5em'
-            };
-
-            var buttonStyle = {
-                paddingTop: '3px',
-                paddingBottom: '3px',
-                backgroundImage: 'none',
-                color: '#444',
-                backgroundColor: '#e2ff63',
-                borderColor: '#e2ff63',
-                fontWeight: 'bold',
-                outlineColor: 'rgb(40, 40, 40)'
-            };
-
             // html
             return (
                 <div>
-                    <div style={headerStyle}>
+                    <div style={styles.header}>
                         <span>Next Actions</span>
-                        <button type="button" style={buttonStyle} className="btn pull-right" onClick={this.handleAddActionClick}>
+                        <button type="button" style={styles.button} className="btn pull-right" onClick={this.handleAddActionClick}>
                             Add a new action
                         </button>
                     </div>
@@ -117,5 +95,29 @@
             );
         }
     });
+
+    /**
+     * Inline Styles
+     */
+    var styles = {
+        header: {
+            color: '#e2ff63',
+            backgroundColor: '#444',
+            padding: '2px 2px 0 8px',
+            fontWeight: 'bold',
+            fontSize: '1.5em'
+        },
+        button: {
+            paddingTop: '3px',
+            paddingBottom: '3px',
+            backgroundImage: 'none',
+            color: '#444',
+            backgroundColor: '#e2ff63',
+            borderColor: '#e2ff63',
+            fontWeight: 'bold',
+            outlineColor: 'rgb(40, 40, 40)'
+        }
+    };
+
     return NextActions;
- }));
+}));

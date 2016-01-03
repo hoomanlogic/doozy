@@ -98,10 +98,10 @@
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
-        handleCancel: function(event) {
+        handleCancel: function (event) {
             window.ui.goTo('Do');
         },
-        handleChange: function(event) {
+        handleChange: function (event) {
             if (event.target === this.refs.performedat.getDOMNode()) {
 
                 var date = Date.create(event.target.value.trim());
@@ -152,7 +152,7 @@
                 });
             }
         },
-        handleSave: function(event) {
+        handleSave: function (event) {
             var actionName,
                 existingAction,
                 logEntry,
@@ -229,7 +229,7 @@
             selectActions.clearOptions();
 
             // get actions sorted by name
-            var actions = _.sortBy(actionStore.updates.value, function(action) {
+            var actions = _.sortBy(actionStore.updates.value, function (action) {
                 action.name;
             });
 
@@ -248,7 +248,7 @@
             // get distinct tags user has assigned to other actions
             var actions = actionStore.updates.value;
             var distinctTags = [];
-            actions.map(function(item) {
+            actions.map(function (item) {
                 distinctTags = _.union(distinctTags, item.tags);
             });
             // { kind: 'Tag', name: tag }
@@ -261,7 +261,7 @@
             $(this.refs.name.getDOMNode()).selectize({
                 delimiter: '|',
                 persist: true,
-                create: function(input) {
+                create: function (input) {
                     return {
                         value: input,
                         text: input
@@ -303,10 +303,10 @@
                 labelField: 'name',
                 searchField: ['name', 'kind'],
                 render: {
-                    item: function(item, escape) {
+                    item: function (item, escape) {
                         return '<div class="item">' + escape(item.value) + '</div>';
                     },
-                    option: function(item, escape) {
+                    option: function (item, escape) {
                         var label = item.name || item.kind;
                         var caption = item.kind ? item.kind : null;
                         return '<div>' +
@@ -315,7 +315,7 @@
                         '</div>';
                     }
                 },
-                create: function(input) {
+                create: function (input) {
                     var kind = 'Tag';
                     var name = input;
                     if (name.indexOf('!') === 0) {
@@ -378,7 +378,7 @@
               fontSize: '1.1rem'
             };
 
-            var buttonsDom = buttons.map(function(button, index) {
+            var buttonsDom = buttons.map(function (button, index) {
                 return (
                   <button key={index} style={buttonStyle} type="button"
                     className={'btn btn-' + button.type}

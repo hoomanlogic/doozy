@@ -13,7 +13,7 @@
         this.updates.value = [];
         var me = this;
         var baseUrl = window.location.href.split('/').slice(0,3).join('/') + '/doozy';
-        
+
         this.getConnections = function () {
             $.ajax({
                 context: me,
@@ -22,11 +22,11 @@
                 // headers: {
                 //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
                 // },
-                success: function(result) {
+                success: function (result) {
                     me.updates.value = result;
                     me.notify();
                 },
-                error: function(xhr, status, err) {
+                error: function (xhr, status, err) {
                     console.error('connections', status, err.toString());
                 }
             });
@@ -43,10 +43,10 @@
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({ userName: userName }),
-                success: function() {
+                success: function () {
                     MessageBox.notify('Connection requested!', 'success');
                 },
-                error: function(xhr, status, err) {
+                error: function (xhr, status, err) {
                     MessageBox.notify('Oh no! There was a problem requesting this connection' + status + err, 'error');
                 }
             });
@@ -63,7 +63,7 @@
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({ username: userName }),
-                success: function(result) {
+                success: function (result) {
                     // add to connections
                     me.updates.value.push(result);
                     me.notify();
@@ -72,7 +72,7 @@
 
                     notificationStore.removeNotification(userName, 'Connection Request');
                 },
-                error: function(xhr, status, err) {
+                error: function (xhr, status, err) {
                     MessageBox.notify('Oh no! There was a problem accepting this connection' + status + err, 'error');
                 }
             });
@@ -89,7 +89,7 @@
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({ userName: userName }),
-                success: function() {
+                success: function () {
 
                     // find existing connection
                     var connections = me.updates.value;
@@ -111,7 +111,7 @@
 
                     notificationStore.removeNotification(userName, 'Connection Request');
                 },
-                error: function(xhr, status, err) {
+                error: function (xhr, status, err) {
                     MessageBox.notify('Oh no! There was a problem rejecting this connection' + status + err, 'error');
                 }
             });

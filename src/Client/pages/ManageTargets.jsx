@@ -63,7 +63,7 @@
             /**
              * Sort the actions by completed and name
              */
-            targets = _.sortBy(targets, function(target) {
+            targets = _.sortBy(targets, function (target) {
                 return target.name.toLowerCase();
             });
 
@@ -102,7 +102,7 @@
                         <div style={{paddingRight: '5px'}}><button type="button" className="close" onClick={this.handleCloseClick}><span aria-hidden="true">&times;</span></button></div>
                     </div>
                     <div style={{display: 'flex', flexDirection: 'column'}}>
-                        {targets.map(function(item, index) {
+                        {targets.map(function (item, index) {
 
                             // find statistics object for this target
                             var stats = _.find(targetsStats, function (s) { return s.targetId === item.id; });

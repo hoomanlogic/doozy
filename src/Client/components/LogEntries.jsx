@@ -41,7 +41,7 @@
         handleLogEntryStoreUpdate: function (connections) {
             this.setState({logEntriesLastUpdated: new Date().toISOString()});
         },
-        
+
         /*************************************************************
          * RENDERING
          *************************************************************/

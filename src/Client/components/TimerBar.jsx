@@ -50,7 +50,8 @@
         handlePlayPauseTimerClick: function () {
             if (timerStore.updates.value.isRunning) {
                 timerStore.pauseTimer();
-            } else {
+            }
+            else {
                 timerStore.startTimer();
             }
         },
@@ -62,9 +63,10 @@
         handleTimerStoreUpdate: function (timer) {
             if (timer.isRunning && typeof this.timerInterval === 'undefined') {
                 this.timerInterval = setInterval(this.handleRunningTotalUpdate, 1000);
-            } else if (!timer.isRunning && typeof this.timerInterval !== 'undefined') {
+            }
+            else if (!timer.isRunning && typeof this.timerInterval !== 'undefined') {
                 clearInterval(this.timerInterval);
-                this.timerInterval = void 0;
+                this.timerInterval = undefined;
             }
             this.setState({timerLastUpdated: new Date().toISOString()});
         },
@@ -74,7 +76,6 @@
          *************************************************************/
         render: function () {
 
-            var workingOn, timerDone, timerReset;
             if (timerStore.updates.value.isOpen) {
 
                 var aStyle = {
@@ -96,6 +97,7 @@
                     displayDuration = (<span style={textStyle}>{duration.toString(':')}</span>);
                 }
 
+                /* eslint-disable no-script-url */
                 return (
                     <div style={{ display: 'flex', padding: '2px', backgroundColor: '#444' }}>
                         <div style={{ flexGrow: '1', marginRight: '2px' }}>
@@ -115,6 +117,7 @@
                         </div>
                     </div>
                 );
+                /* eslint-enable no-script-url */
             }
             else {
                 return null;
@@ -122,4 +125,4 @@
         }
     });
     return TimerBar;
- }));
+}));

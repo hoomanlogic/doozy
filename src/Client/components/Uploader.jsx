@@ -28,7 +28,8 @@
                         dataUrl: dataUrl
                     });
                 }.bind(this));
-            } else if ($('#theFile').prop('files').length === 0) {
+            }
+            else if ($('#theFile').prop('files').length === 0) {
                 if (this.props.onFileChange) {
                     this.props.onFileChange(false);
                 }
@@ -71,7 +72,8 @@
             xhr.addEventListener("abort", this.uploadCanceled, false);
             if (this.props.arg) {
                 xhr.open("POST", "api/uploadfiles/" + this.props.type + '/' + this.props.arg);
-            } else {
+            }
+            else {
                 xhr.open("POST", "api/uploadfiles/" + this.props.type);
             }
             xhr.setRequestHeader('Authorization', 'Bearer ' + clientApp.getAccessToken());
@@ -84,7 +86,8 @@
                 var percentComplete = Math.round(evt.loaded * 100 / evt.total);
                 document.getElementById('progress').innerHTML = percentComplete.toString() + '%';
 
-            } else {
+            }
+            else {
                 document.getElementById('progress').innerHTML = 'Uploading...';
             }
         },
@@ -94,7 +97,8 @@
 
             if (this.props.type.toLowerCase() === 'profile') {
                 userStore.updateProfileUriFromSignalR(result[0]);
-            } else if (this.props.type.toLowerCase() === 'focus') {
+            }
+            else if (this.props.type.toLowerCase() === 'focus') {
                 focusStore.updateFromServer(this.props.arg, { iconUri: result[0] });
             }
         },

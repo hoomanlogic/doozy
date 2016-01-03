@@ -83,7 +83,8 @@
             if (this.firstLook) {
                 this.firstLook = false;
                 setTimeout(this.goToEndOfConversation, 150);
-            } else {
+            }
+            else {
                 $scrollWindow.animate({
                   scrollTop: $fullConversation.height() - $scrollWindow.height()
                 }, 1000);
@@ -120,7 +121,8 @@
                             <div className="col-xs-2">
                                 <div style={{width: '50px'}} className="pull-right"><img className="img-responsive" src={conversation.myProfileUri} /></div>
                             </div>);
-                    } else {
+                    }
+                    else {
                         left = (
                             <div className="col-xs-2">
                                 <div style={{width: '50px'}}><img className="img-responsive" src={conversation.profileUri} /></div>
