@@ -102,7 +102,7 @@
         },
 
         handleCommentClick: function () {
-            ui.goTo('Comment', { userName: this.props.data.userName, id: this.props.data.id });
+            // ui.goTo('Comment', { userName: this.props.data.userName, id: this.props.data.id });
         },
 
         handleDeleteClick: function () {
@@ -112,13 +112,15 @@
             this.setState({
                 isDropDownOpen: false
             });
-            ui.editAction(actionStore.getActionById(this.props.data.actionId));
+            window.location.href = '/doozy/action/' + this.props.data.actionId;
+            //ui.editAction(actionStore.getActionById(this.props.data.actionId));
         },
         handleEditLogEntryClick: function () {
             this.setState({
                 isDropDownOpen: false
             });
-            ui.editLogEntry(logEntryStore.getLogEntryById(this.props.data.id));
+            window.location.href = '/doozy/logentry/' + this.props.data.id;
+            //ui.editLogEntry(logEntryStore.getLogEntryById(this.props.data.id));
         },
         handleEditDetailsClick: function () {
             this.refs.logdetails.getDOMNode().focus();

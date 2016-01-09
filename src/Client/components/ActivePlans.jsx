@@ -17,7 +17,7 @@
          * EVENT HANDLING
          *************************************************************/
         handlePlanClick: function (plan) {
-            ui.goTo('Plan View', {planId: plan.id});
+            window.location.href = '/doozy/plansteps/' + plan.id;
         },
 
         /*************************************************************

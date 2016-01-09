@@ -289,7 +289,7 @@
 
             // html
             return (
-                <div style={{padding: '5px'}}>
+                <div style={styles.main}>
                     <form role="form">
                         <div className="form-group">
                             <label htmlFor="target-name">Name</label>
@@ -334,5 +334,14 @@
             );
         }
     });
+    
+    var styles = {
+        main: {
+            padding: '1rem',
+            margin: 'auto',
+            maxWidth: '40rem'
+        }
+    };
+
     return ManageTarget;
 }));

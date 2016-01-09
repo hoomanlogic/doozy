@@ -62,17 +62,15 @@
          * EVENT HANDLING
          *************************************************************/
         handleCheck: function (event) {
-            if (ui.logEntry && event.target.checked) {
-                ui.logEntry({
-                    id: this.props.action.id
-                });
+            if (event.target.checked) {
+                window.location.href = '/doozy/logentries/new/' + this.props.action.id;
             }
         },
         handleCheckTouch: function () {
             this.preventTouch = true;
         },
         handleClick: function () {
-            ui.editAction(this.props.action);
+            window.location.href = '/doozy/action/' + this.props.action.id;
         },
         handleTouchStart: function () {
             this.isTap = true;

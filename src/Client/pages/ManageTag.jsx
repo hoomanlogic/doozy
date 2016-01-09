@@ -103,7 +103,7 @@
 
             // html
             return (
-                <div style={{padding: '5px'}}>
+                <div style={styles.main}>
                     <form role="form">
                         <div className="form-group">
                             <label htmlFor="f2">What kind of tag is this?</label>
@@ -130,5 +130,14 @@
             );
         }
     });
+
+    var styles = {
+        main: {
+            padding: '1rem',
+            margin: 'auto',
+            maxWidth: '40rem'
+        }
+    };
+
     return ManageTag;
 }));

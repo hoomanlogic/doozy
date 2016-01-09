@@ -2,8 +2,12 @@ var webpack = require("webpack");
 var path = require("path");
 module.exports = {
     entry: {
-        'action-detail': path.resolve(__dirname, 'src/Client/interfaces/mount.action-detail.js'),
+        // MAIN INTERFACES
         actions: path.resolve(__dirname, 'src/Client/interfaces/mount.actions.js'),
+        'plan-steps': path.resolve(__dirname, 'src/Client/interfaces/mount.plan-steps.js'),
+        // NODE KIND FORMS
+        'action-form': path.resolve(__dirname, 'src/Client/interfaces/mount.action-form.js'),
+        'logentry-form': path.resolve(__dirname, 'src/Client/interfaces/mount.logentry-form.js'),
     },
     eslint: {
         configFile: '.eslintrc'

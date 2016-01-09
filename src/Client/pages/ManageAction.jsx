@@ -1,8 +1,9 @@
 // CommonJS, AMD, and Global shim
 (function (factory) {
+    /* global $ */
     module.exports = exports = factory(
         require('react'),
-        require('jquery'),
+        $,
         require('lodash'),
         require('app/doozy'),
         require('stores/ActionStore'),
@@ -47,9 +48,10 @@
         componentWillReceiveProps: function (nextProps) {
             if (!nextProps.action) {
                 // get tags from UI filter
-                var tags = ui.tags || [];
-                tags = tags.slice(); // copy
-                tags.push(this.props.focusTag);
+                // var tags = ui.tags || [];
+                // tags = tags.slice(); // copy
+                // tags.push(this.props.focusTag);
+                var tags = [];
 
                 // create a new action
                 nextProps.action = doozy.action('New ToDo', tags);
@@ -65,9 +67,10 @@
 
             if (!this.props.action) {
                 // get tags from UI filter
-                var tags = ui.tags || [];
-                tags = tags.slice(); // copy
-                tags.push(this.props.focusTag);
+                // var tags = ui.tags || [];
+                // tags = tags.slice(); // copy
+                // tags.push(this.props.focusTag);
+                var tags = [];
 
                 // create a new action
                 this.props.action = doozy.action('New ToDo', tags);
@@ -160,7 +163,7 @@
                 repeatSat: false
             };
 
-            if (action.recurrenceRules.length > 0) {
+            if (action.recurrenceRules && action.recurrenceRules.length) {
                 var recurrenceObj = doozy.parseRecurrenceRule(action.recurrenceRules[0]);
                 state.repeat = recurrenceObj.freq.slice(0,1).toLowerCase();
                 state.repeatInterval = recurrenceObj.interval;
@@ -200,23 +203,6 @@
         /*************************************************************
          * BINDINGS
          *************************************************************/
-        setOptions: function (selectize) {
-            // clear previously set options
-            selectize.clearOptions();
-
-            // get distinct tags user has assigned to other actions
-            var actions = actionStore.updates.value;
-            var distinctTags = [];
-            actions.map(function (item) {
-                distinctTags = _.union(distinctTags, item.tags);
-            });
-            // { kind: 'Tag', name: tag }
-            // add tags that user has assigned to other actions
-            distinctTags.forEach( function (tag) {
-
-                selectize.addOption(doozy.parseTag(tag));
-            });
-        },
         setupTagsControl: function () {
             if (this.props.action) {
                 // initialize control for tags functionality
@@ -253,6 +239,22 @@
                     selectize.setValue(this.props.action.tags);
                 }
             }
+        },
+        setOptions: function (selectize) {
+            // clear previously set options
+            selectize.clearOptions();
+
+            // get distinct tags user has assigned to other actions
+            var actions = actionStore.updates.value;
+            var distinctTags = [];
+            actions.map(function (item) {
+                distinctTags = _.union(distinctTags, item.tags);
+            });
+            // { kind: 'Tag', name: tag }
+            // add tags that user has assigned to other actions
+            distinctTags.forEach( function (tag) {
+                selectize.addOption(doozy.parseTag(tag));
+            });
         },
 
         /*************************************************************
@@ -369,11 +371,13 @@
             });
         },
         handleCancelClick: function () {
-            ui.goBack();
+            // ui.goBack();
+            window.location.href = '/doozy/actions';
         },
         handleDeleteClick: function () {
             actionStore.destroy(this.props.action);
-            ui.goBack();
+            // ui.goBack();
+            window.location.href = '/doozy/actions';
         },
         handleToggleViewModeClick: function () {
             if (this.state.viewMode === 'general') {
@@ -389,6 +393,7 @@
             if (this.state.id) {
                 action = actionStore.getActionById(this.state.id);
             }
+            // set name of new or existing action
             if (!action) {
                 action = doozy.action(this.state.name);
             }
@@ -396,6 +401,9 @@
                 action = Object.assign({}, action);
                 action.name = this.state.name;
             }
+
+            // set other props
+            action.content = this.state.content;
 
             // set state of tags
             var tags = [];
@@ -482,7 +490,8 @@
                 actionStore.create(action);
             }
 
-            ui.goBack();
+            // TODO: ui.goBack();
+            window.location.href = '/doozy/actions';
         },
 
         /*************************************************************
@@ -706,7 +715,7 @@
              * Render
              */
             return (
-                <div style={{padding: '5px'}}>
+                <div style={styles.main}>
                     <h2 style={{marginTop: '0.2rem', marginBottom: '0.2rem'}}>{this.props.mode === 'Edit' ? this.props.action.name : 'New Action'}</h2>
                     {currentView}
                     {buttonsDom}
@@ -714,5 +723,14 @@
             );
         },
     });
+
+    var styles = {
+        main: {
+            padding: '1rem',
+            margin: 'auto',
+            maxWidth: '40rem'
+        }
+    };
+
     return ManageAction;
 }));

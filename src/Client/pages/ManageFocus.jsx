@@ -94,7 +94,7 @@
 
             // html
             return (
-                <div style={{padding: '5px'}}>
+                <div style={styles.main}>
                     <form role="form">
                         <label>What picture best represents this focus?</label>
                         {currentImage}
@@ -122,5 +122,14 @@
             );
         }
     });
+    
+    var styles = {
+        main: {
+            padding: '1rem',
+            margin: 'auto',
+            maxWidth: '40rem'
+        }
+    };
+
     return ManageFocus;
 }));

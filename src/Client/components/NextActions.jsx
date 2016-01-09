@@ -11,7 +11,8 @@
          * EVENT HANDLING
          *************************************************************/
         handleAddActionClick: function () {
-            ui.addAction();
+            // ui.addAction();
+            window.location.href = '/doozy/actions/new';
         },
 
         /*************************************************************

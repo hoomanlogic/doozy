@@ -14,7 +14,7 @@
     );
 }(function (React, actionStore, focusStore, logEntryStore, planStore, planStepStore, tagStore, targetStore, StoresMixin, ManageAction) {
 
-    var ActionsDetailInterface = React.createClass({
+    var ActionFormInterface = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
@@ -45,7 +45,7 @@
             }
 
             // let other components know what page we're on
-            var mode = 'Edit';
+            var mode = this.props.mode || 'Add';
             var page = (<ManageAction action={this.props.action} mode={mode} focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : ''} />);
 
             return (
@@ -56,5 +56,5 @@
         },
     });
 
-    return ActionsDetailInterface;
+    return ActionFormInterface;
 }));

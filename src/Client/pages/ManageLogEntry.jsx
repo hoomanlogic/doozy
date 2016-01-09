@@ -99,7 +99,7 @@
          * EVENT HANDLING
          *************************************************************/
         handleCancel: function (event) {
-            window.ui.goTo('Do');
+            window.location.href = '/doozy/actions';
         },
         handleChange: function (event) {
             if (event.target === this.refs.performedat.getDOMNode()) {
@@ -165,7 +165,7 @@
 
 
             if (String(this.state.date.getTime()) === 'NaN') {
-                ui.message(validationApology + 'When did you do this?', 'error');
+                // ui.message(validationApology + 'When did you do this?', 'error');
                 return;
             }
 
@@ -218,7 +218,7 @@
                 }
             }
 
-            window.ui.goTo('Do');
+            window.location.href = '/doozy/actions';
         },
 
         /*************************************************************
@@ -351,9 +351,10 @@
             }
             else if (typeof this.props.action === 'undefined' || this.state.isNewAction) {
                 // set current value
-                var tags = ui.tags || [];
-                tags = tags.slice(); //copy
-                tags.push(this.props.focusTag);
+                // var tags = ui.tags || [];
+                // tags = tags.slice(); //copy
+                // tags.push(this.props.focusTag);
+                var tags = [];
                 selectize.setValue(tags);
             } else {
                 selectize.setValue(this.props.action.tags);
@@ -420,7 +421,7 @@
             }
 
             return (
-                <div style={{padding: '5px'}}>
+                <div style={styles.main}>
                     <h2>{this.state.id ? 'Update Log' : 'Log Recent Action'}</h2>
                     <form role="form">
                         {slot1}
@@ -452,6 +453,14 @@
             );
         },
     });
+    
+    var styles = {
+        main: {
+            padding: '1rem',
+            margin: 'auto',
+            maxWidth: '40rem'
+        }
+    };
 
     return ManageLogEntry;
 }));
