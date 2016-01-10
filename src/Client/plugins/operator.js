@@ -389,10 +389,36 @@
         /*****************************************************
          * ACTIONS
          ****************************************************/
+        var calculated = {
+            action: ['id', 'lastPerformed', 'tags'],
+            logentry: ['id','actionId','actionName','tags'],
+            plan: ['id'],
+            planstep: ['id','planId','parentId'],
+            tag: ['id'],
+            target: ['id']
+        };
+        var stripProps = function (obj, stripOut) {
+            var newObj = {};
+            for (var prop in obj) {
+                if (obj.hasOwnProperty(prop) && stripOut.indexOf(prop) === -1) {
+                    newObj[prop] = obj[prop];
+                }
+            }
+            return newObj;
+        };
+        
         operator.express.get('/doozy/api/actions', operator.authenticate, jsonResponse, function (req, res) {
             var result = [];
             operator.getDb(function (db) {
                 db.allOf('doozy.action').forEach(function (each) {
+                    /**
+                     * defaults
+                     */
+                    each.state.recurrenceRules = each.state.recurrenceRules || [];
+                    
+                    /**
+                     * calculations
+                     */
                     // calc tags data
                     var tags = [];
                     each.siblings('doozy.tag').forEach(function (gnapse) {
@@ -407,8 +433,9 @@
                             lastPerformed = gnapse.target.state.date;
                         }
                     });
+                    
                     each.state.lastPerformed = lastPerformed;
-                    each.state.recurrenceRules = each.state.recurrenceRules || [];
+                    
                     each.state.id = each.tag;
                     result.push(each.state); 
                 });
@@ -416,16 +443,9 @@
             });
         });
 
-        operator.express.get('/doozy/api/action/:tag', operator.authenticate, jsonResponse, function (req, res) {
+        operator.express.get('/doozy/api/actions/:tag', operator.authenticate, jsonResponse, function (req, res) {
             operator.getDb(function (db) {
                 var result = db.find(req.params.tag, 'doozy.action').first();
-                res.end(JSON.stringify(result ? result.toGnon() : null));
-            });
-        });
-
-        operator.express.get('/doozy/api/actions/:id', operator.authenticate, jsonResponse, function (req, res) {
-            operator.getDb(function (db) {
-                var result = db.find({id: req.params.id}, 'doozy.action').first();
                 res.end(JSON.stringify(result ? result.toGnon() : null));
             });
         });
@@ -434,22 +454,22 @@
             // req.body;
             
             operator.getDb(function (db) {
+                // Get state from body
                 var state = req.body;
-                var actionNode = db.find({id: state.id}, 'doozy.action').first();
-                if (!actionNode) {
-                    // add new action
-                    if (!state.id || !state.id.length || state.id.slice(0,3) === '000') {
-                        state.id = operator.newId();
-                    }
-                    
-                    actionNode = new db.Gnode(state.name, 'doozy.action', state);
-                    db.add(actionNode);
-                }
-                else {
-                    // update existing action
-                    actionNode.setState(state);
-                }
+                
+                // Create node
+                var actionNode = new db.Gnode(state.name, 'doozy.action', stripProps(state, calculated.action));
+                
+                // Add node to db
+                db.add(actionNode);
+                
+                // Commit
                 db.commitChanges();
+                
+                // update calced id to be passed back to app
+                state.id = actionNode.tag;
+                
+                // Send response
                 res.end(JSON.stringify(state));
             });
         });
@@ -457,33 +477,30 @@
         operator.express.put('/doozy/api/actions', operator.authenticate, jsonResponse, function (req, res) {
             operator.getDb(function (db) {
                 var state = req.body;
-                var actionNode = db.find({id: state.id}, 'doozy.action').first();
-                if (!actionNode) {
-                    // add new action
-                    if (!state.id || !state.id.length || state.id.slice(0,3) === '000') {
-                        state.id = operator.newId();
-                    }
-                    
-                    actionNode = new db.Gnode(state.name, 'doozy.action', state);
-                    db.add(actionNode);
-                }
-                else {
+                
+                // Get node
+                var node = db.find(state.id, 'doozy.action').first();
+                
+                if (node) {
                     // update existing action
-                    actionNode.setState(state);
+                    node.setState(stripProps(state, calculated.action));
+                    
+                    // commit
+                    db.commitChanges();
                 }
-                db.commitChanges();
+                
                 res.end(JSON.stringify(state));
             });
         });
         
-        operator.express.delete('/doozy/api/actions/:id', operator.authenticate, jsonResponse, function (req, res) {
+        operator.express.delete('/doozy/api/actions/:tag', operator.authenticate, jsonResponse, function (req, res) {
             operator.getDb(function (db) {
                 var state = req.body;
 
-                var actionNode = db.find({id: req.params.id}, 'doozy.action').first();
-                if (!actionNode) {
+                var node = db.find(req.params.tag, 'doozy.action').first();
+                if (!node) {
                     // TODO: DELETE A GNODE
-                    // actionNode.setState(state);
+                    // node.setState(state);
                 }
                 // db.commitChanges();
                 res.end(JSON.stringify(state));
@@ -504,16 +521,9 @@
             });
         });
 
-        operator.express.get('/doozy/api/focus/:tag', operator.authenticate, jsonResponse, function (req, res) {
+        operator.express.get('/doozy/api/focuses/:tag', operator.authenticate, jsonResponse, function (req, res) {
             operator.getDb(function (db) {
                 var result = db.find(req.params.tag, 'doozy.focus').first();
-                res.end(JSON.stringify(result ? result.toGnon() : null ));
-            });
-        });
-
-        operator.express.get('/doozy/api/focuses/:id', operator.authenticate, jsonResponse, function (req, res) {
-            operator.getDb(function (db) {
-                var result = db.find({id: req.params.id}, 'doozy.focus').first();
                 res.end(JSON.stringify(result ? result.toGnon() : null ));
             });
         });
@@ -528,7 +538,7 @@
             res.end(JSON.stringify({ result: 'PUT SUCCESS' }));
         });
         
-        operator.express.delete('/doozy/api/focuses/:id', operator.authenticate, jsonResponse, function (req, res) {
+        operator.express.delete('/doozy/api/focuses/:tag', operator.authenticate, jsonResponse, function (req, res) {
             // req.body;
             res.end(JSON.stringify({ result: 'DELETE SUCCESS' }));
         });
@@ -547,16 +557,9 @@
             });
         });
 
-        operator.express.get('/doozy/api/tag/:tag', operator.authenticate, jsonResponse, function (req, res) {
+        operator.express.get('/doozy/api/tags/:tag', operator.authenticate, jsonResponse, function (req, res) {
             operator.getDb(function (db) {
                 var result = db.find(req.params.tag, 'doozy.tag').first();
-                res.end(JSON.stringify(result ? result.toGnon() : null));
-            });
-        });
-
-        operator.express.get('/doozy/api/tags/:id', operator.authenticate, jsonResponse, function (req, res) {
-            operator.getDb(function (db) {
-                var result = db.find({id: req.params.id}, 'doozy.tag').first();
                 res.end(JSON.stringify(result ? result.toGnon() : null));
             });
         });
@@ -648,18 +651,52 @@
         });
 
         operator.express.post('/doozy/api/plans', operator.authenticate, jsonResponse, function (req, res) {
-            // req.body;
-            res.end(JSON.stringify({ path: 'POST ' + req.user.userName }));
+            operator.getDb(function (db) {
+                // Get state from body
+                var state = req.body;
+                
+                // Create new node
+                var gnode = new db.Gnode(state.name, 'doozy.plan', stripProps(state, calculated.plan));
+                
+                // Add node to db
+                db.add(gnode);
+                
+                // Commit
+                db.commitChanges();
+                
+                // update calced id to be passed back to app
+                state.id = gnode.tag;
+
+                // Send response
+                res.end(JSON.stringify(state));
+            });
         });
         
         operator.express.put('/doozy/api/plans', operator.authenticate, jsonResponse, function (req, res) {
-            // req.body;
-            res.end(JSON.stringify({ result: 'PUT SUCCESS' }));
+            operator.getDb(function (db) {
+                var state = req.body;
+                var gnode = db.find(state.id, 'doozy.plan').first();
+                if (gnode) {
+                    // update existing plan
+                    gnode.setState(stripProps(state, calculated.plan));
+                    // commit
+                    db.commitChanges();
+                }
+                
+                res.end(JSON.stringify(state));
+            });
         });
         
-        operator.express.delete('/doozy/api/plans/:id', operator.authenticate, jsonResponse, function (req, res) {
-            // req.body;
-            res.end(JSON.stringify({ result: 'DELETE SUCCESS' }));
+        operator.express.delete('/doozy/api/plans/:tag', operator.authenticate, jsonResponse, function (req, res) {
+            operator.getDb(function (db) {
+                var gnode = db.find(req.params.tag, 'doozy.plan').first();
+                if (gnode) {
+                    // update existing plan
+                    gnode.delete();
+                    // commit
+                    db.commitChanges();      
+                }
+            });
         });
         
         /*****************************************************
@@ -670,42 +707,82 @@
                 var result = [];
                 db.allOf('doozy.planstep').forEach(function (each) {
                     each.state.id = each.tag;
+                    // Get plan (may be parent or associate)
                     var plan = each.related('doozy.plan').first();
-                    var parent = each.parents('doozy.planstep').first();
                     if (plan) {
                         each.state.planId = plan.target.tag;
                     }
+                    // Get parent planstep (if not root)
+                    var parent = each.parents('doozy.planstep').first();
                     if (parent && parent.target.kind === 'doozy.planstep') {
                         each.state.parentId = parent.target.tag;
+                    }
+                    else {
+                        each.state.parentId = null;
                     }
                     result.push(each.state); 
                 });
                 res.end(JSON.stringify(result));
             });
         });
-
-        operator.express.get('/doozy/api/planstep/:tag', operator.authenticate, jsonResponse, function (req, res) {
+        operator.express.get('/doozy/api/plansteps/:tag', operator.authenticate, jsonResponse, function (req, res) {
             operator.getDb(function (db) {
                 var result = db.find(req.params.tag, 'doozy.planstep').first();
                 res.end(JSON.stringify(result ? result.toGnon() : null));
             });
         });
 
-        operator.express.get('/doozy/api/plansteps/:id', operator.authenticate, jsonResponse, function (req, res) {
-            operator.getDb(function (db) {
-                var result = db.find({id: req.params.id}, 'doozy.planstep').first();
-                res.end(JSON.stringify(result ? result.toGnon() : null));
-            });
-        });
-
         operator.express.post('/doozy/api/plansteps', operator.authenticate, jsonResponse, function (req, res) {
-            // req.body;
-            res.end(JSON.stringify({ path: 'POST ' + req.user.userName }));
+            operator.getDb(function (db) {
+                var state = req.body;
+                
+                // Create new node
+                var gnode = new db.Gnode(state.name, 'doozy.planstep', stripProps(state, calculated.planstep));
+                
+                // Add node to db
+                db.add(gnode);
+                debugger;
+                // set connections
+                if (state.planId) {
+                    // Get plan (may be parent or associate)
+                    var plan = db.find(state.planId, 'doozy.plan').first();
+                    if (plan && (!state.id || !plan.isRelated('doozy.planstep.' + state.id))) {
+                        gnode.connect(plan, (state.parentId ? db.RELATION.ASSOCIATE : db.RELATION.CHILD_PARENT));
+                    }
+                }
+                if (state.parentId) {
+                    // Get parent planstep (if not root)
+                    var parent = db.find(state.parentId, 'doozy.planstep').first();
+                    if (parent && (!state.id || !parent.isRelated('doozy.planstep.' + state.id))) {
+                        gnode.connect(parent, db.RELATION.CHILD_PARENT);
+                    }
+                }
+                
+                // update calced id to be passed back to app
+                state.id = gnode.tag;
+
+                // commit it
+                db.commitChanges();
+                
+                res.end(JSON.stringify(state));
+            });
         });
         
         operator.express.put('/doozy/api/plansteps', operator.authenticate, jsonResponse, function (req, res) {
-            // req.body;
-            res.end(JSON.stringify({ result: 'PUT SUCCESS' }));
+            operator.getDb(function (db) {
+                var state = req.body;
+                debugger;
+                var gnode = db.find(state.id, 'doozy.planstep').first();
+                if (gnode) {
+                    // update existing planstep
+                    gnode.setState(stripProps(state, calculated.planstep));
+                    // commit it
+                    db.commitChanges();
+                }
+
+                
+                res.end(JSON.stringify(state));
+            });
         });
         
         operator.express.delete('/doozy/api/plansteps/:id', operator.authenticate, jsonResponse, function (req, res) {
