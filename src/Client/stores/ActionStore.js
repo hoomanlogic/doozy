@@ -16,7 +16,7 @@
             getActions: function () {
                 return $.ajax({
                     context: this,
-                    url: baseUrl + '/api/actions',
+                    url: baseUrl + '/api/action',
                     dataType: 'json',
                     // headers: {
                     //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
@@ -26,7 +26,7 @@
             getAction: function (actionId) {
                 return $.ajax({
                     context: this,
-                    url: baseUrl + '/api/actions/' + encodeURIComponent(actionId),
+                    url: baseUrl + '/api/action/' + encodeURIComponent(actionId),
                     dataType: 'json',
                     // headers: {
                     //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
@@ -36,7 +36,7 @@
             postAction: function (action) {
                 return $.ajax({
                     context: this,
-                    url: baseUrl + '/api/actions',
+                    url: baseUrl + '/api/action',
                     dataType: 'json',
                     // headers: {
                     //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
@@ -49,7 +49,7 @@
             putAction: function (action) {
                 return $.ajax({
                     context: this,
-                    url: baseUrl + '/api/actions',
+                    url: baseUrl + '/api/action',
                     dataType: 'json',
                     // headers: {
                     //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
@@ -62,7 +62,7 @@
             deleteAction: function (action) {
                 return $.ajax({
                     context: this,
-                    url: baseUrl + '/api/actions/' + encodeURIComponent(action.id),
+                    url: baseUrl + '/api/action/' + encodeURIComponent(action.id),
                     dataType: 'json',
                     // headers: {
                     //     'Authorization': 'Bearer ' + clientApp.getAccessToken()

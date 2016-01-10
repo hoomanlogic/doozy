@@ -17,7 +17,7 @@
             getTags: function () {
                 return $.ajax({
                     context: this,
-                    url: baseUrl + '/api/tags',
+                    url: baseUrl + '/api/tag',
                     dataType: 'json',
                     // headers: {
                     //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
@@ -27,7 +27,7 @@
             postTag: function (tag) {
                 return $.ajax({
                     context: this,
-                    url: baseUrl + '/api/tags',
+                    url: baseUrl + '/api/tag',
                     dataType: 'json',
                     // headers: {
                     //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
@@ -40,7 +40,7 @@
             putTag: function (tag) {
                 return $.ajax({
                     context: this,
-                    url: baseUrl + '/api/tags',
+                    url: baseUrl + '/api/tag',
                     dataType: 'json',
                     // headers: {
                     //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
@@ -53,7 +53,7 @@
             deleteTag: function (tag) {
                 return $.ajax({
                     context: this,
-                    url: baseUrl + '/api/tags/' + encodeURIComponent(tag.id),
+                    url: baseUrl + '/api/tag/' + encodeURIComponent(tag.id),
                     dataType: 'json',
                     // headers: {
                     //     'Authorization': 'Bearer ' + clientApp.getAccessToken()

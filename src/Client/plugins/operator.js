@@ -395,10 +395,36 @@
             }
         };
         
-        /*****************************************************
-         * ACTIONS
-         ****************************************************/
-        var calculated = {
+        var baseModel = function (gnode) {
+            if (gnode) {
+                return {
+                    id: gnode.tag,
+                    version: gnode.version
+                };    
+            }
+            else {
+                return null;
+            }
+        };
+        
+        var getModel = function (gnode, db, kind) {
+            var model = null;
+            if (gnode) {
+                
+                // Strap the model if this kind has one
+                var strap = modelStraps[kind];
+                if (strap) {
+                    strap = strap(gnode, db);
+                }
+                
+                // Merge state and calc into model
+                model = Object.assign({}, gnode.state, strap, baseModel(gnode));
+                    
+            }
+            return model;
+        };
+        
+        var modelProps = {
             action: ['id', 'lastPerformed', 'tags'],
             logentry: ['id','actionId','actionName','tags'],
             plan: ['id'],
@@ -406,499 +432,390 @@
             tag: ['id'],
             target: ['id']
         };
-        var stripProps = function (obj, stripOut) {
-            var newObj = {};
-            for (var prop in obj) {
-                if (obj.hasOwnProperty(prop) && stripOut.indexOf(prop) === -1) {
-                    newObj[prop] = obj[prop];
+        
+        var modelStraps = {
+            action: function (gnode, db) {
+                var strap = {};
+                
+                /**
+                 * defaults
+                 */
+                strap.recurrenceRules = gnode.state.recurrenceRules || [];
+                
+                /**
+                 * calculations
+                 */
+                // calc tags data
+                var tags = [];
+                gnode.siblings('doozy.tag').forEach(function (gnapse) {
+                    tags.push(TAG_KIND[gnapse.target.state.kind.toUpperCase()] + gnapse.target.state.name);
+                });
+                strap.tags = tags;
+                
+                // calc latest logentry
+                var lastPerformed = null;
+                gnode.siblings('doozy.logentry').forEach(function (gnapse) {
+                    if (gnapse.target.state.entry === 'performed' && (!lastPerformed || lastPerformed < gnapse.target.state.date)) {
+                        lastPerformed = gnapse.target.state.date;
+                    }
+                });
+                
+                strap.lastPerformed = lastPerformed;
+                
+                return strap;
+            },
+            logentry: function (gnode, db) {
+                var strap = {};
+                var actionGnapse = gnode.siblings('doozy.action').first();
+                if (actionGnapse) {
+                    strap.actionName = actionGnapse.target.state.name;
+                }
+                return strap;
+            },
+            planstep: function (gnode, db) {
+                var strap = {};
+                // Get plan (may be parent or associate)
+                var plan = gnode.related('doozy.plan').first();
+                if (plan) {
+                    strap.planId = plan.target.tag;
+                }
+                // Get parent planstep (if not root)
+                var parent = gnode.parents('doozy.planstep').first();
+                if (parent && parent.target.kind === 'doozy.planstep') {
+                    strap.parentId = parent.target.tag;
+                }
+                else {
+                    strap.parentId = null;
+                }
+                return strap;
+            }
+        }
+        
+        var stripModel = function (model, stripOut) {
+            var state = {};
+            for (var prop in model) {
+                // Only copy over if the propery isn't in list of ones to strip out
+                if (model.hasOwnProperty(prop) && stripOut.indexOf(prop) === -1) {
+                    state[prop] = model[prop];
                 }
             }
-            return newObj;
+            return state;
         };
         
-        operator.express.get('/doozy/api/actions', operator.authenticate, jsonResponse, function (req, res) {
-            var result = [];
+        var create = function (kind, req, res, createConnections) {
             operator.getDb(function (db) {
-                db.allOf('doozy.action').forEach(function (each) {
-                    /**
-                     * defaults
-                     */
-                    each.state.recurrenceRules = each.state.recurrenceRules || [];
-                    
-                    /**
-                     * calculations
-                     */
-                    // calc tags data
-                    var tags = [];
-                    each.siblings('doozy.tag').forEach(function (gnapse) {
-                        tags.push(TAG_KIND[gnapse.target.state.kind.toUpperCase()] + gnapse.target.state.name);
-                    });
-                    each.state.tags = tags;
-                    
-                    // calc latest logentry
-                    var lastPerformed = null;
-                    each.siblings('doozy.logentry').forEach(function (gnapse) {
-                        if (gnapse.target.state.entry === 'performed' && (!lastPerformed || lastPerformed < gnapse.target.state.date)) {
-                            lastPerformed = gnapse.target.state.date;
-                        }
-                    });
-                    
-                    each.state.lastPerformed = lastPerformed;
-                    
-                    each.state.id = each.tag;
-                    result.push(each.state); 
-                });
-                res.end(JSON.stringify(result));
-            });
-        });
-
-        operator.express.get('/doozy/api/actions/:tag', operator.authenticate, jsonResponse, function (req, res) {
-            operator.getDb(function (db) {
-                var result = db.find(req.params.tag, 'doozy.action').first();
-                res.end(JSON.stringify(result ? result.toGnon() : null));
-            });
-        });
-
-        operator.express.post('/doozy/api/actions', operator.authenticate, jsonResponse, function (req, res) {
-            // req.body;
-            
-            operator.getDb(function (db) {
-                // Get state from body
-                var state = req.body;
+                // Get model from body
+                var model = req.body;
                 
-                // Create node
-                var gnode = new db.Gnode(state.name, 'doozy.action', stripProps(state, calculated.action));
+                // Strip model to state and create new node from it
+                var gnode = new db.Gnode(model.name, 'doozy.' + kind, stripModel(model, modelProps[kind]));
                 
                 // Add node to db
                 db.add(gnode);
                 
-                // set connections
-                if (state.tags && state.tags.length) {
-                    state.tags.forEach(function (tag) {
+                // Create connections callback
+                if (createConnections) {
+                    createConnections(gnode, db, model);
+                }
+                
+                // Commit new node
+                db.commitChanges();
+                
+                // refresh the model
+                model = getModel(gnode, db, kind);
+
+                // Send refreshed model
+                res.end(JSON.stringify(model));
+            });            
+        };
+
+        var update = function (kind, req, res, updateConnections) {
+            operator.getDb(function (db) {
+                // Get model from body
+                var model = req.body;
+                
+                // Get gnode from db
+                var gnode = db.find(model.id, 'doozy.' + kind).first();
+                if (gnode) {
+                    
+                    // Strip model to state and update existing gnode's state
+                    gnode.setState(stripModel(model, modelProps[kind]));
+                    
+                    // Update connections callback
+                    if (updateConnections) {
+                        updateConnections(gnode, db, model);
+                    }
+                    
+                    // Commit the updated gnode state
+                    db.commitChanges();
+                    
+                    // refresh the model
+                    model = getModel(gnode, db, kind);
+                    
+                    // Send refreshed model
+                    res.end(JSON.stringify(model));    
+                }
+            });          
+        };
+        
+        var remove = function (kind, req, res) {
+            operator.getDb(function (db) {
+                var gnode = db.find(req.params.id, 'doozy.' + kind).first();
+                if (gnode) {
+                    // TODO: DELETE A GNODE
+                    // gnode.setState(state);
+                    
+                    // db.commitChanges();
+                    
+                    res.end();
+                }
+                else {
+                    res.end(JSON.stringify({ error: 'Gnode not found'}));
+                }
+                
+                
+            });
+        };
+        
+        var getAll = function (kind, req, res) {
+            var result = [];
+            operator.getDb(function (db) {
+                db.allOf('doozy.' + kind).forEach(function (gnode) {
+                    var model = getModel(gnode, db, kind);
+                    result.push(model); 
+                });
+                res.end(JSON.stringify(result));
+            });
+        };
+        
+        var get = function (kind, req, res) {
+            operator.getDb(function (db) {
+                var gnode = db.find(req.params.id, 'doozy.' + kind).first();
+                if (gnode) {
+                    var model = getModel(gnode, db, kind);
+                    res.end(JSON.stringify(model));
+                }
+                else {
+                    res.end(JSON.stringify({ error: 'Gnode not found'}));
+                }
+            });
+        };
+        
+        /*****************************************************
+         * ACTIONS
+         ****************************************************/
+        operator.express.get('/doozy/api/action', operator.authenticate, jsonResponse, function (req, res) {
+            getAll('action', req, res);
+        });
+
+        operator.express.get('/doozy/api/action/:id/:version', operator.authenticate, jsonResponse, function (req, res) {
+            get('action', req, res);
+        });
+
+        operator.express.post('/doozy/api/action', operator.authenticate, jsonResponse, function (req, res) {
+            create('action', req, res, function (gnode, db, model) {
+                // Create tag connections
+                if (model.tags && model.tags.length) {
+                    model.tags.forEach(function (tag) {
                         var tagNode = db.find(removePrefix(tag), 'doozy.tag').first();
                         if (tagNode) {
                             gnode.connect(tagNode, db.RELATION.ASSOCIATE);    
                         }
                     });
                 }
-                
-                // Commit
-                db.commitChanges();
-                
-                // update calced id to be passed back to app
-                state.id = gnode.tag;
-                
-                // Send response
-                res.end(JSON.stringify(state));
             });
         });
         
-        operator.express.put('/doozy/api/actions', operator.authenticate, jsonResponse, function (req, res) {
-            operator.getDb(function (db) {
-                var state = req.body;
-                
-                // Get node
-                var gnode = db.find(state.id, 'doozy.action').first();
-                
-                if (gnode) {
-                    // update existing action
-                    gnode.setState(stripProps(state, calculated.action));
-                    
-                    // remove old connections
-                    var removeConnections = [];
-                    gnode.related('doozy.tag').forEach(function (tagGnapse) {
-                        var isInState = false;
-                        if (state.tags && state.tags.length) {
-                            for (var i = 0; i < state.tags.length; i++) {
-                                if (removePrefix(state.tags[i]) === tagGnapse.getTarget().tag) {
-                                    isInState = true;
-                                    break;
-                                }
+        operator.express.put('/doozy/api/action', operator.authenticate, jsonResponse, function (req, res) {
+            update('action', req, res, function (gnode, db, model) {
+                // remove old connections
+                var removeConnections = [];
+                gnode.related('doozy.tag').forEach(function (tagGnapse) {
+                    var isInState = false;
+                    if (model.tags && model.tags.length) {
+                        for (var i = 0; i < model.tags.length; i++) {
+                            if (removePrefix(model.tags[i]) === tagGnapse.getTarget().tag) {
+                                isInState = true;
+                                break;
                             }
                         }
-                        if (!isInState) {
-                            removeConnections.push(tagGnapse);
+                    }
+                    if (!isInState) {
+                        removeConnections.push(tagGnapse);
+                    }
+                });
+                
+                // TODO: Delete gnapses
+                console.log('Need to remove ' + removeConnections.length + ' gnapse(s)');
+                // removeConnections.
+                
+                // add tag connections that do not already exist
+                if (model.tags && model.tags.length) {
+                    model.tags.forEach(function (tag) {
+                        var tagNode = db.find(removePrefix(tag), 'doozy.tag').first();
+                        if (tagNode && !tagNode.isRelated(gnode.path())) {
+                            gnode.connect(tagNode, db.RELATION.ASSOCIATE);
                         }
                     });
-                    
-                    // TODO: Delete gnapses
-                    console.log('Need to remove ' + removeConnections.length + ' gnapse(s)');
-                    // removeConnections.
-                    
-                    // add tag connections that do not already exist
-                    debugger;
-                    if (state.tags && state.tags.length) {
-                        state.tags.forEach(function (tag) {
-                            debugger;
-                            var tagNode = db.find(removePrefix(tag), 'doozy.tag').first();
-                            if (tagNode && !tagNode.isRelated(gnode.path())) {
-                                gnode.connect(tagNode, db.RELATION.ASSOCIATE);
-                            }
-                        });
-                    }
-                    
-                    // commit
-                    db.commitChanges();
                 }
-                
-                res.end(JSON.stringify(state));
             });
         });
         
-        operator.express.delete('/doozy/api/actions/:tag', operator.authenticate, jsonResponse, function (req, res) {
-            operator.getDb(function (db) {
-                var state = req.body;
-
-                var gnode = db.find(req.params.tag, 'doozy.action').first();
-                if (!gnode) {
-                    // TODO: DELETE A GNODE
-                    // gnode.setState(state);
-                }
-                // db.commitChanges();
-                res.end(JSON.stringify(state));
-            });
+        operator.express.delete('/doozy/api/action/:id', operator.authenticate, jsonResponse, function (req, res) {
+            remove('action', req, res);
         });
 
         /*****************************************************
          * FOCUSES
          ****************************************************/
-        operator.express.get('/doozy/api/focuses', operator.authenticate, jsonResponse, function (req, res) {
-            var result = [];
-            operator.getDb(function (db) {
-                db.allOf('doozy.focus').forEach(function (each) {
-                    each.state.id = each.tag;
-                    result.push(each.state); 
-                });
-                res.end(JSON.stringify(result));
-            });
+        operator.express.get('/doozy/api/focus', operator.authenticate, jsonResponse, function (req, res) {
+            getAll('focus', req, res);
         });
 
-        operator.express.get('/doozy/api/focuses/:tag', operator.authenticate, jsonResponse, function (req, res) {
-            operator.getDb(function (db) {
-                var result = db.find(req.params.tag, 'doozy.focus').first();
-                res.end(JSON.stringify(result ? result.toGnon() : null ));
-            });
+        operator.express.get('/doozy/api/focus/:id/:version', operator.authenticate, jsonResponse, function (req, res) {
+            get('focus', req, res);
         });
 
-        operator.express.post('/doozy/api/focuses', operator.authenticate, jsonResponse, function (req, res) {
-            // req.body;
-            res.end(JSON.stringify({ path: 'POST ' + req.user.userName }));
+        operator.express.post('/doozy/api/focus', operator.authenticate, jsonResponse, function (req, res) {
+            create('focus', req, res);
         });
         
-        operator.express.put('/doozy/api/focuses', operator.authenticate, jsonResponse, function (req, res) {
-            // req.body;
-            res.end(JSON.stringify({ result: 'PUT SUCCESS' }));
+        operator.express.put('/doozy/api/focus', operator.authenticate, jsonResponse, function (req, res) {
+            update('focus', req, res);
         });
         
-        operator.express.delete('/doozy/api/focuses/:tag', operator.authenticate, jsonResponse, function (req, res) {
-            // req.body;
-            res.end(JSON.stringify({ result: 'DELETE SUCCESS' }));
+        operator.express.delete('/doozy/api/focus/:id', operator.authenticate, jsonResponse, function (req, res) {
+            delete('focus', req, res);
         });
         
         /*****************************************************
          * TAGS
          ****************************************************/
-        operator.express.get('/doozy/api/tags', operator.authenticate, jsonResponse, function (req, res) {
-            operator.getDb(function (db) {
-                var result = [];
-                db.allOf('doozy.tag').forEach(function (each) {
-                    each.state.id = each.tag;
-                    result.push(each.state); 
-                });
-                res.end(JSON.stringify(result));
-            });
+        operator.express.get('/doozy/api/tag', operator.authenticate, jsonResponse, function (req, res) {
+            getAll('tag', req, res);
         });
 
-        operator.express.get('/doozy/api/tags/:tag', operator.authenticate, jsonResponse, function (req, res) {
-            operator.getDb(function (db) {
-                var result = db.find(req.params.tag, 'doozy.tag').first();
-                res.end(JSON.stringify(result ? result.toGnon() : null));
-            });
+        operator.express.get('/doozy/api/tag/:id/:version', operator.authenticate, jsonResponse, function (req, res) {
+            get('tag', req, res);
         });
 
-        operator.express.post('/doozy/api/tags', operator.authenticate, jsonResponse, function (req, res) {
-            // req.body;
-            res.end(JSON.stringify({ path: 'POST ' + req.user.userName }));
+        operator.express.post('/doozy/api/tag', operator.authenticate, jsonResponse, function (req, res) {
+            create('tag', req, res);
         });
         
-        operator.express.put('/doozy/api/tags', operator.authenticate, jsonResponse, function (req, res) {
-            // req.body;
-            res.end(JSON.stringify({ result: 'PUT SUCCESS' }));
+        operator.express.put('/doozy/api/tag', operator.authenticate, jsonResponse, function (req, res) {
+            update('tag', req, res);
         });
         
-        operator.express.delete('/doozy/api/tags/:id', operator.authenticate, jsonResponse, function (req, res) {
-            // req.body;
-            res.end(JSON.stringify({ result: 'DELETE SUCCESS' }));
+        operator.express.delete('/doozy/api/tag/:id', operator.authenticate, jsonResponse, function (req, res) {
+            delete('tag', req, res);
         });
 
         /*****************************************************
          * TARGETS
          ****************************************************/
-        operator.express.get('/doozy/api/targets', operator.authenticate, jsonResponse, function (req, res) {
-            operator.getDb(function (db) {
-                var result = [];
-                db.allOf('doozy.target').forEach(function (each) {
-                    each.state.id = each.tag;
-                    result.push(each.state); 
-                });
-                res.end(JSON.stringify(result));
-            });
+        operator.express.get('/doozy/api/target', operator.authenticate, jsonResponse, function (req, res) {
+            getAll('target', req, res);
         });
 
-        operator.express.get('/doozy/api/target/:tag', operator.authenticate, jsonResponse, function (req, res) {
-            operator.getDb(function (db) {
-                var result = db.find(req.params.tag, 'doozy.target').first();
-                res.end(JSON.stringify(result ? result.toGnon() : null));
-            });
+        operator.express.get('/doozy/api/target/:id/:version', operator.authenticate, jsonResponse, function (req, res) {
+            get('target', req, res);
         });
 
-        operator.express.get('/doozy/api/targets/:id', operator.authenticate, jsonResponse, function (req, res) {
-            operator.getDb(function (db) { 
-                var result = db.find({id: req.params.id}, 'doozy.target').first();
-                res.end(JSON.stringify(result ? result.toGnon() : null));
-            });
-        });
-
-        operator.express.post('/doozy/api/targets', operator.authenticate, jsonResponse, function (req, res) {
-            // req.body;
-            res.end(JSON.stringify({ path: 'POST ' + req.user.userName }));
+        operator.express.post('/doozy/api/target', operator.authenticate, jsonResponse, function (req, res) {
+            create('target', req, res);
         });
         
-        operator.express.put('/doozy/api/targets', operator.authenticate, jsonResponse, function (req, res) {
-            // req.body;
-            res.end(JSON.stringify({ result: 'PUT SUCCESS' }));
+        operator.express.put('/doozy/api/target', operator.authenticate, jsonResponse, function (req, res) {
+            update('target', req, res);
         });
         
-        operator.express.delete('/doozy/api/targets/:id', operator.authenticate, jsonResponse, function (req, res) {
-            // req.body;
-            res.end(JSON.stringify({ result: 'DELETE SUCCESS' }));
+        operator.express.delete('/doozy/api/target/:id', operator.authenticate, jsonResponse, function (req, res) {
+            delete('target', req, res);
         });
         
         /*****************************************************
          * PLANS
          ****************************************************/
-        operator.express.get('/doozy/api/plans', operator.authenticate, jsonResponse, function (req, res) {
-            operator.getDb(function (db) {
-                var result = [];
-                db.allOf('doozy.plan').forEach(function (each) {
-                    each.state.id = each.tag;
-                    result.push(each.state); 
-                });
-                res.end(JSON.stringify(result));
-            });
+        operator.express.get('/doozy/api/plan', operator.authenticate, jsonResponse, function (req, res) {
+            getAll('plan', req, res);
         });
 
-        operator.express.get('/doozy/api/plan/:tag', operator.authenticate, jsonResponse, function (req, res) {
-            operator.getDb(function (db) {
-                var result = db.find(req.params.tag, 'doozy.plan').first();
-                res.end(JSON.stringify(result ? result.toGnon() : null));
-            });
-        });
-
-        operator.express.get('/doozy/api/plans/:id', operator.authenticate, jsonResponse, function (req, res) {
-            operator.getDb(function (db) {
-                var result = db.find({id: req.params.id}, 'doozy.plan').first();
-                res.end(JSON.stringify(result ? result.toGnon() : null));
-            });
-        });
-
-        operator.express.post('/doozy/api/plans', operator.authenticate, jsonResponse, function (req, res) {
-            operator.getDb(function (db) {
-                // Get state from body
-                var state = req.body;
-                
-                // Create new node
-                var gnode = new db.Gnode(state.name, 'doozy.plan', stripProps(state, calculated.plan));
-                
-                // Add node to db
-                db.add(gnode);
-                
-                // Commit
-                db.commitChanges();
-                
-                // update calced id to be passed back to app
-                state.id = gnode.tag;
-
-                // Send response
-                res.end(JSON.stringify(state));
-            });
+        operator.express.get('/doozy/api/plan/:id/:version', operator.authenticate, jsonResponse, function (req, res) {
+            get('plan', req, res);
         });
         
-        operator.express.put('/doozy/api/plans', operator.authenticate, jsonResponse, function (req, res) {
-            operator.getDb(function (db) {
-                var state = req.body;
-                var gnode = db.find(state.id, 'doozy.plan').first();
-                if (gnode) {
-                    // update existing plan
-                    gnode.setState(stripProps(state, calculated.plan));
-                    // commit
-                    db.commitChanges();
-                }
-                
-                res.end(JSON.stringify(state));
-            });
+        operator.express.post('/doozy/api/plan', operator.authenticate, jsonResponse, function (req, res) {
+            create('plan', req, res);
         });
         
-        operator.express.delete('/doozy/api/plans/:tag', operator.authenticate, jsonResponse, function (req, res) {
-            operator.getDb(function (db) {
-                var gnode = db.find(req.params.tag, 'doozy.plan').first();
-                if (gnode) {
-                    // update existing plan
-                    gnode.delete();
-                    // commit
-                    db.commitChanges();      
-                }
-            });
+        operator.express.put('/doozy/api/plan', operator.authenticate, jsonResponse, function (req, res) {
+            update('plan', req, res);
+        });
+        
+        operator.express.delete('/doozy/api/plan/:id', operator.authenticate, jsonResponse, function (req, res) {
+            delete('plan', req, res);
         });
         
         /*****************************************************
          * PLAN STEPS
          ****************************************************/
-        operator.express.get('/doozy/api/plansteps', operator.authenticate, jsonResponse, function (req, res) {
-            operator.getDb(function (db) {
-                var result = [];
-                db.allOf('doozy.planstep').forEach(function (each) {
-                    each.state.id = each.tag;
-                    // Get plan (may be parent or associate)
-                    var plan = each.related('doozy.plan').first();
-                    if (plan) {
-                        each.state.planId = plan.target.tag;
-                    }
-                    // Get parent planstep (if not root)
-                    var parent = each.parents('doozy.planstep').first();
-                    if (parent && parent.target.kind === 'doozy.planstep') {
-                        each.state.parentId = parent.target.tag;
-                    }
-                    else {
-                        each.state.parentId = null;
-                    }
-                    result.push(each.state); 
-                });
-                res.end(JSON.stringify(result));
-            });
+        operator.express.get('/doozy/api/planstep', operator.authenticate, jsonResponse, function (req, res) {
+            getAll('planstep', req, res);
         });
-        operator.express.get('/doozy/api/plansteps/:tag', operator.authenticate, jsonResponse, function (req, res) {
-            operator.getDb(function (db) {
-                var result = db.find(req.params.tag, 'doozy.planstep').first();
-                res.end(JSON.stringify(result ? result.toGnon() : null));
-            });
+        operator.express.get('/doozy/api/planstep/:id/:version', operator.authenticate, jsonResponse, function (req, res) {
+            get('planstep', req, res);
         });
 
-        operator.express.post('/doozy/api/plansteps', operator.authenticate, jsonResponse, function (req, res) {
-            operator.getDb(function (db) {
-                var state = req.body;
-                
-                // Create new node
-                var gnode = new db.Gnode(state.name, 'doozy.planstep', stripProps(state, calculated.planstep));
-                
-                // Add node to db
-                db.add(gnode);
-
+        operator.express.post('/doozy/api/planstep', operator.authenticate, jsonResponse, function (req, res) {
+            create('planstep', req, res, function (gnode, db, model) {
                 // set connections
-                if (state.planId) {
+                if (model.planId) {
                     // Get plan (may be parent or associate)
-                    var plan = db.find(state.planId, 'doozy.plan').first();
+                    var plan = db.find(model.planId, 'doozy.plan').first();
                     if (plan) {
-                        gnode.connect(plan, (state.parentId ? db.RELATION.ASSOCIATE : db.RELATION.CHILD_PARENT));
+                        gnode.connect(plan, (model.parentId ? db.RELATION.ASSOCIATE : db.RELATION.CHILD_PARENT));
                     }
                 }
-                if (state.parentId) {
+                if (model.parentId) {
                     // Get parent planstep (if not root)
-                    var parent = db.find(state.parentId, 'doozy.planstep').first();
+                    var parent = db.find(model.parentId, 'doozy.planstep').first();
                     if (parent) {
                         gnode.connect(parent, db.RELATION.CHILD_PARENT);
                     }
-                }
-                
-                // update calced id to be passed back to app
-                state.id = gnode.tag;
-
-                // commit it
-                db.commitChanges();
-                
-                res.end(JSON.stringify(state));
+                } 
             });
         });
         
-        operator.express.put('/doozy/api/plansteps', operator.authenticate, jsonResponse, function (req, res) {
-            operator.getDb(function (db) {
-                var state = req.body;
-
-                var gnode = db.find(state.id, 'doozy.planstep').first();
-                if (gnode) {
-                    // update existing planstep
-                    gnode.setState(stripProps(state, calculated.planstep));
-                    // commit it
-                    db.commitChanges();
-                }
-
-                
-                res.end(JSON.stringify(state));
-            });
+        operator.express.put('/doozy/api/planstep', operator.authenticate, jsonResponse, function (req, res) {
+            update('planstep', req, res);
         });
         
-        operator.express.delete('/doozy/api/plansteps/:id', operator.authenticate, jsonResponse, function (req, res) {
-            // req.body;
-            res.end(JSON.stringify({ result: 'DELETE SUCCESS' }));
+        operator.express.delete('/doozy/api/planstep/:id', operator.authenticate, jsonResponse, function (req, res) {
+            delete('planstep', req, res)
         });
         
         /*****************************************************
          * LOG ENTRIES
          ****************************************************/
-        operator.express.get('/doozy/api/logentries', operator.authenticate, jsonResponse, function (req, res) {
-            var result = [];
-            var commit = false;
-            operator.getDb(function (db) {
-                db.allOf('doozy.logentry').forEach(function (each) {
-                    var actionGnapse = each.siblings('doozy.action').first();
-                    if (actionGnapse) {
-                        each.state.actionName = actionGnapse.target.state.name;
-                    }
-                    else if (each.state.actionId) {
-                        var actionNode = db.find({id: each.state.actionId}, 'doozy.action').first();
-                        if (actionNode) {
-                            each.state.actionName = actionNode.state.name;
-                            each.connect(actionNode, db.RELATION.ASSOCIATE);
-                            commit = true;
-                        }
-                    }
-                    each.state.id = each.tag;
-                    result.push(each.state); 
-                });
-                if (commit) {
-                    db.commitChanges();   
-                }
-                res.end(JSON.stringify(result));
-            });
+        operator.express.get('/doozy/api/logentry', operator.authenticate, jsonResponse, function (req, res) {
+            getAll('logentry', req, res);
         });
 
-        operator.express.get('/doozy/api/logentry/:tag', operator.authenticate, jsonResponse, function (req, res) {
-            operator.getDb(function (db) {
-                var result = db.find(req.params.tag, 'doozy.logentry').first();
-                res.end(JSON.stringify(result ? result.toGnon() : null));
-            });
+        operator.express.get('/doozy/api/logentry/:id/:version', operator.authenticate, jsonResponse, function (req, res) {
+            get('logentry', req, res);
         });
 
-        operator.express.get('/doozy/api/logentries/:id', operator.authenticate, jsonResponse, function (req, res) {
-            operator.getDb(function (db) { 
-                var result = db.find({id: req.params.id}, 'doozy.logentry').first();
-                res.end(JSON.stringify(result ? result.toGnon() : null));
-            });
-        });
-
-        operator.express.post('/doozy/api/logentries', operator.authenticate, jsonResponse, function (req, res) {
-            // req.body;
-            res.end(JSON.stringify({ path: 'POST ' + req.user.userName }));
+        operator.express.post('/doozy/api/logentry', operator.authenticate, jsonResponse, function (req, res) {
+            create('logentry', req, res);
         });
         
-        operator.express.put('/doozy/api/logentries', operator.authenticate, jsonResponse, function (req, res) {
-            // req.body;
-            res.end(JSON.stringify({ result: 'PUT SUCCESS' }));
+        operator.express.put('/doozy/api/logentry', operator.authenticate, jsonResponse, function (req, res) {
+            update('logentry', req, res);
         });
         
-        operator.express.delete('/doozy/api/logentries/:id', operator.authenticate, jsonResponse, function (req, res) {
-            // req.body;
-            res.end(JSON.stringify({ result: 'DELETE SUCCESS' }));
+        operator.express.delete('/doozy/api/logentry/:id', operator.authenticate, jsonResponse, function (req, res) {
+            delete('logentry', req, res);
         });
                 
         /**

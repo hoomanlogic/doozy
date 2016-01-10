@@ -1,44 +1,25 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
-        require('stores/PlanStore')
+        require('stores/plan-store'),
+        require('mixins/SubscriberMixin')
     );
-}(function (React, planStore) {
+}(function (React, planStore, SubscriberMixin) {
     var ManagePlan = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
-        getInitialState: function () {
-            if (!this.props.planId) {
-                return {
-                    id: '',
-                    name: '',
-                    kind: '',
-                    tagName: '',
-                    content: ''
-                };
-            }
-            var plan = planStore.get(this.props.planId);
-            return {
-                id: plan.id,
-                name: plan.name,
-                kind: plan.kind,
-                tagName: plan.tagName,
-                content: plan.content
-            };
+        mixins: [SubscriberMixin(planStore)],
+        propTypes: {
+            planId: React.PropTypes.number   
         },
-
-        /*************************************************************
-         * COMPONENT LIFECYCLE
-         *************************************************************/
-        componentWillReceiveProps: function (nextProps) {
-            var plan = planStore.get(nextProps.planId);
-            this.setState({
-                id: plan.id,
-                name: plan.name,
-                kind: plan.kind,
-                content: plan.content
-            });
+        getInitialState: function () {
+            return {
+                name: '',
+                kind: '',
+                tagName: '',
+                content: ''
+            };
         },
 
         /*************************************************************
@@ -59,19 +40,32 @@
             }
         },
         handleDeleteClick: function () {
-            var plan = _.find(planStore.updates.value, { id: this.props.planId });
+            planStore.destroy(this.props.planId);
             window.location.href = '/doozy/plans';
-            planStore.destroy(plan);
         },
         handleSaveClick: function () {
             planStore.update(this.state);
             window.location.href = '/doozy/plans';
+        },
+        handleStoreUpdate: function (model) {
+            this.setState({
+                id: model.id,
+                name: model.name,
+                kind: model.kind,
+                tagName: model.tagName,
+                content: model.content
+            });
         },
 
         /*************************************************************
          * RENDERING
          *************************************************************/
         render: function () {
+            // Waiting on store
+            if (this.props.planId && !this.state.id) {
+                return <div>Loading...</div>;
+            }
+            
             var buttonStyle = {
                 display: 'block',
                 width: '100%',

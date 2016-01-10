@@ -18,7 +18,7 @@
             getPlanSteps: function () {
                 return $.ajax({
                     context: this,
-                    url: baseUrl + '/api/plansteps',
+                    url: baseUrl + '/api/planstep',
                     dataType: 'json',
                     // headers: {
                     //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
@@ -28,7 +28,7 @@
             postPlanStep: function (planStep) {
                 return $.ajax({
                     context: this,
-                    url: baseUrl + '/api/plansteps',
+                    url: baseUrl + '/api/planstep',
                     dataType: 'json',
                     // headers: {
                     //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
@@ -41,7 +41,7 @@
             putPlanStep: function (planStep) {
                 return $.ajax({
                     context: this,
-                    url: baseUrl + '/api/plansteps',
+                    url: baseUrl + '/api/planstep',
                     dataType: 'json',
                     // headers: {
                     //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
@@ -54,7 +54,7 @@
             deletePlanStep: function (planStep) {
                 return $.ajax({
                     context: this,
-                    url: baseUrl + '/api/plansteps/' + encodeURIComponent(planStep.id),
+                    url: baseUrl + '/api/planstep/' + encodeURIComponent(planStep.id),
                     dataType: 'json',
                     // headers: {
                     //     'Authorization': 'Bearer ' + clientApp.getAccessToken()

@@ -17,7 +17,7 @@
             getTargets: function () {
                 return $.ajax({
                     context: this,
-                    url: baseUrl + '/api/targets',
+                    url: baseUrl + '/api/target',
                     dataType: 'json',
                     // headers: {
                     //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
@@ -27,7 +27,7 @@
             postTarget: function (target) {
                 return $.ajax({
                     context: this,
-                    url: baseUrl + '/api/targets',
+                    url: baseUrl + '/api/target',
                     dataType: 'json',
                     // headers: {
                     //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
@@ -40,7 +40,7 @@
             putTarget: function (target) {
                 return $.ajax({
                     context: this,
-                    url: baseUrl + '/api/targets',
+                    url: baseUrl + '/api/target',
                     dataType: 'json',
                     // headers: {
                     //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
@@ -53,7 +53,7 @@
             deleteTarget: function (target) {
                 return $.ajax({
                     context: this,
-                    url: baseUrl + '/api/targets/' + encodeURIComponent(target.id),
+                    url: baseUrl + '/api/target/' + encodeURIComponent(target.id),
                     dataType: 'json',
                     // headers: {
                     //     'Authorization': 'Bearer ' + clientApp.getAccessToken()

@@ -17,7 +17,7 @@
             getPlans: function () {
                 return $.ajax({
                     context: this,
-                    url: baseUrl + '/api/plans',
+                    url: baseUrl + '/api/plan',
                     dataType: 'json',
                     // headers: {
                     //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
@@ -27,7 +27,7 @@
             postPlan: function (plan) {
                 return $.ajax({
                     context: this,
-                    url: baseUrl + '/api/plans',
+                    url: baseUrl + '/api/plan',
                     dataType: 'json',
                     // headers: {
                     //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
@@ -40,7 +40,7 @@
             putPlan: function (plan) {
                 return $.ajax({
                     context: this,
-                    url: baseUrl + '/api/plans',
+                    url: baseUrl + '/api/plan',
                     dataType: 'json',
                     // headers: {
                     //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
@@ -53,7 +53,7 @@
             deletePlan: function (plan) {
                 return $.ajax({
                     context: this,
-                    url: baseUrl + '/api/plans/' + encodeURIComponent(plan.id),
+                    url: baseUrl + '/api/plan/' + encodeURIComponent(plan.id),
                     dataType: 'json',
                     // headers: {
                     //     'Authorization': 'Bearer ' + clientApp.getAccessToken()

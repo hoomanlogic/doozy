@@ -17,7 +17,7 @@
             getFocuses: function () {
                 return $.ajax({
                     context: this,
-                    url: baseUrl + '/api/focuses',
+                    url: baseUrl + '/api/focus',
                     dataType: 'json',
                     // headers: {
                     //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
@@ -27,7 +27,7 @@
             postFocus: function (focus) {
                 return $.ajax({
                     context: this,
-                    url: baseUrl + '/api/focuses',
+                    url: baseUrl + '/api/focus',
                     dataType: 'json',
                     // headers: {
                     //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
@@ -40,7 +40,7 @@
             putFocus: function (focus) {
                 return $.ajax({
                     context: this,
-                    url: baseUrl + '/api/focuses',
+                    url: baseUrl + '/api/focus',
                     dataType: 'json',
                     // headers: {
                     //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
@@ -53,7 +53,7 @@
             deleteFocus: function (focus) {
                 return $.ajax({
                     context: this,
-                    url: baseUrl + '/api/focuses/' + encodeURIComponent(focus.id),
+                    url: baseUrl + '/api/focus/' + encodeURIComponent(focus.id),
                     dataType: 'json',
                     // headers: {
                     //     'Authorization': 'Bearer ' + clientApp.getAccessToken()

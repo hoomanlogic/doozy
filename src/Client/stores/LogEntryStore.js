@@ -31,7 +31,7 @@
             getLogEntries: function () {
                 return $.ajax({
                     context: me,
-                    url: baseUrl + '/api/logentries',
+                    url: baseUrl + '/api/logentry',
                     dataType: 'json',
                     // headers: {
                     //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
@@ -41,7 +41,7 @@
             postLogEntry: function (logEntry) {
                 return $.ajax({
                     context: this,
-                    url: baseUrl + '/api/logentries',
+                    url: baseUrl + '/api/logentry',
                     dataType: 'json',
                     // headers: {
                     //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
@@ -54,7 +54,7 @@
             putLogEntry: function (logEntry) {
                 return $.ajax({
                     context: this,
-                    url: baseUrl + '/api/logentries',
+                    url: baseUrl + '/api/logentry',
                     dataType: 'json',
                     // headers: {
                     //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
@@ -67,7 +67,7 @@
             deleteLogEntry: function (logEntry) {
                 return $.ajax({
                     context: this,
-                    url: baseUrl + '/api/logentries/' + logEntry.id,
+                    url: baseUrl + '/api/logentry/' + logEntry.id,
                     dataType: 'json',
                     // headers: {
                     //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
@@ -120,7 +120,7 @@
         this.getLogEntriesByUserName = function (userName) {
             $.ajax({
                 context: me,
-                url: baseUrl + '/api/logentries?userName=' + encodeURIComponent(userName),
+                url: baseUrl + '/api/logentry?userName=' + encodeURIComponent(userName),
                 dataType: 'json',
                 // headers: {
                 //     'Authorization': 'Bearer ' + clientApp.getAccessToken()
