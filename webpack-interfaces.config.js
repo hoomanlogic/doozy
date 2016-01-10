@@ -4,10 +4,14 @@ module.exports = {
     entry: {
         // MAIN INTERFACES
         actions: path.resolve(__dirname, 'src/Client/interfaces/mount.actions.js'),
+        'plans': path.resolve(__dirname, 'src/Client/interfaces/mount.plans.js'),
         'plan-steps': path.resolve(__dirname, 'src/Client/interfaces/mount.plan-steps.js'),
+        
         // NODE KIND FORMS
         'action-form': path.resolve(__dirname, 'src/Client/interfaces/mount.action-form.js'),
         'logentry-form': path.resolve(__dirname, 'src/Client/interfaces/mount.logentry-form.js'),
+        'plan-form': path.resolve(__dirname, 'src/Client/interfaces/mount.plan-form.js'),
+        'plan-step-form': path.resolve(__dirname, 'src/Client/interfaces/mount.plan-step-form.js'),
     },
     eslint: {
         configFile: '.eslintrc'

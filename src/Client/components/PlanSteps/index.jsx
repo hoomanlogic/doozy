@@ -62,7 +62,7 @@
             this.setState({ planStepsLastUpdated: (new Date()).toISOString() });
         },
         handleCloseClick: function () {
-            window.location.href = '/doozy/actions';
+            window.location.href = '/doozy';
         },
 
         calculateNewStep: function () {

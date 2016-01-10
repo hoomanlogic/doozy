@@ -45,7 +45,7 @@
          * EVENT HANDLING
          *************************************************************/
         handleCancelClick: function () {
-            ui.goBack();
+            window.location.href = '/doozy/plans';
         },
         handleChange: function (event) {
             if (event.target === this.refs.name.getDOMNode()) {
@@ -60,12 +60,12 @@
         },
         handleDeleteClick: function () {
             var plan = _.find(planStore.updates.value, { id: this.props.planId });
-            ui.goBack();
+            window.location.href = '/doozy/plans';
             planStore.destroy(plan);
         },
         handleSaveClick: function () {
             planStore.update(this.state);
-            ui.goBack();
+            window.location.href = '/doozy/plans';
         },
 
         /*************************************************************

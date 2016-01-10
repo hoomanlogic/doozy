@@ -34,7 +34,7 @@
         var defaultHtmlTemplate = fs.readFileSync(path.resolve(__dirname, '../interfaces/_default.html'), 'utf-8');
         
         // ACTIONS INTERFACE
-        operator.express.get('/doozy/actions', operator.authenticate, function (req, res) {
+        operator.express.get('/doozy(/actions)?', operator.authenticate, function (req, res) {
             operator.renderer.renderHtml(
                 defaultHtmlTemplate
                     .replace('SCRIPT_URL', operator.stats.publicPath + 'doozy/actions.js')
@@ -199,8 +199,55 @@
                 );
             });
         });
+
+        operator.express.get('/doozy/plans', operator.authenticate, function (req, res) {
+            operator.renderer.renderHtml(
+                defaultHtmlTemplate
+                    .replace('SCRIPT_URL', operator.stats.publicPath + 'doozy/plans.js')
+                    .replace('SELECTIZE_URL', operator.stats.publicPath + 'doozy-global-libs.js')
+                    .replace('SELECTIZE_CSS_1', operator.stats.publicPath + 'selectize.css')
+                    .replace('SELECTIZE_CSS_2', operator.stats.publicPath + 'selectize.default.css')
+                    .replace('INTERFACE_PROPS', JSON.stringify({})),
+                req.path,
+                null,
+                function (err, html) {
+                    if (err) {
+                        res.statusCode = 500;
+                        res.contentType = 'text; charset=utf8';
+                        res.end(err.message);
+                        return;
+                    }
+                    res.contentType = 'text/html; charset=utf8';
+                    res.end(html);
+                }
+            );
+        });
         
-        // PLANS VIEW EDIT
+        operator.express.get('/doozy/plan/:tag', operator.authenticate, function (req, res) {
+            operator.renderer.renderHtml(
+                defaultHtmlTemplate
+                    .replace('SCRIPT_URL', operator.stats.publicPath + 'doozy/plan-form.js')
+                    .replace('SELECTIZE_URL', operator.stats.publicPath + 'doozy-global-libs.js')
+                    .replace('SELECTIZE_CSS_1', operator.stats.publicPath + 'selectize.css')
+                    .replace('SELECTIZE_CSS_2', operator.stats.publicPath + 'selectize.default.css')
+                    .replace('INTERFACE_PROPS', JSON.stringify({planId: req.params.tag})),
+                req.path,
+                null,
+                function (err, html) {
+                    if (err) {
+                        res.statusCode = 500;
+                        res.contentType = 'text; charset=utf8';
+                        res.end(err.message);
+                        return;
+                    }
+                    res.contentType = 'text/html; charset=utf8';
+                    res.end(html);
+                }
+            );
+        });
+
+        
+        // PLANS VIEW
         operator.express.get('/doozy/plansteps/:tag', operator.authenticate, function (req, res) {
             operator.renderer.renderHtml(
                 defaultHtmlTemplate
@@ -209,6 +256,54 @@
                     .replace('SELECTIZE_CSS_1', operator.stats.publicPath + 'selectize.css')
                     .replace('SELECTIZE_CSS_2', operator.stats.publicPath + 'selectize.default.css')
                     .replace('INTERFACE_PROPS', JSON.stringify({planId: req.params.tag})),
+                req.path,
+                null,
+                function (err, html) {
+                    if (err) {
+                        res.statusCode = 500;
+                        res.contentType = 'text; charset=utf8';
+                        res.end(err.message);
+                        return;
+                    }
+                    res.contentType = 'text/html; charset=utf8';
+                    res.end(html);
+                }
+            );
+        });
+        
+        // PLAN STEP EDIT
+        operator.express.get('/doozy/planstep/:id/:plan/:parent', operator.authenticate, function (req, res) {
+            operator.renderer.renderHtml(
+                defaultHtmlTemplate
+                    .replace('SCRIPT_URL', operator.stats.publicPath + 'doozy/plan-step-form.js')
+                    .replace('SELECTIZE_URL', operator.stats.publicPath + 'doozy-global-libs.js')
+                    .replace('SELECTIZE_CSS_1', operator.stats.publicPath + 'selectize.css')
+                    .replace('SELECTIZE_CSS_2', operator.stats.publicPath + 'selectize.default.css')
+                    .replace('INTERFACE_PROPS', JSON.stringify({planStepId: req.params.id, planId: req.params.plan, parentId: req.params.parent, isNew: false})),
+                req.path,
+                null,
+                function (err, html) {
+                    if (err) {
+                        res.statusCode = 500;
+                        res.contentType = 'text; charset=utf8';
+                        res.end(err.message);
+                        return;
+                    }
+                    res.contentType = 'text/html; charset=utf8';
+                    res.end(html);
+                }
+            );
+        });
+        
+        // PLAN STEP ADD
+        operator.express.get('/doozy/planstep/new/:plan/:parent', operator.authenticate, function (req, res) {
+            operator.renderer.renderHtml(
+                defaultHtmlTemplate
+                    .replace('SCRIPT_URL', operator.stats.publicPath + 'doozy/plan-step-form.js')
+                    .replace('SELECTIZE_URL', operator.stats.publicPath + 'doozy-global-libs.js')
+                    .replace('SELECTIZE_CSS_1', operator.stats.publicPath + 'selectize.css')
+                    .replace('SELECTIZE_CSS_2', operator.stats.publicPath + 'selectize.default.css')
+                    .replace('INTERFACE_PROPS', JSON.stringify({planId: req.params.plan, parentId: req.params.parent, isNew: true})),
                 req.path,
                 null,
                 function (err, html) {

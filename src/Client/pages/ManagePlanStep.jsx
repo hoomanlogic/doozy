@@ -2,9 +2,10 @@
     module.exports = exports = factory(
         require('react'),
         require('stores/PlanStepStore'),
-        require('babble')
+        require('babble'),
+        require('hl-common-js/src/common'),
     );
-}(function (React, planStepStore, babble) {
+}(function (React, planStepStore, babble, hlcommon) {
     var ManagePlanStep = React.createClass({
         /*************************************************************
          * DEFINITIONS
@@ -96,7 +97,7 @@
          * EVENT HANDLING
          *************************************************************/
         handleCancelClick: function () {
-            ui.goBack();
+            window.location.href = '/doozy/plansteps/' + this.props.planId;
         },
         handleChange: function (event) {
             if (event.target === this.refs.name.getDOMNode()) {
@@ -138,7 +139,7 @@
         },
         handleDeleteClick: function () {
             var plan = _.find(planStore.updates.value, { id: this.props.planId });
-            ui.goBack();
+            window.location.href = '/doozy/plans/' + this.props.planId;
             planStepStore.destroy(this.state);
         },
         handleSaveClick: function () {
@@ -147,7 +148,7 @@
             } else {
                 planStepStore.update(this.state);
             }
-            ui.goBack();
+            window.location.href = '/doozy/plans/' + this.props.planId;
         },
 
         /*************************************************************
@@ -186,7 +187,7 @@
 
             // html
             return (
-                <div style={{padding: '5px'}}>
+                <div style={styles.main}>
                     <form role="form">
                         <div className="form-group">
                             <label htmlFor="planstep-kind">What kind of plan step is this?</label>
@@ -232,5 +233,14 @@
             );
         }
     });
+    
+    var styles = {
+        main: {
+            padding: '1rem',
+            margin: 'auto',
+            maxWidth: '40rem'
+        }
+    };
+
     return ManagePlanStep;
 }));

@@ -490,7 +490,6 @@
                 actionStore.create(action);
             }
 
-            // TODO: ui.goBack();
             window.location.href = '/doozy/actions';
         },
 

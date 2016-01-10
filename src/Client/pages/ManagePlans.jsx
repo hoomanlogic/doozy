@@ -37,13 +37,13 @@
          * EVENT HANDLING
          *************************************************************/
         handleCloseClick: function () {
-            ui.goBack();
+            window.location.href = '/doozy';
         },
         handlePlanClick: function (plan) {
-            ui.goTo('Plan View', {planId: plan.id});
+            window.location.href = '/doozy/plansteps/' + plan.id;
         },
         handleEditPlanDetailsClick: function (plan) {
-            ui.goTo('Manage Plan', {planId: plan.id});
+            window.location.href = '/doozy/plan/' + plan.id;
         },
         handlePlanStoreUpdate: function (plans) {
             this.setState({ plansLastUpdated: (new Date()).toISOString() });

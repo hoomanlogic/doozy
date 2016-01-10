@@ -40,13 +40,13 @@
             this.setState({ planStepsLastUpdated: (new Date()).toISOString() });
         },
         handleCardClick: function () {
-
-            ui.goTo('Manage Plan Step', {
-                isNew: this.props.data.isNew || false,
-                planStepId: this.props.data.id,
-                planId: this.props.data.planId,
-                parentId: this.props.data.parentId
-            });
+            window.location.href = '/doozy/planstep/' + this.props.data.id + '/' + this.props.data.planId + '/' + this.props.data.parentId;
+            // this.props.goTo('Manage Plan Step', {
+            //     isNew: this.props.data.isNew || false,
+            //     planStepId: this.props.data.id,
+            //     planId: this.props.data.planId,
+            //     parentId: this.props.data.parentId
+            // });
         },
 
         calculateNewStep: function () {
