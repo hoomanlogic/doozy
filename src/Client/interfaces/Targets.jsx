@@ -2,11 +2,11 @@
     require('./Actions.less');
     module.exports = exports = factory(
         require('react'),
-        require('pages/ManagePlans'),
+        require('pages/ManageTargets'),
     );
-}(function (React, ManagePlans) {
+}(function (React, ManageTargets) {
 
-    var PlansInterface = React.createClass({
+    var TargetsInterface = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
@@ -15,9 +15,6 @@
                 currentFocus: null
             };
         },
-        /*************************************************************
-         * COMPONENT LIFECYCLE
-         *************************************************************/
 
         /*************************************************************
          * EVENT HANDLING
@@ -31,10 +28,10 @@
          *************************************************************/
         render: function () {
             return (
-                <ManagePlans />
+                <ManageTargets />
             );
         },
     });
 
-    return PlansInterface;
+    return TargetsInterface;
 }));

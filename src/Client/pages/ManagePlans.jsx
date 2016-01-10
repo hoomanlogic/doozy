@@ -1,38 +1,21 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
-        require('stores/PlanStore')
+        require('stores/plan-store'),
+        require('mixins/SubscriberMixin')
     );
-}(function (React, planStore) {
+}(function (React, planStore, SubscriberMixin) {
     var ManagePlans = React.createClass({
         /*************************************************************
-         * DEFINITIONS
+         * EVENT HANDLING
          *************************************************************/
-        getInitialState: function () {
+        mixins: [SubscriberMixin(planStore)],
+        getDefaultProps: function () {
             return {
-                plansLastUpdated: (new Date()).toISOString()
+                globalSubscriberContext: true // SubscriberMixin behavior property
             };
         },
-
-        /*************************************************************
-         * COMPONENT LIFECYCLE
-         *************************************************************/
-        componentWillMount: function () {
-            /**
-             * Subscribe to Tag Store to be
-             * notified of updates to the store
-             */
-            this.plansObserver = planStore.updates
-                .subscribe(this.handlePlanStoreUpdate);
-
-        },
-        componentWillUnmount: function () {
-            /**
-             * Clean up objects and bindings
-             */
-            this.plansObserver.dispose();
-        },
-
+        
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
@@ -45,55 +28,23 @@
         handleEditPlanDetailsClick: function (plan) {
             window.location.href = '/doozy/plan/' + plan.id;
         },
-        handlePlanStoreUpdate: function (plans) {
-            this.setState({ plansLastUpdated: (new Date()).toISOString() });
-        },
 
         /*************************************************************
          * RENDERING
          *************************************************************/
         render: function () {
 
-            var plans = planStore.updates.value;
-
+            var ctxPlans = planStore.context({});
+            if (!ctxPlans || !ctxPlans.value) {
+                return <div>Loading...</div>
+            }
+            
             /**
              * Sort the actions by completed and name
              */
-            plans = _.sortBy(plans, function (plan) {
+            var plans = _.sortBy(ctxPlans.value, function (plan) {
                 return plan.name.toLowerCase();
             });
-
-            /**
-             * Inline Styles
-             */
-            var headerStyle = {
-                display: 'flex',
-                flexDirection: 'row',
-                color: '#e2ff63',
-                backgroundColor: '#444',
-                padding: '2px 2px 0 8px',
-                fontWeight: 'bold',
-                fontSize: '1.5em'
-            };
-
-            var listItemStyle = {
-                display: 'flex',
-                flexDirection: 'row',
-                fontSize: 'large',
-                padding: '5px',
-                borderBottom: 'solid 1px #e0e0e0'
-            };
-
-            var buttonStyle = {
-                paddingTop: '3px',
-                paddingBottom: '3px',
-                backgroundImage: 'none',
-                color: '#444',
-                backgroundColor: '#e2ff63',
-                borderColor: '#e2ff63',
-                fontWeight: 'bold',
-                outlineColor: 'rgb(40, 40, 40)'
-            };
 
             // html
             return (
@@ -120,5 +71,38 @@
             );
         }
     });
+    
+    /**
+     * Inline Styles
+     */
+    var headerStyle = {
+        display: 'flex',
+        flexDirection: 'row',
+        color: '#e2ff63',
+        backgroundColor: '#444',
+        padding: '2px 2px 0 8px',
+        fontWeight: 'bold',
+        fontSize: '1.5em'
+    };
+
+    var listItemStyle = {
+        display: 'flex',
+        flexDirection: 'row',
+        fontSize: 'large',
+        padding: '5px',
+        borderBottom: 'solid 1px #e0e0e0'
+    };
+
+    var buttonStyle = {
+        paddingTop: '3px',
+        paddingBottom: '3px',
+        backgroundImage: 'none',
+        color: '#444',
+        backgroundColor: '#e2ff63',
+        borderColor: '#e2ff63',
+        fontWeight: 'bold',
+        outlineColor: 'rgb(40, 40, 40)'
+    };
+    
     return ManagePlans;
  }));

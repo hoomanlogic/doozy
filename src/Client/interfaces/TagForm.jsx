@@ -2,11 +2,11 @@
     require('./Actions.less');
     module.exports = exports = factory(
         require('react'),
-        require('pages/ManagePlans'),
+        require('pages/ManageTag'),
     );
-}(function (React, ManagePlans) {
+}(function (React, ManageTag) {
 
-    var PlansInterface = React.createClass({
+    var TagFormInterface = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
@@ -31,10 +31,10 @@
          *************************************************************/
         render: function () {
             return (
-                <ManagePlans />
+                <ManageTag tagId={this.props.tagId} />
             );
         },
     });
 
-    return PlansInterface;
+    return TagFormInterface;
 }));

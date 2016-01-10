@@ -1,39 +1,22 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
+        require('babble'),
         require('app/doozy'),
-        require('stores/TargetStore'),
+        require('stores/target-store'),
         require('components/Indicator'),
-        require('babble')
+        require('mixins/SubscriberMixin')
     );
-}(function (React, doozy, targetStore, Indicator, babble) {
+}(function (React, babble, doozy, targetStore, Indicator, SubscriberMixin) {
     var ManageTargets = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
-        getInitialState: function () {
+        mixins: [SubscriberMixin(targetStore)],
+        getDefaultProps: function () {
             return {
-                targetsLastUpdated: (new Date()).toISOString()
+                globalSubscriberContext: true // SubscriberMixin behavior property
             };
-        },
-
-        /*************************************************************
-         * COMPONENT LIFECYCLE
-         *************************************************************/
-        componentWillMount: function () {
-            /**
-             * Subscribe to Target Store to be
-             * notified of updates to the store
-             */
-            this.targetsObserver = targetStore.updates
-                .subscribe(this.handleTargetStoreUpdate);
-
-        },
-        componentWillUnmount: function () {
-            /**
-             * Clean up objects and bindings
-             */
-            this.targetsObserver.dispose();
         },
 
 
@@ -41,16 +24,13 @@
          * EVENT HANDLING
          *************************************************************/
         handleCloseClick: function () {
-            ui.goBack();
+            window.location.href = '/doozy';
         },
         handleEditClick: function (target) {
-            ui.goTo('Manage Target', {targetId: target.id});
+            window.location.href = '/doozy/target/' + target.id;
         },
         handleTargetClick: function (target) {
-            ui.goTo('Calendar', {targetId: target.id});
-        },
-        handleTargetStoreUpdate: function (targets) {
-            this.setState({ targetsLastUpdated: (new Date()).toISOString() });
+            // ui.goTo('Calendar', {targetId: target.id});
         },
 
         /*************************************************************
@@ -58,15 +38,18 @@
          *************************************************************/
         render: function () {
 
-            var targets = targetStore.updates.value.slice();
 
+            var ctxTargets = targetStore.context({});
+            if (!ctxTargets || !ctxTargets.value) {
+                return <div>Loading...</div>
+            }
+            
             /**
              * Sort the actions by completed and name
              */
-            targets = _.sortBy(targets, function (target) {
+            var targets = _.sortBy(ctxTargets.value, function (target) {
                 return target.name.toLowerCase();
             });
-
 
             /**
              * Add 'New Target' to list

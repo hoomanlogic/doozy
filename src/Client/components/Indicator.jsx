@@ -1,6 +1,6 @@
 (function (factory) {
     module.exports = exports = factory(
-        require('react')
+        require('react/addons')
     );
 }(function (React) {
     var Indicator = React.createClass({

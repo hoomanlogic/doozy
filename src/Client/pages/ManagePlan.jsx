@@ -1,25 +1,21 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
+        require('app/doozy'),
         require('stores/plan-store'),
         require('mixins/SubscriberMixin')
     );
-}(function (React, planStore, SubscriberMixin) {
+}(function (React, doozy, planStore, SubscriberMixin) {
     var ManagePlan = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
         mixins: [SubscriberMixin(planStore)],
         propTypes: {
-            planId: React.PropTypes.number   
+            planId: React.PropTypes.string,
         },
         getInitialState: function () {
-            return {
-                name: '',
-                kind: '',
-                tagName: '',
-                content: ''
-            };
+            return doozy.plan();
         },
 
         /*************************************************************
@@ -44,17 +40,16 @@
             window.location.href = '/doozy/plans';
         },
         handleSaveClick: function () {
-            planStore.update(this.state);
+            if (this.props.planId) {
+                planStore.update(this.state);
+            }
+            else {
+                planStore.create(this.state);
+            }
             window.location.href = '/doozy/plans';
         },
         handleStoreUpdate: function (model) {
-            this.setState({
-                id: model.id,
-                name: model.name,
-                kind: model.kind,
-                tagName: model.tagName,
-                content: model.content
-            });
+            this.setState(model);
         },
 
         /*************************************************************
@@ -62,7 +57,7 @@
          *************************************************************/
         render: function () {
             // Waiting on store
-            if (this.props.planId && !this.state.id) {
+            if (this.props.planId && this.state.isNew) {
                 return <div>Loading...</div>;
             }
             

@@ -122,7 +122,7 @@
         /**
          * Update value and notify consumers
          */
-        update: function (value, contextArgs) {
+        updateContext: function (value, contextArgs) {
             var context = this.context(contextArgs);
             if (!context) {
                 return;

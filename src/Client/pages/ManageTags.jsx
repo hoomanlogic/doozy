@@ -1,50 +1,29 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
-        require('stores/TagStore')
+        require('stores/tag-store'),
+        require('mixins/SubscriberMixin')
     );
-}(function (React, tagStore) {
+}(function (React, tagStore, SubscriberMixin) {
     var ManageTags = React.createClass({
         /*************************************************************
-         * DEFINITIONS
+         * EVENT HANDLING
          *************************************************************/
-        getInitialState: function () {
+        mixins: [SubscriberMixin(tagStore)],
+        getDefaultProps: function () {
             return {
-                tagsLastUpdated: (new Date()).toISOString()
+                globalSubscriberContext: true // SubscriberMixin behavior property
             };
         },
-
-        /*************************************************************
-         * COMPONENT LIFECYCLE
-         *************************************************************/
-        componentWillMount: function () {
-            /**
-             * Subscribe to Tag Store to be
-             * notified of updates to the store
-             */
-            this.tagsObserver = tagStore.updates
-                .subscribe(this.handleTagStoreUpdate);
-
-        },
-        componentWillUnmount: function () {
-            /**
-             * Clean up objects and bindings
-             */
-            this.tagsObserver.dispose();
-        },
-
 
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
         handleCloseClick: function () {
-            ui.goBack();
+            window.location.href = '/doozy';
         },
         handleTagClick: function (tag) {
-            ui.goTo('Manage Tag', {tagId: tag.id});
-        },
-        handleTagStoreUpdate: function (tags) {
-            this.setState({ tagsLastUpdated: (new Date()).toISOString() });
+            window.location.href = '/doozy/tag/' + tag.id;
         },
 
         /*************************************************************
@@ -70,33 +49,18 @@
         },
         render: function () {
 
-            var tags = tagStore.updates.value;
+
+            var ctxTags = tagStore.context({});
+            if (!ctxTags || !ctxTags.value) {
+                return <div>Loading...</div>
+            }
 
             /**
              * Sort the actions by completed and name
              */
-            tags = _.sortBy(tags, function (tag) {
+            var tags = _.sortBy(ctxTags.value, function (tag) {
                 return tag.kind + '-' + tag.name.toLowerCase();
             });
-
-            /**
-             * Inline Styles
-             */
-            var headerStyle = {
-                display: 'flex',
-                flexDirection: 'row',
-                color: '#e2ff63',
-                backgroundColor: '#444',
-                padding: '2px 2px 0 8px',
-                fontWeight: 'bold',
-                fontSize: '1.5em'
-            };
-
-            var tagStyle = {
-                fontSize: 'large',
-                padding: '5px',
-                borderBottom: 'solid 1px #e0e0e0'
-            };
 
             // html
             return (
@@ -118,5 +82,25 @@
             );
         }
     });
+    
+    /**
+     * Inline Styles
+     */
+    var headerStyle = {
+        display: 'flex',
+        flexDirection: 'row',
+        color: '#e2ff63',
+        backgroundColor: '#444',
+        padding: '2px 2px 0 8px',
+        fontWeight: 'bold',
+        fontSize: '1.5em'
+    };
+
+    var tagStyle = {
+        fontSize: 'large',
+        padding: '5px',
+        borderBottom: 'solid 1px #e0e0e0'
+    };
+    
     return ManageTags;
  }));

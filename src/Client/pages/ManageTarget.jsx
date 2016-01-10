@@ -2,34 +2,26 @@
     module.exports = exports = factory(
         require('react'),
         require('app/doozy'),
-        require('stores/ActionStore'),
-        require('stores/TargetStore'),
-        require('stores/TagStore')
+        require('stores/target-store'),
+        require('stores/action-store'),
+        require('stores/tag-store'),
+        require('mixins/SubscriberMixin')
     );
-}(function (React, doozy, actionStore, targetStore, tagStore) {
+}(function (React, doozy, targetStore, actionStore, tagStore, SubscriberMixin) {
     var ManageTarget = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
+        mixins: [SubscriberMixin(targetStore), SubscriberMixin(actionStore), SubscriberMixin(tagStore)],
+        propTypes: {
+            targetId: React.PropTypes.string,
+        },
+        
+        /*************************************************************
+         * DEFINITIONS
+         *************************************************************/
         getInitialState: function () {
-            if (!this.props.targetId) {
-                return doozy.target();
-            }
-            var target = targetStore.get(this.props.targetId);
-            if (!target) {
-                return doozy.target();
-            }
-
-            return {
-                id: target.id,
-                name: target.name,
-                entityType: target.entityType,
-                entityId: target.entityId,
-                period: target.period,
-                measure: target.measure,
-                multiplier: target.multiplier,
-                number: target.number
-            };
+            return doozy.target();
         },
 
         /*************************************************************
@@ -54,29 +46,11 @@
             }
         },
 
-        componentWillReceiveProps: function (nextProps) {
-            var target = targetStore.get(nextProps.targetId);
-            if (!target) {
-                return;
-            }
-
-            this.setState({
-                id: target.id,
-                name: target.name,
-                entityType: target.entityType,
-                entityId: target.entityId,
-                period: target.period,
-                measure: target.measure,
-                multiplier: target.multiplier,
-                number: target.number
-            });
-        },
-
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
         handleCancelClick: function () {
-            ui.goBack();
+            window.location.href = '/doozy/targets';
         },
         handleChange: function (event) {
             if (event.target === this.refs.name.getDOMNode()) {
@@ -94,9 +68,8 @@
             }
         },
         handleDeleteClick: function () {
-            var target = targetStore.get(this.props.targetId);
-            ui.goBack();
-            targetStore.destroy(target);
+            targetStore.destroy(this.props.targetId);
+            window.location.href = '/doozy/targets';
         },
         handleSaveClick: function () {
             var entity = this.refs.entity.getDOMNode().value;
@@ -111,14 +84,16 @@
                 ui.message('Cannot save target without a tag or action assigned', 'error');
                 return;
             }
-
             this.state.entityId = entity.id;
             if (this.state.isNew) {
                 targetStore.create(this.state);
             } else {
                 targetStore.update(this.state);
             }
-            ui.goBack();
+            window.location.href = '/doozy/targets';
+        },
+        handleStoreUpdate: function (model) {
+            this.setState(model);
         },
 
         /*************************************************************
@@ -129,7 +104,7 @@
             selectize.clearOptions();
 
             // get actions sorted by name
-            var actions = actionStore.updates.value;
+            var actions = actionStore.context({}).value;
             actions = _.sortBy(actions, function (action) {
                 action.name;
             });
@@ -145,7 +120,7 @@
 
             // set current value
             if (this.state.entityId) {
-                var action = actionStore.getActionById(this.state.entityId);
+                var action = actionStore.get(this.state.entityId);
                 if (action) {
                     selectize.setValue(action.name);
                 }
@@ -156,7 +131,7 @@
             selectize.clearOptions();
 
             // get distinct tags user has assigned to other actions
-            var tags = tagStore.updates.value;
+            var tags = tagStore.context({}).value;
             tags = _.sortBy(tags, function (tag) {
                 tag.name;
             });
@@ -173,13 +148,16 @@
 
             // set current value
             if (this.state.entityId) {
-                var tag = tagStore.getTagById(this.state.entityId);
+                var tag = tagStore.get(this.state.entityId);
                 if (tag) {
                     selectize.setValue(doozy.getTagValue(tag));
                 }
             }
         },
         setupActionsControl: function () {
+            if (!this.refs.entity) {
+                return;
+            }
             $(this.refs.entity.getDOMNode()).selectize({
                 delimiter: '|',
                 persist: true,
@@ -206,7 +184,9 @@
             this.setOptionsAction(selectize);
         },
         setupTagsControl: function () {
-
+            if (!this.refs.entity) {
+                return;
+            }
             // initialize control for tags functionality
             $(this.refs.entity.getDOMNode()).selectize({
                 delimiter: ',',
@@ -240,16 +220,10 @@
          * RENDERING
          *************************************************************/
         render: function () {
-            var buttonStyle = {
-                display: 'block',
-                width: '100%',
-                marginBottom: '5px',
-                fontSize: '1.1rem'
-            };
-
-            var deleteButtonStyle = Object.assign({}, buttonStyle, {
-                marginTop: '3rem'
-            });
+            // Waiting on store
+            if (this.props.targetId && this.state.isNew) {
+                return <div>Loading...</div>;
+            }
 
             var buttons = [
                 {type: 'primary',
@@ -342,6 +316,17 @@
             maxWidth: '40rem'
         }
     };
+    
+    var buttonStyle = {
+        display: 'block',
+        width: '100%',
+        marginBottom: '5px',
+        fontSize: '1.1rem'
+    };
+
+    var deleteButtonStyle = Object.assign({}, buttonStyle, {
+        marginTop: '3rem'
+    });
 
     return ManageTarget;
 }));

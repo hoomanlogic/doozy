@@ -1,52 +1,28 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
-        require('stores/TagStore')
+        require('app/doozy'),
+        require('stores/tag-store'),
+        require('mixins/SubscriberMixin')
     );
-}(function (React, tagStore) {
+}(function (React, doozy, tagStore, SubscriberMixin) {
     var ManageTag = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
-        getInitialState: function () {
-            if (!this.props.tagId) {
-                return {
-                    id: '',
-                    name: '',
-                    kind: '',
-                    content: ''
-                };
-            }
-            var tag = tagStore.get(this.props.tagId);
-            return {
-                id: tag.id,
-                name: tag.name,
-                kind: tag.kind,
-                content: tag.content
-            };
+        mixins: [SubscriberMixin(tagStore)],
+        propTypes: {
+            tagId: React.PropTypes.string,
         },
-
-        /*************************************************************
-         * COMPONENT LIFECYCLE
-         *************************************************************/
-        componentWillReceiveProps: function (nextProps) {
-            var tag = tagStore.get(nextProps.tagId);
-            if (!tag) {
-                return;
-            }
-            this.setState({
-                id: tag.id,
-                name: tag.name,
-                kind: tag.kind,
-                content: tag.content
-            });
+        getInitialState: function () {
+            return doozy.tag();
         },
 
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
         handleCancelClick: function () {
-            ui.goBack();
+            window.location.href = '/doozy/tags';
         },
         handleChange: function (event) {
             if (event.target === this.refs.name.getDOMNode()) {
@@ -58,31 +34,32 @@
             }
         },
         handleDeleteClick: function () {
-            var tag = tagStore.get(this.props.tagId);
-            ui.goBack();
-            tagStore.destroy(tag);
+            tagStore.destroy(this.props.tagId);
+            window.location.href = '/doozy/tags';
         },
         handleSaveClick: function () {
-            tagStore.update(this.state);
-            ui.goBack();
+            if (this.props.tagId) {
+                tagStore.update(this.state);
+            }
+            else {
+                tagStore.create(this.state);
+            }
+            window.location.href = '/doozy/tags';
         },
-
+        handleStoreUpdate: function (model) {
+            this.setState(model);
+        },
+        
         /*************************************************************
          * RENDERING
          *************************************************************/
         render: function () {
-            var buttonStyle = {
-                display: 'block',
-                width: '100%',
-                marginBottom: '5px',
-                fontSize: '1.1rem'
-            };
-
-            var deleteButtonStyle = Object.assign({}, buttonStyle, {
-                marginTop: '3rem'
-            });
-
-            var buttons = [
+            // Waiting on store
+            if (this.props.tagId && this.state.isNew) {
+                return <div>Loading...</div>;
+            }
+            
+           var buttons = [
                 {type: 'primary',
                  text: 'Save Changes',
                  handler: this.handleSaveClick,
@@ -138,6 +115,17 @@
             maxWidth: '40rem'
         }
     };
+
+    var buttonStyle = {
+        display: 'block',
+        width: '100%',
+        marginBottom: '5px',
+        fontSize: '1.1rem'
+    };
+
+    var deleteButtonStyle = Object.assign({}, buttonStyle, {
+        marginTop: '3rem'
+    });
 
     return ManageTag;
 }));

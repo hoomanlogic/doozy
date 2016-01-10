@@ -32,12 +32,17 @@
                 *************************************************************/
                 componentWillMount: function () {
                     if (this[path][thisProp]) {
+                        // Subscribe to one
                         thisStore.subscribe(this[handleStoreUpdateName], { id: this[path][thisProp] });
+                    }
+                    else if (this.props.globalSubscriberContext) {
+                        // Subscribe to all
+                        thisStore.subscribe(this[handleStoreUpdateName], {});
                     }
                 },
 
                 componentWillReceiveProps: function (nextProps) {
-                    if (nextProps[thisProp] !== this[path][thisProp]) {
+                    if (!this.props.globalSubscriberContext && nextProps[thisProp] !== this[path][thisProp]) {
                         if (this[path][thisProp]) {
                             thisStore.unsubscribe(this[handleStoreUpdateName], { id: this[path][thisProp] });
                         }
@@ -50,6 +55,10 @@
                 componentWillUnmount: function () {
                     if (this[path][thisProp]) {
                         thisStore.unsubscribe(this[handleStoreUpdateName], { id: this[path][thisProp] });
+                    }
+                    else if (this.props.globalSubscriberContext) {
+                        // Subscribe to all
+                        thisStore.unsubscribe(this[handleStoreUpdateName], {});
                     }
                 },
             };

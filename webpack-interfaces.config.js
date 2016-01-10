@@ -6,12 +6,16 @@ module.exports = {
         actions: path.resolve(__dirname, 'src/Client/interfaces/mount.actions.js'),
         'plans': path.resolve(__dirname, 'src/Client/interfaces/mount.plans.js'),
         'plan-steps': path.resolve(__dirname, 'src/Client/interfaces/mount.plan-steps.js'),
-        
-        // NODE KIND FORMS
+        'tags': path.resolve(__dirname, 'src/Client/interfaces/mount.tags.js'),
+        'targets': path.resolve(__dirname, 'src/Client/interfaces/mount.targets.js'),
+
+        // FORMS
         'action-form': path.resolve(__dirname, 'src/Client/interfaces/mount.action-form.js'),
         'logentry-form': path.resolve(__dirname, 'src/Client/interfaces/mount.logentry-form.js'),
         'plan-form': path.resolve(__dirname, 'src/Client/interfaces/mount.plan-form.js'),
         'plan-step-form': path.resolve(__dirname, 'src/Client/interfaces/mount.plan-step-form.js'),
+        'tag-form': path.resolve(__dirname, 'src/Client/interfaces/mount.tag-form.js'),
+        'target-form': path.resolve(__dirname, 'src/Client/interfaces/mount.target-form.js'),
     },
     eslint: {
         configFile: '.eslintrc'

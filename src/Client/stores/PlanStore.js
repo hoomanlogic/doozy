@@ -73,38 +73,38 @@
         /**
          * Store Methods
          */
-        this.create = function (newPlan) {
+        this.create = function (model) {
 
             // update now for optimistic concurrency
-            updates.onNext(updates.value.concat(newPlan));
+            updates.onNext(updates.value.concat(model));
 
-            _api.postPlan(newPlan)
+            _api.postPlan(model)
             .done(function (result) {
                 updates.value.forEach(function (item) {
-                    if (item === newPlan) {
+                    if (item === model) {
                         Object.assign(item, result);
-                        newPlan = item; // eslint-disable-line no-param-reassign
+                        model = item; // eslint-disable-line no-param-reassign
                     }
                 });
                 updates.onNext(updates.value);
                 hlio.saveLocal('hl.' + user + '.plans', updates.value, secret);
-                MessageBox.notify('Added plan ' + newPlan.name, 'success');
+                MessageBox.notify('Added plan ' + model.name, 'success');
             })
             .fail( function (err) {
-                var filtered = updates.value.filter( function (item) { return item !== newPlan; });
+                var filtered = updates.value.filter( function (item) { return item !== model; });
                 updates.onNext(filtered);
                 MessageBox.notify(err.responseText, 'error');
             });
         };
 
-        this.destroy = function (plan) {
+        this.destroy = function (id) {
             // optimistic concurrency
-            var filtered = updates.value.filter( function (item) { return item !== plan; });
+            var filtered = updates.value.filter( function (item) { return item !== id; });
             updates.onNext(filtered);
 
-            _api.deletePlan(plan)
+            _api.deletePlan(id)
             .done( function () {
-                MessageBox.notify('Deleted plan ' + plan.name, 'success');
+                MessageBox.notify('Deleted plan ' + id, 'success');
                 hlio.saveLocal('hl.' + user + '.plans', updates.value, secret);
             })
             .fail( function (err) {

@@ -341,6 +341,7 @@
 
                 // return object literal
                 return extendAction({
+                    isNew: true,
                     id: hlcommon.uuid(),
                     kind: 'Action',
                     name: name || '',
@@ -357,11 +358,10 @@
             }
         },
 
-
-
         plan: function (name) {
             // return object literal
             return {
+                isNew: true,
                 id: hlcommon.uuid(),
                 kind: 'Goal',
                 name: name || '',
@@ -373,12 +373,13 @@
             };
         },
 
-        planStep: function () {
+        planStep: function (name) {
             // return object literal
             return {
+                isNew: true,
                 id: hlcommon.uuid(),
                 kind: 'Step',
-                name: '',
+                name: name || '',
                 created: new Date().toISOString(),
                 duration: 0,
                 content: null,
@@ -388,8 +389,18 @@
                 ordinal: null
             };
         },
+        
+        tag: function (name) {
+            return {
+                isNew: true,
+                id: hlcommon.uuid(),
+                kind: 'Tag',
+                name: name || '',
+                content: null  
+            };
+        },
 
-        target: function () {
+        target: function (name) {
             // REMEMBER KEYWORD: Timeline
 
             // return object literal
@@ -399,7 +410,7 @@
                 isNew: true,
                 id: hlcommon.uuid(),
                 created: dateIso,
-                name: 'New Target',
+                name: name || '',
                 entityType: 'Tag',
                 entityId: null,
                 measure: null, // BY_EXECUTION = 0, BY_PROGRESS = 1, BY_DURATION = 2
