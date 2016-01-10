@@ -187,10 +187,14 @@
         };
 
         this.getActionById = function (id) {
-            var existingAction = _.find(updates.value, function (item) {
-                return item.id.toLowerCase() === id.toLowerCase();
+            return this.get(id);
+        };
+
+        this.get = function (id) {
+            var obj = _.find(updates.value, function (item) {
+                return item.id.toLowerCase() === id.toLowerCase() || (item.gtag || '').toLowerCase() === id.toLowerCase();
             });
-            return existingAction;
+            return obj;
         };
 
         var user = 'my';

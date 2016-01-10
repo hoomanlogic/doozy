@@ -271,8 +271,55 @@
             );
         });
         
+        // PLAN STEP ADD
+        operator.express.get('/doozy/planstep/:plan/:parent/new', operator.authenticate, function (req, res) {
+            operator.renderer.renderHtml(
+                defaultHtmlTemplate
+                    .replace('SCRIPT_URL', operator.stats.publicPath + 'doozy/plan-step-form.js')
+                    .replace('SELECTIZE_URL', operator.stats.publicPath + 'doozy-global-libs.js')
+                    .replace('SELECTIZE_CSS_1', operator.stats.publicPath + 'selectize.css')
+                    .replace('SELECTIZE_CSS_2', operator.stats.publicPath + 'selectize.default.css')
+                    .replace('INTERFACE_PROPS', JSON.stringify({planId: req.params.plan, parentId: req.params.parent, isNew: true})),
+                req.path,
+                null,
+                function (err, html) {
+                    if (err) {
+                        res.statusCode = 500;
+                        res.contentType = 'text; charset=utf8';
+                        res.end(err.message);
+                        return;
+                    }
+                    res.contentType = 'text/html; charset=utf8';
+                    res.end(html);
+                }
+            );
+        });
+        
+        operator.express.get('/doozy/planstep/:plan/new', operator.authenticate, function (req, res) {
+            operator.renderer.renderHtml(
+                defaultHtmlTemplate
+                    .replace('SCRIPT_URL', operator.stats.publicPath + 'doozy/plan-step-form.js')
+                    .replace('SELECTIZE_URL', operator.stats.publicPath + 'doozy-global-libs.js')
+                    .replace('SELECTIZE_CSS_1', operator.stats.publicPath + 'selectize.css')
+                    .replace('SELECTIZE_CSS_2', operator.stats.publicPath + 'selectize.default.css')
+                    .replace('INTERFACE_PROPS', JSON.stringify({planId: req.params.plan, parentId: null, isNew: true})),
+                req.path,
+                null,
+                function (err, html) {
+                    if (err) {
+                        res.statusCode = 500;
+                        res.contentType = 'text; charset=utf8';
+                        res.end(err.message);
+                        return;
+                    }
+                    res.contentType = 'text/html; charset=utf8';
+                    res.end(html);
+                }
+            );
+        });
+        
         // PLAN STEP EDIT
-        operator.express.get('/doozy/planstep/:id/:plan/:parent', operator.authenticate, function (req, res) {
+        operator.express.get('/doozy/planstep/:plan/:parent/:id', operator.authenticate, function (req, res) {
             operator.renderer.renderHtml(
                 defaultHtmlTemplate
                     .replace('SCRIPT_URL', operator.stats.publicPath + 'doozy/plan-step-form.js')
@@ -295,15 +342,14 @@
             );
         });
         
-        // PLAN STEP ADD
-        operator.express.get('/doozy/planstep/new/:plan/:parent', operator.authenticate, function (req, res) {
+        operator.express.get('/doozy/planstep/:plan/:id', operator.authenticate, function (req, res) {
             operator.renderer.renderHtml(
                 defaultHtmlTemplate
                     .replace('SCRIPT_URL', operator.stats.publicPath + 'doozy/plan-step-form.js')
                     .replace('SELECTIZE_URL', operator.stats.publicPath + 'doozy-global-libs.js')
                     .replace('SELECTIZE_CSS_1', operator.stats.publicPath + 'selectize.css')
                     .replace('SELECTIZE_CSS_2', operator.stats.publicPath + 'selectize.default.css')
-                    .replace('INTERFACE_PROPS', JSON.stringify({planId: req.params.plan, parentId: req.params.parent, isNew: true})),
+                    .replace('INTERFACE_PROPS', JSON.stringify({planStepId: req.params.id, planId: req.params.plan, parentId: null, isNew: false})),
                 req.path,
                 null,
                 function (err, html) {
@@ -363,6 +409,7 @@
                     });
                     each.state.lastPerformed = lastPerformed;
                     each.state.recurrenceRules = each.state.recurrenceRules || [];
+                    each.state.id = each.tag;
                     result.push(each.state); 
                 });
                 res.end(JSON.stringify(result));
@@ -450,6 +497,7 @@
             var result = [];
             operator.getDb(function (db) {
                 db.allOf('doozy.focus').forEach(function (each) {
+                    each.state.id = each.tag;
                     result.push(each.state); 
                 });
                 res.end(JSON.stringify(result));
@@ -492,6 +540,7 @@
             operator.getDb(function (db) {
                 var result = [];
                 db.allOf('doozy.tag').forEach(function (each) {
+                    each.state.id = each.tag;
                     result.push(each.state); 
                 });
                 res.end(JSON.stringify(result));
@@ -534,6 +583,7 @@
             operator.getDb(function (db) {
                 var result = [];
                 db.allOf('doozy.target').forEach(function (each) {
+                    each.state.id = each.tag;
                     result.push(each.state); 
                 });
                 res.end(JSON.stringify(result));
@@ -576,6 +626,7 @@
             operator.getDb(function (db) {
                 var result = [];
                 db.allOf('doozy.plan').forEach(function (each) {
+                    each.state.id = each.tag;
                     result.push(each.state); 
                 });
                 res.end(JSON.stringify(result));
@@ -618,6 +669,15 @@
             operator.getDb(function (db) {
                 var result = [];
                 db.allOf('doozy.planstep').forEach(function (each) {
+                    each.state.id = each.tag;
+                    var plan = each.related('doozy.plan').first();
+                    var parent = each.parents('doozy.planstep').first();
+                    if (plan) {
+                        each.state.planId = plan.target.tag;
+                    }
+                    if (parent && parent.target.kind === 'doozy.planstep') {
+                        each.state.parentId = parent.target.tag;
+                    }
                     result.push(each.state); 
                 });
                 res.end(JSON.stringify(result));
@@ -673,7 +733,7 @@
                             commit = true;
                         }
                     }
-                    
+                    each.state.id = each.tag;
                     result.push(each.state); 
                 });
                 if (commit) {

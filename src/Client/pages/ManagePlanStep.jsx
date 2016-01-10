@@ -13,7 +13,7 @@
         getInitialState: function () {
             if (this.props.isNew) {
 
-                var steps = _.where(planStepStore.updates.value, { planId: this.props.planId, parentId: this.props.parentId });
+                var steps = planStepStore.getChildren(this.props.planId, this.props.parentId);
                 var nextOrdinal = 1;
                 if (steps.length > 0) {
                     steps = _.sortBy(steps, function (item) {
@@ -39,7 +39,7 @@
                 });
                 return state;
             } else {
-                var planStep = _.find(planStepStore.updates.value, { id: this.props.planStepId });
+                var planStep = planStepStore.get(this.props.planStepId);
                 var durationParse = babble.get('durations').translate((planStep.duration || 0) + ' min');
                 if (durationParse.tokens.length === 0) {
                     var durationInput = null;
@@ -67,7 +67,7 @@
          * COMPONENT LIFECYCLE
          *************************************************************/
         componentWillReceiveProps: function (nextProps) {
-            var planStep = _.find(planStepStore.updates.value, { id: nextProps.planStepId });
+            var planStep = planStepStore.get(nextProps.planStepId);
             if (!planStep) {
                 return;
             }
@@ -138,8 +138,8 @@
             }
         },
         handleDeleteClick: function () {
-            var plan = _.find(planStore.updates.value, { id: this.props.planId });
-            window.location.href = '/doozy/plans/' + this.props.planId;
+            var plan = planStore.get(this.props.planId);
+            window.location.href = '/doozy/plansteps/' + this.props.planId;
             planStepStore.destroy(this.state);
         },
         handleSaveClick: function () {
@@ -148,7 +148,7 @@
             } else {
                 planStepStore.update(this.state);
             }
-            window.location.href = '/doozy/plans/' + this.props.planId;
+            window.location.href = '/doozy/plansteps/' + this.props.planId;
         },
 
         /*************************************************************

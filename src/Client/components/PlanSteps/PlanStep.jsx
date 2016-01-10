@@ -40,13 +40,18 @@
             this.setState({ planStepsLastUpdated: (new Date()).toISOString() });
         },
         handleCardClick: function () {
-            window.location.href = '/doozy/planstep/' + this.props.data.id + '/' + this.props.data.planId + '/' + this.props.data.parentId;
-            // this.props.goTo('Manage Plan Step', {
-            //     isNew: this.props.data.isNew || false,
-            //     planStepId: this.props.data.id,
-            //     planId: this.props.data.planId,
-            //     parentId: this.props.data.parentId
-            // });
+            // Build hierarchical path
+            var path = this.props.data.planId;
+            if (this.props.data.planId !== (this.props.data.parentId || this.props.data.planId)) {
+                path += '/' + this.props.data.parentId;
+            }
+            // New or existing
+            if (!this.props.data.isNew) {
+                window.location.href = '/doozy/planstep/' + path + '/' + this.props.data.id;
+            }
+            else {
+                window.location.href = '/doozy/planstep/' + path + '/new';
+            }
         },
 
         calculateNewStep: function () {
@@ -66,7 +71,7 @@
             }
 
             return {
-                id: hlcommon.uuid(),
+                id: undefined, // hlcommon.uuid()
                 planId: this.props.planId,
                 parentId: this.props.data.id,
                 name: '+',
@@ -166,7 +171,7 @@
                 }
             ];
 
-            var steps = _.where(planStepStore.updates.value, { planId: this.props.planId, parentId: this.props.data.id });
+            var steps = planStepStore.getChildren(this.props.planId, this.props.data.id);
             steps = _.sortBy(steps, function (item) {
                 var type = 0;
                 if (item.status === 'Doing') {

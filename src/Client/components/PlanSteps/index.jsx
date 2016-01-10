@@ -96,7 +96,7 @@
         render: function () {
 
             // get root level steps for this plan
-            var steps = _.where(planStepStore.updates.value, { planId: this.props.planId, parentId: null });
+            var steps = planStepStore.getChildren(this.props.planId, null);
             var childrenCount = 1;
 
             steps = _.sortBy(steps, function (item) {
@@ -107,9 +107,7 @@
             });
 
             var planId = this.props.planId;
-            var plan = _.find(planStore.updates.value, function (item) {
-                return item.id === planId;
-            });
+            var plan = planStore.get(planId);
 
             if (!plan) {
                 window.location.href = '/doozy/actions';

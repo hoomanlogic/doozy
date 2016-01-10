@@ -15,7 +15,7 @@
             if (!this.props.targetId) {
                 return doozy.target();
             }
-            var target = _.find(targetStore.updates.value, { id: this.props.targetId });
+            var target = targetStore.get(this.props.targetId);
             if (!target) {
                 return doozy.target();
             }
@@ -55,7 +55,7 @@
         },
 
         componentWillReceiveProps: function (nextProps) {
-            var target = _.find(targetStore.updates.value, { id: nextProps.targetId });
+            var target = targetStore.get(nextProps.targetId);
             if (!target) {
                 return;
             }
@@ -94,7 +94,7 @@
             }
         },
         handleDeleteClick: function () {
-            var target = _.find(targetStore.updates.value, { id: this.props.targetId });
+            var target = targetStore.get(this.props.targetId);
             ui.goBack();
             targetStore.destroy(target);
         },

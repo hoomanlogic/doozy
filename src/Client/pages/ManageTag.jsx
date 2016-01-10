@@ -17,7 +17,7 @@
                     content: ''
                 };
             }
-            var tag = _.find(tagStore.updates.value, { id: this.props.tagId });
+            var tag = tagStore.get(this.props.tagId);
             return {
                 id: tag.id,
                 name: tag.name,
@@ -30,7 +30,7 @@
          * COMPONENT LIFECYCLE
          *************************************************************/
         componentWillReceiveProps: function (nextProps) {
-            var tag = _.find(tagStore.updates.value, { id: nextProps.tagId });
+            var tag = tagStore.get(nextProps.tagId);
             if (!tag) {
                 return;
             }
@@ -58,7 +58,7 @@
             }
         },
         handleDeleteClick: function () {
-            var tag = _.find(tagStore.updates.value, { id: this.props.tagId });
+            var tag = tagStore.get(this.props.tagId);
             ui.goBack();
             tagStore.destroy(tag);
         },

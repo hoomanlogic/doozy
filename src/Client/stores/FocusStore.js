@@ -148,6 +148,13 @@
             updates.onNext(updates.value);
         };
 
+        this.get = function (id) {
+            var obj = _.find(updates.value, function (item) {
+                return item.id.toLowerCase() === id.toLowerCase() || (item.gtag || '').toLowerCase() === id.toLowerCase();
+            });
+            return obj;
+        };
+
         var user = 'my';
         var secret = 'hash';
         var baseUrl = null;

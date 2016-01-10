@@ -4,9 +4,10 @@
         require('rx'),
         require('hl-common-js/src/io'),
         require('components/MessageBox'),
-        require('lodash')
+        require('lodash'),
+        require('stores/PlanStore')
     );
-}(function ($, Rx, hlio, MessageBox, _) {
+}(function ($, Rx, hlio, MessageBox, _, planStore) {
 
     var PlanStepStore = function () {
 
@@ -157,10 +158,21 @@
         };
 
         this.getPlanStepById = function (id) {
-            var existingPlanStep = _.find(updates.value, function (item) {
-                return item.id.toLowerCase() === id.toLowerCase();
+            return this.get(id);
+        };
+
+        this.get = function (id) {
+            var obj = _.find(updates.value, function (item) {
+                return item.id.toLowerCase() === id.toLowerCase() || (item.gtag || '').toLowerCase() === id.toLowerCase();
             });
-            return existingPlanStep;
+            return obj;
+        };
+        
+        this.getChildren = function (planId, parentId) {
+            var plan = planStore.get(planId);
+            var parent = parentId ? this.get(parentId) : null;
+            
+            return _.where(updates.value, { planId: plan ? plan.id : planId, parentId: parent ? parent.id : parentId });  
         };
 
         var user = 'my';

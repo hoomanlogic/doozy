@@ -18,7 +18,7 @@
                     content: ''
                 };
             }
-            var plan = _.find(planStore.updates.value, { id: this.props.planId });
+            var plan = planStore.get(this.props.planId);
             return {
                 id: plan.id,
                 name: plan.name,
@@ -32,7 +32,7 @@
          * COMPONENT LIFECYCLE
          *************************************************************/
         componentWillReceiveProps: function (nextProps) {
-            var plan = _.find(planStore.updates.value, { id: nextProps.planId });
+            var plan = planStore.get(nextProps.planId);
             this.setState({
                 id: plan.id,
                 name: plan.name,
