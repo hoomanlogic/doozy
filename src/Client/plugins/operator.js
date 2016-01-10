@@ -385,6 +385,15 @@
             BOX: '#',
             TAG: ''
         };
+        var prefixSymbols = ['!','@','>','$','#'];
+        var removePrefix = function (tag) {
+            if (prefixSymbols.indexOf(tag.slice(0, 1)) === -1) {
+                return tag;
+            }
+            else {
+                return tag.slice(1);
+            }
+        };
         
         /*****************************************************
          * ACTIONS
@@ -458,16 +467,26 @@
                 var state = req.body;
                 
                 // Create node
-                var actionNode = new db.Gnode(state.name, 'doozy.action', stripProps(state, calculated.action));
+                var gnode = new db.Gnode(state.name, 'doozy.action', stripProps(state, calculated.action));
                 
                 // Add node to db
-                db.add(actionNode);
+                db.add(gnode);
+                
+                // set connections
+                if (state.tags && state.tags.length) {
+                    state.tags.forEach(function (tag) {
+                        var tagNode = db.find(removePrefix(tag), 'doozy.tag').first();
+                        if (tagNode) {
+                            gnode.connect(tagNode, db.RELATION.ASSOCIATE);    
+                        }
+                    });
+                }
                 
                 // Commit
                 db.commitChanges();
                 
                 // update calced id to be passed back to app
-                state.id = actionNode.tag;
+                state.id = gnode.tag;
                 
                 // Send response
                 res.end(JSON.stringify(state));
@@ -479,11 +498,44 @@
                 var state = req.body;
                 
                 // Get node
-                var node = db.find(state.id, 'doozy.action').first();
+                var gnode = db.find(state.id, 'doozy.action').first();
                 
-                if (node) {
+                if (gnode) {
                     // update existing action
-                    node.setState(stripProps(state, calculated.action));
+                    gnode.setState(stripProps(state, calculated.action));
+                    
+                    // remove old connections
+                    var removeConnections = [];
+                    gnode.related('doozy.tag').forEach(function (tagGnapse) {
+                        var isInState = false;
+                        if (state.tags && state.tags.length) {
+                            for (var i = 0; i < state.tags.length; i++) {
+                                if (removePrefix(state.tags[i]) === tagGnapse.getTarget().tag) {
+                                    isInState = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (!isInState) {
+                            removeConnections.push(tagGnapse);
+                        }
+                    });
+                    
+                    // TODO: Delete gnapses
+                    console.log('Need to remove ' + removeConnections.length + ' gnapse(s)');
+                    // removeConnections.
+                    
+                    // add tag connections that do not already exist
+                    debugger;
+                    if (state.tags && state.tags.length) {
+                        state.tags.forEach(function (tag) {
+                            debugger;
+                            var tagNode = db.find(removePrefix(tag), 'doozy.tag').first();
+                            if (tagNode && !tagNode.isRelated(gnode.path())) {
+                                gnode.connect(tagNode, db.RELATION.ASSOCIATE);
+                            }
+                        });
+                    }
                     
                     // commit
                     db.commitChanges();
@@ -497,10 +549,10 @@
             operator.getDb(function (db) {
                 var state = req.body;
 
-                var node = db.find(req.params.tag, 'doozy.action').first();
-                if (!node) {
+                var gnode = db.find(req.params.tag, 'doozy.action').first();
+                if (!gnode) {
                     // TODO: DELETE A GNODE
-                    // node.setState(state);
+                    // gnode.setState(state);
                 }
                 // db.commitChanges();
                 res.end(JSON.stringify(state));
@@ -741,19 +793,19 @@
                 
                 // Add node to db
                 db.add(gnode);
-                debugger;
+
                 // set connections
                 if (state.planId) {
                     // Get plan (may be parent or associate)
                     var plan = db.find(state.planId, 'doozy.plan').first();
-                    if (plan && (!state.id || !plan.isRelated('doozy.planstep.' + state.id))) {
+                    if (plan) {
                         gnode.connect(plan, (state.parentId ? db.RELATION.ASSOCIATE : db.RELATION.CHILD_PARENT));
                     }
                 }
                 if (state.parentId) {
                     // Get parent planstep (if not root)
                     var parent = db.find(state.parentId, 'doozy.planstep').first();
-                    if (parent && (!state.id || !parent.isRelated('doozy.planstep.' + state.id))) {
+                    if (parent) {
                         gnode.connect(parent, db.RELATION.CHILD_PARENT);
                     }
                 }
@@ -771,7 +823,7 @@
         operator.express.put('/doozy/api/plansteps', operator.authenticate, jsonResponse, function (req, res) {
             operator.getDb(function (db) {
                 var state = req.body;
-                debugger;
+
                 var gnode = db.find(state.id, 'doozy.planstep').first();
                 if (gnode) {
                     // update existing planstep
