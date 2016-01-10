@@ -176,23 +176,23 @@
             Object.assign(logEntryToUpdate, logEntry);
             me.notify();
 
-            ui.queueRequest('Log Entry', logEntry.id, 'Updated log entry', function () {
-                _api.putLogEntry(logEntry)
-                .done(function (result) {
-                    Object.assign(logEntryToUpdate, result);
-                    me.notify();
-                    hlio.saveLocal('hl.' + user + '.logentries', me.updates.value, secret);
-                    actionStore.refreshActions(actionsToUpdate);
-                })
-                .fail(function (err) {
-                    Object.assign(logEntryToUpdate, original);
-                    me.notify();
-                    MessageBox.notify(err.responseText, 'error');
-                });
-            }, function () {
+            //ui.queueRequest('Log Entry', logEntry.id, 'Updated log entry', function () {
+            _api.putLogEntry(logEntry)
+            .done(function (result) {
+                Object.assign(logEntryToUpdate, result);
+                me.notify();
+                hlio.saveLocal('hl.' + user + '.logentries', me.updates.value, secret);
+                actionStore.refreshActions(actionsToUpdate);
+            })
+            .fail(function (err) {
                 Object.assign(logEntryToUpdate, original);
                 me.notify();
+                MessageBox.notify(err.responseText, 'error');
             });
+            //}, function () {
+            //    Object.assign(logEntryToUpdate, original);
+            //    me.notify();
+            //});
         };
 
         this.createWithNewAction = function (newAction, logEntry) {
@@ -222,23 +222,23 @@
             me.updates.value = filtered;
             me.notify();
 
-            ui.queueRequest('Log Entry', logEntry.id, 'Deleted log entry', function () {
-                _api.deleteLogEntry(logEntry)
-                .done( function () {
-                    if (actionIdToUpdate) {
-                        actionStore.refreshActions([actionIdToUpdate]);
-                    }
-                    hlio.saveLocal('hl.' + user + '.logentries', me.updates.value, secret);
-                })
-                .fail( function (err) {
-                    me.updates.value = me.updates.value.concat(logEntry);
-                    me.notify();
-                    MessageBox.notify(err.responseText, 'error');
-                });
-            }, function () {
+            //ui.queueRequest('Log Entry', logEntry.id, 'Deleted log entry', function () {
+            _api.deleteLogEntry(logEntry)
+            .done( function () {
+                if (actionIdToUpdate) {
+                    actionStore.refreshActions([actionIdToUpdate]);
+                }
+                hlio.saveLocal('hl.' + user + '.logentries', me.updates.value, secret);
+            })
+            .fail( function (err) {
                 me.updates.value = me.updates.value.concat(logEntry);
                 me.notify();
+                MessageBox.notify(err.responseText, 'error');
             });
+            //}, function () {
+            //    me.updates.value = me.updates.value.concat(logEntry);
+            //    me.notify();
+            //});
         };
 
         this.toggleUpvote = function (userName, id) {

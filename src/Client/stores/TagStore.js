@@ -104,14 +104,14 @@
             updates.onNext(filtered);
 
             // ui.queueRequest('Tag', tag.id, 'Deleted tag ' + tag.name, function () {
-                _api.deleteTag(tag)
-                .done( function () {
-                    hlio.saveLocal('hl.' + user + '.tags', updates.value, secret);
-                })
-                .fail( function (err) {
-                    updates.onNext(updates.value.concat(tag));
-                    MessageBox.notify(err.responseText, 'error');
-                });
+            _api.deleteTag(tag)
+            .done( function () {
+                hlio.saveLocal('hl.' + user + '.tags', updates.value, secret);
+            })
+            .fail( function (err) {
+                updates.onNext(updates.value.concat(tag));
+                MessageBox.notify(err.responseText, 'error');
+            });
             // }, function () {
             //     updates.onNext(updates.value.concat(tag));
             // });
@@ -132,17 +132,17 @@
             updates.onNext(updates.value);
 
             // ui.queueRequest('Tag', tag.id, 'Updated tag ' + tagToSave.name, function () {
-                _api.putTag(tagToSave)
-                .done(function (result) {
-                    Object.assign(tagToSave, result);
-                    updates.onNext(updates.value);
-                    hlio.saveLocal('hl.' + user + '.tags', updates.value, secret);
-                })
-                .fail(function (err) {
-                    Object.assign(tagToSave, original);
-                    updates.onNext(updates.value);
-                    MessageBox.notify(err.responseText, 'error');
-                });
+            _api.putTag(tagToSave)
+            .done(function (result) {
+                Object.assign(tagToSave, result);
+                updates.onNext(updates.value);
+                hlio.saveLocal('hl.' + user + '.tags', updates.value, secret);
+            })
+            .fail(function (err) {
+                Object.assign(tagToSave, original);
+                updates.onNext(updates.value);
+                MessageBox.notify(err.responseText, 'error');
+            });
             // }, function () {
             //     Object.assign(tagToSave, original);
             //     updates.onNext(updates.value);

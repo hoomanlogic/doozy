@@ -104,18 +104,18 @@
             var filtered = updates.value.filter( function (item) { return item.id !== planStep.id; });
             updates.onNext(filtered);
 
-            ui.queueRequest('Plan Step', planStep.id, 'Deleted plan step ' + planStep.name, function () {
-                _api.deletePlanStep(planStep)
-                .done( function () {
-                    hlio.saveLocal('hl.' + user + '.plansteps', updates.value, secret);
-                })
-                .fail( function (err) {
-                    updates.onNext(updates.value.concat(planStep));
-                    MessageBox.notify(err.responseText, 'error');
-                });
-            }, function () {
+            //ui.queueRequest('Plan Step', planStep.id, 'Deleted plan step ' + planStep.name, function () {
+            _api.deletePlanStep(planStep)
+            .done( function () {
+                hlio.saveLocal('hl.' + user + '.plansteps', updates.value, secret);
+            })
+            .fail( function (err) {
                 updates.onNext(updates.value.concat(planStep));
+                MessageBox.notify(err.responseText, 'error');
             });
+            //}, function () {
+            //    updates.onNext(updates.value.concat(planStep));
+            //});
         };
 
         this.update = function (planStep) {
@@ -132,22 +132,22 @@
             Object.assign(planStepToSave, planStep);
             updates.onNext(updates.value);
 
-            ui.queueRequest('Plan Step', planStep.id, 'Updated plan step ' + planStepToSave.name, function () {
-                _api.putPlanStep(planStepToSave)
-                .done(function (result) {
-                    Object.assign(planStepToSave, result);
-                    updates.onNext(updates.value);
-                    hlio.saveLocal('hl.' + user + '.plansteps', updates.value, secret);
-                })
-                .fail(function (err) {
-                    Object.assign(planStepToSave, original);
-                    updates.onNext(updates.value);
-                    MessageBox.notify(err.responseText, 'error');
-                });
-            }, function () {
+            //ui.queueRequest('Plan Step', planStep.id, 'Updated plan step ' + planStepToSave.name, function () {
+            _api.putPlanStep(planStepToSave)
+            .done(function (result) {
+                Object.assign(planStepToSave, result);
+                updates.onNext(updates.value);
+                hlio.saveLocal('hl.' + user + '.plansteps', updates.value, secret);
+            })
+            .fail(function (err) {
                 Object.assign(planStepToSave, original);
                 updates.onNext(updates.value);
+                MessageBox.notify(err.responseText, 'error');
             });
+            //}, function () {
+            //    Object.assign(planStepToSave, original);
+            //    updates.onNext(updates.value);
+            //});
         };
 
         this.getPlanStepByName = function (name) {
