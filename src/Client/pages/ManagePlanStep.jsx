@@ -1,15 +1,17 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
-        require('stores/PlanStepStore'),
         require('babble'),
         require('hl-common-js/src/common'),
+        require('stores/planstep-store'),
+        require('mixins/SubscriberMixin')
     );
-}(function (React, planStepStore, babble, hlcommon) {
+}(function (React, babble, hlcommon, planStepStore, SubscriberMixin) {
     var ManagePlanStep = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
+        mixins: [SubscriberMixin(planStepStore)],
         getInitialState: function () {
             if (this.props.isNew) {
 
@@ -38,12 +40,14 @@
                     tagName: null
                 });
                 return state;
-            } else {
+            }
+            else {
                 var planStep = planStepStore.get(this.props.planStepId);
                 var durationParse = babble.get('durations').translate((planStep.duration || 0) + ' min');
                 if (durationParse.tokens.length === 0) {
                     var durationInput = null;
-                } else {
+                }
+                else {
                     var durationInput = durationParse.tokens[0].value.toString();
                 }
                 return {
@@ -74,7 +78,8 @@
             var durationParse = babble.get('durations').translate((planStep.duration || 0) + ' min');
             if (durationParse.tokens.length === 0) {
                 var durationInput = null;
-            } else {
+            }
+            else {
                 var durationInput = durationParse.tokens[0].value.toString();
             }
             this.setState({
@@ -102,15 +107,20 @@
         handleChange: function (event) {
             if (event.target === this.refs.name.getDOMNode()) {
                 this.setState({name: event.target.value});
-            } else if (event.target === this.refs.kind.getDOMNode()) {
+            }
+            else if (event.target === this.refs.kind.getDOMNode()) {
                 this.setState({kind: event.target.value});
-            } else if (event.target === this.refs.status.getDOMNode()) {
+            }
+            else if (event.target === this.refs.status.getDOMNode()) {
                 this.setState({status: event.target.value});
-            } else if (event.target === this.refs.tagName.getDOMNode()) {
+            }
+            else if (event.target === this.refs.tagName.getDOMNode()) {
                 this.setState({tagName: event.target.value});
-            } else if (event.target === this.refs.content.getDOMNode()) {
+            }
+            else if (event.target === this.refs.content.getDOMNode()) {
                 this.setState({content: event.target.value});
-            } else if (event.target === this.refs.duration.getDOMNode()) {
+            }
+            else if (event.target === this.refs.duration.getDOMNode()) {
                 var durationParsed = babble.get('durations').translate(this.refs.duration.getDOMNode().value.trim());
                 var duration = 0;
                 var durationDisplay = '';
@@ -127,7 +137,8 @@
                     durationInput: this.refs.duration.getDOMNode().value,
                     durationDisplay: durationDisplay
                 });
-            } else if (event.target === this.refs.ordinal.getDOMNode()) {
+            }
+            else if (event.target === this.refs.ordinal.getDOMNode()) {
                 var ord = null;
                 try {
                     ord = parseInt(event.target.value);
@@ -138,14 +149,14 @@
             }
         },
         handleDeleteClick: function () {
-            var plan = planStore.get(this.props.planId);
+            planStepStore.destroy(this.props.planStepId);
             window.location.href = '/doozy/plansteps/' + this.props.planId;
-            planStepStore.destroy(this.state);
         },
         handleSaveClick: function () {
             if (this.props.isNew) {
                 planStepStore.create(this.state);
-            } else {
+            }
+            else {
                 planStepStore.update(this.state);
             }
             window.location.href = '/doozy/plansteps/' + this.props.planId;
@@ -233,7 +244,7 @@
             );
         }
     });
-    
+
     var styles = {
         main: {
             padding: '1rem',

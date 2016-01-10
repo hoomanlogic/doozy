@@ -27,9 +27,11 @@
         handleChange: function (event) {
             if (event.target === this.refs.name.getDOMNode()) {
                 this.setState({name: event.target.value});
-            } else if (event.target === this.refs.kind.getDOMNode()) {
+            }
+            else if (event.target === this.refs.kind.getDOMNode()) {
                 this.setState({kind: event.target.value});
-            } else if (event.target === this.refs.content.getDOMNode()) {
+            }
+            else if (event.target === this.refs.content.getDOMNode()) {
                 this.setState({content: event.target.value});
             }
         },
@@ -49,7 +51,7 @@
         handleStoreUpdate: function (model) {
             this.setState(model);
         },
-        
+
         /*************************************************************
          * RENDERING
          *************************************************************/
@@ -58,7 +60,7 @@
             if (this.props.tagId && this.state.isNew) {
                 return <div>Loading...</div>;
             }
-            
+
            var buttons = [
                 {type: 'primary',
                  text: 'Save Changes',

@@ -19,7 +19,6 @@
             };
         },
 
-
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
@@ -38,12 +37,11 @@
          *************************************************************/
         render: function () {
 
-
             var ctxTargets = targetStore.context({});
             if (!ctxTargets || !ctxTargets.value) {
                 return <div>Loading...</div>
             }
-            
+
             /**
              * Sort the actions by completed and name
              */
@@ -55,25 +53,6 @@
              * Add 'New Target' to list
              */
             targets.push(doozy.target());
-
-            /**
-             * Inline Styles
-             */
-            var headerStyle = {
-                display: 'flex',
-                flexDirection: 'row',
-                color: '#e2ff63',
-                backgroundColor: '#444',
-                padding: '2px 2px 0 8px',
-                fontWeight: 'bold',
-                fontSize: '1.5em'
-            };
-
-            var targetStyle = {
-                fontSize: 'large',
-                padding: '5px',
-                borderBottom: 'solid 1px #e0e0e0'
-            };
 
             var targetsStats = doozy.targetsStats();
 
@@ -97,7 +76,8 @@
                                         <div>{item.name}</div>
                                     </div>
                                 );
-                            } else {
+                            }
+                            else {
 
                                 var progress = Indicator.calcProgressProps(item, stats);
 
@@ -151,5 +131,25 @@
             );
         }
     });
+
+    /**
+     * Inline Styles
+     */
+    var headerStyle = {
+        display: 'flex',
+        flexDirection: 'row',
+        color: '#e2ff63',
+        backgroundColor: '#444',
+        padding: '2px 2px 0 8px',
+        fontWeight: 'bold',
+        fontSize: '1.5em'
+    };
+
+    var targetStyle = {
+        fontSize: 'large',
+        padding: '5px',
+        borderBottom: 'solid 1px #e0e0e0'
+    };
+
     return ManageTargets;
  }));

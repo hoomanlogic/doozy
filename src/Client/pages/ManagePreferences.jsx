@@ -33,7 +33,8 @@
         handleNotifySubscriptionClick: function () {
             if (doozyNotifications.isPushEnabled) {
               doozyNotifications.unsubscribe();
-            } else {
+            }
+            else {
               // Disable the button so it can't be changed while
               // we process the permission request
               //var pushButton = document.querySelector('.js-push-button');

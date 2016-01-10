@@ -27,11 +27,14 @@
         handleChange: function (event) {
             if (event.target === this.refs.name.getDOMNode()) {
                 this.setState({name: event.target.value});
-            } else if (event.target === this.refs.kind.getDOMNode()) {
+            }
+            else if (event.target === this.refs.kind.getDOMNode()) {
                 this.setState({kind: event.target.value});
-            } else if (event.target === this.refs.tagName.getDOMNode()) {
+            }
+            else if (event.target === this.refs.tagName.getDOMNode()) {
                 this.setState({tagName: event.target.value});
-            } else if (event.target === this.refs.content.getDOMNode()) {
+            }
+            else if (event.target === this.refs.content.getDOMNode()) {
                 this.setState({content: event.target.value});
             }
         },
@@ -60,7 +63,7 @@
             if (this.props.planId && this.state.isNew) {
                 return <div>Loading...</div>;
             }
-            
+
             var buttonStyle = {
                 display: 'block',
                 width: '100%',
@@ -122,7 +125,7 @@
             );
         }
     });
-    
+
     var styles = {
         main: {
             padding: '1rem',

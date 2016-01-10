@@ -167,12 +167,12 @@
             });
             return obj;
         };
-        
+
         this.getChildren = function (planId, parentId) {
             var plan = planStore.get(planId);
             var parent = parentId ? this.get(parentId) : null;
-            
-            return _.where(updates.value, { planId: plan ? plan.id : planId, parentId: parent ? parent.id : parentId });  
+
+            return _.where(updates.value, { planId: plan ? plan.id : planId, parentId: parent ? parent.id : parentId });
         };
 
         var user = 'my';

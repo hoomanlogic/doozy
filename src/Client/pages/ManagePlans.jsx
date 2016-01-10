@@ -15,7 +15,7 @@
                 globalSubscriberContext: true // SubscriberMixin behavior property
             };
         },
-        
+
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
@@ -38,7 +38,7 @@
             if (!ctxPlans || !ctxPlans.value) {
                 return <div>Loading...</div>
             }
-            
+
             /**
              * Sort the actions by completed and name
              */
@@ -71,7 +71,7 @@
             );
         }
     });
-    
+
     /**
      * Inline Styles
      */
@@ -103,6 +103,6 @@
         fontWeight: 'bold',
         outlineColor: 'rgb(40, 40, 40)'
     };
-    
+
     return ManagePlans;
  }));

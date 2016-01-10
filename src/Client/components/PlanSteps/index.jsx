@@ -2,17 +2,19 @@
     module.exports = exports = factory(
         require('react'),
         require('./PlanStep'),
-        require('stores/PlanStore'),
-        require('stores/PlanStepStore')
+        require('stores/plan-store'),
+        require('stores/planstep-store'),
+        require('mixins/SubscriberMixin')
     );
-}(function (React, PlanStep, planStore, planStepStore) {
+}(function (React, PlanStep, planStore, planStepStore, SubscriberMixin) {
     var PlanSteps = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
+        mixins: [SubscriberMixin(planStore)],
         getInitialState: function () {
             return {
-                planStepsLastUpdated: (new Date()).toISOString()
+                storeLastUpdated: (new Date()).toISOString()
             };
         },
 
@@ -21,12 +23,9 @@
          *************************************************************/
         componentWillMount: function () {
             /**
-             * Subscribe to Tag Store to be
-             * notified of updates to the store
+             * Subscribe globally to additional stores
              */
-            this.planStepsObserver = planStepStore.updates
-                .subscribe(this.handlePlanStepStoreUpdate);
-
+            planStepStore.subscribe(this.handleStoreUpdate, {});
         },
         componentDidMount: function () {
             $(this.refs.topScroller.getDOMNode()).scroll(function(){
@@ -52,21 +51,21 @@
             /**
              * Clean up objects and bindings
              */
-            this.planStepsObserver.dispose();
+            planStepStore.unsubscribe(this.handleStoreUpdate, {});
         },
 
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
-        handlePlanStepStoreUpdate: function (planSteps) {
-            this.setState({ planStepsLastUpdated: (new Date()).toISOString() });
+        handleStoreUpdate: function () {
+            this.setState({ storeLastUpdated: (new Date()).toISOString() });
         },
         handleCloseClick: function () {
             window.location.href = '/doozy';
         },
 
         calculateNewStep: function () {
-            var steps = _.where(planStepStore.updates.value, { planId: this.props.planId, parentId: null });
+            var steps = planStepStore.getChildren(null, this.props.planId);
             var nextOrdinal = 1;
             if (steps.length > 0) {
                 steps = _.sortBy(steps, function (item) {
@@ -96,12 +95,12 @@
         render: function () {
 
             // get root level steps for this plan
-            var steps = planStepStore.getChildren(this.props.planId, null);
+            var steps = planStepStore.getChildren(null, this.props.planId);
             var childrenCount = 1;
 
             steps = _.sortBy(steps, function (item) {
-
-                var children = _.where(planStepStore.updates.value, { planId: item.planId, parentId: item.id });
+                
+                var children = planStepStore.getChildren(item.id, item.planId);
                 childrenCount += children.length + 1;
                 return item.ordinal;
             });

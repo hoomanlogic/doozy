@@ -34,13 +34,17 @@
 
             if (tag.kind === 'Focus') {
                 tagIcon = 'fa-eye';
-            } else if (tag.kind === 'Place') {
+            }
+            else if (tag.kind === 'Place') {
                 tagIcon = 'fa-anchor';
-            } else if (tag.kind === 'Goal') {
+            }
+            else if (tag.kind === 'Goal') {
                 tagIcon = 'fa-trophy';
-            } else if (tag.kind === 'Need') {
+            }
+            else if (tag.kind === 'Need') {
                 tagIcon = 'fa-recycle';
-            } else if (tag.kind === 'Box') {
+            }
+            else if (tag.kind === 'Box') {
                 tagIcon = 'fa-cube';
             }
             return (
@@ -82,7 +86,7 @@
             );
         }
     });
-    
+
     /**
      * Inline Styles
      */
@@ -101,6 +105,6 @@
         padding: '5px',
         borderBottom: 'solid 1px #e0e0e0'
     };
-    
+
     return ManageTags;
  }));

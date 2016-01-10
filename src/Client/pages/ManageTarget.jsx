@@ -12,11 +12,11 @@
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
-        mixins: [SubscriberMixin(targetStore), SubscriberMixin(actionStore), SubscriberMixin(tagStore)],
+        mixins: [SubscriberMixin(targetStore)],
         propTypes: {
             targetId: React.PropTypes.string,
         },
-        
+
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
@@ -27,23 +27,32 @@
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
+        componentWillMount: function () {
+            actionStore.subscribe(this.handleActionStoreUpdate, {});
+            tagStore.subscribe(this.handleTagStoreUpdate, {});
+        },
         componentDidMount: function () {
             /**
              * Setup Entity selector
              */
             if (this.state.entityType === 'Tag') {
                 this.setupTagsControl();
-            } else if (this.state.entityType === 'Action') {
+            }
+            else if (this.state.entityType === 'Action') {
                 this.setupActionsControl();
             }
         },
-
         componentDidUpdate: function () {
             if (this.state.entityType === 'Tag') {
                 this.setupTagsControl();
-            } else if (this.state.entityType === 'Action') {
+            }
+            else if (this.state.entityType === 'Action') {
                 this.setupActionsControl();
             }
+        },
+        componentWillUnmount: function () {
+            actionStore.unsubscribe(this.handleActionStoreUpdate, {});
+            tagStore.unsubscribe(this.handleTagStoreUpdate, {});
         },
 
         /*************************************************************
@@ -55,15 +64,20 @@
         handleChange: function (event) {
             if (event.target === this.refs.name.getDOMNode()) {
                 this.setState({name: event.target.value});
-            } else if (event.target === this.refs.entityType.getDOMNode()) {
+            }
+            else if (event.target === this.refs.entityType.getDOMNode()) {
                 this.setState({entityType: event.target.value, entityId: null});
-            } else if (event.target === this.refs.measure.getDOMNode()) {
+            }
+            else if (event.target === this.refs.measure.getDOMNode()) {
                 this.setState({measure: parseInt(event.target.value)});
-            } else if (event.target === this.refs.period.getDOMNode()) {
+            }
+            else if (event.target === this.refs.period.getDOMNode()) {
                 this.setState({period: parseInt(event.target.value)});
-            } else if (event.target === this.refs.multiplier.getDOMNode()) {
+            }
+            else if (event.target === this.refs.multiplier.getDOMNode()) {
                 this.setState({multiplier: parseInt(event.target.value)});
-            } else if (event.target === this.refs.number.getDOMNode()) {
+            }
+            else if (event.target === this.refs.number.getDOMNode()) {
                 this.setState({number: parseInt(event.target.value)});
             }
         },
@@ -77,23 +91,35 @@
                 entity = _.find(tagStore.updates.value, function (tag) {
                      return doozy.getTagValue(tag) === entity;
                 });
-            } else if (this.state.entityType === 'Action') {
+            }
+            else if (this.state.entityType === 'Action') {
                 entity = actionStore.getActionByName(entity);
             }
             if (!entity) {
-                ui.message('Cannot save target without a tag or action assigned', 'error');
+                // ui.message('Cannot save target without a tag or action assigned', 'error');
                 return;
             }
             this.state.entityId = entity.id;
             if (this.state.isNew) {
                 targetStore.create(this.state);
-            } else {
+            }
+            else {
                 targetStore.update(this.state);
             }
             window.location.href = '/doozy/targets';
         },
         handleStoreUpdate: function (model) {
             this.setState(model);
+        },
+        handleActionStoreUpdate: function () {
+            if (this.state.entityType === 'Action') {
+                this.setupActionsControl();
+            }
+        },
+        handleTagStoreUpdate: function () {
+            if (this.state.entityType === 'Tag') {
+                this.setupTagsControl();
+            }
         },
 
         /*************************************************************
@@ -252,7 +278,8 @@
                         <input id="target-entity" ref="entity" type="text" />
                     </div>
                 );
-            } else if (this.state.entityType === 'Action') {
+            }
+            else if (this.state.entityType === 'Action') {
                 selectorDom = (
                     <div className="form-group">
                         <label htmlFor="target-entity">Action</label>
@@ -308,7 +335,7 @@
             );
         }
     });
-    
+
     var styles = {
         main: {
             padding: '1rem',
@@ -316,7 +343,7 @@
             maxWidth: '40rem'
         }
     };
-    
+
     var buttonStyle = {
         display: 'block',
         width: '100%',

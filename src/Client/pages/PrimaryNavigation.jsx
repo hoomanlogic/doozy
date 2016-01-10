@@ -169,7 +169,8 @@
 
             if (userStore.updates.value.profileUri) {
                 var button = (<img style={{maxHeight: '40px'}} src={userStore.updates.value.profileUri} title={userStore.updates.value.userName} />);
-            } else {
+            }
+            else {
                 var button = (<i className="fa fa-2x fa-gear"></i>);
             }
 

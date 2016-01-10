@@ -1,42 +1,34 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
-        require('stores/PlanStepStore')
+        require('lodash'),
+        require('stores/planstep-store')
     );
-}(function (React, planStepStore) {
+}(function (React, _, planStepStore) {
     var PlanStep = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
-        getInitialState: function () {
-            return {
-                planStepsLastUpdated: (new Date()).toISOString()
-            };
-        },
 
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
         componentWillMount: function () {
-            /**
-             * Subscribe to Tag Store to be
-             * notified of updates to the store
-             */
-            this.planStepsObserver = planStepStore.updates
-                .subscribe(this.handlePlanStepStoreUpdate);
+            // TODO: ONLY subscribe to this item and its children
+            planStepStore.subscribe(this.handlePlanStepStoreUpdate, {});
 
         },
         componentWillUnmount: function () {
             /**
              * Clean up objects and bindings
              */
-            this.planStepsObserver.dispose();
+            planStepStore.unsubscribe(this.handlePlanStepStoreUpdate, {});
         },
 
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
-        handlePlanStepStoreUpdate: function (plans) {
+        handlePlanStepStoreUpdate: function () {
             this.setState({ planStepsLastUpdated: (new Date()).toISOString() });
         },
         handleCardClick: function () {
@@ -56,11 +48,8 @@
 
         calculateNewStep: function () {
 
-            var steps = _.where(planStepStore.updates.value, {
-                planId: this.props.planId,
-                parentId: this.props.data.id
-            });
-
+            var steps = planStepStore.getChildren(this.props.data.id, this.props.planId);
+            
             var nextOrdinal = 1;
             if (steps.length > 0) {
                 steps = _.sortBy(steps, function (item) {
@@ -88,27 +77,28 @@
          * RENDERING
          *************************************************************/
         render: function () {
-
+            var nameStyle;
+            
             /**
              * Inline Styles
              */
             var listItemStyle = {
                 fontSize: 'large',
                 verticalAlign: 'top'
-                //padding: '5px',
-                //borderBottom: 'solid 1px #e0e0e0'
+                // padding: '5px',
+                // borderBottom: 'solid 1px #e0e0e0'
             };
 
-            var buttonStyle = {
-                paddingTop: '3px',
-                paddingBottom: '3px',
-                backgroundImage: 'none',
-                color: '#444',
-                backgroundColor: '#e2ff63',
-                borderColor: '#e2ff63',
-                fontWeight: 'bold',
-                outlineColor: 'rgb(40, 40, 40)'
-            };
+            // var buttonStyle = {
+            //     paddingTop: '3px',
+            //     paddingBottom: '3px',
+            //     backgroundImage: 'none',
+            //     color: '#444',
+            //     backgroundColor: '#e2ff63',
+            //     borderColor: '#e2ff63',
+            //     fontWeight: 'bold',
+            //     outlineColor: 'rgb(40, 40, 40)'
+            // };
 
             var stepStyles = [
                 {},
@@ -150,7 +140,8 @@
                 Object.assign(newStepStyle, {
                     height: '40px'
                 });
-            } else {
+            }
+            else {
                 Object.assign(newStepStyle, {
                     width: '40px',
                     minWidth: '40px',
@@ -171,16 +162,19 @@
                 }
             ];
 
-            var steps = planStepStore.getChildren(this.props.planId, this.props.data.id);
+            var steps = planStepStore.getChildren(this.props.data.id, this.props.planId);
             steps = _.sortBy(steps, function (item) {
                 var type = 0;
                 if (item.status === 'Doing') {
                     type = 1;
-                } else if (item.status === 'Ready') {
+                }
+                else if (item.status === 'Ready') {
                     type = 2;
-                } else if (item.status === 'Todo') {
+                }
+                else if (item.status === 'Todo') {
                     type = 3;
-                } else if (item.status === 'Done') {
+                }
+                else if (item.status === 'Done') {
                     type = 4;
                 }
                 return type + '-' + item.ordinal;
@@ -199,16 +193,18 @@
             }
 
             if (this.props.data.status === 'Done') {
-                var nameStyle = {
+                nameStyle = {
                     textDecoration: 'line-through',
                     backgroundColor: 'rgb(255, 163, 163)'
                 };
-            } else if (this.props.data.status === 'Doing') {
-                var nameStyle = {
+            }
+            else if (this.props.data.status === 'Doing') {
+                nameStyle = {
                     backgroundColor: '#FFF086'
                 };
-            } else if (this.props.data.status === 'Ready') {
-                var nameStyle = {
+            }
+            else if (this.props.data.status === 'Ready') {
+                nameStyle = {
                     backgroundColor: '#E2FF63'
                 };
             }
@@ -228,4 +224,4 @@
         }
     });
     return PlanStep;
- }));
+}));

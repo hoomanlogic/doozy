@@ -28,7 +28,7 @@
             }
             return false;
         },
-        
+
         /**
          * Update the cache with the new value.
          * @param storeName {string} The type of gnode
@@ -149,12 +149,12 @@
                     if (gnode !== null) {
                         version = gnode.version || version;
                     }
-                    
+
                     return $.ajax({
                         context: me,
                         url: baseUrl + '/api/' + me.storeName.toLowerCase() + '/' + id + '/' + version,
                         dataType: 'json',
-                    });    
+                    });
                 }
                 else {
                     return $.ajax({
@@ -247,7 +247,7 @@
         this.getLatestVersion = function (value, id) {
             _api.get(id)
             .done(function (result) {
-                
+
                 // Reset retry interval to 5 seconds
                 // on a successful call
                 this.retry = 5;
@@ -260,7 +260,7 @@
 
                 // Update the local stash of gnodes
                 _cacheApi.update(this.storeName, result);
-                
+
                 // if a specific context exists for this id
                 // then update the value and notify subscribers
                 this.updateContext(result, {id: id});
@@ -279,28 +279,28 @@
                 this.retry += 5;
             });
         };
-        
+
         this.create = function (model) {
             // TODO: Optimistic Concurrency Strategy
             // No one is going to be subscribed to this id yet
             // this.updateContext(model, {id: id}); // id isn't valid yet
-            
+
             // Notify subscribers to ALL that a new node has been added
             // this.updateContext(cache[this.storeName].gnodes, {}); // id isn't valid yet
 
             _api.post(model)
             .done(function (serverModel) {
-                
+
                 // Update the local stash of gnodes
                 _cacheApi.update(me.storeName, serverModel);
-                
+
                 // if a specific context exists for this id
                 // then update the value and notify subscribers
                 // this.updateContext(serverModel, {id: serverModel.id});
-                
+
                 // Update the global context
                 this.updateContext(cache[me.storeName].gnodes, {});
-                
+
                 // MessageBox.notify('Added plan ' + model.name, 'success');
             })
             .fail( function (err) {
@@ -315,14 +315,14 @@
             .done( function () {
                 // Update the local stash of gnodes
                 _cacheApi.destroy(me.storeName, id);
-                
+
                 // if a specific context exists for this id
                 // then update the value and notify subscribers
                 this.updateContext(null, {id: id});
-                
+
                 // Update the global context
                 this.updateContext(cache[me.storeName].gnodes, {});
-                
+
                 // MessageBox.notify('Deleted plan ' + id, 'success');
             })
             .fail( function (err) {
@@ -331,7 +331,7 @@
                 console.log(err);
             });
         };
-        
+
         this.get = function (id) {
             var gnode = _cacheApi.getGnode(me.storeName, id);
             return gnode;
@@ -346,11 +346,11 @@
             .done(function (serverModel) {
                 // Update the local stash of gnodes
                 _cacheApi.update(me.storeName, serverModel);
-                
+
                 // if a specific context exists for this id
                 // then update the value and notify subscribers
                 this.updateContext(serverModel, {id: serverModel.id});
-                
+
                 // Update the global context
                 this.updateContext(cache[me.storeName].gnodes, {});
             })

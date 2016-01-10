@@ -90,7 +90,8 @@
              */
             if (this.props.action && this.props.action.name && this.props.action.name.length > 0) {
                 $(this.refs.actualduration.getDOMNode()).focus();
-            } else {
+            }
+            else {
                 $(this.refs.name.getDOMNode())[0].selectize.focus();
             }
         },
@@ -114,7 +115,8 @@
                 } catch (e) {
                     if (e instanceof RangeError) {
                         isValid = false;
-                    } else {
+                    }
+                    else {
                         throw e;
                     }
                 }
@@ -128,11 +130,13 @@
                     dateInput: event.target.value,
                     dateFeedback: dateFeedback
                 });
-            } else if (event.target === this.refs.kind.getDOMNode()) {
+            }
+            else if (event.target === this.refs.kind.getDOMNode()) {
                 this.setState({
                     kind: event.target.value
                 });
-            } else if (event.target === this.refs.actualduration.getDOMNode()) {
+            }
+            else if (event.target === this.refs.actualduration.getDOMNode()) {
                 var duration = 0;
                 var durationParseResult = babble.get('durations').translate(this.refs.actualduration.getDOMNode().value.trim());
                 var durationFeedback = '';
@@ -146,7 +150,8 @@
                     durationInput: event.target.value,
                     durationFeedback: durationFeedback
                 });
-            } else if (event.target === this.refs.details.getDOMNode()) {
+            }
+            else if (event.target === this.refs.details.getDOMNode()) {
                 this.setState({
                     details: event.target.value
                 });
@@ -206,14 +211,16 @@
                 logEntry.id = this.state.id;
                 if (!newAction) {
                     logEntryStore.update(logEntry);
-                } else {
+                }
+                else {
                     logEntryStore.updateWithNewAction(newAction, logEntry);
                 }
             }
             else {
                 if (!newAction) {
                     logEntryStore.create(logEntry);
-                } else {
+                }
+                else {
                     logEntryStore.createWithNewAction(newAction, logEntry);
                 }
             }
@@ -321,16 +328,20 @@
                     if (name.indexOf('!') === 0) {
                         kind = 'Focus'; // part of
                         name = name.substring(1);
-                    } else if (name.indexOf('@') === 0) {
+                    }
+                    else if (name.indexOf('@') === 0) {
                         kind = 'Place'; // where
                         name = name.substring(1);
-                    } else if (name.indexOf('>') === 0) {
+                    }
+                    else if (name.indexOf('>') === 0) {
                         kind = 'Goal'; // to what end
                         name = name.substring(1);
-                    } else if (name.indexOf('$') === 0) {
+                    }
+                    else if (name.indexOf('$') === 0) {
                         kind = 'Need'; // why
                         name = name.substring(1);
-                    } else if (name.indexOf('#') === 0) {
+                    }
+                    else if (name.indexOf('#') === 0) {
                         kind = 'Box'; // when
                         name = name.substring(1);
                     }
@@ -356,7 +367,8 @@
                 // tags.push(this.props.focusTag);
                 var tags = [];
                 selectize.setValue(tags);
-            } else {
+            }
+            else {
                 selectize.setValue(this.props.action.tags);
             }
         },
@@ -453,7 +465,7 @@
             );
         },
     });
-    
+
     var styles = {
         main: {
             padding: '1rem',

@@ -46,9 +46,11 @@
         handleChange: function (event) {
             if (event.target === this.refs.name.getDOMNode()) {
                 this.setState({name: event.target.value});
-            } else if (event.target === this.refs.kind.getDOMNode()) {
+            }
+            else if (event.target === this.refs.kind.getDOMNode()) {
                 this.setState({kind: event.target.value});
-            } else if (event.target === this.refs.tagname.getDOMNode()) {
+            }
+            else if (event.target === this.refs.tagname.getDOMNode()) {
                 this.setState({tagName: event.target.value});
             }
         },
@@ -65,7 +67,8 @@
         handleSaveClick: function () {
             if (!this.state.isNew) {
                 focusStore.update(this.state);
-            } else {
+            }
+            else {
                 focusStore.create({
                     id: this.state.id,
                     name: this.state.name,
@@ -122,7 +125,7 @@
             );
         }
     });
-    
+
     var styles = {
         main: {
             padding: '1rem',
