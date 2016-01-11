@@ -15,7 +15,7 @@
         mixins: [SubscriberMixin(planStepStore)],
 
         getInitialState: function () {
-            return doozy.planstep(this.props.planId, this.props.parentId);
+            return doozy.planStep(this.props.planId, this.props.parentId);
         },
 
         /*************************************************************

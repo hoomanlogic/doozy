@@ -69,7 +69,7 @@
 
             // get root level steps for this plan
             var planSteps = planStepStore.getPlan(this.props.planId);
-            if (!planSteps || !planSteps.length) {
+            if (!planSteps) {
                 return <div>Loading...</div>;
             }
 
