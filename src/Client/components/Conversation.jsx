@@ -37,7 +37,7 @@
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
-        handleResize: function(e) {
+        handleResize: function (e) {
             this.setState({windowWidth: window.innerWidth});
         },
         handleViewLogEntriesClick: function () {
@@ -103,9 +103,9 @@
 
             var domMessages = null;
             var messages = _.sortBy(conversation.messages, function (a) { return a.sent.getTime(); });
-            _.groupBy(messages, function(item) { return item.sent + item.from; });
+            _.groupBy(messages, function (item) { return item.sent + item.from; });
             domMessages =
-                messages.map(function(msg, index) {
+                messages.map(function (msg, index) {
                     var left = null;
                     var right = null;
                     var section = null;

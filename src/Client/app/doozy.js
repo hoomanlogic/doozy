@@ -373,20 +373,50 @@
             };
         },
 
-        planStep: function (name) {
+        planStep: function (planId, parentId, name) {
             // return object literal
             return {
                 isNew: true,
                 id: hlcommon.uuid(),
                 kind: 'Step',
                 name: name || '',
+                status: 'Todo',
                 created: new Date().toISOString(),
-                duration: 0,
+                duration: null,
                 content: null,
                 tagName: null,
-                level: null,
-                parent: null,
-                ordinal: null
+                planId: planId,
+                parentId: parentId,
+                ordinal: 1
+            };
+        },
+        
+        filterChildren: function (nodes, parentId) {
+            return those(nodes).like({ parentId: parentId });
+        },
+        calculateNewPlanStep: function (parentId, planId, planSteps) {
+            var steps = this.filterChildren(planSteps || [], parentId);
+            var nextOrdinal = 1;
+            if (steps.length > 0) {
+                steps = _.sortBy(steps, function (item) {
+                    return item.ordinal;
+                });
+                steps.reverse();
+                nextOrdinal = steps[0].ordinal + 1;
+            }
+
+            return {
+                isNew: true,
+                id: hlcommon.uuid(),
+                planId: planId,
+                parentId: parentId,
+                name: '+',
+                kind: 'Step',
+                status: 'Todo',
+                created: (new Date()).toISOString(),
+                content: null,
+                ordinal: nextOrdinal,
+                
             };
         },
         

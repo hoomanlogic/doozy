@@ -1,23 +1,14 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
+        require('lodash'),
+        require('app/doozy'),
         require('./PlanStep'),
-        require('stores/plan-store'),
-        require('stores/planstep-store'),
-        require('mixins/SubscriberMixin')
+        require('stores/planstep-store')
     );
-}(function (React, PlanStep, planStore, planStepStore, SubscriberMixin) {
+}(function (React, _, doozy, PlanStep, planStepStore) {
+    /* globals $ */
     var PlanSteps = React.createClass({
-        /*************************************************************
-         * DEFINITIONS
-         *************************************************************/
-        mixins: [SubscriberMixin(planStore)],
-        getInitialState: function () {
-            return {
-                storeLastUpdated: (new Date()).toISOString()
-            };
-        },
-
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
@@ -25,24 +16,25 @@
             /**
              * Subscribe globally to additional stores
              */
+            // TODO: Subscribe by Plan ID so we only pull data for one plan
             planStepStore.subscribe(this.handleStoreUpdate, {});
         },
         componentDidMount: function () {
-            $(this.refs.topScroller.getDOMNode()).scroll(function(){
+            $(this.refs.topScroller.getDOMNode()).scroll(function () {
                 $(this.refs.bottomScroller.getDOMNode())
                     .scrollLeft($(this.refs.topScroller.getDOMNode()).scrollLeft());
             }.bind(this));
-            $(this.refs.bottomScroller.getDOMNode()).scroll(function(){
+            $(this.refs.bottomScroller.getDOMNode()).scroll(function () {
                 $(this.refs.topScroller.getDOMNode())
                     .scrollLeft($(this.refs.bottomScroller.getDOMNode()).scrollLeft());
             }.bind(this));
         },
         componentDidUpdate: function () {
-            $(this.refs.topScroller.getDOMNode()).scroll(function(){
+            $(this.refs.topScroller.getDOMNode()).scroll(function () {
                 $(this.refs.bottomScroller.getDOMNode())
                     .scrollLeft($(this.refs.topScroller.getDOMNode()).scrollLeft());
             }.bind(this));
-            $(this.refs.bottomScroller.getDOMNode()).scroll(function(){
+            $(this.refs.bottomScroller.getDOMNode()).scroll(function () {
                 $(this.refs.topScroller.getDOMNode())
                     .scrollLeft($(this.refs.bottomScroller.getDOMNode()).scrollLeft());
             }.bind(this));
@@ -64,89 +56,32 @@
             window.location.href = '/doozy';
         },
 
-        calculateNewStep: function () {
-            var steps = planStepStore.getChildren(null, this.props.planId);
-            var nextOrdinal = 1;
-            if (steps.length > 0) {
-                steps = _.sortBy(steps, function (item) {
-                    return item.ordinal;
-                });
-                steps.reverse();
-                nextOrdinal = steps[0].ordinal + 1;
-            }
-
-            return {
-                id: hlcommon.uuid(),
-                planId: this.props.planId,
-                parentId: null,
-                name: '+',
-                kind: 'Step',
-                status: 'Todo',
-                created: (new Date()).toISOString(),
-                content: null,
-                ordinal: nextOrdinal,
-                isNew: true
-            };
-        },
-
         /*************************************************************
          * RENDERING
          *************************************************************/
         render: function () {
 
             // get root level steps for this plan
-            var steps = planStepStore.getChildren(null, this.props.planId);
+            var planSteps = planStepStore.getPlan(this.props.planId);
+
+            var steps = doozy.filterChildren(planSteps, null);
+
             var childrenCount = 1;
 
             steps = _.sortBy(steps, function (item) {
-                
-                var children = planStepStore.getChildren(item.id, item.planId);
+                var children = doozy.filterChildren(planSteps, item.id);
                 childrenCount += children.length + 1;
                 return item.ordinal;
             });
 
-            var planId = this.props.planId;
-            var plan = planStore.get(planId);
-
-            if (!plan) {
-                window.location.href = '/doozy/actions';
-                return <div></div>;
-            }
-
-            /**
-             * Inline Styles
-             */
-            var headerStyle = {
-                display: 'flex',
-                flexDirection: 'row',
-                color: '#e2ff63',
-                backgroundColor: '#444',
-                padding: '2px 2px 0 8px',
-                fontWeight: 'bold',
-                fontSize: '1.5em'
-            };
-
-            var buttonStyle = {
-                paddingTop: '1px',
-                paddingBottom: '1px',
-                height: '25px',
-                margin: '1px 8px 0 0',
-                backgroundImage: 'none',
-                color: '#444',
-                backgroundColor: '#e2ff63',
-                borderColor: '#e2ff63',
-                fontWeight: 'bold',
-                outlineColor: 'rgb(40, 40, 40)'
-            };
-
             var stepsDom = steps.map(function (step) {
                 return (
-                    <PlanStep planId={this.props.planId} data={step} level={1} />
+                    <PlanStep planId={this.props.planId} data={step} level={1} steps={planSteps} />
                 );
             }.bind(this));
 
             stepsDom.push((
-                <PlanStep planId={this.props.planId} data={this.calculateNewStep()} level={1} />
+                <PlanStep planId={this.props.planId} data={doozy.calculateNewPlanStep(null, this.props.planId, planSteps)} steps={planSteps} level={1} />
             ));
 
             return (
@@ -170,5 +105,32 @@
             );
         }
     });
+
+    /**
+     * Inline Styles
+     */
+    var headerStyle = {
+        display: 'flex',
+        flexDirection: 'row',
+        color: '#e2ff63',
+        backgroundColor: '#444',
+        padding: '2px 2px 0 8px',
+        fontWeight: 'bold',
+        fontSize: '1.5em'
+    };
+
+    // var buttonStyle = {
+    //     paddingTop: '1px',
+    //     paddingBottom: '1px',
+    //     height: '25px',
+    //     margin: '1px 8px 0 0',
+    //     backgroundImage: 'none',
+    //     color: '#444',
+    //     backgroundColor: '#e2ff63',
+    //     borderColor: '#e2ff63',
+    //     fontWeight: 'bold',
+    //     outlineColor: 'rgb(40, 40, 40)'
+    // };
+
     return PlanSteps;
- }));
+}));

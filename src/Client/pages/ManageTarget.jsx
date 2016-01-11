@@ -1,13 +1,15 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
+        require('lodash'),
         require('app/doozy'),
         require('stores/target-store'),
         require('stores/action-store'),
         require('stores/tag-store'),
         require('mixins/SubscriberMixin')
     );
-}(function (React, doozy, targetStore, actionStore, tagStore, SubscriberMixin) {
+}(function (React, _, doozy, targetStore, actionStore, tagStore, SubscriberMixin) {
+    /* globals $ */
     var ManageTarget = React.createClass({
         /*************************************************************
          * DEFINITIONS
@@ -69,16 +71,16 @@
                 this.setState({entityType: event.target.value, entityId: null});
             }
             else if (event.target === this.refs.measure.getDOMNode()) {
-                this.setState({measure: parseInt(event.target.value)});
+                this.setState({measure: parseInt(event.target.value, 10)});
             }
             else if (event.target === this.refs.period.getDOMNode()) {
-                this.setState({period: parseInt(event.target.value)});
+                this.setState({period: parseInt(event.target.value, 10)});
             }
             else if (event.target === this.refs.multiplier.getDOMNode()) {
-                this.setState({multiplier: parseInt(event.target.value)});
+                this.setState({multiplier: parseInt(event.target.value, 10)});
             }
             else if (event.target === this.refs.number.getDOMNode()) {
-                this.setState({number: parseInt(event.target.value)});
+                this.setState({number: parseInt(event.target.value, 10)});
             }
         },
         handleDeleteClick: function () {
@@ -89,7 +91,7 @@
             var entity = this.refs.entity.getDOMNode().value;
             if (this.state.entityType === 'Tag') {
                 entity = _.find(tagStore.updates.value, function (tag) {
-                     return doozy.getTagValue(tag) === entity;
+                    return doozy.getTagValue(tag) === entity;
                 });
             }
             else if (this.state.entityType === 'Action') {
@@ -132,7 +134,7 @@
             // get actions sorted by name
             var actions = actionStore.context({}).value;
             actions = _.sortBy(actions, function (action) {
-                action.name;
+                return action.name;
             });
 
             // add actions
@@ -159,7 +161,7 @@
             // get distinct tags user has assigned to other actions
             var tags = tagStore.context({}).value;
             tags = _.sortBy(tags, function (tag) {
-                tag.name;
+                return tag.name;
             });
 
             // add tags that user has assigned to other actions

@@ -22,7 +22,6 @@
                 var offBy = 100 - percent;
 
                 var color = 'hsl(' + (120 - Math.round(offBy * multiplier)) + ',90%,40%)';
-                var suffix = '%';
 
                 return color;
             },
@@ -42,7 +41,7 @@
                     Object.assign(progress, {
                         kind: 'simple',
                         backgroundColor: Indicator.calcColor(100),
-                        value: "MET",
+                        value: 'MET',
                         compare: null
                     });
                 }
@@ -72,10 +71,11 @@
          *************************************************************/
         render: function () {
 
-            var changeColor = 'rgb(68, 68, 68)',
-                changePrefix = '',
-                content,
-                suffix = '';
+            var content;
+            
+            var changeColor = 'rgb(68, 68, 68)';
+            var changePrefix = '';
+            var suffix = '';
 
             if (this.props.change > 0) {
                 changeColor = 'hsl(120,90%,40%)';

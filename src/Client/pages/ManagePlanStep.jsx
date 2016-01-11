@@ -1,101 +1,21 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
+        require('lodash'),
+        require('app/doozy'),
         require('babble'),
-        require('hl-common-js/src/common'),
         require('stores/planstep-store'),
         require('mixins/SubscriberMixin')
     );
-}(function (React, babble, hlcommon, planStepStore, SubscriberMixin) {
+}(function (React, _, doozy, babble, planStepStore, SubscriberMixin) {
     var ManagePlanStep = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
         mixins: [SubscriberMixin(planStepStore)],
+
         getInitialState: function () {
-            if (this.props.isNew) {
-
-                var steps = planStepStore.getChildren(this.props.planId, this.props.parentId);
-                var nextOrdinal = 1;
-                if (steps.length > 0) {
-                    steps = _.sortBy(steps, function (item) {
-                        return item.ordinal;
-                    });
-                    steps.reverse();
-                    nextOrdinal = steps[0].ordinal + 1;
-                }
-
-                var state = Object.assign({}, {
-                    id: hlcommon.uuid(),
-                    planId: this.props.planId,
-                    parentId: this.props.parentId,
-                    name: '',
-                    kind: 'Step',
-                    status: 'Todo',
-                    duration: null,
-                    durationInput: null,
-                    created: (new Date()).toISOString(),
-                    content: null,
-                    ordinal: nextOrdinal,
-                    tagName: null
-                });
-                return state;
-            }
-            else {
-                var planStep = planStepStore.get(this.props.planStepId);
-                var durationParse = babble.get('durations').translate((planStep.duration || 0) + ' min');
-                if (durationParse.tokens.length === 0) {
-                    var durationInput = null;
-                }
-                else {
-                    var durationInput = durationParse.tokens[0].value.toString();
-                }
-                return {
-                    id: planStep.id,
-                    planId: planStep.planId,
-                    parentId: planStep.parentId,
-                    name: planStep.name,
-                    kind: planStep.kind,
-                    status: planStep.status,
-                    duration: planStep.duration,
-                    durationInput: durationInput,
-                    created: planStep.created,
-                    content: planStep.content,
-                    ordinal: planStep.ordinal,
-                    tagName: planStep.tagName
-                };
-            }
-        },
-
-        /*************************************************************
-         * COMPONENT LIFECYCLE
-         *************************************************************/
-        componentWillReceiveProps: function (nextProps) {
-            var planStep = planStepStore.get(nextProps.planStepId);
-            if (!planStep) {
-                return;
-            }
-            var durationParse = babble.get('durations').translate((planStep.duration || 0) + ' min');
-            if (durationParse.tokens.length === 0) {
-                var durationInput = null;
-            }
-            else {
-                var durationInput = durationParse.tokens[0].value.toString();
-            }
-            this.setState({
-                id: planStep.id,
-                planId: planStep.planId,
-                parentId: planStep.parentId,
-                name: planStep.name,
-                kind: planStep.kind,
-                status: planStep.status,
-                duration: planStep.duration,
-                durationInput: new babble.Duration(planStep.duration),
-                created: planStep.created,
-                content: planStep.content,
-                ordinal: planStep.ordinal,
-                tagName: planStep.tagName
-            });
+            return doozy.planstep(this.props.planId, this.props.parentId);
         },
 
         /*************************************************************
@@ -141,8 +61,9 @@
             else if (event.target === this.refs.ordinal.getDOMNode()) {
                 var ord = null;
                 try {
-                    ord = parseInt(event.target.value);
-                } catch (e) {
+                    ord = parseInt(event.target.value, 10);
+                }
+                catch (e) {
 
                 }
                 this.setState({ordinal: ord});
@@ -160,6 +81,33 @@
                 planStepStore.update(this.state);
             }
             window.location.href = '/doozy/plansteps/' + this.props.planId;
+        },
+        handleStoreUpdate: function (model) {
+            // Generate duration input from numeric value
+            var durationParse = babble.get('durations').translate((model.duration || 0) + ' min');
+            var durationInput = null;
+            if (durationParse.tokens.length !== 0) {
+                var durationInput = durationParse.tokens[0].value.toString();
+            }
+
+            var state = Object.assign({}, model, {
+                durationInput: durationInput
+            });
+
+            if (this.props.isNew) {
+                var steps = planStepStore.getChildren(this.props.parentId, this.props.planId);
+                var nextOrdinal = 1;
+                if (steps.length > 0) {
+                    steps = _.sortBy(steps, function (item) {
+                        return item.ordinal;
+                    });
+                    steps.reverse();
+                    nextOrdinal = steps[0].ordinal + 1;
+                }
+                state.ordinal = nextOrdinal;
+            }
+
+            this.setState(state);
         },
 
         /*************************************************************

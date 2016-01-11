@@ -2,35 +2,13 @@
     module.exports = exports = factory(
         require('react'),
         require('lodash'),
-        require('stores/planstep-store')
+        require('app/doozy')
     );
-}(function (React, _, planStepStore) {
+}(function (React, _, doozy) {
     var PlanStep = React.createClass({
-        /*************************************************************
-         * DEFINITIONS
-         *************************************************************/
-
-        /*************************************************************
-         * COMPONENT LIFECYCLE
-         *************************************************************/
-        componentWillMount: function () {
-            // TODO: ONLY subscribe to this item and its children
-            planStepStore.subscribe(this.handlePlanStepStoreUpdate, {});
-
-        },
-        componentWillUnmount: function () {
-            /**
-             * Clean up objects and bindings
-             */
-            planStepStore.unsubscribe(this.handlePlanStepStoreUpdate, {});
-        },
-
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
-        handlePlanStepStoreUpdate: function () {
-            this.setState({ planStepsLastUpdated: (new Date()).toISOString() });
-        },
         handleCardClick: function () {
             // Build hierarchical path
             var path = this.props.data.planId;
@@ -46,59 +24,11 @@
             }
         },
 
-        calculateNewStep: function () {
-
-            var steps = planStepStore.getChildren(this.props.data.id, this.props.planId);
-            
-            var nextOrdinal = 1;
-            if (steps.length > 0) {
-                steps = _.sortBy(steps, function (item) {
-                    return item.ordinal;
-                });
-                steps.reverse();
-                nextOrdinal = steps[0].ordinal + 1;
-            }
-
-            return {
-                id: undefined, // hlcommon.uuid()
-                planId: this.props.planId,
-                parentId: this.props.data.id,
-                name: '+',
-                kind: 'Step',
-                status: 'Todo',
-                created: (new Date()).toISOString(),
-                content: null,
-                ordinal: nextOrdinal,
-                isNew: true
-            };
-        },
-
         /*************************************************************
          * RENDERING
          *************************************************************/
         render: function () {
             var nameStyle;
-            
-            /**
-             * Inline Styles
-             */
-            var listItemStyle = {
-                fontSize: 'large',
-                verticalAlign: 'top'
-                // padding: '5px',
-                // borderBottom: 'solid 1px #e0e0e0'
-            };
-
-            // var buttonStyle = {
-            //     paddingTop: '3px',
-            //     paddingBottom: '3px',
-            //     backgroundImage: 'none',
-            //     color: '#444',
-            //     backgroundColor: '#e2ff63',
-            //     borderColor: '#e2ff63',
-            //     fontWeight: 'bold',
-            //     outlineColor: 'rgb(40, 40, 40)'
-            // };
 
             var stepStyles = [
                 {},
@@ -161,8 +91,8 @@
                     display: 'block'
                 }
             ];
-
-            var steps = planStepStore.getChildren(this.props.data.id, this.props.planId);
+            
+            var steps = doozy.filterChildren(this.props.steps, this.props.data.id);
             steps = _.sortBy(steps, function (item) {
                 var type = 0;
                 if (item.status === 'Doing') {
@@ -182,13 +112,13 @@
 
             var stepsDom = steps.map( function (step) {
                 return (
-                    <PlanStep planId={this.props.planId} data={step} level={this.props.level + 1} />
+                    <PlanStep planId={this.props.planId} data={step} level={this.props.level + 1} steps={this.props.steps} />
                 );
             }.bind(this));
 
             if ((!this.props.data.hasOwnProperty('isNew') || !this.props.data.isNew) && this.props.level < 3) {
                 stepsDom.push((
-                    <PlanStep planId={this.props.planId} data={this.calculateNewStep()} level={this.props.level + 1} />
+                    <PlanStep planId={this.props.planId} data={this.calculateNewPlanStep(this.props.data.id, this.props.planId, this.props.steps)} level={this.props.level + 1} steps={this.props.steps} />
                 ));
             }
 
@@ -223,5 +153,27 @@
             );
         }
     });
+    
+    /**
+     * Inline Styles
+     */
+    var listItemStyle = {
+        fontSize: 'large',
+        verticalAlign: 'top'
+        // padding: '5px',
+        // borderBottom: 'solid 1px #e0e0e0'
+    };
+
+    // var buttonStyle = {
+    //     paddingTop: '3px',
+    //     paddingBottom: '3px',
+    //     backgroundImage: 'none',
+    //     color: '#444',
+    //     backgroundColor: '#e2ff63',
+    //     borderColor: '#e2ff63',
+    //     fontWeight: 'bold',
+    //     outlineColor: 'rgb(40, 40, 40)'
+    // };
+    
     return PlanStep;
 }));

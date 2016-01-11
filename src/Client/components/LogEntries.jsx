@@ -22,7 +22,7 @@
             logEntryStore.subscribe(this.handleLogEntryStoreUpdate);
             this.handleLogEntryStoreUpdate(logEntryStore.updates.value);
             var me = this;
-            $(window).scroll(function() {
+            $(window).scroll(function () {
                if($(window).scrollTop() + $(window).height() == $(document).height()) {
                    me.setState({ maxReturn: me.state.maxReturn + 5});
                }
@@ -75,7 +75,7 @@
                     </div>
                     <div className={this.props.hidden ? 'hidden' : ''} style={{ backgroundColor: '#444', padding: '5px' }}>
                         {logEntries.map(
-                            function(item) {
+                            function (item) {
                                 return (<LogEntryBox data={item} />);
                             }.bind(this)
                         )}

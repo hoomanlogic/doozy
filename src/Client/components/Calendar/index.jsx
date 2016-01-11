@@ -154,7 +154,7 @@
                         <div style={{paddingRight: '5px'}}><button type="button" className="close" onClick={this.handleCloseClick}><span aria-hidden="true">&times;</span></button></div>
                     </div>
                     <div>
-                        {days.map( function(item, index) {
+                        {days.map( function (item, index) {
                             return (<Day key={index} data={item} />);
                         })}
                     </div>

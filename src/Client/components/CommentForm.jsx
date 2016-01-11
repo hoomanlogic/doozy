@@ -117,7 +117,7 @@
                     </div>
                     <div style={containerStyle}>
                         {comments.map(
-                            function(item, index) {
+                            function (item, index) {
                                 var commentContent;
                                 if (item.userId === userStore.updates.value.userId) {
                                     commentContent = (<ContentEditable html={item.comment} onChange={this.handlers.commentChange} />);
