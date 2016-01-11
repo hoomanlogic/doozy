@@ -9,9 +9,9 @@
         require('mixins/StoresMixin'),
         require('components/FocusBar'),
         require('components/TimerBar'),
-        require('components/FocusActions'),
+        require('pages/ManageActions'),
     );
-}(function (React, actionStore, logEntryStore, planStore, tagStore, StoresMixin, FocusBar, TimerBar, FocusActions) {
+}(function (React, actionStore, logEntryStore, planStore, tagStore, StoresMixin, FocusBar, TimerBar, ManageActions) {
 
     var ActionsInterface = React.createClass({
         /*************************************************************
@@ -45,7 +45,7 @@
                     <FocusBar currentFocus={this.state.currentFocus}
                         handleFocusClick={this.handleFocusClick} />
                     <TimerBar />
-                    <FocusActions focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : undefined} />
+                    <ManageActions focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : undefined} />
                 </div>
             );
         },
