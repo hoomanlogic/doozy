@@ -5,10 +5,12 @@
         require('babble'),
         require('app/doozy'),
         require('stores/target-store'),
+        require('stores/logentry-store'),
+        require('stores/tag-store'),
         require('components/Indicator'),
         require('mixins/SubscriberMixin')
     );
-}(function (React, _, babble, doozy, targetStore, Indicator, SubscriberMixin) {
+}(function (React, _, babble, doozy, targetStore, logEntryStore, tagStore, Indicator, SubscriberMixin) {
     var ManageTargets = React.createClass({
         /*************************************************************
          * DEFINITIONS
@@ -18,6 +20,18 @@
             return {
                 globalSubscriberContext: true // SubscriberMixin behavior property
             };
+        },
+
+        /*************************************************************
+         * COMPONENT LIFECYCLE
+         *************************************************************/
+        componentWillMount: function () {
+            logEntryStore.subscribe(this.handleLogEntryStoreUpdate, {});
+            tagStore.subscribe(this.handleTagStoreUpdate, {});
+        },
+        componentWillUnmount: function () {
+            logEntryStore.unsubscribe(this.handleLogEntryStoreUpdate, {});
+            tagStore.unsubscribe(this.handleTagStoreUpdate, {});
         },
 
         /*************************************************************
@@ -31,6 +45,16 @@
         },
         handleTargetClick: function () {
             // ui.goTo('Calendar', {targetId: target.id});
+        },
+        handleLogEntryStoreUpdate: function () {
+            this.setState({
+                lastUpdate: new Date().toISOString()  
+            });
+        },
+        handleTagStoreUpdate: function () {
+            this.setState({
+                lastUpdate: new Date().toISOString()  
+            });
         },
 
         /*************************************************************

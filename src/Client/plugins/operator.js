@@ -637,6 +637,14 @@
             },
             logentry: function (gnode, db) {
                 var strap = {};
+                
+                // calc tags data
+                var tags = [];
+                gnode.siblings('doozy.tag').forEach(function (gnapse) {
+                    tags.push(TAG_KIND[gnapse.target.state.kind.toUpperCase()] + gnapse.target.state.name);
+                });
+                strap.tags = tags;
+                
                 var actionGnapse = gnode.siblings('doozy.action').first();
                 if (actionGnapse) {
                     strap.actionName = actionGnapse.target.state.name;

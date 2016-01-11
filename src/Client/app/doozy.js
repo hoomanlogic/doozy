@@ -151,8 +151,17 @@
 
         // get performed log entries relevant to the target period
         if (target.entityType === 'Tag') {
-            tag = getTagValue(tagStore.get(target.entityId));
+            var tagModel = tagStore.get(target.entityId);
+            if (tagModel) {
+                tag = getTagValue(tagModel);
+            }
         }
+        //
+        var ctxLogEntries = logEntryStore.context({});
+        if (!ctxLogEntries || !ctxLogEntries.value) {
+            return null;
+        }
+
         performed = logEntryStore.context({}).value.filter(function (item) {
             var logDate = new Date(item.date);
 
