@@ -62,18 +62,16 @@
             
             operator.getDb(function (db) {
                 
-                var result = db.find(req.params.tag, 'doozy.action').first();
-                if (!result) {
-                    result = db.find({id: req.params.tag}, 'doozy.action').first();
-                }
-                if (result) {
+                var gnode = db.find(req.params.tag, 'doozy.action').first();
+                if (gnode) {
+                    var model = getModel(gnode, db, 'action');
                     operator.renderer.renderHtml(
                         defaultHtmlTemplate
                             .replace('SCRIPT_URL', operator.stats.publicPath + 'doozy/action-form.js')
                             .replace('SELECTIZE_URL', operator.stats.publicPath + 'doozy-global-libs.js')
                             .replace('SELECTIZE_CSS_1', operator.stats.publicPath + 'selectize.css')
                             .replace('SELECTIZE_CSS_2', operator.stats.publicPath + 'selectize.default.css')
-                            .replace('INTERFACE_PROPS', JSON.stringify({action: result.state, mode: 'Edit'})),
+                            .replace('INTERFACE_PROPS', JSON.stringify({action: model, mode: 'Edit'})),
                         req.path,
                         null,
                         function (err, html) {
