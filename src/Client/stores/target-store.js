@@ -44,7 +44,7 @@
         return d;
     };
 
-    this.targetsStats = function (targetId, today) {
+    targetStore.targetsStats = function (targetId, today) {
         var targets;
         var targetsStats = [];
 
