@@ -1,16 +1,15 @@
 // CommonJS, AMD, and Global shim
 (function (factory) {
-    /* global $ */
     module.exports = exports = factory(
         require('react'),
-        $,
         require('lodash'),
         require('app/doozy'),
         require('stores/ActionStore'),
         require('stores/LogEntryStore'),
         require('babble')
     );
-}(function (React, $, _, doozy, actionStore, logEntryStore, babble) {
+}(function (React, _, doozy, actionStore, logEntryStore, babble) {
+    /* global $ */
     var ManageAction = React.createClass({
 
         /*************************************************************
