@@ -8,7 +8,7 @@
     );
 }(function (React, _, doozy, PlanStep, planStepStore) {
     /* globals $ */
-    var PlanSteps = React.createClass({
+    var ManagePlanSteps = React.createClass({
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
@@ -63,6 +63,9 @@
 
             // get root level steps for this plan
             var planSteps = planStepStore.getPlan(this.props.planId);
+            if (!planSteps || !planSteps.length) {
+                return <div>Loading...</div>;
+            }
 
             var steps = doozy.filterChildren(planSteps, null);
 
@@ -132,5 +135,5 @@
     //     outlineColor: 'rgb(40, 40, 40)'
     // };
 
-    return PlanSteps;
+    return ManagePlanSteps;
 }));

@@ -2,9 +2,9 @@
     require('./Actions.less');
     module.exports = exports = factory(
         require('react'),
-        require('components/PlanSteps'),
+        require('pages/ManagePlanSteps'),
     );
-}(function (React, PlanSteps) {
+}(function (React, ManagePlanSteps) {
 
     var PlanStepsInterface = React.createClass({
         /*************************************************************
@@ -31,7 +31,7 @@
          *************************************************************/
         render: function () {
             return (
-                <PlanSteps planId={this.props.planId} />
+                <ManagePlanSteps planId={this.props.planId} />
             );
         },
     });

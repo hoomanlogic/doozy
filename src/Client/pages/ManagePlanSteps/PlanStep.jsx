@@ -118,7 +118,7 @@
 
             if ((!this.props.data.hasOwnProperty('isNew') || !this.props.data.isNew) && this.props.level < 3) {
                 stepsDom.push((
-                    <PlanStep planId={this.props.planId} data={this.calculateNewPlanStep(this.props.data.id, this.props.planId, this.props.steps)} level={this.props.level + 1} steps={this.props.steps} />
+                    <PlanStep planId={this.props.planId} data={doozy.calculateNewPlanStep(this.props.data.id, this.props.planId, this.props.steps)} level={this.props.level + 1} steps={this.props.steps} />
                 ));
             }
 
