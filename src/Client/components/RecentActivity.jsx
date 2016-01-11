@@ -4,7 +4,7 @@
         require('jquery'),
         require('lodash'),
         require('hl-common-js/src/those'),
-        require('stores/LogEntryStore'),
+        require('stores/logentry-store'),
         require('mixins/StoresMixin'),
         require('./LogEntryBox')
     );
@@ -60,6 +60,10 @@
          *************************************************************/
         render: function () {
 
+            if (!logEntryStore.context({}) || !logEntryStore.context({}).value) {
+                return null;
+            }
+            
             var actionIds = those(this.props.actions).pluck('id');
 
             /**
@@ -73,8 +77,8 @@
                     return excludePrefixes.indexOf(tag.slice(0,1)) > -1;
                 }));
             });
-
-            var logEntries = logEntryStore.updates.value.filter( function (item) {
+            
+            var logEntries = logEntryStore.context({}).value.filter( function (item) {
                 return item.entry !== 'created' && (actionIds.indexOf(item.actionId) > -1 || _.intersection(item.tags, distinctTags).length > 0);
             });
 

@@ -242,6 +242,17 @@
             }
         },
 
+        focus: function (name) {
+            return {
+                isNew: true,
+                id: hlcommon.uuid(),
+                kind: 'Role',
+                name: name || '',
+                tagName: '',
+                iconUri: null
+            };
+        },
+
         logEntry: function () {
             return {
                 isNew: true,

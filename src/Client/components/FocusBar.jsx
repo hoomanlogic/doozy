@@ -1,15 +1,15 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
-        require('hl-common-js/src/common'),
-        require('stores/FocusStore'),
+        require('app/doozy'),
+        require('stores/focus-store'),
         require('components/FocusListItem'),
         require('components/DropdownMenu'),
         require('components/Microphone'),
         require('components/NotificationDropdown'),
         require('components/Timer')
     );
-}(function (React, hlcommon, focusStore,
+}(function (React, doozy, focusStore,
     FocusListItem, DropdownMenu, Microphone, NotificationDropdown, Timer) {
 
     var FocusBar = React.createClass({
@@ -31,14 +31,10 @@
         },
 
         componentWillMount: function () {
-            this.focusesObserver = focusStore.updates
-                .filter(function (result) {
-                    return result.length > 0;
-                })
-                .subscribe(this.handleStoreUpdate);
+            focusStore.subscribe(this.handleStoreUpdate, {});
         },
         componentWillUnmount: function () {
-            this.focusesObserver.dispose();
+            focusStore.unsubscribe(this.handleStoreUpdate, {});
         },
 
         /*************************************************************
@@ -64,7 +60,11 @@
             /**
              * Add a focus list item for each item in the list
              */
-            var menuItems = focusStore.updates.value.map(function (item) {
+            if (!focusStore.context({}) || !focusStore.context({}).value) {
+                return <div>Loading...</div>;
+            }
+
+            var menuItems = focusStore.context({}).value.map(function (item) {
                 return (
                     <FocusListItem
                         key={item.id}
@@ -77,16 +77,7 @@
             /**
              * Add additional menu item when in Focus Management
              */
-            var ref = hlcommon.uuid();
-            var f = {
-                isNew: true,
-                ref: ref,
-                id: ref,
-                kind: 'Role',
-                name: '',
-                tagName: '',
-                iconUri: null
-            };
+            var f = doozy.focus();
 
             if (this.props.currentPage === 'Focus Management') {
                 menuItems.push((

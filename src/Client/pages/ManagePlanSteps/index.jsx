@@ -20,6 +20,9 @@
             planStepStore.subscribe(this.handleStoreUpdate, {});
         },
         componentDidMount: function () {
+            if (!this.refs.topScroller) {
+                return;
+            }
             $(this.refs.topScroller.getDOMNode()).scroll(function () {
                 $(this.refs.bottomScroller.getDOMNode())
                     .scrollLeft($(this.refs.topScroller.getDOMNode()).scrollLeft());
@@ -30,6 +33,9 @@
             }.bind(this));
         },
         componentDidUpdate: function () {
+            if (!this.refs.topScroller) {
+                return;
+            }
             $(this.refs.topScroller.getDOMNode()).scroll(function () {
                 $(this.refs.bottomScroller.getDOMNode())
                     .scrollLeft($(this.refs.topScroller.getDOMNode()).scrollLeft());

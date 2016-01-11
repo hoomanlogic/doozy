@@ -1,9 +1,11 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
+        require('stores/gnode-store'),
+        require('stores/store'),
         require('hl-common-js/src/store')
     );
-}(function (React, hlstore) {
+}(function (React, gnodeStore, store, hlstore) {
 
     var initializeStores = function (host) {
         host.stores.forEach(function (store) {
@@ -21,12 +23,15 @@
                     initializeStores(this);
                 }
 
-                this.stores.forEach(function (store) {
-                    if (store instanceof hlstore.Store) {
-                        store.subscribe(this.handleStoreUpdate);
+                this.stores.forEach(function (s) {
+                    if (s instanceof gnodeStore.GnodeStore) {
+                        s.subscribe(this.handleStoreUpdate, {});
                     }
-                    else {
-                        this.observers.push(store.updates
+                    else if (s instanceof hlstore.Store || s instanceof store.Store) {
+                        s.subscribe(this.handleStoreUpdate);
+                    }
+                    else { // old style Rx Stores
+                        this.observers.push(s.updates
                             .filter(function (result) {
                                 return result.length > 0;
                             })
@@ -36,9 +41,15 @@
             },
 
             componentWillUnmount: function () {
-                this.stores.forEach(function (store) {
-                    if (store instanceof hlstore.Store) {
-                        store.dispose(this.handleStoreUpdate);
+                this.stores.forEach(function (s) {
+                    if (s instanceof gnodeStore.GnodeStore) {
+                        s.unsubscribe(this.handleStoreUpdate, {});
+                    }
+                    else if (s instanceof hlstore.Store) {
+                        s.dispose(this.handleStoreUpdate);
+                    }
+                    else if (s instanceof store.Store) {
+                        s.unsubscribe(this.handleStoreUpdate);
                     }
                     else {
                         this.observers.forEach(function (observer) {

@@ -1,12 +1,12 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
-        require('mixins/StoresMixin'),
-        require('stores/FocusStore'),
-        require('stores/PlanStore'),
-        require('hl-common-js/src/those')
+        require('hl-common-js/src/those'),
+        require('stores/focus-store'),
+        require('stores/plan-store'),
+        require('mixins/StoresMixin')
     );
-}(function (React, StoresMixin, focusStore, planStore, those) {
+}(function (React, those, focusStore, planStore, StoresMixin) {
     var ActivePlans = React.createClass({
         /*************************************************************
          * DEFINITIONS
@@ -25,17 +25,23 @@
          *************************************************************/
         getActivePlans: function () {
             var focus, plans;
-            var focusTag = this.props.focusTag ? this.props.focusTag.slice(1) : undefined;
-            if (focusTag) {
-                focus = those(focusStore.updates.value).first({tagName: focusTag});
+
+            // Get plans
+            plans = planStore.context({}) ? (planStore.context({}).value ? planStore.context({}).value : []) : [];
+            if (!plans.length) {
+                return plans;
             }
 
-            if (!focus) {
-                plans = planStore.updates.value;
+            // If we have a focus, assigned, then filter
+            var focusTag = this.props.focusTag ? this.props.focusTag.slice(1) : undefined;
+            if (focusTag) {
+                var focuses = focusStore.context({}) ? (focusStore.context({}).value ? focusStore.context({}).value : []) : [];
+                focus = those(focuses).first({tagName: focusTag});
+                if (focus) {
+                    plans = those(plans).like({ focusId: focus.id });
+                }
             }
-            else {
-                plans = those(planStore.updates.value).like({ focusId: focus.id });
-            }
+
             return plans;
         },
 
@@ -45,6 +51,9 @@
         render: function () {
 
             var activePlans = this.getActivePlans();
+            if (!activePlans || !activePlans.length) {
+                return null;
+            }
 
             /**
              * Sort the plans name
