@@ -48,12 +48,12 @@
         },
         handleLogEntryStoreUpdate: function () {
             this.setState({
-                lastUpdate: new Date().toISOString()  
+                lastUpdate: new Date().toISOString()
             });
         },
         handleTagStoreUpdate: function () {
             this.setState({
-                lastUpdate: new Date().toISOString()  
+                lastUpdate: new Date().toISOString()
             });
         },
 
@@ -79,7 +79,7 @@
              */
             targets.push(doozy.target());
 
-            var targetsStats = doozy.targetsStats();
+            var targetsStats = targetStore.targetsStats();
 
             // html
             return (

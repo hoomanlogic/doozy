@@ -3,13 +3,15 @@
         require('react'),
         require('./Day'),
         require('app/doozy'),
-        require('stores/TargetStore')
+        require('stores/target-store'),
+        require('mixins/SubscriberMixin')
     );
-}(function (React, Day, doozy, targetStore) {
+}(function (React, Day, doozy, targetStore, SubscriberMixin) {
     var Calendar = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
+        mixins: [SubscriberMixin(targetStore)],
         statics: {
             days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
             months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
@@ -129,7 +131,11 @@
         render: function () {
             // props
             var weekStarts = this.props.weekStarts;
-            var target = _.find(targetStore.updates.value, { id: this.props.targetId });
+            var ctxTarget = targetStore.context({ id: this.props.targetId });
+            if (!ctxTarget || !ctxTarget.value) {
+                return <div>Loading...</div>;
+            }
+            var target = ctxTarget.value;
             var appendTargetName = '';
 
             if (target) {

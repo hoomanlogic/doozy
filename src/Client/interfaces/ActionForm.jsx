@@ -3,22 +3,17 @@
     module.exports = exports = factory(
         require('react'),
         require('stores/ActionStore'),
-        require('stores/FocusStore'),
         require('stores/LogEntryStore'),
-        require('stores/PlanStore'),
-        require('stores/PlanStepStore'),
-        require('stores/TagStore'),
-        require('stores/TargetStore'),
         require('mixins/StoresMixin'),
         require('pages/ManageAction'),
     );
-}(function (React, actionStore, focusStore, logEntryStore, planStore, planStepStore, tagStore, targetStore, StoresMixin, ManageAction) {
+}(function (React, actionStore, logEntryStore, StoresMixin, ManageAction) {
 
     var ActionFormInterface = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
-        mixins: [StoresMixin([actionStore, focusStore, logEntryStore, planStore, planStepStore, tagStore, targetStore], true)],
+        mixins: [StoresMixin([actionStore, logEntryStore], true)],
         getInitialState: function () {
             return {
                 currentFocus: null
@@ -40,7 +35,7 @@
          *************************************************************/
         render: function () {
 
-            if (!actionStore.updates.value) {
+            if (!actionStore.updates.value || !logEntryStore.updates.value) {
                 return (<div>No results</div>);
             }
 
