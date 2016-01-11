@@ -113,14 +113,14 @@
                 isDropDownOpen: false
             });
             window.location.href = '/doozy/action/' + this.props.data.actionId;
-            //ui.editAction(actionStore.getActionById(this.props.data.actionId));
+            // ui.editAction(actionStore.getActionById(this.props.data.actionId));
         },
         handleEditLogEntryClick: function () {
             this.setState({
                 isDropDownOpen: false
             });
             window.location.href = '/doozy/logentry/' + this.props.data.id;
-            //ui.editLogEntry(logEntryStore.getLogEntryById(this.props.data.id));
+            // ui.editLogEntry(logEntryStore.getLogEntryById(this.props.data.id));
         },
         handleEditDetailsClick: function () {
             this.refs.logdetails.getDOMNode().focus();

@@ -36,13 +36,14 @@
         },
         handleDoneTimerClick: function () {
             timerStore.pauseTimer();
-            var duration = new babble.Duration(timerStore.updates.value.timeSoFar);
+            // var duration = new babble.Duration(timerStore.updates.value.timeSoFar);
 
-            ui.logEntry({
-                id: '00000000-0000-0000-0000-000000000000',
-                name: timerStore.updates.value.workingOn,
-                duration: duration.toMinutes()
-            });
+            window.location.href = '/doozy/logentry/new';
+            // ui.logEntry({
+            //     id: '00000000-0000-0000-0000-000000000000',
+            //     name: timerStore.updates.value.workingOn,
+            //     duration: duration.toMinutes()
+            // });
         },
         handleResetTimerClick: function () {
             timerStore.resetTimer();

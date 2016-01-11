@@ -103,18 +103,18 @@
             var filtered = updates.value.filter( function (item) { return item.id !== target.id; });
             updates.onNext(filtered);
 
-            ui.queueRequest('Target', target.id, 'Deleted target ' + target.name, function () {
-                _api.deleteTarget(target)
-                .done( function () {
-                    hlio.saveLocal('hl.' + user + '.targets', updates.value, secret);
-                })
-                .fail( function (err) {
-                    updates.onNext(updates.value.concat(target));
-                    MessageBox.notify(err.responseText, 'error');
-                });
-            }, function () {
+            // ui.queueRequest('Target', target.id, 'Deleted target ' + target.name, function () {
+            _api.deleteTarget(target)
+            .done( function () {
+                hlio.saveLocal('hl.' + user + '.targets', updates.value, secret);
+            })
+            .fail( function (err) {
                 updates.onNext(updates.value.concat(target));
+                MessageBox.notify(err.responseText, 'error');
             });
+            // }, function () {
+            //    updates.onNext(updates.value.concat(target));
+            // });
         };
 
         this.update = function (target) {
@@ -131,22 +131,22 @@
             Object.assign(targetToSave, target);
             updates.onNext(updates.value);
 
-            ui.queueRequest('Target', target.id, 'Updated target ' + targetToSave.name, function () {
-                _api.putTarget(targetToSave)
-                .done(function (result) {
-                    Object.assign(targetToSave, result);
-                    updates.onNext(updates.value);
-                    hlio.saveLocal('hl.' + user + '.targets', updates.value, secret);
-                })
-                .fail(function (err) {
-                    Object.assign(targetToSave, original);
-                    updates.onNext(updates.value);
-                    MessageBox.notify(err.responseText, 'error');
-                });
-            }, function () {
+            // ui.queueRequest('Target', target.id, 'Updated target ' + targetToSave.name, function () {
+            _api.putTarget(targetToSave)
+            .done(function (result) {
+                Object.assign(targetToSave, result);
+                updates.onNext(updates.value);
+                hlio.saveLocal('hl.' + user + '.targets', updates.value, secret);
+            })
+            .fail(function (err) {
                 Object.assign(targetToSave, original);
                 updates.onNext(updates.value);
+                MessageBox.notify(err.responseText, 'error');
             });
+            // }, function () {
+            //    Object.assign(targetToSave, original);
+            //    updates.onNext(updates.value);
+            // });
         };
 
         this.getTargetByName = function (name) {

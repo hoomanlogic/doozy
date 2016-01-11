@@ -10,8 +10,8 @@
     planStepStore.get = function (id, planId, parentId) {
         var planSteps = (this.context({}).value || []).slice();
         var obj = _.find(planSteps, function (item) {
-            return item.id.toLowerCase() === id.toLowerCase() && 
-                item.planId.toLowerCase() === planId.toLowerCase() && 
+            return item.id.toLowerCase() === id.toLowerCase() &&
+                item.planId.toLowerCase() === planId.toLowerCase() &&
                 (item.parentId || '').toLowerCase() === (parentId || '').toLowerCase();
         });
         return obj;

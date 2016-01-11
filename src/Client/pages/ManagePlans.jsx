@@ -1,10 +1,11 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
+        require('lodash'),
         require('stores/plan-store'),
         require('mixins/SubscriberMixin')
     );
-}(function (React, planStore, SubscriberMixin) {
+}(function (React, _, planStore, SubscriberMixin) {
     var ManagePlans = React.createClass({
         /*************************************************************
          * EVENT HANDLING
@@ -36,7 +37,7 @@
 
             var ctxPlans = planStore.context({});
             if (!ctxPlans || !ctxPlans.value) {
-                return <div>Loading...</div>
+                return <div>Loading...</div>;
             }
 
             /**
@@ -54,7 +55,7 @@
                         <div style={{paddingRight: '5px'}}><button type="button" className="close" onClick={this.handleCloseClick}><span aria-hidden="true">&times;</span></button></div>
                     </div>
                     <div style={{display: 'flex', flexDirection: 'column'}}>
-                        {plans.map(function (item, index) {
+                        {plans.map(function (item) {
                             return (
                                 <div key={item.id} style={listItemStyle}>
                                     <div style={{flexGrow: '1'}}>
@@ -105,4 +106,4 @@
     };
 
     return ManagePlans;
- }));
+}));

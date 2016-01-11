@@ -61,7 +61,7 @@
                 return <div>Loading...</div>;
             }
 
-           var buttons = [
+            var buttons = [
                 {type: 'primary',
                  text: 'Save Changes',
                  handler: this.handleSaveClick,

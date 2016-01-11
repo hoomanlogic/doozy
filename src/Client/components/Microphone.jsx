@@ -5,9 +5,10 @@
         require('app/doozy'),
         require('stores/ActionStore'),
         require('stores/LogEntryStore'),
-        require('babble')
+        require('babble'),
+        require('components/MessageBox')
     );
-}(function (React, addons, doozy, actionStore, logEntryStore, babble) {
+}(function (React, addons, doozy, actionStore, logEntryStore, babble, MessageBox) {
     /* globals webkitSpeechRecognition */
     var Microphone = React.createClass({
         /*************************************************************
@@ -122,7 +123,7 @@
                         text: [speech.slice(5).trim()]
                     };
                     context = 'start-logging';
-                    ui.message(this.current.text.join('<br />'), 'success');
+                    MessageBox.show(this.current.text.join('<br />'), 'success');
                 }
                 else if (Microphone.STOP_TIME.filter(function (item) { return speech.indexOf(item) > -1; }).length > 0 && this.current !== null && this.current.isListening) {
                     context = 'stop-logging';
@@ -130,7 +131,7 @@
                     this.current.stopped = new Date().toISOString();
                     this.timerLogs.push(this.current);
 
-                    ui.message('stopped ' + this.current.text[0], 'success');
+                    MessageBox.show('stopped ' + this.current.text[0], 'success');
 
                     this.current = {
                         isListening: false,
@@ -139,7 +140,7 @@
                 else if (this.current !== null && this.current.isListening) {
                     context = 'is-logging';
                     this.current.text.push(speech);
-                    ui.message(this.current.text.join('\r\n'), 'success');
+                    MessageBox.show(this.current.text.join('\r\n'), 'success');
                 }
                 else if (speech.indexOf('finish') > -1 && this.timerLogs.length > 0) {
                     /**
@@ -160,7 +161,7 @@
                 }
 
                 if (context === undefined) {
-                    ui.message('Sorry, I did not understand. I heard, "' + speech + '"', 'error');
+                    MessageBox.show('Sorry, I did not understand. I heard, "' + speech + '"', 'error');
                     return;
                 }
 
@@ -202,7 +203,7 @@
                     existingAction = actionStore.getActionByName(spokenArgs.actionName);
 
                     if (existingAction) {
-                        ui.message('An action by this name already exists', 'error');
+                        MessageBox.show('An action by this name already exists', 'error');
                     }
                     else {
 
@@ -237,9 +238,10 @@
             /**
              * Get current focus and filter tags
              */
-            tags = ui.tags || [];
-            tags = tags.slice();
-            tags.push(this.props.focusTag);
+            // tags = ui.tags || [];
+            // tags = tags.slice();
+            // tags.push(this.props.focusTag);
+            tags = [];
 
             /**
              * Create new action {} object literal
@@ -249,6 +251,7 @@
             return newAction;
         },
 
+        /* eslint-disable no-param-reassign */
         parseSpeech: function (speech, context) {
             var actionName,
                 contextWord,
@@ -348,6 +351,7 @@
                 duration: duration
             };
         },
+        /* eslint-enable no-param-reassign */
 
         /*************************************************************
          * RENDERING

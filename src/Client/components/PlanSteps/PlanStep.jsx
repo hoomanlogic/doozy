@@ -91,7 +91,7 @@
                     display: 'block'
                 }
             ];
-            
+
             var steps = doozy.filterChildren(this.props.steps, this.props.data.id);
             steps = _.sortBy(steps, function (item) {
                 var type = 0;
@@ -153,7 +153,7 @@
             );
         }
     });
-    
+
     /**
      * Inline Styles
      */
@@ -174,6 +174,6 @@
     //     fontWeight: 'bold',
     //     outlineColor: 'rgb(40, 40, 40)'
     // };
-    
+
     return PlanStep;
 }));

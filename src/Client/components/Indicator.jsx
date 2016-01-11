@@ -72,7 +72,7 @@
         render: function () {
 
             var content;
-            
+
             var changeColor = 'rgb(68, 68, 68)';
             var changePrefix = '';
             var suffix = '';

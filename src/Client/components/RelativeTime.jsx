@@ -49,19 +49,17 @@
                         return diffDays + ' day' + (diffDays > 1 ? 's' : '') + ' ago';
                     }
                 }
+                else if (diffDays === 0) {
+                    return 'Today';
+                }
+                else if (diffDays === 1) {
+                    return 'Tomorrow';
+                }
+                else if (diffDays < 7) {
+                    return babble.moments.daysOfWeek[time.getDay()];
+                }
                 else {
-                    if (diffDays === 0) {
-                        return 'Today';
-                    }
-                    else if (diffDays === 1) {
-                        return 'Tomorrow';
-                    }
-                    else if (diffDays < 7) {
-                        return babble.moments.daysOfWeek[time.getDay()];
-                    }
-                    else {
-                        return 'in ' + diffDays + ' day' + (diffDays > 1 ? 's' : '');
-                    }
+                    return 'in ' + diffDays + ' day' + (diffDays > 1 ? 's' : '');
                 }
             }
             else {

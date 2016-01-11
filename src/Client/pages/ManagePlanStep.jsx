@@ -64,7 +64,7 @@
                     ord = parseInt(event.target.value, 10);
                 }
                 catch (e) {
-
+                    console.log(e);
                 }
                 this.setState({ordinal: ord});
             }
@@ -87,7 +87,7 @@
             var durationParse = babble.get('durations').translate((model.duration || 0) + ' min');
             var durationInput = null;
             if (durationParse.tokens.length !== 0) {
-                var durationInput = durationParse.tokens[0].value.toString();
+                durationInput = durationParse.tokens[0].value.toString();
             }
 
             var state = Object.assign({}, model, {

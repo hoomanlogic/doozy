@@ -1,13 +1,14 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
+        require('lodash'),
         require('babble'),
         require('app/doozy'),
         require('stores/target-store'),
         require('components/Indicator'),
         require('mixins/SubscriberMixin')
     );
-}(function (React, babble, doozy, targetStore, Indicator, SubscriberMixin) {
+}(function (React, _, babble, doozy, targetStore, Indicator, SubscriberMixin) {
     var ManageTargets = React.createClass({
         /*************************************************************
          * DEFINITIONS
@@ -28,7 +29,7 @@
         handleEditClick: function (target) {
             window.location.href = '/doozy/target/' + target.id;
         },
-        handleTargetClick: function (target) {
+        handleTargetClick: function () {
             // ui.goTo('Calendar', {targetId: target.id});
         },
 
@@ -39,7 +40,7 @@
 
             var ctxTargets = targetStore.context({});
             if (!ctxTargets || !ctxTargets.value) {
-                return <div>Loading...</div>
+                return <div>Loading...</div>;
             }
 
             /**
@@ -64,7 +65,7 @@
                         <div style={{paddingRight: '5px'}}><button type="button" className="close" onClick={this.handleCloseClick}><span aria-hidden="true">&times;</span></button></div>
                     </div>
                     <div style={{display: 'flex', flexDirection: 'column'}}>
-                        {targets.map(function (item, index) {
+                        {targets.map(function (item) {
 
                             // find statistics object for this target
                             var stats = _.find(targetsStats, function (s) { return s.targetId === item.id; });
@@ -152,4 +153,4 @@
     };
 
     return ManageTargets;
- }));
+}));

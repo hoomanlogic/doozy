@@ -1,10 +1,11 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
+        require('lodash'),
         require('stores/tag-store'),
         require('mixins/SubscriberMixin')
     );
-}(function (React, tagStore, SubscriberMixin) {
+}(function (React, _, tagStore, SubscriberMixin) {
     var ManageTags = React.createClass({
         /*************************************************************
          * EVENT HANDLING
@@ -48,7 +49,7 @@
                 tagIcon = 'fa-cube';
             }
             return (
-                <i className={"fa " + tagIcon} style={{ width: '20px', textAlign: 'center' }}></i>
+                <i className={'fa ' + tagIcon} style={{ width: '20px', textAlign: 'center' }}></i>
             );
         },
         render: function () {
@@ -56,7 +57,7 @@
 
             var ctxTags = tagStore.context({});
             if (!ctxTags || !ctxTags.value) {
-                return <div>Loading...</div>
+                return <div>Loading...</div>;
             }
 
             /**
@@ -74,7 +75,7 @@
                         <div style={{paddingRight: '5px'}}><button type="button" className="close" onClick={this.handleCloseClick}><span aria-hidden="true">&times;</span></button></div>
                     </div>
                     <div style={{display: 'flex', flexDirection: 'column'}}>
-                        {tags.map(function (item, index) {
+                        {tags.map(function (item) {
                             return (
                                 <div key={item.id} className="clickable" style={tagStyle} onClick={this.handleTagClick.bind(null, item)}>
                                     {this.renderTagIcon(item)}<span> {item.name}</span>
@@ -107,4 +108,4 @@
     };
 
     return ManageTags;
- }));
+}));

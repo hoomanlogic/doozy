@@ -2,13 +2,13 @@
     module.exports = exports = factory(
         require('hl-common-js/src/common'),
         require('hl-common-js/src/those'),
-        require('stores/ActionStore'),
-        require('stores/LogEntryStore'),
-        require('stores/TagStore'),
-        require('stores/TargetStore'),
+        require('lodash'),
+        require('stores/logentry-store'),
+        require('stores/tag-store'),
+        require('stores/target-store'),
         require('babble')
     );
-}(function (hlcommon, those, actionStore, logEntryStore, tagStore, targetStore, babble) {
+}(function (hlcommon, those, _, logEntryStore, tagStore, targetStore, babble) {
 
     var TAG_KIND = {
         FOCUS: '!',
@@ -151,9 +151,9 @@
 
         // get performed log entries relevant to the target period
         if (target.entityType === 'Tag') {
-            tag = getTagValue(tagStore.getTagById(target.entityId));
+            tag = getTagValue(tagStore.get(target.entityId));
         }
-        performed = logEntryStore.updates.value.filter(function (item) {
+        performed = logEntryStore.context({}).value.filter(function (item) {
             var logDate = new Date(item.date);
 
             if (item.entry !== 'performed' || logDate < periodStarts || logDate > periodEnds) {
@@ -390,7 +390,7 @@
                 ordinal: 1
             };
         },
-        
+
         filterChildren: function (nodes, parentId) {
             return those(nodes).like({ parentId: parentId });
         },
@@ -416,17 +416,17 @@
                 created: (new Date()).toISOString(),
                 content: null,
                 ordinal: nextOrdinal,
-                
+
             };
         },
-        
+
         tag: function (name) {
             return {
                 isNew: true,
                 id: hlcommon.uuid(),
                 kind: 'Tag',
                 name: name || '',
-                content: null  
+                content: null
             };
         },
 
@@ -460,10 +460,10 @@
             var targetsStats = [];
 
             if (typeof targetId === 'undefined' || targetId === null) {
-                targets = those(targetStore.updates.value).copy();
+                targets = those(targetStore.context({}).value).copy();
             }
             else {
-                targets = those(targetStore.updates.value).first({ id: targetId });
+                targets = those(targetStore.context({}).value).first({ id: targetId });
                 targets = [targets];
             }
 
@@ -699,19 +699,17 @@
                     return diffDays + ' day' + (diffDays > 1 ? 's' : '') + ' ago';
                 }
             }
+            else if (diffDays === 0) {
+                return 'Today';
+            }
+            else if (diffDays === 1) {
+                return 'Tomorrow';
+            }
+            else if (diffDays < 7) {
+                return babble.moments.daysOfWeek[date1.getDay()];
+            }
             else {
-                if (diffDays === 0) {
-                    return 'Today';
-                }
-                else if (diffDays === 1) {
-                    return 'Tomorrow';
-                }
-                else if (diffDays < 7) {
-                    return babble.moments.daysOfWeek[date1.getDay()];
-                }
-                else {
-                    return 'in ' + diffDays + ' day' + (diffDays > 1 ? 's' : '');
-                }
+                return 'in ' + diffDays + ' day' + (diffDays > 1 ? 's' : '');
             }
         },
     };

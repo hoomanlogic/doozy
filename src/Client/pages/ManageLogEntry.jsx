@@ -1,12 +1,14 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
+        require('lodash'),
         require('app/doozy'),
         require('stores/ActionStore'),
         require('stores/LogEntryStore'),
         require('babble')
     );
-}(function (React, doozy, actionStore, logEntryStore, babble) {
+}(function (React, _, doozy, actionStore, logEntryStore, babble) {
+    /* globals $ */
     var ManageLogEntry = React.createClass({
         /*************************************************************
          * DEFINITIONS
@@ -37,7 +39,7 @@
                 var durationParse = babble.get('durations').translate(editableCopy.duration + ' min');
                 var durationInput = null;
                 if (durationParse.tokens.length !== 0) {
-                    var durationInput = durationParse.tokens[0].value.toString();
+                    durationInput = durationParse.tokens[0].value.toString();
                 }
 
                 state.id = editableCopy.id;
@@ -56,7 +58,7 @@
                 state.actionName = this.props.action.name || '';
             }
             else if (this.props.actionName) { // Log New Action
-                state.actionName = actionName;
+                state.actionName = this.props.actionName;
             }
 
             return state;
@@ -99,7 +101,7 @@
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
-        handleCancel: function (event) {
+        handleCancel: function () {
             window.location.href = '/doozy/actions';
         },
         handleChange: function (event) {
@@ -112,7 +114,8 @@
 
                 try {
                     date.toISOString();
-                } catch (e) {
+                }
+                catch (e) {
                     if (e instanceof RangeError) {
                         isValid = false;
                     }
@@ -157,17 +160,15 @@
                 });
             }
         },
-        handleSave: function (event) {
+        handleSave: function () {
             var actionName,
                 existingAction,
                 logEntry,
                 newAction,
                 names,
-                tags,
-                validationApology;
+                tags;
 
-            validationApology = 'Sorry, we don\'t have enough information yet.\n\n';
-
+            // var validationApology = 'Sorry, we don\'t have enough information yet.\n\n';
 
             if (String(this.state.date.getTime()) === 'NaN') {
                 // ui.message(validationApology + 'When did you do this?', 'error');
@@ -188,10 +189,10 @@
                 tags: tags
             };
 
-            //if (names.length === 1 && names[0] === '') {
+            // if (names.length === 1 && names[0] === '') {
             //    ui.message(validationApology + 'What did you do?', 'error');
             //    return;
-            //}
+            // }
             // get action info
             names = this.refs.name.getDOMNode().value.split('|');
             if (names.length > 0 && names[0] !== '') {
@@ -216,13 +217,11 @@
                     logEntryStore.updateWithNewAction(newAction, logEntry);
                 }
             }
+            else if (!newAction) {
+                logEntryStore.create(logEntry);
+            }
             else {
-                if (!newAction) {
-                    logEntryStore.create(logEntry);
-                }
-                else {
-                    logEntryStore.createWithNewAction(newAction, logEntry);
-                }
+                logEntryStore.createWithNewAction(newAction, logEntry);
             }
 
             window.location.href = '/doozy/actions';
@@ -237,7 +236,7 @@
 
             // get actions sorted by name
             var actions = _.sortBy(actionStore.updates.value, function (action) {
-                action.name;
+                return action.name;
             });
 
             // add actions to selection control
@@ -278,10 +277,10 @@
                 openOnFocus: false,
                 onChange: function (value) {
                     var existingAction = actionStore.getActionByName(value);
-                    if (!this.state.duration && existingAction !== void 0 && existingAction !== null) {
+                    if (!this.state.duration && existingAction !== undefined && existingAction !== null) {
                         // merge tags
                         var selectize = $(this.refs.tags.getDOMNode())[0].selectize;
-                        var tags = [].concat(existingAction.tags)
+                        var tags = [].concat(existingAction.tags);
                         if (this.refs.tags.getDOMNode().value) {
                             tags = tags.concat(this.refs.tags.getDOMNode().value.split(','));
                         }
@@ -384,12 +383,6 @@
                             text: 'Cancel',
                             handler: this.handleCancel}
                            ];
-            var buttonStyle = {
-              display: 'block',
-              width: '100%',
-              marginBottom: '5px',
-              fontSize: '1.1rem'
-            };
 
             var buttonsDom = buttons.map(function (button, index) {
                 return (
@@ -398,15 +391,6 @@
                     onClick={button.handler}>{button.text}</button>
                 );
             });
-
-            var forceHeightStyle = {
-                height: '59px'
-            };
-            var feedbackStyle = {
-                position: 'relative',
-                top: '-28px',
-                left: '285px'
-            };
 
             var slot1, slot2, action, log;
 
@@ -472,6 +456,23 @@
             margin: 'auto',
             maxWidth: '40rem'
         }
+    };
+
+    var buttonStyle = {
+        display: 'block',
+        width: '100%',
+        marginBottom: '5px',
+        fontSize: '1.1rem'
+    };
+
+    var forceHeightStyle = {
+        height: '59px'
+    };
+
+    var feedbackStyle = {
+        position: 'relative',
+        top: '-28px',
+        left: '285px'
     };
 
     return ManageLogEntry;

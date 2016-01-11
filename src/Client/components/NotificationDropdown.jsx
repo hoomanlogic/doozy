@@ -20,10 +20,10 @@
         handleToggleClick: function () {
             var isOpen = !this.props.isOpen;
             if (isOpen) {
-                ui.goTo('Notifications');
+                // ui.goTo('Notifications');
             }
             else {
-                ui.goTo('Do');
+                // ui.goTo('Do');
             }
         },
 

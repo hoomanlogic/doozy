@@ -87,7 +87,7 @@
             return (
                 <div>
                     <div style={headerStyle}>
-                        <div style={{flexGrow: '1'}}>{plan.name}</div>
+                        <div style={{flexGrow: '1'}}>{/* TODO: may need to subscribe to planStore for plan.name */}</div>
                         <div style={{paddingRight: '5px'}}><button type="button" className="close" onClick={this.handleCloseClick}><span aria-hidden="true">&times;</span></button></div>
                     </div>
                     <div ref="topScroller" style={{ height: '20px', width: '100%', overflowX: 'auto', overflowY: 'hidden'}}>
