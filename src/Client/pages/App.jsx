@@ -1,3 +1,4 @@
+/* legacy: use for reference only */
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
@@ -14,7 +15,7 @@
         require('stores/TargetStore'),
         require('stores/WeatherStore'),
         require('app/notifications'),
-        require('./PrimaryNavigation'),
+        require('components/PrimaryNavigation'),
         require('components/TimerBar'),
         require('components/WeatherIcon'),
         require('components/FocusActions'),
