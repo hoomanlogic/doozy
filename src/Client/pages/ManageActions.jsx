@@ -1,18 +1,18 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
-        require('stores/ActionStore'),
-        require('./TagList'),
-        require('./ActivePlans'),
-        require('./NextActions'),
-        require('./UpcomingActions'),
-        require('./RecentActivity'),
-        require('./BoxedActions'),
         require('lodash'),
-        require('hl-common-js/src/those')
+        require('hl-common-js/src/those'),
+        require('stores/ActionStore'),
+        require('components/TagList'),
+        require('components/ActivePlans'),
+        require('components/NextActions'),
+        require('components/UpcomingActions'),
+        require('components/RecentActivity'),
+        require('components/BoxedActions')
     );
-}(function (React, actionStore, TagList, ActivePlans, NextActions, UpcomingActions, RecentActivity, BoxedActions, _, those) {
-    var FocusActions = React.createClass({
+}(function (React, _, those, actionStore, TagList, ActivePlans, NextActions, UpcomingActions, RecentActivity, BoxedActions) {
+    var ManageActions = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
@@ -219,5 +219,5 @@
             );
         }
     });
-    return FocusActions;
+    return ManageActions;
 }));
