@@ -280,7 +280,7 @@
             });
         };
 
-        this.create = function (model) {
+        this.create = function (model, done, fail) {
             // TODO: Optimistic Concurrency Strategy
             // No one is going to be subscribed to this id yet
             // this.updateContext(model, {id: id}); // id isn't valid yet
@@ -301,16 +301,22 @@
                 // Update the global context
                 this.updateContext(cache[me.storeName].gnodes, {});
 
+                if (done) {
+                    done(serverModel);
+                }
                 // MessageBox.notify('Added plan ' + model.name, 'success');
             })
             .fail( function (err) {
                 // TODO: Undo optimistic concurrency and notify subscribers
                 // MessageBox.notify(err.responseText, 'error');
                 console.log(err);
+                if (fail) {
+                    fail(err);
+                }
             });
         };
 
-        this.destroy = function (id) {
+        this.destroy = function (id, done, fail) {
             _api.destroy(id)
             .done( function () {
                 // Update the local stash of gnodes
@@ -323,17 +329,32 @@
                 // Update the global context
                 this.updateContext(cache[me.storeName].gnodes, {});
 
+                if (done) {
+                    done();
+                }
                 // MessageBox.notify('Deleted plan ' + id, 'success');
             })
             .fail( function (err) {
                 // TODO: Undo optimistic concurrency and notify subscribers
                 // MessageBox.notify(err.responseText, 'error');
                 console.log(err);
+                if (fail) {
+                    fail(err);
+                }
             });
         };
 
-        this.get = function (id) {
+        this.get = function (id, done, fail) {
             var gnode = _cacheApi.getGnode(me.storeName, id);
+            if (!gnode) {
+                _api.get(id)
+                .done(function (result) {
+                    done(result);
+                })
+                .fail(function (err) {
+                    fail(err);
+                });
+            }
             return gnode;
         };
 
@@ -341,7 +362,7 @@
             return cache[me.storeName].gnodes ? cache[me.storeName].gnodes.slice() : [];
         };
 
-        this.update = function (model) {
+        this.update = function (model, done, fail) {
             _api.put(model)
             .done(function (serverModel) {
                 // Update the local stash of gnodes
@@ -353,11 +374,18 @@
 
                 // Update the global context
                 this.updateContext(cache[me.storeName].gnodes, {});
+
+                if (done) {
+                    done(serverModel);
+                }
             })
             .fail(function (err) {
                 // TODO: Undo optimistic concurrency and notify subscribers
                 console.log(err);
                 // MessageBox.notify(err.responseText, 'error');
+                if (fail) {
+                    fail(err);
+                }
             });
         };
     };

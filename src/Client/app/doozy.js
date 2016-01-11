@@ -242,6 +242,20 @@
             }
         },
 
+        logEntry: function () {
+            return {
+                isNew: true,
+                id: hlcommon.uuid(),
+                actionId: null,
+                rootActionId: null,
+                actionName: '',
+                duration: 0,
+                date: Date.create('today'),
+                details: '',
+                kind: 'performed'
+            };
+        },
+
         plan: function (name) {
             // return object literal
             return {
@@ -272,35 +286,6 @@
                 planId: planId,
                 parentId: parentId,
                 ordinal: 1
-            };
-        },
-
-        filterChildren: function (nodes, parentId) {
-            return those(nodes).like({ parentId: parentId });
-        },
-        calculateNewPlanStep: function (parentId, planId, planSteps) {
-            var steps = this.filterChildren(planSteps || [], parentId);
-            var nextOrdinal = 1;
-            if (steps.length > 0) {
-                steps = _.sortBy(steps, function (item) {
-                    return item.ordinal;
-                });
-                steps.reverse();
-                nextOrdinal = steps[0].ordinal + 1;
-            }
-
-            return {
-                isNew: true,
-                id: hlcommon.uuid(),
-                planId: planId,
-                parentId: parentId,
-                name: '+',
-                kind: 'Step',
-                status: 'Todo',
-                created: (new Date()).toISOString(),
-                content: null,
-                ordinal: nextOrdinal,
-
             };
         },
 
@@ -396,6 +381,36 @@
          * Get raw tag value from a tag object
          */
         getTagValue: getTagValue,
+
+        filterChildren: function (nodes, parentId) {
+            return those(nodes).like({ parentId: parentId });
+        },
+
+        calculateNewPlanStep: function (parentId, planId, planSteps) {
+            var steps = this.filterChildren(planSteps || [], parentId);
+            var nextOrdinal = 1;
+            if (steps.length > 0) {
+                steps = _.sortBy(steps, function (item) {
+                    return item.ordinal;
+                });
+                steps.reverse();
+                nextOrdinal = steps[0].ordinal + 1;
+            }
+
+            return {
+                isNew: true,
+                id: hlcommon.uuid(),
+                planId: planId,
+                parentId: parentId,
+                name: '+',
+                kind: 'Step',
+                status: 'Todo',
+                created: (new Date()).toISOString(),
+                content: null,
+                ordinal: nextOrdinal,
+
+            };
+        },
 
         startsWithAVowel: function (word) {
             if (['a','e','i','o','u'].indexOf(word[0].toLowerCase()) > -1) {

@@ -120,60 +120,40 @@
         });
 
         // LOG ENTRY EDIT
-        operator.express.get('/doozy/logentry/:tag', operator.authenticate, function (req, res) {
-
+        operator.express.get('/doozy/logentry/:id', operator.authenticate, function (req, res) {
             operator.getDb(function (db) {
-
-                var actionName;
-                var result = db.find(req.params.tag, 'doozy.logentry').first();
-                if (!result) {
-                    result = db.find({id: req.params.tag}, 'doozy.logentry').first();
-                    var actionNodes = result.siblings('doozy.action');
-                    if (actionNodes.length > 0) {
-                        actionName = actionNodes[0].target.state.name;
-                    }
-                }
-                if (result) {
-                    operator.renderer.renderHtml(
-                        defaultHtmlTemplate
-                            .replace('SCRIPT_URL', operator.stats.publicPath + 'doozy/logentry-form.js')
-                            .replace('SELECTIZE_URL', operator.stats.publicPath + 'doozy-global-libs.js')
-                            .replace('SELECTIZE_CSS_1', operator.stats.publicPath + 'selectize.css')
-                            .replace('SELECTIZE_CSS_2', operator.stats.publicPath + 'selectize.default.css')
-                            .replace('INTERFACE_PROPS', JSON.stringify({logEntry: result.state, mode: 'Edit', actionName: actionName})),
-                        req.path,
-                        null,
-                        function (err, html) {
-                            if (err) {
-                                res.statusCode = 500;
-                                res.contentType = 'text; charset=utf8';
-                                res.end(err.message);
-                                return;
-                            }
-                            res.contentType = 'text/html; charset=utf8';
-                            res.end(html);
+                operator.renderer.renderHtml(
+                    defaultHtmlTemplate
+                        .replace('SCRIPT_URL', operator.stats.publicPath + 'doozy/logentry-form.js')
+                        .replace('SELECTIZE_URL', operator.stats.publicPath + 'doozy-global-libs.js')
+                        .replace('SELECTIZE_CSS_1', operator.stats.publicPath + 'selectize.css')
+                        .replace('SELECTIZE_CSS_2', operator.stats.publicPath + 'selectize.default.css')
+                        .replace('INTERFACE_PROPS', JSON.stringify({mode: 'Edit', logEntryId: req.params.id})),
+                    req.path,
+                    null,
+                    function (err, html) {
+                        if (err) {
+                            res.statusCode = 500;
+                            res.contentType = 'text; charset=utf8';
+                            res.end(err.message);
+                            return;
                         }
-                    );
-                }
-                else {
-                    res.end();
-                }
+                        res.contentType = 'text/html; charset=utf8';
+                        res.end(html);
+                    }
+                );
             });
         });
 
         // LOG ENTRY ADD
         operator.express.get('/doozy/logentries/new(/:tag)?', operator.authenticate, function (req, res) {
             operator.getDb(function (db) {
-                var action;
-
-                if (req.params.tag) {
-                    var result = db.find(req.params.tag, 'doozy.action').first();
-                    if (!result) {
-                        result = db.find({id: req.params.tag}, 'doozy.action').first();
-                    }
-                    if (result) {
-                        action = result.state;
-                    }
+                var actionId, actionName;
+                if (req.params.tag.indexOf(' ') > -1) {
+                    actionName = req.params.tag;
+                }
+                else {
+                    actionId = req.params.tag;
                 }
 
                 operator.renderer.renderHtml(
@@ -182,7 +162,7 @@
                         .replace('SELECTIZE_URL', operator.stats.publicPath + 'doozy-global-libs.js')
                         .replace('SELECTIZE_CSS_1', operator.stats.publicPath + 'selectize.css')
                         .replace('SELECTIZE_CSS_2', operator.stats.publicPath + 'selectize.default.css')
-                        .replace('INTERFACE_PROPS', JSON.stringify({mode: 'Add', action: action })),
+                        .replace('INTERFACE_PROPS', JSON.stringify({mode: 'Add', actionId: actionId, actionName: actionName })),
                     req.path,
                     null,
                     function (err, html) {

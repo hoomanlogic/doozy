@@ -34,9 +34,9 @@
             tagStore.subscribe(this.handleTagStoreUpdate, {});
         },
         componentDidMount: function () {
-            /**
-             * Setup Entity selector
-             */
+            if (!this.refs.entity) {
+                return;
+            }
             if (this.state.entityType === 'Tag') {
                 this.setupTagsControl();
             }
@@ -45,6 +45,9 @@
             }
         },
         componentDidUpdate: function () {
+            if (!this.refs.entity) {
+                return;
+            }
             if (this.state.entityType === 'Tag') {
                 this.setupTagsControl();
             }
@@ -114,14 +117,10 @@
             this.setState(model);
         },
         handleActionStoreUpdate: function () {
-            if (this.state.entityType === 'Action') {
-                this.setupActionsControl();
-            }
+            this.setState({lastUpdate: new Date().toISOString()});
         },
         handleTagStoreUpdate: function () {
-            if (this.state.entityType === 'Tag') {
-                this.setupTagsControl();
-            }
+            this.setState({lastUpdate: new Date().toISOString()});
         },
 
         /*************************************************************
@@ -183,9 +182,6 @@
             }
         },
         setupActionsControl: function () {
-            if (!this.refs.entity) {
-                return;
-            }
             $(this.refs.entity.getDOMNode()).selectize({
                 delimiter: '|',
                 persist: true,
@@ -212,9 +208,6 @@
             this.setOptionsAction(selectize);
         },
         setupTagsControl: function () {
-            if (!this.refs.entity) {
-                return;
-            }
             // initialize control for tags functionality
             $(this.refs.entity.getDOMNode()).selectize({
                 delimiter: ',',
