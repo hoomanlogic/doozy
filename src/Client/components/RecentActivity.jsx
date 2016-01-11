@@ -63,7 +63,7 @@
             if (!logEntryStore.context({}) || !logEntryStore.context({}).value) {
                 return null;
             }
-            
+
             var actionIds = those(this.props.actions).pluck('id');
 
             /**
@@ -77,7 +77,7 @@
                     return excludePrefixes.indexOf(tag.slice(0,1)) > -1;
                 }));
             });
-            
+
             var logEntries = logEntryStore.context({}).value.filter( function (item) {
                 return item.entry !== 'created' && (actionIds.indexOf(item.actionId) > -1 || _.intersection(item.tags, distinctTags).length > 0);
             });
