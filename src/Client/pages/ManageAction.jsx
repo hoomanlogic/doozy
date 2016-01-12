@@ -4,11 +4,12 @@
         require('react'),
         require('lodash'),
         require('app/doozy'),
+        require('stores/host'),
         require('stores/ActionStore'),
         require('stores/LogEntryStore'),
         require('babble')
     );
-}(function (React, _, doozy, actionStore, logEntryStore, babble) {
+}(function (React, _, doozy, host, actionStore, logEntryStore, babble) {
     /* global $ */
     var ManageAction = React.createClass({
 
@@ -371,12 +372,12 @@
         },
         handleCancelClick: function () {
             // ui.goBack();
-            window.location.href = '/doozy/actions';
+            host.go('/doozy/actions');
         },
         handleDeleteClick: function () {
             actionStore.destroy(this.props.action);
             // ui.goBack();
-            window.location.href = '/doozy/actions';
+            host.go('/doozy/actions');
         },
         handleToggleViewModeClick: function () {
             if (this.state.viewMode === 'general') {
@@ -489,7 +490,7 @@
                 actionStore.create(action);
             }
 
-            window.location.href = '/doozy/actions';
+            host.go('/doozy/actions');
         },
 
         /*************************************************************

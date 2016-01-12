@@ -2,27 +2,30 @@
     module.exports = exports = factory(
         require('react'),
         require('app/doozy'),
+        require('stores/host'),
         require('stores/plan-store'),
         require('mixins/SubscriberMixin')
     );
-}(function (React, doozy, planStore, SubscriberMixin) {
+}(function (React, doozy, host, planStore, SubscriberMixin) {
     var ManagePlan = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
         mixins: [SubscriberMixin(planStore)],
         propTypes: {
-            planId: React.PropTypes.string,
+            id: React.PropTypes.string,
         },
         getInitialState: function () {
             return doozy.plan();
         },
-
+        componentWillMount: function () {
+            host.setTitle('Plan');  
+        },
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
         handleCancelClick: function () {
-            window.location.href = '/doozy/plans';
+            host.go('/doozy/plans');
         },
         handleChange: function (event) {
             if (event.target === this.refs.name.getDOMNode()) {
@@ -39,17 +42,17 @@
             }
         },
         handleDeleteClick: function () {
-            planStore.destroy(this.props.planId);
-            window.location.href = '/doozy/plans';
+            planStore.destroy(this.props.id);
+            host.go('/doozy/plans');
         },
         handleSaveClick: function () {
-            if (this.props.planId) {
+            if (this.props.id) {
                 planStore.update(this.state);
             }
             else {
                 planStore.create(this.state);
             }
-            window.location.href = '/doozy/plans';
+            host.go('/doozy/plans');
         },
         handleStoreUpdate: function (model) {
             this.setState(model);
@@ -60,7 +63,7 @@
          *************************************************************/
         render: function () {
             // Waiting on store
-            if (this.props.planId && this.state.isNew) {
+            if (this.props.id && this.state.isNew) {
                 return <div>Loading...</div>;
             }
 

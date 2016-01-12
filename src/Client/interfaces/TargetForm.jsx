@@ -31,7 +31,7 @@
          *************************************************************/
         render: function () {
             return (
-                <ManageTarget targetId={this.props.targetId} />
+                <ManageTarget id={this.props.id} />
             );
         },
     });

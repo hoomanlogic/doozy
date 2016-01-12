@@ -25,7 +25,7 @@
             };
         }
         else {
-            var thisProp = propName || thisStore.storeName.slice(0, 1).toLowerCase() + thisStore.storeName.slice(1) + 'Id';
+            var thisProp = 'id';
             mixinObj = {
                 /*************************************************************
                 * COMPONENT LIFECYCLE

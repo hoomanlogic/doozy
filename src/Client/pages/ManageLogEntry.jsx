@@ -3,12 +3,13 @@
         require('react'),
         require('lodash'),
         require('app/doozy'),
+        require('stores/host'),
         require('babble'),
         require('stores/action-store'),
         require('stores/logentry-store'),
         require('mixins/SubscriberMixin')
     );
-}(function (React, _, doozy, babble, actionStore, logEntryStore, SubscriberMixin) {
+}(function (React, _, doozy, host, babble, actionStore, logEntryStore, SubscriberMixin) {
     /* globals $ */
     var ManageLogEntry = React.createClass({
         /*************************************************************
@@ -16,7 +17,7 @@
          *************************************************************/
         mixins: [SubscriberMixin(logEntryStore)],
         propTypes: {
-            logEntryId: React.PropTypes.string
+            id: React.PropTypes.string
         },
 
         getInitialState: function () {
@@ -42,6 +43,7 @@
          * COMPONENT LIFECYCLE
          *************************************************************/
         componentWillMount: function () {
+            host.setTitle('Log Entry');  
             actionStore.subscribe(this.handleActionStoreUpdate, {});
         },
         componentDidMount: function () {
@@ -98,7 +100,7 @@
          * EVENT HANDLING
          *************************************************************/
         handleCancel: function () {
-            window.location.href = '/doozy/actions';
+            host.go('/doozy/actions');
         },
         handleChange: function (event) {
             if (event.target === this.refs.performedat.getDOMNode()) {
@@ -229,7 +231,7 @@
                 });
             }
 
-            window.location.href = '/doozy/actions';
+            host.go('/doozy/actions');
         },
         handleStoreUpdate: function (model) {
 
@@ -425,7 +427,7 @@
          *************************************************************/
         render: function () {
             // Waiting on store
-            if (this.props.logEntryId && this.state.isNew) {
+            if (this.props.id && this.state.isNew) {
                 return <div>Loading...</div>;
             }
 

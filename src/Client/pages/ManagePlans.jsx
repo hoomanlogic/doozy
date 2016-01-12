@@ -2,10 +2,11 @@
     module.exports = exports = factory(
         require('react'),
         require('lodash'),
+        require('stores/host'),
         require('stores/plan-store'),
         require('mixins/SubscriberMixin')
     );
-}(function (React, _, planStore, SubscriberMixin) {
+}(function (React, _, host, planStore, SubscriberMixin) {
     var ManagePlans = React.createClass({
         /*************************************************************
          * EVENT HANDLING
@@ -21,13 +22,13 @@
          * EVENT HANDLING
          *************************************************************/
         handleCloseClick: function () {
-            window.location.href = '/doozy';
+            host.go('/doozy');
         },
         handlePlanClick: function (plan) {
-            window.location.href = '/doozy/plansteps/' + plan.id;
+            host.go('/doozy/plansteps/' + plan.id);
         },
         handleEditPlanDetailsClick: function (plan) {
-            window.location.href = '/doozy/plan/' + plan.id;
+            host.go('/doozy/plan/' + plan.id);
         },
 
         /*************************************************************

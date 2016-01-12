@@ -4,10 +4,11 @@
         require('lodash'),
         require('app/doozy'),
         require('babble'),
+        require('stores/host'),
         require('stores/planstep-store'),
         require('mixins/SubscriberMixin')
     );
-}(function (React, _, doozy, babble, planStepStore, SubscriberMixin) {
+}(function (React, _, doozy, babble, host, planStepStore, SubscriberMixin) {
     var ManagePlanStep = React.createClass({
         /*************************************************************
          * DEFINITIONS
@@ -22,7 +23,7 @@
          * EVENT HANDLING
          *************************************************************/
         handleCancelClick: function () {
-            window.location.href = '/doozy/plansteps/' + this.props.planId;
+            host.go('/doozy/plansteps/' + this.props.planId);
         },
         handleChange: function (event) {
             if (event.target === this.refs.name.getDOMNode()) {
@@ -71,7 +72,7 @@
         },
         handleDeleteClick: function () {
             planStepStore.destroy(this.props.planStepId);
-            window.location.href = '/doozy/plansteps/' + this.props.planId;
+            host.go('/doozy/plansteps/' + this.props.planId);
         },
         handleSaveClick: function () {
             if (this.props.isNew) {
@@ -80,7 +81,7 @@
             else {
                 planStepStore.update(this.state);
             }
-            window.location.href = '/doozy/plansteps/' + this.props.planId;
+            host.go('/doozy/plansteps/' + this.props.planId);
         },
         handleStoreUpdate: function (model) {
             // Generate duration input from numeric value

@@ -1,8 +1,11 @@
 (function (factory) {
     module.exports = exports = factory(
-        require('react')
+        require('react'),
+        require('stores/host'),
+        require('hl-common-js/src/io')
     );
-}(function (React) {
+}(function (React, hlio) {
+    /* globals $ */
     var Uploader = React.createClass({
         /*************************************************************
          * DEFINITIONS
@@ -55,7 +58,7 @@
 
         uploadFile: function () {
 
-            var fd = new FormData();
+            var fd = new host.FormData();
 
             var count = document.getElementById('theFile').files.length;
 
@@ -66,15 +69,15 @@
 
             var xhr = new XMLHttpRequest();
 
-            xhr.upload.addEventListener("progress", this.uploadProgress, false);
-            xhr.addEventListener("load", this.uploadComplete, false);
-            xhr.addEventListener("error", this.uploadFailed, false);
-            xhr.addEventListener("abort", this.uploadCanceled, false);
+            xhr.upload.addEventListener('progress', this.uploadProgress, false);
+            xhr.addEventListener('load', this.uploadComplete, false);
+            xhr.addEventListener('error', this.uploadFailed, false);
+            xhr.addEventListener('abort', this.uploadCanceled, false);
             if (this.props.arg) {
-                xhr.open("POST", "api/uploadfiles/" + this.props.type + '/' + this.props.arg);
+                xhr.open('POST', 'api/uploadfiles/' + this.props.type + '/' + this.props.arg);
             }
             else {
-                xhr.open("POST", "api/uploadfiles/" + this.props.type);
+                xhr.open('POST', 'api/uploadfiles/' + this.props.type);
             }
             xhr.setRequestHeader('Authorization', 'Bearer ' + clientApp.getAccessToken());
             xhr.send(fd);

@@ -31,7 +31,7 @@
          *************************************************************/
         render: function () {
             return (
-                <ManageTag tagId={this.props.tagId} />
+                <ManageTag id={this.props.id} />
             );
         },
     });

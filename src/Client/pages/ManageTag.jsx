@@ -2,27 +2,35 @@
     module.exports = exports = factory(
         require('react'),
         require('app/doozy'),
+        require('stores/host'),
         require('stores/tag-store'),
         require('mixins/SubscriberMixin')
     );
-}(function (React, doozy, tagStore, SubscriberMixin) {
+}(function (React, doozy, host, tagStore, SubscriberMixin) {
     var ManageTag = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
         mixins: [SubscriberMixin(tagStore)],
         propTypes: {
-            tagId: React.PropTypes.string,
+            id: React.PropTypes.string,
         },
         getInitialState: function () {
             return doozy.tag();
         },
 
         /*************************************************************
+         * COMPONENT LIFECYCLE
+         *************************************************************/
+        componentWillMount: function () {
+            host.setTitle('Tag');  
+        },
+
+        /*************************************************************
          * EVENT HANDLING
          *************************************************************/
         handleCancelClick: function () {
-            window.location.href = '/doozy/tags';
+            host.go('/doozy/tags');
         },
         handleChange: function (event) {
             if (event.target === this.refs.name.getDOMNode()) {
@@ -36,17 +44,17 @@
             }
         },
         handleDeleteClick: function () {
-            tagStore.destroy(this.props.tagId);
-            window.location.href = '/doozy/tags';
+            tagStore.destroy(this.props.id);
+            host.go('/doozy/tags');
         },
         handleSaveClick: function () {
-            if (this.props.tagId) {
+            if (this.props.id) {
                 tagStore.update(this.state);
             }
             else {
                 tagStore.create(this.state);
             }
-            window.location.href = '/doozy/tags';
+            host.go('/doozy/tags');
         },
         handleStoreUpdate: function (model) {
             this.setState(model);
@@ -57,7 +65,7 @@
          *************************************************************/
         render: function () {
             // Waiting on store
-            if (this.props.tagId && this.state.isNew) {
+            if (this.props.id && this.state.isNew) {
                 return <div>Loading...</div>;
             }
 

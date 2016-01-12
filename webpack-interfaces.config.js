@@ -3,19 +3,21 @@ var path = require("path");
 module.exports = {
     entry: {
         // MAIN INTERFACES
-        actions: path.resolve(__dirname, 'src/Client/interfaces/mount.actions.js'),
-        'plans': path.resolve(__dirname, 'src/Client/interfaces/mount.plans.js'),
-        'plan-steps': path.resolve(__dirname, 'src/Client/interfaces/mount.plan-steps.js'),
-        'tags': path.resolve(__dirname, 'src/Client/interfaces/mount.tags.js'),
-        'targets': path.resolve(__dirname, 'src/Client/interfaces/mount.targets.js'),
+        'action-list': path.resolve(__dirname, 'src/Client/interfaces/mount/mount.actions.js'),
+        'focus-list': path.resolve(__dirname, 'src/Client/interfaces/mount/mount.focuses.js'),
+        'plan-list': path.resolve(__dirname, 'src/Client/interfaces/mount/mount.plans.js'),
+        'planstep-list': path.resolve(__dirname, 'src/Client/interfaces/mount/mount.plan-steps.js'),
+        'tag-list': path.resolve(__dirname, 'src/Client/interfaces/mount/mount.tags.js'),
+        'target-list': path.resolve(__dirname, 'src/Client/interfaces/mount/mount.targets.js'),
 
         // FORMS
-        'action-form': path.resolve(__dirname, 'src/Client/interfaces/mount.action-form.js'),
-        'logentry-form': path.resolve(__dirname, 'src/Client/interfaces/mount.logentry-form.js'),
-        'plan-form': path.resolve(__dirname, 'src/Client/interfaces/mount.plan-form.js'),
-        'plan-step-form': path.resolve(__dirname, 'src/Client/interfaces/mount.plan-step-form.js'),
-        'tag-form': path.resolve(__dirname, 'src/Client/interfaces/mount.tag-form.js'),
-        'target-form': path.resolve(__dirname, 'src/Client/interfaces/mount.target-form.js'),
+        'action-form': path.resolve(__dirname, 'src/Client/interfaces/mount/mount.action-form.js'),
+        'focus-form': path.resolve(__dirname, 'src/Client/interfaces/mount/mount.focus-form.js'),
+        'logentry-form': path.resolve(__dirname, 'src/Client/interfaces/mount/mount.logentry-form.js'),
+        'plan-form': path.resolve(__dirname, 'src/Client/interfaces/mount/mount.plan-form.js'),
+        'plan-step-form': path.resolve(__dirname, 'src/Client/interfaces/mount/mount.plan-step-form.js'),
+        'tag-form': path.resolve(__dirname, 'src/Client/interfaces/mount/mount.tag-form.js'),
+        'target-form': path.resolve(__dirname, 'src/Client/interfaces/mount/mount.target-form.js'),
     },
     eslint: {
         configFile: '.eslintrc'

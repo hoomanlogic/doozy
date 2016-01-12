@@ -2,20 +2,20 @@
     require('./Actions.less');
     module.exports = exports = factory(
         require('react'),
-        require('pages/ManagePlan'),
+        require('pages/ManageFocus'),
     );
-}(function (React, ManagePlan) {
+}(function (React, ManageFocus) {
 
-    var PlanFormInterface = React.createClass({
+    var FocusFormInterface = React.createClass({
         /*************************************************************
          * RENDERING
          *************************************************************/
         render: function () {
             return (
-                <ManagePlan id={this.props.id} />
+                <ManageFocus id={this.props.id} />
             );
         },
     });
 
-    return PlanFormInterface;
+    return FocusFormInterface;
 }));

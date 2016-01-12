@@ -1,47 +1,64 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
-        require('components/Uploader'),
-        require('stores/FocusStore'),
+        require('app/doozy'),
+        require('stores/host'),
+        require('stores/focus-store'),
+        require('mixins/SubscriberMixin')
     );
-}(function (React, Uploader, focusStore) {
+}(function (React, doozy, host, focusStore, SubscriberMixin) {
     var ManageFocus = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
-        getInitialState: function () {
-            return {
-                isNew: this.props.currentFocus.isNew || false,
-                id: this.props.currentFocus.id,
-                ref: this.props.currentFocus.id,
-                name: this.props.currentFocus.name,
-                kind: this.props.currentFocus.kind,
-                tagName: this.props.currentFocus.tagName,
-                filesSelected: false
-            };
+        mixins: [SubscriberMixin(focusStore)],
+        propTypes: {
+            id: React.PropTypes.string,
         },
+        getInitialState: function () {
+            return doozy.focus();
+        },
+
+        /*************************************************************
+         * COMPONENT LIFECYCLE
+         *************************************************************/
+        componentWillMount: function () {
+            host.setTitle('Focus');  
+        },
+
+        // getInitialState: function () {
+        //     return {
+        //         isNew: this.props.currentFocus.isNew || false,
+        //         id: this.props.currentFocus.id,
+        //         ref: this.props.currentFocus.id,
+        //         name: this.props.currentFocus.name,
+        //         kind: this.props.currentFocus.kind,
+        //         tagName: this.props.currentFocus.tagName,
+        //         filesSelected: false
+        //     };
+        // },
 
 
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
-        componentWillReceiveProps: function (nextProps) {
-            if (nextProps.currentFocus.id !== this.state.id) {
-                this.setState({
-                    isNew: nextProps.currentFocus.isNew || false,
-                    id: nextProps.currentFocus.id,
-                    name: nextProps.currentFocus.name,
-                    kind: nextProps.currentFocus.kind,
-                    tagName: nextProps.currentFocus.tagName
-                });
-            };
-        },
+        // componentWillReceiveProps: function (nextProps) {
+        //     if (nextProps.currentFocus.id !== this.state.id) {
+        //         this.setState({
+        //             isNew: nextProps.currentFocus.isNew || false,
+        //             id: nextProps.currentFocus.id,
+        //             name: nextProps.currentFocus.name,
+        //             kind: nextProps.currentFocus.kind,
+        //             tagName: nextProps.currentFocus.tagName
+        //         });
+        //     }
+        // },
 
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
         handleCancelClick: function () {
-            ui.goBack();
+            host.go('/doozy/focuses');
         },
         handleChange: function (event) {
             if (event.target === this.refs.name.getDOMNode()) {
@@ -55,53 +72,55 @@
             }
         },
         handleDeleteClick: function () {
-            if (prompt('Are you sure you want to delete this focus?\n\nIf so, type DELETE and hit enter') === 'DELETE') {
-                focusStore.destroy(this.props.currentFocus);
-            }
-        },
-        handleOnFileChange: function (filesSelected) {
-            this.setState({
-                filesSelected: filesSelected
+            host.prompt('Are you sure you want to delete this focus?\n\nIf so, type DELETE and hit enter', function (response) {
+                if (response  === 'DELETE') {
+                    focusStore.destroy(this.props.id);
+                    host.go('/doozy/focuses');
+                }
             });
         },
+        // handleOnFileChange: function (filesSelected) {
+        //     this.setState({
+        //         filesSelected: filesSelected
+        //     });
+        // },
         handleSaveClick: function () {
-            if (!this.state.isNew) {
+            if (this.props.id) {
                 focusStore.update(this.state);
             }
             else {
-                focusStore.create({
-                    id: this.state.id,
-                    name: this.state.name,
-                    kind: this.state.kind,
-                    tagName: this.state.tagName
-                });
+                focusStore.create(this.state);
             }
+            host.go('/doozy/focuses');
+        },
+        handleStoreUpdate: function (model) {
+            this.setState(model);
         },
 
         /*************************************************************
          * RENDERING
          *************************************************************/
         render: function () {
-            var buttonStyle = {
-              display: 'block',
-              width: '100%',
-              marginBottom: '5px',
-              fontSize: '1.1rem'
-            };
-
-            var currentImage;
-            if (!this.state.filesSelected) {
-                currentImage = (<img style={{display: 'inline', maxWidth: '100px', maxHeight: '100px'}} src={this.props.currentFocus.iconUri} />);
+            // Waiting on store
+            if (this.props.id && this.state.isNew) {
+                return <div>Loading...</div>;
             }
+
+            // var currentImage;
+            // if (!this.state.filesSelected) {
+            //     currentImage = (<img style={{display: 'inline', maxWidth: '100px', maxHeight: '100px'}} src={this.props.currentFocus.iconUri} />);
+            // }
             //<button style={buttonStyle} type="button" className="btn btn-danger" onClick={this.handleDeleteClick}>Delete Focus</button>
+
+            // TODO: Re-Implement Uploader
+            // <label>What picture best represents this focus?</label>
+            // {currentImage}
+            // <Uploader type="Focus" arg={this.state.id} onFileChange={this.handleOnFileChange} />
 
             // html
             return (
                 <div style={styles.main}>
                     <form role="form">
-                        <label>What picture best represents this focus?</label>
-                        {currentImage}
-                        <Uploader type="Focus" arg={this.state.id} onFileChange={this.handleOnFileChange} />
                         <div className="form-group">
                             <label htmlFor="f2">What kind of focus is this?</label>
                             <select id="f2" ref="kind" className="form-control" value={this.state.kind} onChange={this.handleChange}>
@@ -132,6 +151,13 @@
             margin: 'auto',
             maxWidth: '40rem'
         }
+    };
+
+    var buttonStyle = {
+        display: 'block',
+        width: '100%',
+        marginBottom: '5px',
+        fontSize: '1.1rem'
     };
 
     return ManageFocus;

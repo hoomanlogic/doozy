@@ -4,13 +4,14 @@
         require('lodash'),
         require('babble'),
         require('app/doozy'),
+        require('stores/host'),
         require('stores/target-store'),
         require('stores/logentry-store'),
         require('stores/tag-store'),
         require('components/Indicator'),
         require('mixins/SubscriberMixin')
     );
-}(function (React, _, babble, doozy, targetStore, logEntryStore, tagStore, Indicator, SubscriberMixin) {
+}(function (React, _, babble, doozy, host, targetStore, logEntryStore, tagStore, Indicator, SubscriberMixin) {
     var ManageTargets = React.createClass({
         /*************************************************************
          * DEFINITIONS
@@ -26,6 +27,7 @@
          * COMPONENT LIFECYCLE
          *************************************************************/
         componentWillMount: function () {
+            host.setTitle('Targets');
             logEntryStore.subscribe(this.handleLogEntryStoreUpdate, {});
             tagStore.subscribe(this.handleTagStoreUpdate, {});
         },
@@ -38,10 +40,10 @@
          * EVENT HANDLING
          *************************************************************/
         handleCloseClick: function () {
-            window.location.href = '/doozy';
+            host.go('/doozy');
         },
         handleEditClick: function (target) {
-            window.location.href = '/doozy/target/' + target.id;
+            host.go('/doozy/target/' + target.id);
         },
         handleTargetClick: function () {
             // ui.goTo('Calendar', {targetId: target.id});

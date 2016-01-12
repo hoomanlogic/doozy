@@ -3,12 +3,13 @@
         require('react'),
         require('lodash'),
         require('app/doozy'),
+        require('stores/host'),
         require('stores/target-store'),
         require('stores/action-store'),
         require('stores/tag-store'),
         require('mixins/SubscriberMixin')
     );
-}(function (React, _, doozy, targetStore, actionStore, tagStore, SubscriberMixin) {
+}(function (React, _, doozy, host, targetStore, actionStore, tagStore, SubscriberMixin) {
     /* globals $ */
     var ManageTarget = React.createClass({
         /*************************************************************
@@ -16,12 +17,9 @@
          *************************************************************/
         mixins: [SubscriberMixin(targetStore)],
         propTypes: {
-            targetId: React.PropTypes.string,
+            id: React.PropTypes.string,
         },
 
-        /*************************************************************
-         * DEFINITIONS
-         *************************************************************/
         getInitialState: function () {
             return doozy.target();
         },
@@ -30,6 +28,7 @@
          * COMPONENT LIFECYCLE
          *************************************************************/
         componentWillMount: function () {
+            host.setTitle('Target');
             actionStore.subscribe(this.handleActionStoreUpdate, {});
             tagStore.subscribe(this.handleTagStoreUpdate, {});
         },
@@ -64,7 +63,7 @@
          * EVENT HANDLING
          *************************************************************/
         handleCancelClick: function () {
-            window.location.href = '/doozy/targets';
+            host.go('/doozy/targets');
         },
         handleChange: function (event) {
             if (event.target === this.refs.name.getDOMNode()) {
@@ -87,8 +86,8 @@
             }
         },
         handleDeleteClick: function () {
-            targetStore.destroy(this.props.targetId);
-            window.location.href = '/doozy/targets';
+            targetStore.destroy(this.props.id);
+            host.go('/doozy/targets');
         },
         handleSaveClick: function () {
             var entity = this.refs.entity.getDOMNode().value;
@@ -111,7 +110,7 @@
             else {
                 targetStore.update(this.state);
             }
-            window.location.href = '/doozy/targets';
+            host.go('/doozy/targets');
         },
         handleStoreUpdate: function (model) {
             this.setState(model);
@@ -242,7 +241,7 @@
          *************************************************************/
         render: function () {
             // Waiting on store
-            if (this.props.targetId && this.state.isNew) {
+            if (this.props.id && this.state.isNew) {
                 return <div>Loading...</div>;
             }
 
