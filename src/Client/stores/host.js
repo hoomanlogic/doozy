@@ -26,12 +26,12 @@
      * a less in-you-face placement, such as upping the number of notifications in a notification icon.
      */
     // TODO: do provider (ie. window) specific setup when requiring.
-    //       resulting functions should be swift and direct to the appropriate provider
+    //       resulting functions should be swift and direct to the appropriate provider   
     var Host = function () {
         // store.Store.call(this);
         // var me = this;
 
-        this.context = {};
+        this.context = new Context();
 
         var formDataMock = function () {
             this.append = function () {
@@ -55,8 +55,8 @@
                 setTitle: function (title) {
                     window.document.title = title;
                 },
-                FormData: window.FormData || formDataMock
             };
+            this.FormData = window.FormData || formDataMock;
         }
         /* eslint-enable no-undef */
 
@@ -72,8 +72,8 @@
                 setTitle: function () {
                     // DO NOTHING
                 },
-                FormData: formDataMock
             };
+            this.FormData = formDataMock;
         }
 
         // this.onFirstIn = function () {
@@ -99,15 +99,42 @@
             this.providers.prompt(request, callback);
         },
 
-        // THIS IS A SPECIAL FUNCTION THAT DOES NOT USE A PROVIDER
-        setContext: function (context) {
-            Object.assign(this.context, context);
-            hlio.saveLocal('host-context', context, 'host');
-        },
-
         setTitle: function (title) {
             this.providers.setTitle(title);
         },
     };
+    
+    var Context = function () {
+        this._context = {};
+        this._subscribers = [];
+    };
+    
+    Context.prototype = {
+        get: function () {
+            return Object.assign(this._context, hlio.loadLocal('host-context', 'h05t'));
+        },
+        set: function (context) {
+            hlio.saveLocal('host-context', Object.assign(this._context, this.get(), context), 'h05t');
+            this.notify(this._context);
+        },
+        notify: function (context) {
+            for (var i = 0; i < this._subscribers.length; i++) {
+                this._subscribers[i](context);
+            }
+        },
+        subscribe: function (notifyCb) {
+            this._subscribers.push(notifyCb);
+            notifyCb(this.get());
+        },
+        unsubscribe: function (notifyCb) {
+            for (var i = 0; i < this._subscribers.length; i++) {
+                if (this._subscribers[i] === notifyCb) {
+                    this._subscribers.splice(i, 1);
+                    break;
+                }
+            }
+        },
+    };
+
     return new Host();
 }));

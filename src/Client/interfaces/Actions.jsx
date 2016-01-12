@@ -2,6 +2,7 @@
     require('./Actions.less');
     module.exports = exports = factory(
         require('react'),
+        require('stores/host'),
         require('stores/ActionStore'),
         require('stores/TagStore'),
         require('mixins/StoresMixin'),
@@ -9,7 +10,7 @@
         require('components/TimerBar'),
         require('pages/ManageActions'),
     );
-}(function (React, actionStore, tagStore, StoresMixin, FocusBar, TimerBar, ManageActions) {
+}(function (React, host, actionStore, tagStore, StoresMixin, FocusBar, TimerBar, ManageActions) {
 
     var ActionsInterface = React.createClass({
         /*************************************************************
@@ -26,7 +27,12 @@
          * EVENT HANDLING
          *************************************************************/
         handleFocusClick: function (item) {
-            this.setState({ currentFocus: item.name === null ? undefined : item });
+            host.context.set({
+                focus: item
+            });
+            this.setState({
+                contextStoreLastUpdate: new Date().toISOString() 
+            });
         },
 
         /*************************************************************
@@ -37,13 +43,14 @@
             if (!actionStore.updates.value || !tagStore.updates.value) {
                 return (<div>No results</div>);
             }
-
+            
+            var context = host.context.get();
             return (
                 <div>
-                    <FocusBar currentFocus={this.state.currentFocus}
+                    <FocusBar currentFocus={context.focus}
                         handleFocusClick={this.handleFocusClick} />
                     <TimerBar />
-                    <ManageActions focusTag={this.state.currentFocus ? '!' + this.state.currentFocus.tagName : undefined} />
+                    <ManageActions focusTag={context.focus ? '!' + context.focus.tagName : undefined} />
                 </div>
             );
         },

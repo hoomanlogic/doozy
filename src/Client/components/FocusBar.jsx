@@ -40,7 +40,6 @@
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
-
         handleStoreUpdate: function () {
             this.setState({storeLastUpdated: new Date().toISOString()});
         },

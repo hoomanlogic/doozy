@@ -4,6 +4,7 @@
         require('lodash'),
         require('hl-common-js/src/those'),
         require('stores/ActionStore'),
+        require('stores/host'),
         require('components/TagList'),
         require('components/ActivePlans'),
         require('components/NextActions'),
@@ -11,7 +12,7 @@
         require('components/RecentActivity'),
         require('components/BoxedActions')
     );
-}(function (React, _, those, actionStore, TagList, ActivePlans, NextActions, UpcomingActions, RecentActivity, BoxedActions) {
+}(function (React, _, those, actionStore, host, TagList, ActivePlans, NextActions, UpcomingActions, RecentActivity, BoxedActions) {
     var ManageActions = React.createClass({
         /*************************************************************
          * DEFINITIONS
@@ -35,7 +36,7 @@
              */
             this.actionsObserver = actionStore.updates
                 .subscribe(this.handleActionStoreUpdate);
-
+            host.setTitle('Actions');
         },
         componentWillReceiveProps: function (nextProps) {
             /**
@@ -77,8 +78,9 @@
             /**
              * Update globally accessible default tags
              */
-            window['ui'] = window['ui'] || {};
-            window['ui'].tags = tagsFilter;
+            host.setContext({
+                tags: tagsFilter
+            });
         },
 
         handleActionStoreUpdate: function (actions, focusTag, focusChange) {
