@@ -3,26 +3,13 @@
     module.exports = exports = factory(
         require('react'),
         require('stores/host'),
-        require('stores/ActionStore'),
-        require('stores/TagStore'),
-        require('mixins/StoresMixin'),
         require('components/FocusBar'),
         require('components/TimerBar'),
         require('pages/ManageActions'),
     );
-}(function (React, host, actionStore, tagStore, StoresMixin, FocusBar, TimerBar, ManageActions) {
+}(function (React, host, FocusBar, TimerBar, ManageActions) {
 
     var ActionsInterface = React.createClass({
-        /*************************************************************
-         * DEFINITIONS
-         *************************************************************/
-        mixins: [StoresMixin([actionStore, tagStore], true)],
-        getInitialState: function () {
-            return {
-                currentFocus: null
-            };
-        },
-
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
@@ -31,7 +18,7 @@
                 focus: item
             });
             this.setState({
-                contextStoreLastUpdate: new Date().toISOString() 
+                contextStoreLastUpdate: new Date().toISOString()
             });
         },
 
@@ -39,18 +26,13 @@
          * RENDERING
          *************************************************************/
         render: function () {
-
-            if (!actionStore.updates.value || !tagStore.updates.value) {
-                return (<div>No results</div>);
-            }
-            
             var context = host.context.get();
             return (
                 <div>
-                    <FocusBar currentFocus={context.focus}
+                    <FocusBar currentFocus={context.focus || undefined}
                         handleFocusClick={this.handleFocusClick} />
                     <TimerBar />
-                    <ManageActions focusTag={context.focus ? '!' + context.focus.tagName : undefined} />
+                    <ManageActions focusTag={context.focus && context.focus.tagName !== 'nofocus' ? '!' + context.focus.tagName : undefined} />
                 </div>
             );
         },
