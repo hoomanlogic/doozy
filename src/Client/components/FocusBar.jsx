@@ -77,40 +77,23 @@
              * Add additional menu item when in Focus Management
              */
             var f = doozy.focus();
-
-            if (this.props.currentPage === 'Focus Management') {
-                menuItems.push((
-                    <li key="newfocus" >
-                        <a onClick={this.handleFocusClick.bind(null, f)} style={styles.menuItem}>
-                            <div>
-                                <div style={{display: 'inline', verticalAlign: 'inherit'}}>
-                                    <i className="fa fa-eye fa-2x" style={{width: '50px'}}></i>
-                                </div>
-                                <div style={{display: 'inline-block'}}>Add New Focus</div>
+            f.name = null;
+            f.tagName = 'nofocus';
+            menuItems.push((
+                <li key="nofocus" >
+                    <a onClick={this.handleFocusClick.bind(null, f)} style={styles.menuItem}>
+                        <div>
+                            <div style={{display: 'inline', verticalAlign: 'inherit'}}>
+                                <i className="fa fa-eye fa-2x" style={{width: '50px'}}></i>
                             </div>
-                        </a>
-                    </li>
-                ));
-            }
-            else {
-                f.name = null;
-                f.tagName = 'nofocus';
-                menuItems.push((
-                    <li key="nofocus" >
-                        <a onClick={this.handleFocusClick.bind(null, f)} style={styles.menuItem}>
-                            <div>
-                                <div style={{display: 'inline', verticalAlign: 'inherit'}}>
-                                    <i className="fa fa-eye fa-2x" style={{width: '50px'}}></i>
-                                </div>
-                                <div style={{display: 'inline-block'}}>Clear Focus</div>
-                            </div>
-                        </a>
-                    </li>
-                ));
-            }
+                            <div style={{display: 'inline-block'}}>Clear Focus</div>
+                        </div>
+                    </a>
+                </li>
+            ));
 
             var button = null;
-            if (typeof currentFocus !== 'undefined' && currentFocus !== null) {
+            if (currentFocus && currentFocus.tagName !== 'nofocus') {
 
                 var imageStyle = {
                     width: '50px',
@@ -123,7 +106,6 @@
                 );
             }
             else {
-
                 button = (
                     <div><i className="fa fa-eye fa-2x" style={{width: '50px'}}></i></div>
                 );
