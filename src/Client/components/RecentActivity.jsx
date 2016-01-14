@@ -3,12 +3,13 @@
         require('react'),
         require('jquery'),
         require('lodash'),
+        require('stores/host'),
         require('hl-common-js/src/those'),
         require('stores/logentry-store'),
         require('mixins/StoresMixin'),
         require('./LogEntryBox')
     );
-}(function (React, $, _, those, logEntryStore, StoresMixin, LogEntryBox) {
+}(function (React, $, _, host, those, logEntryStore, StoresMixin, LogEntryBox) {
     var RecentActivity = React.createClass({
         /*************************************************************
          * DEFINITIONS
@@ -49,10 +50,7 @@
          * EVENT HANDLING
          *************************************************************/
         handleLogEntryClick: function () {
-            // ui.logEntry({
-            //     id: '00000000-0000-0000-0000-000000000000'
-            // });
-            window.location.href = '/doozy/logentries/new';
+            host.go('/doozy/logentry/new');
         },
 
         /*************************************************************
