@@ -23,7 +23,7 @@
          * COMPONENT LIFECYCLE
          *************************************************************/
         componentWillMount: function () {
-            host.setTitle('Focus');  
+            host.setTitle('Focus');
         },
 
         // getInitialState: function () {
@@ -73,7 +73,7 @@
         },
         handleDeleteClick: function () {
             host.prompt('Are you sure you want to delete this focus?\n\nIf so, type DELETE and hit enter', function (response) {
-                if (response  === 'DELETE') {
+                if (response === 'DELETE') {
                     focusStore.destroy(this.props.id);
                     host.go('/doozy/focuses');
                 }
@@ -110,7 +110,7 @@
             // if (!this.state.filesSelected) {
             //     currentImage = (<img style={{display: 'inline', maxWidth: '100px', maxHeight: '100px'}} src={this.props.currentFocus.iconUri} />);
             // }
-            //<button style={buttonStyle} type="button" className="btn btn-danger" onClick={this.handleDeleteClick}>Delete Focus</button>
+            // <button style={buttonStyle} type="button" className="btn btn-danger" onClick={this.handleDeleteClick}>Delete Focus</button>
 
             // TODO: Re-Implement Uploader
             // <label>What picture best represents this focus?</label>
