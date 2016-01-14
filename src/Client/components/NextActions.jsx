@@ -2,17 +2,18 @@
     module.exports = exports = factory(
         require('react'),
         require('babble'),
+        require('stores/host'),
         require('lodash'),
         require('./ActionRow')
     );
-}(function (React, babble, _, ActionRow) {
+}(function (React, babble, host, _, ActionRow) {
     var NextActions = React.createClass({
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
         handleAddActionClick: function () {
             // ui.addAction();
-            window.location.href = '/doozy/actions/new';
+            host.go('/doozy/action/new');
         },
 
         /*************************************************************
