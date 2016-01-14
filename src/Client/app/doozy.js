@@ -272,7 +272,8 @@
                 duration: 0,
                 date: Date.create('today'),
                 details: '',
-                kind: 'performed'
+                kind: 'performed',
+                tags: []
             };
         },
 
