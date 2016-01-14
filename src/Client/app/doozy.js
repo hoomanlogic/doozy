@@ -138,6 +138,15 @@
 
         TARGET_PERIOD: TARGET_PERIOD,
 
+        extrude: function (model, extrude) {
+            for (var prop in model) {
+                if (model.hasOwnProperty(prop) && extrude.hasOwnProperty(prop)) {
+                    model[prop] = extrude[prop];
+                }
+            }
+            return model;
+        },
+
         getFrequencyName: getFrequencyName,
 
         parseRecurrenceRule: parseRecurrenceRule,
