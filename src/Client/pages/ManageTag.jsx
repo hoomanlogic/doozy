@@ -91,6 +91,7 @@
             // html
             return (
                 <div style={styles.main}>
+                    <h2>{this.state.isNew ? 'New Tag' : 'Update Tag'}</h2>
                     <form role="form">
                         <div className="form-group">
                             <label htmlFor="f2">What kind of tag is this?</label>

@@ -285,6 +285,7 @@
             // html
             return (
                 <div style={styles.main}>
+                    <h2>{this.state.isNew ? 'New Target' : 'Update Target'}</h2>
                     <form role="form">
                         <div className="form-group">
                             <label htmlFor="target-name">Name</label>
