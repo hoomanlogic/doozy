@@ -1,10 +1,10 @@
-(function (factory) {
+﻿(function (factory) {
     module.exports = exports = factory(
         require('../app/doozy'),
         require('../app/data'),
-        require('../app/sql')
+        require('hl-common-js/src/those')
     );
-}(function (doozy, data, legacy) {
+}(function (doozy, data, those) {
 
     /**
      * Set the context for data access
@@ -13,7 +13,7 @@
 
         // var contextCues = [{
         //     kind: 'app',
-        //     tag: 'doozy'  
+        //     tag: 'doozy'
         // }];
 
         // operator.registerGooey('/doozy', operator.authenticate, function (ctx) {
@@ -26,7 +26,7 @@
         //     var gnode = ctx.db.get(ctx.req.params.path);
         //     ctx.res.end(JSON.stringify(gnode));
         // });
-        
+
         var addUI = function (kind, req, res) {
             operator.renderer.renderHtml(
                 defaultHtmlTemplate
@@ -47,15 +47,15 @@
                     res.contentType = 'text/html; charset=utf8';
                     res.end(html);
                 }
-            );  
+            );
         };
-        
+
         var editUI = function (kind, req, res) {
             // Pass kind identifier prop for edit
             var prop = 'id';
             var props = {mode: 'Edit'};
             props[prop] = req.params.id || req.params[0];
-            
+
             operator.renderer.renderHtml(
                 defaultHtmlTemplate
                     .replace('SCRIPT_URL', operator.stats.publicPath + 'doozy/' + kind + '-form.js')
@@ -77,7 +77,7 @@
                 }
             );
         }
-        
+
         var listUI = function (kind, req, res) {
             operator.renderer.renderHtml(
                 defaultHtmlTemplate
@@ -131,7 +131,7 @@
                 }
             );
         });
-        
+
         // ACTION ADD
         operator.express.get('/doozy/action/new', operator.authenticate, function (req, res) {
             addUI('action', req, res);
@@ -210,7 +210,7 @@
         operator.express.get('/doozy/logentry/:id', operator.authenticate, function (req, res) {
             editUI('logentry', req, res);
         });
-        
+
 
         // FOCUSES VIEW
         operator.express.get('/doozy/focuses', operator.authenticate, function (req, res) {
@@ -617,7 +617,7 @@
             operator.getDb(function (db) {
                 db.allOf('doozy.' + kind).forEach(function (gnode) {
                     var model = getModel(gnode, db, kind);
-                    result.push(model); 
+                    result.push(model);
                 });
                 res.end(JSON.stringify(result));
             });
@@ -818,7 +818,7 @@
                     if (parent) {
                         gnode.connect(parent, db.RELATION.CHILD_PARENT);
                     }
-                } 
+                }
             });
         });
 
@@ -842,11 +842,81 @@
         });
 
         operator.express.post('/doozy/api/logentry', operator.authenticate, jsonResponse, function (req, res) {
-            create('logentry', req, res);
+            create('logentry', req, res,
+            // Create Connections
+            function (gnode, db, model) {
+                // Create tag connections
+                if (model.tags && model.tags.length) {
+                    model.tags.forEach(function (tag) {
+                        var tagNode = db.find(removePrefix(tag), 'doozy.tag').first();
+                        if (tagNode) {
+                            gnode.connect(tagNode, db.RELATION.ASSOCIATE);
+                        }
+                    });
+                }
+                // Create action connection
+                if (model.actionId) {
+                    var actionNode = db.find(model.actionId, 'doozy.tag').first();
+                    if (actionNode) {
+                        gnode.connect(actionNode, db.RELATION.ASSOCIATE);
+                    }
+                }
+            },
+            // Generate Tag
+            function (gnode, db, model) {
+                // generate the log entry tag from data (log entries don't have names)
+                var when = model.date.split('T')[0] + '-';
+                var what;
+                if (model.actionId) {
+                    var actionNode = db.find(model.actionId, 'doozy.action').first();
+                    if (actionNode) {
+                        what = actionNode.tag;
+                    }
+                }
+                else {
+                    what = model.details;
+                }
+                return when + (what || '');
+            });
         });
 
         operator.express.put('/doozy/api/logentry', operator.authenticate, jsonResponse, function (req, res) {
-            update('logentry', req, res);
+            update('logentry', req, res,
+            // Update Connections
+            function (gnode, db, model) {
+                // TODO: tag is no longer connected
+                // var removeTags = [];
+                // gnode.siblings('doozy.tag').forEach(function (tagGnapse) {
+                //     if (those(model.tags).first(tag) === null) {
+                //         removeTags.push(tag);
+                //     }
+                // });
+
+                // Create tag connections
+                if (model.tags && model.tags.length) {
+                    model.tags.forEach(function (tag) {
+                        var tagNode = db.find(removePrefix(tag), 'doozy.tag').first();
+                        if (tagNode) {
+                            gnode.connect(tagNode, db.RELATION.ASSOCIATE);
+                        }
+                    });
+
+
+                }
+
+                // TODO: action is no longer connected
+                // if (gnode.state.actionId && (model.state.actionId !== gnode.state.actionId)) {
+
+                // }
+
+                // action is now connected
+                if (model.actionId && model.actionId !== gnode.state.actionId) {
+                    var actionNode = db.find(model.actionId, 'doozy.tag').first();
+                    if (actionNode) {
+                        gnode.connect(actionNode, db.RELATION.ASSOCIATE);
+                    }
+                }
+            });
         });
 
         operator.express.delete('/doozy/api/logentry/:id', operator.authenticate, jsonResponse, function (req, res) {
