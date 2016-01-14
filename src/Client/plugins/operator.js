@@ -176,7 +176,7 @@
         operator.express.get('/doozy/logentry/new(/:tag)?', operator.authenticate, function (req, res) {
             operator.getDb(function (db) {
                 var actionId, actionName;
-                if (req.params.tag.indexOf(' ') > -1) {
+                if ((req.params.tag || '').indexOf(' ') > -1) {
                     actionName = req.params.tag;
                 }
                 else {
