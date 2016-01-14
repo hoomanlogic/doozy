@@ -1,4 +1,4 @@
-﻿(function (factory) {
+(function (factory) {
     module.exports = exports = factory(
         require('../app/doozy'),
         require('../app/data'),
@@ -529,13 +529,21 @@
             return state;
         };
 
-        var create = function (kind, req, res, createConnections) {
+        var create = function (kind, req, res, createConnections, generateTag) {
             operator.getDb(function (db) {
                 // Get model from body
                 var model = req.body;
 
+                var name;
+                if (generateTag && typeof generateTag === 'function') {
+                    name = generateTag(gnode, db, model);
+                }
+                else {
+                    name = model[(generateTag || 'name')];
+                }
+
                 // Strip model to state and create new node from it
-                var gnode = new db.Gnode(model.name, 'doozy.' + kind, stripModel(model, modelProps[kind]));
+                var gnode = new db.Gnode(name, 'doozy.' + kind, stripModel(model, modelProps[kind]));
 
                 // Add node to db
                 db.add(gnode);
