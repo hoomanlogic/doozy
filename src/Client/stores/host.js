@@ -26,7 +26,7 @@
      * a less in-you-face placement, such as upping the number of notifications in a notification icon.
      */
     // TODO: do provider (ie. window) specific setup when requiring.
-    //       resulting functions should be swift and direct to the appropriate provider   
+    //       resulting functions should be swift and direct to the appropriate provider
     var Host = function () {
         // store.Store.call(this);
         // var me = this;
@@ -103,12 +103,12 @@
             this.providers.setTitle(title);
         },
     };
-    
+
     var Context = function () {
         this._context = {};
         this._subscribers = [];
     };
-    
+
     Context.prototype = {
         get: function () {
             return Object.assign(this._context, hlio.loadLocal('host-context', 'h05t'));
