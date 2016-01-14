@@ -10,7 +10,6 @@
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
-        mixins: [StoresMixin([actionStore], true)],
         getInitialState: function () {
             return {
                 currentFocus: null
