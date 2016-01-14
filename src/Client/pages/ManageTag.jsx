@@ -23,7 +23,7 @@
          * COMPONENT LIFECYCLE
          *************************************************************/
         componentWillMount: function () {
-            host.setTitle('Tag');  
+            host.setTitle('Tag');
         },
 
         /*************************************************************
