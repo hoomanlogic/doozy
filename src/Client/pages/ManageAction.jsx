@@ -5,32 +5,35 @@
         require('lodash'),
         require('app/doozy'),
         require('stores/host'),
-        require('stores/ActionStore'),
-        require('stores/LogEntryStore'),
+        require('stores/action-store'),
+        require('stores/logentry-store'),
+        require('stores/tag-store'),
+        require('mixins/SubscriberMixin'),
         require('babble')
     );
-}(function (React, _, doozy, host, actionStore, logEntryStore, babble) {
+}(function (React, _, doozy, host, actionStore, logEntryStore, tagStore, SubscriberMixin, babble) {
     /* global $ */
     var ManageAction = React.createClass({
-
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
-        VIEW_MODE: {
-            GENERAL: 'general',
-            HISTORY: 'history'
+        mixins: [SubscriberMixin(actionStore)],
+        propTypes: {
+            id: React.PropTypes.string,
         },
-
-        /*************************************************************
-         * COMPONENT LIFECYCLE
-         *************************************************************/
+        statics: {
+            VIEW_MODE: {
+                GENERAL: 'general',
+                HISTORY: 'history'
+            },    
+        },
         getInitialState: function () {
-            return {
-                viewMode: 'general',
+            return Object.assign(doozy.action(), {
                 durationInput: null,
                 durationDisplay: null,
                 dateInput: null,
                 dateDisplay: null,
+                logEntriesLastUpdated: new Date().toISOString(),
                 ordinal: null,
                 repeat: 'o',
                 repeatInterval: 1,
@@ -41,9 +44,13 @@
                 repeatThu: false,
                 repeatFri: false,
                 repeatSat: false,
-                logEntriesLastUpdated: new Date().toISOString()
-            };
+                viewMode: 'general',
+            });
         },
+        
+        /*************************************************************
+         * COMPONENT LIFECYCLE
+         *************************************************************/
 
         componentWillReceiveProps: function (nextProps) {
             if (!nextProps.action) {
@@ -261,7 +268,7 @@
          * EVENT HANDLING
          *************************************************************/
         handleLogEntryStoreUpdate: function () {
-            if (this.state.viewMode === this.VIEW_MODE.HISTORY) {
+            if (this.state.viewMode === ManageAction.VIEW_MODE.HISTORY) {
                 this.setState({logEntriesLastUpdated: new Date().toISOString()});
             }
         },
@@ -651,11 +658,11 @@
             var currentView = null;
             var toggleTitle = null;
 
-            if (this.state.viewMode === this.VIEW_MODE.GENERAL) {
+            if (this.state.viewMode === ManageAction.VIEW_MODE.GENERAL) {
                 currentView = this.renderGeneralView();
                 toggleTitle = 'View Action Log';
             }
-            else if (this.state.viewMode === this.VIEW_MODE.HISTORY) {
+            else if (this.state.viewMode === ManageAction.VIEW_MODE.HISTORY) {
                 currentView = this.renderHistoryView();
                 toggleTitle = 'View General';
             }

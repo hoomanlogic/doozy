@@ -43,7 +43,7 @@
          * COMPONENT LIFECYCLE
          *************************************************************/
         componentWillMount: function () {
-            host.setTitle('Log Entry');  
+            host.setTitle('Log Entry');
             actionStore.subscribe(this.handleActionStoreUpdate, {});
         },
         componentDidMount: function () {
@@ -74,22 +74,6 @@
             }
             else {
                 $(this.refs.name.getDOMNode())[0].selectize.focus();
-            }
-        },
-        componentDidUpdate: function () {
-            // If we're still loading, then abort
-            if (!this.refs.name) {
-                return;
-            }
-
-            this.setupActionsControl();
-            this.setupTagsControl();
-            // This must be done AFTER setupTagsControls because
-            // action selectize onChange event uses the tags selectize
-            var selectActions = $(this.refs.name.getDOMNode())[0].selectize;
-            this.setOptionsAction(selectActions);
-            if (this.state.actionName) {
-                selectActions.setValue(this.state.actionName);
             }
         },
         componentWilUnmount: function () {
@@ -159,48 +143,31 @@
             }
         },
         handleSave: function () {
-            var actionName,
-                existingAction,
+            var existingAction,
                 logEntry,
                 newAction,
-                names,
-                tags;
+                action;
 
             // var validationApology = 'Sorry, we don\'t have enough information yet.\n\n';
 
-            if (String(this.state.date.getTime()) === 'NaN') {
+            if (!this.state.date) {
                 // ui.message(validationApology + 'When did you do this?', 'error');
                 return;
             }
 
-            // get tags from control
-            tags = [];
-            if (this.refs.tags.getDOMNode().value) {
-                tags = this.refs.tags.getDOMNode().value.split(',');
-            }
-
             // Get model state from form state
-            logEntry = {
-                id: this.state.id,
-                isNew: this.state.isNew,
-                date: this.state.date.toISOString(),
-                duration: this.state.duration,
-                entry: this.state.kind,
-                details: this.state.details,
-                tags: tags
-            };
+            logEntry = doozy.extrude(doozy.logEntry(), this.state);
 
             // get action info
-            names = this.refs.name.getDOMNode().value.split('|');
-            if (names.length > 0 && names[0] !== '') {
-                actionName = names[0];
-                existingAction = actionStore.getActionByName(actionName);
+            action = this.refs.name.getDOMNode().value;
+            if (action && action.length) {
+                existingAction = actionStore.get(action);
                 if (existingAction) {
                     logEntry.actionId = existingAction.id;
                 }
                 else {
-                    newAction = doozy.action(actionName, tags);
-                    newAction.created = this.state.date.toISOString();
+                    newAction = doozy.action(actionName);
+                    newAction.created = this.state.date;
                 }
             }
 
@@ -281,7 +248,7 @@
             // add actions to selection control
             actions.forEach( function (action) {
                 selectActions.addOption({
-                    value: action.name,
+                    value: action.id,
                     text: action.name
                 });
             });
@@ -323,26 +290,34 @@
                 maxItems: 1,
                 openOnFocus: false,
                 onChange: function (value) {
-                    var existingAction = actionStore.getActionByName(value);
-                    if (!this.state.duration && existingAction !== undefined && existingAction !== null) {
-                        // merge tags
-                        var selectize = $(this.refs.tags.getDOMNode())[0].selectize;
-                        var tags = [].concat(existingAction.tags);
-                        if (this.refs.tags.getDOMNode().value) {
-                            tags = tags.concat(this.refs.tags.getDOMNode().value.split(','));
-                        }
-                        selectize.setValue(tags);
+                    var state = {};
 
-                        // set default duration if it is not already set
-                        var duration = new babble.Duration(existingAction.duration * 60000);
-                        if (this.state.duration > 0 && this.state.duration !== duration.toMinutes()) {
-                            this.setState({
-                                duration: duration.toMinutes(),
-                                durationInput: duration.toString(),
-                                durationFeedback: duration.toString()
-                            });
+                    // Get action from cache (if it isn't a new action)
+                    var existingAction = actionStore.get(value);
+                    if (existingAction) {
+                        state.actionId = existingAction.id;
+
+                        // Default the action's duration if duration isn't already set
+                        if (!this.state.duration) {
+                            // set default duration if it is not already set
+                            var duration = new babble.Duration(existingAction.duration * 60000);
+                            if (duration.toMinutes() > 0) {
+                                Object.assign(state, {
+                                    duration: duration.toMinutes(),
+                                    durationInput: duration.toString(),
+                                    durationFeedback: duration.toString()
+                                });
+                            }
                         }
+
+                        // display action tags
+                        state.actionTags = [].concat(existingAction.tags);
                     }
+
+                    if (state.actionId || state.duration) {
+                        this.setState(state);
+                    }
+
                 }.bind(this)
             });
         },
@@ -358,6 +333,14 @@
                 valueField: 'value',
                 labelField: 'name',
                 searchField: ['name', 'kind'],
+                onChange: function (value) {
+                    // get tags from control
+                    var tags = value.split(',');
+                    this.setState({
+                        tags: tags
+                    });
+
+                }.bind(this),
                 render: {
                     item: function (item, escape) {
                         return '<div class="item">' + escape(item.value) + '</div>';
@@ -432,7 +415,7 @@
             }
 
             var buttons = [{type: 'primary',
-                            text: this.state.id ? 'Update Log' : 'Log',
+                            text: 'Save Changes',
                             handler: this.handleSave},
                            {type: 'default',
                             text: 'Cancel',
@@ -459,6 +442,7 @@
                 <div className="form-group">
                     <label htmlFor="f1">Action</label>
                     <input id="f1" ref="name" type="text" />
+                    <span>{(this.state.actionTags || []).join(',')}</span>
                 </div>
             );
 
@@ -473,7 +457,7 @@
 
             return (
                 <div style={styles.main}>
-                    <h2>{this.state.id ? 'Update Log' : 'Log Recent Action'}</h2>
+                    <h2>{this.state.isNew ? 'New Activity Log' : 'Update Activity Log'}</h2>
                     <form role="form">
                         {slot1}
                         {slot2}
