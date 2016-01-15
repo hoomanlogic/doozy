@@ -25,7 +25,7 @@
             VIEW_MODE: {
                 GENERAL: 'general',
                 HISTORY: 'history'
-            },    
+            },
         },
         getInitialState: function () {
             return Object.assign(doozy.action(), {
@@ -47,7 +47,7 @@
                 viewMode: 'general',
             });
         },
-        
+
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
