@@ -5,7 +5,7 @@
         require('components/ContentEditable'),
         require('./RelativeTime'),
         require('app/doozy'),
-        require('stores/ActionStore'),
+        require('stores/action-store'),
         require('hl-common-js/src/EventHandler')
     );
 }(function (React, addons, ContentEditable, RelativeTime, doozy, actionStore, EventHandler) {
