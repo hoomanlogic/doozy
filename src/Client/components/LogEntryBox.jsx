@@ -4,15 +4,14 @@
         require('mixins/LayeredComponentMixin'),
         require('./RelativeTime'),
         require('components/ContentEditable'),
-        require('stores/ActionStore'),
-        require('stores/LogEntryStore'),
-        require('stores/UserStore'),
+        require('stores/host'),
+        require('stores/logentry-store'),
         require('app/doozy'),
         require('babble'),
         require('hl-common-js/src/EventHandler'),
         require('jquery')
     );
-}(function (React, LayeredComponentMixin, RelativeTime, ContentEditable, actionStore, logEntryStore, userStore, doozy, babble, EventHandler, $) {
+}(function (React, LayeredComponentMixin, RelativeTime, ContentEditable, host, logEntryStore, doozy, babble, EventHandler, $) {
     /* globals window */
     var LogEntryBox = React.createClass({
         /*************************************************************
@@ -97,14 +96,6 @@
                 $win.off('click.Bst', this.handleOutsideClick);
             }
         },
-        handleUpvoteClick: function () {
-            logEntryStore.toggleUpvote(this.props.data.userName, this.props.data.id);
-        },
-
-        handleCommentClick: function () {
-            // ui.goTo('Comment', { userName: this.props.data.userName, id: this.props.data.id });
-        },
-
         handleDeleteClick: function () {
             logEntryStore.destroy(this.props.data);
         },
@@ -112,15 +103,13 @@
             this.setState({
                 isDropDownOpen: false
             });
-            window.location.href = '/doozy/action/' + this.props.data.actionId;
-            // ui.editAction(actionStore.getActionById(this.props.data.actionId));
+            host.go('/doozy/action/' + this.props.data.actionId);
         },
         handleEditLogEntryClick: function () {
             this.setState({
                 isDropDownOpen: false
             });
-            window.location.href = '/doozy/logentry/' + this.props.data.id;
-            // ui.editLogEntry(logEntryStore.getLogEntryById(this.props.data.id));
+            host.go('/doozy/logentry/' + this.props.data.id);
         },
         handleEditDetailsClick: function () {
             this.refs.logdetails.getDOMNode().focus();
@@ -160,7 +149,7 @@
             }
 
             var options = [];
-            // if (userStore.updates.value.userId === this.props.data.userId) {
+
             options.push((
                 <li><a className="clickable hoverable" style={styles.userOptionsItem} onClick={this.handleDeleteClick}><i className="fa fa-trash"></i> Delete Log Entry</a></li>
             ));
@@ -178,7 +167,7 @@
             options.push((
                 <li><a className="clickable hoverable" style={styles.userOptionsItem} onClick={this.handleEditDurationClick}><i className="fa fa-pencil"></i> Edit Duration</a></li>
             ));
-            // }
+
 
             if (options.length === 0) {
                 return null;
@@ -196,15 +185,8 @@
         render: function () {
             var data = this.props.data;
 
-            var duration, upvoteCounter, commentCounter, typeOfLogEntry;
+            var duration, typeOfLogEntry;
 
-            if (data.upvotes && data.upvotes.length > 0) {
-                upvoteCounter = (<span>{data.upvotes.length + ' ' + doozy.formatNoun('Cheer', data.upvotes.length)}</span>);
-            }
-
-            if (data.comments && data.comments.length > 0) {
-                commentCounter = (<span className="clickable" onClick={this.handleCommentClick}>{(upvoteCounter ? ' - ' : '') + data.comments.length + ' ' + doozy.formatNoun('Comment', data.comments.length)}</span>);
-            }
 
             if (data.duration) {
                 duration = new babble.Duration(data.duration * 60000).toString();
@@ -232,7 +214,6 @@
             return (
                 <article key={data.id} style={styles.logEntryBox}>
                     <div>
-
                         <header style={{display: 'flex', flexDirection: 'row'}}>
                             <div style={{minWidth: '45px', paddingRight: '5px'}}><img style={{maxHeight: '45px', padding: '2px'}} src={this.props.data.profileUri} /></div>
                             <div style={{flexGrow: '1'}}>
@@ -253,18 +234,6 @@
                             </div>
                         </div>
                     </div>
-                    <footer style={{display: 'flex', flexDirection: 'column'}}>
-                        <div>
-                             {upvoteCounter}
-                             {commentCounter}
-                        </div>
-                        <div style={styles.logEntryActions}>
-                            <button type="button" className="btn" style={styles.cheerButton} onClick={this.handleUpvoteClick}><i className="fa fa-heart" style={styles.heartColor}></i> Cheer
-                        </button>
-                            <button type="button" className="btn" style={styles.commentButton} onClick={this.handleCommentClick}><i className="fa fa-pencil" style={styles.pencilColor}></i> Comment
-                        </button>
-                        </div>
-                    </footer>
                 </article>
             );
         }
@@ -275,33 +244,6 @@
      * Inline Styles
      */
     var styles = {
-        cheerButton: {
-            borderRadius: '0',
-            flexGrow: '1',
-            paddingTop: '3px',
-            paddingBottom: '3px',
-            color: '#fff',
-            backgroundImage: 'none',
-            backgroundColor: '#444',
-            borderColor: '#222',
-            fontWeight: 'bold',
-            outlineColor: 'rgb(40, 40, 40)',
-            borderBottomLeftRadius: '4px'
-        },
-        commentButton: {
-            borderRadius: '0',
-            flexGrow: '1',
-            paddingTop: '3px',
-            paddingBottom: '3px',
-            color: '#fff',
-            backgroundImage: 'none',
-            backgroundColor: '#444',
-            borderColor: '#222',
-            fontWeight: 'bold',
-            outlineColor: 'rgb(40, 40, 40)',
-            borderLeft: '0',
-            borderBottomRightRadius: '4px'
-        },
         logEntryBox: {
             display: 'flex',
             flexDirection: 'column',
@@ -316,12 +258,6 @@
             backgroundColor: '#b2b2b2',
             borderBottomLeftRadius: '4px',
             borderBottomRightRadius: '4px'
-        },
-        heartColor: {
-            color: 'rgb(250, 133, 133)'
-        },
-        pencilColor: {
-            color: '#e2ff63'
         },
         userOptionsDropdown: function (component) {
             return {
