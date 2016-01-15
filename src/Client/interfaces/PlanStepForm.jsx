@@ -2,7 +2,6 @@
     require('./Actions.less');
     module.exports = exports = factory(
         require('react'),
-
         require('pages/ManagePlanStep'),
     );
 }(function (React, ManagePlanStep) {
