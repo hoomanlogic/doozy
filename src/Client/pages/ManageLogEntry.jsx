@@ -29,8 +29,8 @@
                 durationFeedback: '',
             });
 
-            if (this.props.action) { // Log Action
-                state.actionName = this.props.action.name || '';
+            if (this.props.actionId) { // Log Action
+                state.actionId = this.props.actionId;
             }
             else if (this.props.actionName) { // Log New Action
                 state.actionName = this.props.actionName;
@@ -62,9 +62,7 @@
             // action selectize onChange event uses the tags selectize
             var selectActions = $(this.refs.name.getDOMNode())[0].selectize;
             this.setOptionsAction(selectActions);
-            if (this.state.actionName) {
-                selectActions.setValue(this.state.actionName);
-            }
+            selectActions.setValue(this.state.actionId || this.state.actionName || null);
 
             /**
              * Set focus to control
@@ -304,7 +302,7 @@
                 }.bind(this),
                 render: {
                     item: function (item, escape) {
-                        return '<div class="item">' + escape(item.value) + '</div>';
+                        return '<div class="item"><i class="fa ' + item.className + '"></i> ' + escape(item.name) + '</div>';
                     },
                     option: function (item, escape) {
                         var label = item.name || item.kind;
@@ -316,33 +314,7 @@
                     }
                 },
                 create: function (input) {
-                    var kind = 'Tag';
-                    var name = input;
-                    if (name.indexOf('!') === 0) {
-                        kind = 'Focus'; // part of
-                        name = name.substring(1);
-                    }
-                    else if (name.indexOf('@') === 0) {
-                        kind = 'Place'; // where
-                        name = name.substring(1);
-                    }
-                    else if (name.indexOf('>') === 0) {
-                        kind = 'Goal'; // to what end
-                        name = name.substring(1);
-                    }
-                    else if (name.indexOf('$') === 0) {
-                        kind = 'Need'; // why
-                        name = name.substring(1);
-                    }
-                    else if (name.indexOf('#') === 0) {
-                        kind = 'Box'; // when
-                        name = name.substring(1);
-                    }
-                    return {
-                        value: input,
-                        kind: kind,
-                        name: name
-                    };
+                    return doozy.parseTag(input);
                 }
             });
 
@@ -350,20 +322,8 @@
             var selectize = $(this.refs.tags.getDOMNode())[0].selectize;
             this.setOptionsTag(selectize);
 
-            if (typeof this.props.logEntry !== 'undefined') {
-                selectize.setValue(this.props.logEntry.tags);
-            }
-            else if (typeof this.props.action === 'undefined' || this.state.isNewAction) {
-                // set current value
-                // var tags = ui.tags || [];
-                // tags = tags.slice(); //copy
-                // tags.push(this.props.focusTag);
-                var tags = [];
-                selectize.setValue(tags);
-            }
-            else {
-                selectize.setValue(this.props.action.tags);
-            }
+            // Set value from state
+            selectize.setValue(this.state.tags);
         },
 
         /*************************************************************
