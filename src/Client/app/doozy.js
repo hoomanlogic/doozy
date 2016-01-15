@@ -272,7 +272,7 @@
                 duration: 0,
                 date: Date.create('today'),
                 details: '',
-                kind: 'performed',
+                entry: 'performed',
                 tags: []
             };
         },
@@ -506,7 +506,7 @@
             else {
                 return 'in ' + diffDays + ' day' + (diffDays > 1 ? 's' : '');
             }
-        },
+        }
     };
 
 }));
