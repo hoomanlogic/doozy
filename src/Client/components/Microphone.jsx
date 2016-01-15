@@ -3,8 +3,8 @@
         require('react'),
         require('react/addons'),
         require('app/doozy'),
-        require('stores/ActionStore'),
-        require('stores/LogEntryStore'),
+        require('stores/action-store'),
+        require('stores/logentry-store'),
         require('babble'),
         require('components/MessageBox')
     );
@@ -167,51 +167,34 @@
 
                 if (context === 'log-action') {
                     spokenArgs = this.parseSpeech(speech, context);
-
                     existingAction = actionStore.getActionByName(spokenArgs.actionName);
 
-                    if (existingAction) {
-                        /**
-                         * Create log entry for existing action
-                         */
-                        logEntryStore.create({
-                            actionId: existingAction.id,
+                    /**
+                     * Create log entry for existing action
+                     */
+                    logEntryStore.save(Object.assign(
+                        doozy.logEntry(),
+                        {
+                            actionId: existingAction ? existingAction.id : null,
+                            actionName: !existingAction ? spokenArgs.actionName : null,
                             date: spokenArgs.date,
                             duration: spokenArgs.duration,
-                            entry: 'performed',
                             details: null
-                        });
-                    }
-                    else {
-                        newAction = this.createActionObjectLiteral(spokenArgs.actionName, spokenArgs.date);
-
-                        /**
-                         * Call API store function to create and log a new action
-                         */
-                        logEntryStore.createWithNewAction(newAction, {
-                            date: spokenArgs.date,
-                            duration: spokenArgs.duration,
-                            entry: 'performed',
-                            details: null
-                        });
-                    }
+                        }
+                    ));
 
                 }
                 else if (context === 'new-action') {
                     spokenArgs = this.parseSpeech(speech, context);
-
                     existingAction = actionStore.getActionByName(spokenArgs.actionName);
 
                     if (existingAction) {
                         MessageBox.show('An action by this name already exists', 'error');
                     }
                     else {
-
-                        newAction = this.createActionObjectLiteral(spokenArgs.actionName, spokenArgs.date);
-
+                        newAction = doozy.action(spokenArgs.actionName);
                         newAction.duration = spokenArgs.duration;
                         newAction.nextDate = spokenArgs.date;
-
                         actionStore.create(newAction);
                     }
                 }
@@ -230,27 +213,6 @@
         /*************************************************************
          * HELPERS
          *************************************************************/
-        createActionObjectLiteral: function (actionName, created) {
-            // Use IIFE for lexical scope
-            var newAction,
-                tags;
-
-            /**
-             * Get current focus and filter tags
-             */
-            // tags = ui.tags || [];
-            // tags = tags.slice();
-            // tags.push(this.props.focusTag);
-            tags = [];
-
-            /**
-             * Create new action {} object literal
-             */
-            newAction = doozy.action(actionName, tags);
-            newAction.created = created;
-            return newAction;
-        },
-
         /* eslint-disable no-param-reassign */
         parseSpeech: function (speech, context) {
             var actionName,
