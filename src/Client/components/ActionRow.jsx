@@ -2,13 +2,14 @@
     module.exports = exports = factory(
         require('react'),
         require('react/addons'),
+        require('stores/host'),
         require('components/ContentEditable'),
         require('./RelativeTime'),
         require('app/doozy'),
         require('stores/action-store'),
         require('hl-common-js/src/EventHandler')
     );
-}(function (React, addons, ContentEditable, RelativeTime, doozy, actionStore, EventHandler) {
+}(function (React, addons, host, ContentEditable, RelativeTime, doozy, actionStore, EventHandler) {
     var ActionRow = React.createClass({
         /*************************************************************
          * DEFINITIONS
@@ -63,14 +64,14 @@
          *************************************************************/
         handleCheck: function (event) {
             if (event.target.checked) {
-                window.location.href = '/doozy/logentries/new/' + this.props.action.id;
+                host.go('/doozy/logentry/new/' + this.props.action.id);
             }
         },
         handleCheckTouch: function () {
             this.preventTouch = true;
         },
         handleClick: function () {
-            window.location.href = '/doozy/action/' + this.props.action.id;
+            host.go('/doozy/action/' + this.props.action.id);
         },
         handleTouchStart: function () {
             this.isTap = true;
