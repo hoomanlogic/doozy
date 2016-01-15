@@ -46,10 +46,11 @@
                 go: function (url) {
                     window.location.href = url;
                 },
+                notify: function (msg) {
+                    window.alert(msg); // eslint-disable-line no-alert
+                },
                 prompt: function (requestMsg, responseCb) {
-                    /* eslint-disable no-alert */
-                    var result = window.prompt(requestMsg);
-                    /* eslint-enable no-alert */
+                    var result = window.prompt(requestMsg); // eslint-disable-line no-alert
                     responseCb(result);
                 },
                 setTitle: function (title) {
@@ -64,6 +65,9 @@
         if (!this.providers) {
             this.providers = {
                 go: function () {
+                    // DO NOTHING
+                },
+                notify: function () {
                     // DO NOTHING
                 },
                 prompt: function (requestMsg, responseCb) {
@@ -92,6 +96,10 @@
 
         go: function (uri, context) {
             this.providers.go(uri, context);
+        },
+
+        notify: function (msg, kind) {
+            this.providers.notify(msg, kind);
         },
 
         // always use callback-style prompt
