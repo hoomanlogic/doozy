@@ -19,7 +19,7 @@
             return doozy.plan();
         },
         componentWillMount: function () {
-            host.setTitle('Plan');  
+            host.setTitle('Plan');
         },
         /*************************************************************
          * EVENT HANDLING

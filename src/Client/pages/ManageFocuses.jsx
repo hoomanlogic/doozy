@@ -34,7 +34,7 @@
         handleFocusClick: function (focus) {
             host.go('/doozy/focus/' + focus.id);
         },
-        
+
         render: function () {
             var ctxFocuses = focusStore.context({});
             if (!ctxFocuses || !ctxFocuses.value) {
