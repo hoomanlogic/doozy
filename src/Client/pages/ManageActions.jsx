@@ -3,26 +3,34 @@
         require('react'),
         require('lodash'),
         require('hl-common-js/src/those'),
-        require('stores/ActionStore'),
+        require('stores/action-store'),
         require('stores/host'),
         require('components/TagList'),
         require('components/ActivePlans'),
         require('components/NextActions'),
         require('components/UpcomingActions'),
         require('components/RecentActivity'),
-        require('components/BoxedActions')
+        require('components/BoxedActions'),
+        require('mixins/SubscriberMixin')
     );
-}(function (React, _, those, actionStore, host, TagList, ActivePlans, NextActions, UpcomingActions, RecentActivity, BoxedActions) {
+}(function (React, _, those, actionStore, host, TagList, ActivePlans, NextActions,
+            UpcomingActions, RecentActivity, BoxedActions, SubscriberMixin) {
     var ManageActions = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
+        mixins: [SubscriberMixin(actionStore)],
+        getDefaultProps: function () {
+            return {
+                globalSubscriberContext: true // SubscriberMixin behavior property
+            };
+        },
         getInitialState: function () {
             return {
                 focusActions: [],
                 tags: [],
-                tagsFilter: [],
-                tagsFilterType: 'any'
+                tagFilter: [],
+                tagFilterJoin: 'any'
             };
         },
 
@@ -30,12 +38,6 @@
          * COMPONENT LIFECYCLE
          *************************************************************/
         componentWillMount: function () {
-            /**
-             * Subscribe to Action Store to be
-             * notified of updates to the store
-             */
-            this.actionsObserver = actionStore.updates
-                .subscribe(this.handleActionStoreUpdate);
             host.setTitle('Actions');
         },
         componentWillReceiveProps: function (nextProps) {
@@ -44,90 +46,41 @@
              * focus when the focus changes
              */
             if (nextProps.focusTag !== this.props.focusTag) {
-                this.handleActionStoreUpdate(actionStore.updates.value, nextProps.focusTag, true);
+                this.updateActions(nextProps.focusTag);
             }
-        },
-        componentWillUnmount: function () {
-            /**
-             * Clean up objects and bindings
-             */
-            this.actionsObserver.dispose();
         },
 
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
-        handleTagsFilterTypeClick: function (type) {
-            if (type !== this.state.tagsFilterType) {
-                this.setState({ tagsFilterType: type });
+        handleTagsFilterTypeClick: function (filterJoin) {
+            if (filterJoin !== this.state.tagFilterJoin) {
+                this.setState({ tagFilterJoin: filterJoin });
             }
         },
         handleTagFilterClick: function (tag) {
-            var tagsFilter = this.state.tagsFilter;
+            var tagFilter = this.state.tagFilter;
 
             /**
              * Toggle tag selection
              */
-            those(tagsFilter).toggle(tag);
+            those(tagFilter).toggle(tag);
 
             /**
              * Update filter state
              */
-            this.setState({tagsFilter: tagsFilter});
+            this.setState({tagFilter: tagFilter});
 
             /**
              * Update globally accessible default tags
              */
             host.setContext({
-                tags: tagsFilter
+                tags: tagFilter
             });
         },
 
-        handleActionStoreUpdate: function (actions, focusTag, focusChange) {
-            /**
-             * actionsObserver does not pass focusTag
-             * so we default to the props.focusTag
-             * but when we receive new props we
-             * need to pass those props (componentWillReceiveProps)
-             */
-            if (!focusChange && typeof focusTag === 'undefined') {
-                focusTag = this.props.focusTag; // eslint-disable-line no-param-reassign
-            }
-
-            /**
-             * Filter actions in store to those that belong to this focus
-             */
-            var focusActions;
-            if (focusTag) {
-                focusActions = actions.filter(function (action) {
-                    if (action.tags.indexOf(focusTag) > -1) {
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
-                }, this);
-            }
-            else {
-                focusActions = [].concat(actions);
-            }
-
-            /**
-             * Update state
-             */
-            var tags = this.getFocusTags(focusActions, focusTag);
-            var tagsFilter = _.intersection(this.state.tagsFilter, tags);
-            this.setState({
-                focusActions: focusActions,
-                tags: tags,
-                tagsFilter: tagsFilter
-            });
-
-            /**
-             * Reset globally accessible default tags
-             */
-            window['ui'] = window['ui'] || {};
-            window['ui'].tags = [];
+        handleStoreUpdate: function () {
+            this.updateActions(this.props.focusTag);
         },
 
         /*************************************************************
@@ -153,14 +106,14 @@
              */
             return distinctTags.sort();
         },
-        filterActions: function (actions, tags, type) {
+        filterActionsByTag: function (actions, tags, filterJoin) {
             // no filter, return all
             if (typeof tags === 'undefined' || tags === null || tags.length === 0) {
                 return actions;
             }
 
-            if (typeof type !== 'string') {
-                type = 'any'; // eslint-disable-line no-param-reassign
+            if (typeof filterJoin !== 'string') {
+                filterJoin = 'any'; // eslint-disable-line no-param-reassign
             }
 
             // filter is a string, convert to array
@@ -169,15 +122,42 @@
             }
 
             // get actions that match at least one of the filter tags
-            if (type === 'any') {
-                return actions.filter(function (item) { return _.intersection(tags, item.tags).length > 0; });
+            switch (filterJoin) {
+                case 'any':
+                    return actions.filter(function (item) { return _.intersection(tags, item.tags).length > 0; });
+                case 'all':
+                    return actions.filter(function (item) { return _.intersection(tags, item.tags).length === tags.length; });
+                case 'not':
+                    return actions.filter(function (item) { return _.intersection(tags, item.tags).length === 0; });
+                default:
+                    throw new Error('filterJoin must be \'any\', \'all\' or \'not\'.');
             }
-            else if (type === 'all') {
-                return actions.filter(function (item) { return _.intersection(tags, item.tags).length === tags.length; });
+        },
+        filterActionsByFocus: function (focusTag) {
+            if (focusTag) {
+                return actionStore.getCache().filter(function (action) {
+                    if (action.tags.indexOf(focusTag) > -1) {
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                }, this);
             }
-            else if (type === 'not') {
-                return actions.filter(function (item) { return _.intersection(tags, item.tags).length === 0; });
+            else {
+                return actionStore.getCache();
             }
+        },
+
+        updateActions: function (focusTag) {
+            var focusActions = this.filterActionsByFocus(focusTag);
+            var tags = this.getFocusTags(focusActions, focusTag);
+            var tagFilter = _.intersection(this.state.tagFilter, tags);
+            this.setState({
+                focusActions: focusActions,
+                tags: tags,
+                tagFilter: tagFilter
+            });
         },
 
         /*************************************************************
@@ -190,12 +170,12 @@
                 tagFilter = (
                     <div style={{marginTop: '2px'}}>
                         <ul style={{ marginLeft: '2px'}} className="toggle-switch">
-                            <li className={['clickable'].concat(this.state.tagsFilterType === 'any' ? ['selected'] : []).join(' ')} onClick={this.handleTagsFilterTypeClick.bind(null, 'any')}>Any</li>
-                            <li className={['clickable'].concat(this.state.tagsFilterType === 'all' ? ['selected'] : []).join(' ')} onClick={this.handleTagsFilterTypeClick.bind(null, 'all')}>All</li>
-                            <li className={['clickable'].concat(this.state.tagsFilterType === 'not' ? ['selected'] : []).join(' ')} onClick={this.handleTagsFilterTypeClick.bind(null, 'not')}>Not</li>
+                            <li className={['clickable'].concat(this.state.tagFilterJoin === 'any' ? ['selected'] : []).join(' ')} onClick={this.handleTagsFilterTypeClick.bind(null, 'any')}>Any</li>
+                            <li className={['clickable'].concat(this.state.tagFilterJoin === 'all' ? ['selected'] : []).join(' ')} onClick={this.handleTagsFilterTypeClick.bind(null, 'all')}>All</li>
+                            <li className={['clickable'].concat(this.state.tagFilterJoin === 'not' ? ['selected'] : []).join(' ')} onClick={this.handleTagsFilterTypeClick.bind(null, 'not')}>Not</li>
                         </ul>
                         <TagList tags={this.state.tags}
-                          selectedTags={this.state.tagsFilter}
+                          selectedTags={this.state.tagFilter}
                           selectionChanged={this.handleTagFilterClick} />
                     </div>
                 );
@@ -207,7 +187,7 @@
             /**
              * Filter focus actions by the tags filter to pass filtered list to children
              */
-            var tagsFilteredFocusActions = this.filterActions(this.state.focusActions, this.state.tagsFilter, this.state.tagsFilterType);
+            var tagsFilteredFocusActions = this.filterActionsByTag(this.state.focusActions, this.state.tagFilter, this.state.tagFilterJoin);
 
             return (
                 <div className={this.props.hidden ? 'hidden' : ''}>
