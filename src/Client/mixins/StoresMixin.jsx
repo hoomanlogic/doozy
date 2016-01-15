@@ -8,8 +8,8 @@
 }(function (React, gnodeStore, store, hlstore) {
 
     var initializeStores = function (host) {
-        host.stores.forEach(function (store) {
-            store.init('kat', 'foo');
+        host.stores.forEach(function (s) {
+            s.init('kat', 'foo');
         });
     };
 
