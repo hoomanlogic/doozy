@@ -7,11 +7,10 @@
         require('stores/host'),
         require('stores/action-store'),
         require('stores/logentry-store'),
-        require('stores/tag-store'),
         require('mixins/SubscriberMixin'),
         require('babble')
     );
-}(function (React, _, doozy, host, actionStore, logEntryStore, tagStore, SubscriberMixin, babble) {
+}(function (React, _, doozy, host, actionStore, logEntryStore, SubscriberMixin, babble) {
     /* global $ */
     var ManageAction = React.createClass({
         /*************************************************************
@@ -51,50 +50,14 @@
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
-
-        componentWillReceiveProps: function (nextProps) {
-            if (!nextProps.action) {
-                // get tags from UI filter
-                // var tags = ui.tags || [];
-                // tags = tags.slice(); // copy
-                // tags.push(this.props.focusTag);
-                var tags = [];
-
-                // create a new action
-                nextProps.action = doozy.action('New ToDo', tags);
-                nextProps.action.name = null;
-                nextProps.action.created = new Date().toISOString();
-            }
-            else if (nextProps.action.id !== this.props.action.id) {
-                nextProps.action = this.edit(nextProps.action);
-            }
-        },
-
         componentWillMount: function () {
-
-            if (!this.props.action) {
-                // get tags from UI filter
-                // var tags = ui.tags || [];
-                // tags = tags.slice(); // copy
-                // tags.push(this.props.focusTag);
-                var tags = [];
-
-                // create a new action
-                this.props.action = doozy.action('New ToDo', tags);
-                this.props.action.name = null;
-                this.props.action.created = new Date().toISOString();
-            }
-            else {
-                this.props.action = this.edit(this.props.action);
-            }
-
-            logEntryStore.subscribe(this.handleLogEntryStoreUpdate);
+            logEntryStore.subscribe(this.handleLogEntryStoreUpdate, {});
         },
         componentWillUnmount: function () {
             /**
              * Clean up objects and bindings
              */
-            logEntryStore.dispose(this.handleLogEntryStoreUpdate);
+            logEntryStore.unsubscribe(this.handleLogEntryStoreUpdate, {});
         },
 
         componentDidMount: function () {
@@ -113,146 +76,68 @@
             }
         },
 
-        /*************************************************************
-         * API
-         *************************************************************/
-        edit: function (action) {
-            var date, durationInput;
+        componentDidUpdate: function () {
+            // populate existing tag options
+            var selectize = $(this.refs.tags.getDOMNode())[0].selectize;
+            this.setTagOptions(selectize);
 
-            // create a copy of the action for editing
-            var editableCopy = {};
-            Object.assign(editableCopy, action);
-
-            // flag to call modal's graceful open dialog function
-            this.show = true;
-
-            var id = editableCopy.id;
-            if (!actionStore.getActionById(id)) {
-                id = null;
-            }
-            var name = editableCopy.name;
-            var content = editableCopy.content;
-
-            var durationParse = babble.get('durations').translate(editableCopy.duration + ' min');
-            if (durationParse.tokens.length === 0) {
-                durationInput = null;
-            }
-            else {
-                durationInput = durationParse.tokens[0].value.toString();
-            }
-
-            if (action.nextDate === null || String(action.nextDate) === 'NaN') {
-                date = null;
-            }
-            else {
-                date = (new Date(action.nextDate)).toLocaleDateString();
-            }
-
-            // build state
-            var state = {
-                id: id,
-                name: name,
-                content: content,
-                durationInput: durationInput,
-                durationDisplay: null,
-                dateInput: date,
-                dateDisplay: null,
-                ordinal: editableCopy.ordinal,
-                mode: 'Edit',
-                repeat: 'o',
-                repeatInterval: 1,
-                repeatSun: false,
-                repeatMon: false,
-                repeatTue: false,
-                repeatWed: false,
-                repeatThu: false,
-                repeatFri: false,
-                repeatSat: false
-            };
-
-            if (action.recurrenceRules && action.recurrenceRules.length) {
-                var recurrenceObj = doozy.parseRecurrenceRule(action.recurrenceRules[0]);
-                state.repeat = recurrenceObj.freq.slice(0,1).toLowerCase();
-                state.repeatInterval = recurrenceObj.interval;
-                if (recurrenceObj.byday) {
-                    for (var i = 0; i < recurrenceObj.byday.length; i++) {
-                        if (recurrenceObj.byday[i].day === 'SU') {
-                            state.repeatSun = true;
-                        }
-                        if (recurrenceObj.byday[i].day === 'MO') {
-                            state.repeatMon = true;
-                        }
-                        if (recurrenceObj.byday[i].day === 'TU') {
-                            state.repeatTue = true;
-                        }
-                        if (recurrenceObj.byday[i].day === 'WE') {
-                            state.repeatWed = true;
-                        }
-                        if (recurrenceObj.byday[i].day === 'TH') {
-                            state.repeatThu = true;
-                        }
-                        if (recurrenceObj.byday[i].day === 'FR') {
-                            state.repeatFri = true;
-                        }
-                        if (recurrenceObj.byday[i].day === 'SA') {
-                            state.repeatSat = true;
-                        }
-                    }
-                }
-            }
-
-            // set state
-            this.setState(state);
-
-            return editableCopy;
+            // set current value
+            selectize.setValue(this.state.tags);
         },
 
         /*************************************************************
          * BINDINGS
          *************************************************************/
         setupTagsControl: function () {
-            if (this.props.action) {
-                // initialize control for tags functionality
-                $(this.refs.tags.getDOMNode()).selectize({
-                    delimiter: ',',
-                    persist: true,
-                    valueField: 'value',
-                    labelField: 'name',
-                    searchField: ['name', 'kind'],
-                    render: {
-                        item: function (item, escape) {
-                            return '<div class="item"><i class="fa ' + item.className + '"></i> ' + escape(item.name) + '</div>';
-                        },
-                        option: function (item, escape) {
-                            var label = item.name || item.kind;
-                            var caption = item.kind ? item.kind : null;
-                            return '<div>' +
-                                '<span class="label">' + escape(label) + '</span>' +
-                                (caption ? '<span class="caption">' + escape(caption) + '</span>' : '') +
-                            '</div>';
-                        }
-                    },
-                    create: function (input) {
-                        return doozy.parseTag(input);
-                    }
-                });
-
-                // populate existing tag options
-                var selectize = $(this.refs.tags.getDOMNode())[0].selectize;
-                this.setOptions(selectize);
-
-                // set current value
-                if (this.props.action) {
-                    selectize.setValue(this.props.action.tags);
-                }
+            if (!this.refs.tags) {
+                return;
             }
+            // initialize control for tags functionality
+            $(this.refs.tags.getDOMNode()).selectize({
+                delimiter: ',',
+                persist: true,
+                valueField: 'value',
+                labelField: 'name',
+                searchField: ['name', 'kind'],
+                onChange: function (value) {
+                    // get tags from control
+                    var tags = value.split(',');
+                    this.setState({
+                        tags: tags
+                    });
+
+                }.bind(this),
+                render: {
+                    item: function (item, escape) {
+                        return '<div class="item"><i class="fa ' + item.className + '"></i> ' + escape(item.name) + '</div>';
+                    },
+                    option: function (item, escape) {
+                        var label = item.name || item.kind;
+                        var caption = item.kind ? item.kind : null;
+                        return '<div>' +
+                            '<span class="label">' + escape(label) + '</span>' +
+                            (caption ? '<span class="caption">' + escape(caption) + '</span>' : '') +
+                        '</div>';
+                    }
+                },
+                create: function (input) {
+                    return doozy.parseTag(input);
+                }
+            });
+
+            // populate existing tag options
+            var selectize = $(this.refs.tags.getDOMNode())[0].selectize;
+            this.setTagOptions(selectize);
+
+            // set current value
+            selectize.setValue(this.state.tags);
         },
-        setOptions: function (selectize) {
+        setTagOptions: function (selectize) {
             // clear previously set options
             selectize.clearOptions();
 
             // get distinct tags user has assigned to other actions
-            var actions = actionStore.updates.value;
+            var actions = actionStore.getCache();
             var distinctTags = [];
             actions.map(function (item) {
                 distinctTags = _.union(distinctTags, item.tags);
@@ -272,13 +157,19 @@
                 this.setState({logEntriesLastUpdated: new Date().toISOString()});
             }
         },
+        handleTagStoreUpdate: function () {
+            this.setState({
+                lastUpdate: new Date().toISOString()
+            });
+        },
 
         handleChange: function (event) {
+            var state = {};
             if (event.target === this.refs.name.getDOMNode()) {
-                this.state.name = event.target.value;
+                state.name = event.target.value;
             }
             else if (event.target === this.refs.content.getDOMNode()) {
-                this.state.content = event.target.value;
+                state.content = event.target.value;
             }
             else if (event.target === this.refs.duration.getDOMNode()) {
                 var durationParsed = babble.get('durations').translate(this.refs.duration.getDOMNode().value.trim());
@@ -289,12 +180,12 @@
                     durationDisplay = durationParsed.tokens[0].value.toString('minutes');
                 }
 
-                this.props.action.duration = duration;
-                this.state.durationInput = this.refs.duration.getDOMNode().value;
-                this.state.durationDisplay = durationDisplay;
+                state.duration = duration;
+                state.durationInput = this.refs.duration.getDOMNode().value;
+                state.durationDisplay = durationDisplay;
             }
             else if (event.target === this.refs.repeat.getDOMNode()) {
-                this.state.repeat = event.target.value;
+                state.repeat = event.target.value;
             }
             else if (event.target === this.refs.nextdate.getDOMNode()) {
 
@@ -321,68 +212,53 @@
                     }
                 }
 
-                this.props.action.nextdate = dateValue;
-                this.setState({dateInput: event.target.value, dateDisplay: dateDisplay});
-
-                this.props.action.nextDate = event.target.value;
+                state.nextdate = dateValue;
+                state.dateInput = event.target.value;
+                state.dateDisplay = dateDisplay;
             }
             else if (this.refs.repeatInterval && event.target === this.refs.repeatInterval.getDOMNode()) {
-                this.state.repeatInterval = parseInt(event.target.value, 10);
+                state.repeatInterval = parseInt(event.target.value, 10);
             }
             else if (this.refs.repeatSun && event.target === this.refs.repeatSun.getDOMNode()) {
-                this.state.repeatSun = event.target.checked;
+                state.repeatSun = event.target.checked;
             }
             else if (this.refs.repeatMon && event.target === this.refs.repeatMon.getDOMNode()) {
-                this.state.repeatMon = event.target.checked;
+                state.repeatMon = event.target.checked;
             }
             else if (this.refs.repeatTue && event.target === this.refs.repeatTue.getDOMNode()) {
-                this.state.repeatTue = event.target.checked;
+                state.repeatTue = event.target.checked;
             }
             else if (this.refs.repeatWed && event.target === this.refs.repeatWed.getDOMNode()) {
-                this.state.repeatWed = event.target.checked;
+                state.repeatWed = event.target.checked;
             }
             else if (this.refs.repeatThu && event.target === this.refs.repeatThu.getDOMNode()) {
-                this.state.repeatThu = event.target.checked;
+                state.repeatThu = event.target.checked;
             }
             else if (this.refs.repeatFri && event.target === this.refs.repeatFri.getDOMNode()) {
-                this.state.repeatFri = event.target.checked;
+                state.repeatFri = event.target.checked;
             }
             else if (this.refs.repeatSat && event.target === this.refs.repeatSat.getDOMNode()) {
-                this.state.repeatSat = event.target.checked;
+                state.repeatSat = event.target.checked;
             }
             else if (event.target === this.refs.ispublic.getDOMNode()) {
-                this.props.action.isPublic = event.target.checked;
+                state.isPublic = event.target.checked;
             }
             else if (event.target === this.refs.ordinal.getDOMNode()) {
                 var ord = null;
                 if (!isNaN(parseInt(event.target.value, 10))) {
                     ord = parseInt(event.target.value, 10);
                 }
-                this.setState({ordinal: ord});
+                state.ordinal = ord;
             }
-            this.setState({
-                name: this.state.name,
-                content: this.state.content,
-                durationInput: this.state.durationInput,
-                durationDisplay: this.state.durationDisplay,
-                ordinal: ord,
-                repeat: this.state.repeat,
-                repeatInterval: this.state.repeatInterval,
-                repeatSun: this.state.repeatSun,
-                repeatMon: this.state.repeatMon,
-                repeatTue: this.state.repeatTue,
-                repeatWed: this.state.repeatWed,
-                repeatThu: this.state.repeatThu,
-                repeatFri: this.state.repeatFri,
-                repeatSat: this.state.repeatSat
-            });
+
+            this.setState(state);
         },
         handleCancelClick: function () {
             // ui.goBack();
             host.go('/doozy/actions');
         },
         handleDeleteClick: function () {
-            actionStore.destroy(this.props.action);
+            actionStore.destroy(this.state.id);
             // ui.goBack();
             host.go('/doozy/actions');
         },
@@ -398,7 +274,7 @@
 
             var action;
             if (this.state.id) {
-                action = actionStore.getActionById(this.state.id);
+                action = actionStore.get(this.state.id);
             }
             // set name of new or existing action
             if (!action) {
@@ -499,6 +375,115 @@
 
             host.go('/doozy/actions');
         },
+        handleStoreUpdate: function (model) {
+            var date, durationInput;
+
+            // create a copy of the action for editing
+            var editableCopy = {};
+            Object.assign(editableCopy, model);
+
+            // flag to call modal's graceful open dialog function
+            this.show = true;
+
+            var id = editableCopy.id;
+            if (!actionStore.get(id)) {
+                id = null;
+            }
+            var name = editableCopy.name;
+            var content = editableCopy.content;
+
+            var durationParse = babble.get('durations').translate(editableCopy.duration + ' min');
+            if (durationParse.tokens.length === 0) {
+                durationInput = null;
+            }
+            else {
+                durationInput = durationParse.tokens[0].value.toString();
+            }
+
+            if (model.nextDate === null || String(model.nextDate) === 'NaN') {
+                date = null;
+            }
+            else {
+                date = (new Date(model.nextDate)).toLocaleDateString();
+            }
+
+            // build state
+            var state = {
+                id: id,
+                name: name,
+                content: content,
+                durationInput: durationInput,
+                durationDisplay: null,
+                dateInput: date,
+                dateDisplay: null,
+                ordinal: editableCopy.ordinal,
+                mode: 'Edit',
+                repeat: 'o',
+                repeatInterval: 1,
+                repeatSun: false,
+                repeatMon: false,
+                repeatTue: false,
+                repeatWed: false,
+                repeatThu: false,
+                repeatFri: false,
+                repeatSat: false
+            };
+
+            if (model.recurrenceRules && model.recurrenceRules.length) {
+                var recurrenceObj = doozy.parseRecurrenceRule(model.recurrenceRules[0]);
+                state.repeat = recurrenceObj.freq.slice(0,1).toLowerCase();
+                state.repeatInterval = recurrenceObj.interval;
+                if (recurrenceObj.byday) {
+                    for (var i = 0; i < recurrenceObj.byday.length; i++) {
+                        if (recurrenceObj.byday[i].day === 'SU') {
+                            state.repeatSun = true;
+                        }
+                        if (recurrenceObj.byday[i].day === 'MO') {
+                            state.repeatMon = true;
+                        }
+                        if (recurrenceObj.byday[i].day === 'TU') {
+                            state.repeatTue = true;
+                        }
+                        if (recurrenceObj.byday[i].day === 'WE') {
+                            state.repeatWed = true;
+                        }
+                        if (recurrenceObj.byday[i].day === 'TH') {
+                            state.repeatThu = true;
+                        }
+                        if (recurrenceObj.byday[i].day === 'FR') {
+                            state.repeatFri = true;
+                        }
+                        if (recurrenceObj.byday[i].day === 'SA') {
+                            state.repeatSat = true;
+                        }
+                    }
+                }
+            }
+
+            // set state
+            this.setState(state);
+
+            // // create a copy of the action for editing
+            // var state = {};
+            // Object.assign(state, model);
+
+            // var durationParse = babble.get('durations').translate(state.duration + ' min');
+            // var durationInput = null;
+            // if (durationParse.tokens.length !== 0) {
+            //     durationInput = durationParse.tokens[0].value.toString();
+            // }
+
+            // // If actionId is set, we don't need the action name
+            // if (state.actionId && state.actionName) {
+            //     state.actionName = null;
+            // }
+
+            // state.durationInput = durationInput;
+            // state.dateInput = Date.create(model.date).toLocaleDateString();
+            // state.dateFeedback = '';
+
+            // this.setState(state);
+        },
 
         /*************************************************************
          * RENDERING
@@ -530,7 +515,7 @@
                  * Render day of week checkboxes in order
                  * based on the user's start of week
                  */
-                var dayIndex = 0; // TODO: reimplement preferences store - userStore.updates.value.weekStarts;
+                var dayIndex = 0; // TODO: reimplement preferences store - userStore.getCache().weekStarts;
                 var daysOfWeek = [];
                 while (daysOfWeek.length < 7) {
                     daysOfWeek.push(this.renderDayCheckbox(babble.moments.daysOfWeek[dayIndex].slice(0,3)));
@@ -569,8 +554,6 @@
             /**
              * State and Prop Dependencies
              */
-            var action = this.props.action;
-            var isPublic = action.isPublic;
             var durationInput = this.state.durationInput;
             var dateInput = this.state.dateInput;
 
@@ -623,14 +606,14 @@
                     </div>
                     <div className="form-group">
                         <label htmlFor="action-ispublic">Allow others to see this action?</label>
-                        <input id="action-ispublic" ref="ispublic" type="checkbox" className="form-control" checked={isPublic} onChange={this.handleChange} />
+                        <input id="action-ispublic" ref="ispublic" type="checkbox" className="form-control" checked={this.state.isPublic} onChange={this.handleChange} />
                     </div>
                 </form>
             );
         },
         renderHistoryView: function () {
-            var actionId = this.props.action.id;
-            var logEntries = logEntryStore.updates.value.filter(function (item) {
+            var actionId = this.state.id;
+            var logEntries = logEntryStore.getCache().filter(function (item) {
                 return item.actionId === actionId;
             });
 
@@ -722,7 +705,7 @@
              */
             return (
                 <div style={styles.main}>
-                    <h2 style={{marginTop: '0.2rem', marginBottom: '0.2rem'}}>{this.props.mode === 'Edit' ? this.props.action.name : 'New Action'}</h2>
+                    <h2 style={{marginTop: '0.2rem', marginBottom: '0.2rem'}}>{this.props.mode === 'Edit' ? this.state.name : 'New Action'}</h2>
                     {currentView}
                     {buttonsDom}
                 </div>

@@ -138,38 +138,8 @@
         });
 
         // ACTION EDIT
-        operator.express.get('/doozy/action/:tag', operator.authenticate, function (req, res) {
-
-            operator.getDb(function (db) {
-
-                var gnode = db.find(req.params.tag, 'doozy.action').first();
-                if (gnode) {
-                    var model = getModel(gnode, db, 'action');
-                    operator.renderer.renderHtml(
-                        defaultHtmlTemplate
-                            .replace('SCRIPT_URL', operator.stats.publicPath + 'doozy/action-form.js')
-                            .replace('SELECTIZE_URL', operator.stats.publicPath + 'doozy-global-libs.js')
-                            .replace('SELECTIZE_CSS_1', operator.stats.publicPath + 'selectize.css')
-                            .replace('SELECTIZE_CSS_2', operator.stats.publicPath + 'selectize.default.css')
-                            .replace('INTERFACE_PROPS', JSON.stringify({action: model, mode: 'Edit'})),
-                        req.path,
-                        null,
-                        function (err, html) {
-                            if (err) {
-                                res.statusCode = 500;
-                                res.contentType = 'text; charset=utf8';
-                                res.end(err.message);
-                                return;
-                            }
-                            res.contentType = 'text/html; charset=utf8';
-                            res.end(html);
-                        }
-                    );
-                }
-                else {
-                    res.end();
-                }
-            });
+        operator.express.get('/doozy/action/:id', operator.authenticate, function (req, res) {
+            editUI('action', req, res);
         });
 
         // LOG ENTRY ADD
@@ -495,7 +465,7 @@
 
                 var actionGnapse = gnode.siblings('doozy.action').first();
                 if (actionGnapse) {
-                    strap.actionName = actionGnapse.target.state.name;
+                    strap.actionId = actionGnapse.target.tag;
                 }
                 return strap;
             },
@@ -856,7 +826,7 @@
                 }
                 // Create action connection
                 if (model.actionId) {
-                    var actionNode = db.find(model.actionId, 'doozy.tag').first();
+                    var actionNode = db.find(model.actionId, 'doozy.action').first();
                     if (actionNode) {
                         gnode.connect(actionNode, db.RELATION.ASSOCIATE);
                     }
@@ -911,7 +881,7 @@
 
                 // action is now connected
                 if (model.actionId && model.actionId !== gnode.state.actionId) {
-                    var actionNode = db.find(model.actionId, 'doozy.tag').first();
+                    var actionNode = db.find(model.actionId, 'doozy.action').first();
                     if (actionNode) {
                         gnode.connect(actionNode, db.RELATION.ASSOCIATE);
                     }
