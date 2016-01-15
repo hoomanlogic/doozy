@@ -15,7 +15,7 @@ module.exports = {
         'focus-form': path.resolve(__dirname, 'src/Client/interfaces/mount/mount.focus-form.js'),
         'logentry-form': path.resolve(__dirname, 'src/Client/interfaces/mount/mount.logentry-form.js'),
         'plan-form': path.resolve(__dirname, 'src/Client/interfaces/mount/mount.plan-form.js'),
-        'plan-step-form': path.resolve(__dirname, 'src/Client/interfaces/mount/mount.plan-step-form.js'),
+        'planstep-form': path.resolve(__dirname, 'src/Client/interfaces/mount/mount.plan-step-form.js'),
         'tag-form': path.resolve(__dirname, 'src/Client/interfaces/mount/mount.tag-form.js'),
         'target-form': path.resolve(__dirname, 'src/Client/interfaces/mount/mount.target-form.js'),
     },
