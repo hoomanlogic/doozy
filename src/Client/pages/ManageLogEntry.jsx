@@ -143,62 +143,23 @@
             }
         },
         handleSave: function () {
-            var existingAction,
-                logEntry,
-                newAction,
-                action;
-
-            // var validationApology = 'Sorry, we don\'t have enough information yet.\n\n';
-
+            var validationApology = 'Sorry, we don\'t have enough information yet.\n\n';
             if (!this.state.date) {
-                // ui.message(validationApology + 'When did you do this?', 'error');
+                host.notify(validationApology + 'When did you do this?', 'error');
                 return;
             }
 
             // Get model state from form state
-            logEntry = doozy.extrude(doozy.logEntry(), this.state);
+            var logEntry = doozy.extrude(doozy.logEntry(), Object.assign({
+                // include action name if action id is not set
+                actionName: !this.state.actionId ? this.refs.name.getDOMNode().value : null
+            }, this.state));
 
-            // get action info
-            action = this.refs.name.getDOMNode().value;
-            if (action && action.length) {
-                existingAction = actionStore.get(action);
-                if (existingAction) {
-                    logEntry.actionId = existingAction.id;
-                }
-                else {
-                    newAction = doozy.action(actionName);
-                    newAction.created = this.state.date;
-                }
-            }
-
-            // update log entry
-            if (!newAction) {
-                if (logEntry.isNew) {
-                    logEntryStore.create(logEntry);
-                }
-                else {
-                    logEntryStore.update(logEntry);
-                }
-            }
-            else {
-                // Create action first
-                actionStore.create(newAction, function (serverAction) {
-                    logEntry.actionId = serverAction.id;
-                    // Then Create logentry that references action
-                    if (logEntry.isNew) {
-                        logEntryStore.create(logEntry, function () {
-                            console.log('success');
-                        });
-                    }
-                    else {
-                        logEntryStore.update(logEntry, function () {
-                            console.log('success');
-                        });
-                    }
-                });
-            }
-
-            host.go('/doozy/actions');
+            // Save the logentry
+            logEntryStore.save(logEntry, function () {
+                // Go to the actions interface
+                host.go('/doozy/actions');
+            });
         },
         handleStoreUpdate: function (model) {
 
@@ -212,9 +173,9 @@
                 durationInput = durationParse.tokens[0].value.toString();
             }
 
-            state.id = state.id;
-            if (state.actionId && !state.actionName) {
-                state.actionName = actionStore.get(state.actionId).name;
+            // If actionId is set, we don't need the action name
+            if (state.actionId && state.actionName) {
+                state.actionName = null;
             }
 
             state.durationInput = durationInput;
