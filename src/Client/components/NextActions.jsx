@@ -8,6 +8,10 @@
     );
 }(function (React, babble, host, _, ActionRow) {
     var NextActions = React.createClass({
+        propTypes: {
+            actions: React.PropTypes.array.isRequired
+        },
+
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
