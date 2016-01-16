@@ -17,7 +17,7 @@
         mixins: [StoresMixin([logEntryStore])],
         getInitialState: function () {
             return {
-                maxReturn: 5,
+                maxReturn: 10,
                 logEntriesLastUpdated: new Date().toISOString()
             };
         },
@@ -28,8 +28,8 @@
         componentWillMount: function () {
             var me = this;
             $(window).scroll(function () {
-                if ($(window).scrollTop() + $(window).height() === $(document).height()) {
-                    me.setState({ maxReturn: me.state.maxReturn + 5});
+                if (Math.abs(($(window).scrollTop() + $(window).height()) - $(document).height()) < 5) {
+                    me.setState({ maxReturn: me.state.maxReturn + 10});
                 }
             });
         },
