@@ -72,7 +72,6 @@
          * EVENT HANDLING
          *************************************************************/
         handleChange: function (event) {
-            debugger;
             var state = {};
             if (event.target === this.refs.name.getDOMNode()) {
                 state.name = event.target.value;
@@ -123,7 +122,7 @@
                     }
                 }
 
-                state.nextdate = dateValue;
+                state.nextDate = dateValue;
                 state.dateInput = event.target.value;
                 state.dateDisplay = dateDisplay;
             }
@@ -272,9 +271,7 @@
             action.ordinal = this.state.ordinal;
 
             // build next date
-            if (action.nextDate !== null) {
-                action.nextDate = babble.moments.parseLocalDate(action.nextDate).toISOString();
-            }
+            action.nextDate = this.state.nextDate;
 
             // call method to save the action
             if (this.props.mode === 'Edit') {
