@@ -9,19 +9,14 @@
         require('stores/logentry-store'),
         require('stores/tag-store'),
         require('components/Indicator'),
-        require('mixins/SubscriberMixin')
+        require('mixins/StoresMixin')
     );
-}(function (React, _, babble, doozy, host, targetStore, logEntryStore, tagStore, Indicator, SubscriberMixin) {
+}(function (React, _, babble, doozy, host, targetStore, logEntryStore, tagStore, Indicator, StoresMixin) {
     var ManageTargets = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
-        mixins: [SubscriberMixin(targetStore)],
-        getDefaultProps: function () {
-            return {
-                globalSubscriberContext: true // SubscriberMixin behavior property
-            };
-        },
+        mixins: [StoresMixin([targetStore])],
 
         /*************************************************************
          * COMPONENT LIFECYCLE

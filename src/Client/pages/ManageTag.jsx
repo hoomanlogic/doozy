@@ -4,14 +4,14 @@
         require('app/doozy'),
         require('stores/host'),
         require('stores/tag-store'),
-        require('mixins/SubscriberMixin')
+        require('mixins/ModelMixin')
     );
-}(function (React, doozy, host, tagStore, SubscriberMixin) {
+}(function (React, doozy, host, tagStore, ModelMixin) {
     var ManageTag = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
-        mixins: [SubscriberMixin(tagStore)],
+        mixins: [ModelMixin(tagStore)],
         propTypes: {
             id: React.PropTypes.string,
         },
@@ -56,7 +56,7 @@
             }
             host.go('/doozy/tags');
         },
-        handleStoreUpdate: function (model) {
+        handleModelUpdate: function (model) {
             this.setState(model);
         },
 

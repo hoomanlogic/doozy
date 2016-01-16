@@ -4,14 +4,14 @@
         require('app/doozy'),
         require('stores/host'),
         require('stores/focus-store'),
-        require('mixins/SubscriberMixin')
+        require('mixins/ModelMixin')
     );
-}(function (React, doozy, host, focusStore, SubscriberMixin) {
+}(function (React, doozy, host, focusStore, ModelMixin) {
     var ManageFocus = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
-        mixins: [SubscriberMixin(focusStore)],
+        mixins: [ModelMixin(focusStore)],
         propTypes: {
             id: React.PropTypes.string,
         },
@@ -93,7 +93,7 @@
             }
             host.go('/doozy/focuses');
         },
-        handleStoreUpdate: function (model) {
+        handleModelUpdate: function (model) {
             this.setState(model);
         },
 

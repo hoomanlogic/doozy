@@ -11,20 +11,15 @@
         require('components/UpcomingActions'),
         require('components/RecentActivity'),
         require('components/BoxedActions'),
-        require('mixins/SubscriberMixin')
+        require('mixins/StoresMixin')
     );
 }(function (React, _, those, actionStore, host, TagList, ActivePlans, NextActions,
-            UpcomingActions, RecentActivity, BoxedActions, SubscriberMixin) {
+            UpcomingActions, RecentActivity, BoxedActions, StoresMixin) {
     var ManageActions = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
-        mixins: [SubscriberMixin(actionStore)],
-        getDefaultProps: function () {
-            return {
-                globalSubscriberContext: true // SubscriberMixin behavior property
-            };
-        },
+        mixins: [StoresMixin([actionStore])],
         getInitialState: function () {
             return {
                 focusActions: [],
@@ -79,7 +74,7 @@
             });
         },
 
-        handleStoreUpdate: function () {
+        handleStoresMixinUpdate: function () {
             this.updateActions(this.props.focusTag);
         },
 

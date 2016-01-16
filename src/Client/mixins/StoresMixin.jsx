@@ -25,17 +25,17 @@
 
                 this.stores.forEach(function (s) {
                     if (s instanceof gnodeStore.GnodeStore) {
-                        s.subscribe(this.handleStoreUpdate, {});
+                        s.subscribe(this.handleStoreListUpdate, {});
                     }
                     else if (s instanceof hlstore.Store || s instanceof store.Store) {
-                        s.subscribe(this.handleStoreUpdate);
+                        s.subscribe(this.handleStoreListUpdate);
                     }
                     else { // old style Rx Stores
                         this.observers.push(s.updates
                             .filter(function (result) {
                                 return result.length > 0;
                             })
-                            .subscribe(this.handleStoreUpdate));
+                            .subscribe(this.handleStoreListUpdate));
                     }
                 }.bind(this));
             },
@@ -43,13 +43,13 @@
             componentWillUnmount: function () {
                 this.stores.forEach(function (s) {
                     if (s instanceof gnodeStore.GnodeStore) {
-                        s.unsubscribe(this.handleStoreUpdate, {});
+                        s.unsubscribe(this.handleStoreListUpdate, {});
                     }
                     else if (s instanceof hlstore.Store) {
-                        s.dispose(this.handleStoreUpdate);
+                        s.dispose(this.handleStoreListUpdate);
                     }
                     else if (s instanceof store.Store) {
-                        s.unsubscribe(this.handleStoreUpdate);
+                        s.unsubscribe(this.handleStoreListUpdate);
                     }
                     else {
                         this.observers.forEach(function (observer) {
@@ -60,10 +60,15 @@
                 }.bind(this));
             },
 
-            handleStoreUpdate: function () {
-                this.setState({
-                    lastStoreUpdate: new Date().toISOString()
-                });
+            handleStoreListUpdate: function () {
+                if (this.handleStoresMixinUpdate) {
+                    this.handleStoresMixinUpdate();
+                }
+                else {
+                    this.setState({
+                        lastStoreListUpdate: new Date().toISOString()
+                    });
+                }
             }
         };
     };

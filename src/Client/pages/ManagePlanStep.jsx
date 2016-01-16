@@ -6,14 +6,14 @@
         require('babble'),
         require('stores/host'),
         require('stores/planstep-store'),
-        require('mixins/SubscriberMixin')
+        require('mixins/ModelMixin')
     );
-}(function (React, _, doozy, babble, host, planStepStore, SubscriberMixin) {
+}(function (React, _, doozy, babble, host, planStepStore, ModelMixin) {
     var ManagePlanStep = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
-        mixins: [SubscriberMixin(planStepStore)],
+        mixins: [ModelMixin(planStepStore)],
 
         getInitialState: function () {
             return doozy.planStep(this.props.planId, this.props.parentId);
@@ -83,7 +83,7 @@
             }
             host.go('/doozy/plansteps/' + this.props.planId);
         },
-        handleStoreUpdate: function (model) {
+        handleModelUpdate: function (model) {
             // Generate duration input from numeric value
             var durationParse = babble.get('durations').translate((model.duration || 0) + ' min');
             var durationInput = null;

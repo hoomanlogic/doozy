@@ -4,14 +4,14 @@
         require('app/doozy'),
         require('stores/host'),
         require('stores/plan-store'),
-        require('mixins/SubscriberMixin')
+        require('mixins/ModelMixin')
     );
-}(function (React, doozy, host, planStore, SubscriberMixin) {
+}(function (React, doozy, host, planStore, ModelMixin) {
     var ManagePlan = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
-        mixins: [SubscriberMixin(planStore)],
+        mixins: [ModelMixin(planStore)],
         propTypes: {
             id: React.PropTypes.string,
         },
@@ -54,7 +54,7 @@
             }
             host.go('/doozy/plans');
         },
-        handleStoreUpdate: function (model) {
+        handleModelUpdate: function (model) {
             this.setState(model);
         },
 

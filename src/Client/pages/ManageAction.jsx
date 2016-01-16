@@ -6,17 +6,19 @@
         require('app/doozy'),
         require('stores/host'),
         require('stores/action-store'),
-        require('stores/logentry-store'),
-        require('mixins/SubscriberMixin'),
+        require('stores/tag-store'),
+        require('mixins/ModelMixin'),
+        require('mixins/StoresMixin'),
+        require('mixins/SelectTagsMixin'),
         require('babble')
     );
-}(function (React, _, doozy, host, actionStore, logEntryStore, SubscriberMixin, babble) {
+}(function (React, _, doozy, host, actionStore, tagStore, ModelMixin, StoresMixin, SelectTagsMixin, babble) {
     /* global $ */
     var ManageAction = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
-        mixins: [SubscriberMixin(actionStore)],
+        mixins: [ModelMixin(actionStore), StoresMixin([tagStore]), SelectTagsMixin],
         propTypes: {
             id: React.PropTypes.string,
         },
@@ -50,16 +52,6 @@
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
-        componentWillMount: function () {
-            logEntryStore.subscribe(this.handleLogEntryStoreUpdate, {});
-        },
-        componentWillUnmount: function () {
-            /**
-             * Clean up objects and bindings
-             */
-            logEntryStore.unsubscribe(this.handleLogEntryStoreUpdate, {});
-        },
-
         componentDidMount: function () {
             this.setupTagsControl();
 
@@ -76,94 +68,11 @@
             }
         },
 
-        componentDidUpdate: function () {
-            // populate existing tag options
-            var selectize = $(this.refs.tags.getDOMNode())[0].selectize;
-            this.setTagOptions(selectize);
-
-            // set current value
-            selectize.setValue(this.state.tags);
-        },
-
-        /*************************************************************
-         * BINDINGS
-         *************************************************************/
-        setupTagsControl: function () {
-            if (!this.refs.tags) {
-                return;
-            }
-            // initialize control for tags functionality
-            $(this.refs.tags.getDOMNode()).selectize({
-                delimiter: ',',
-                persist: true,
-                valueField: 'value',
-                labelField: 'name',
-                searchField: ['name', 'kind'],
-                onChange: function (value) {
-                    // get tags from control
-                    var tags = value.split(',');
-                    this.setState({
-                        tags: tags
-                    });
-
-                }.bind(this),
-                render: {
-                    item: function (item, escape) {
-                        return '<div class="item"><i class="fa ' + item.className + '"></i> ' + escape(item.name) + '</div>';
-                    },
-                    option: function (item, escape) {
-                        var label = item.name || item.kind;
-                        var caption = item.kind ? item.kind : null;
-                        return '<div>' +
-                            '<span class="label">' + escape(label) + '</span>' +
-                            (caption ? '<span class="caption">' + escape(caption) + '</span>' : '') +
-                        '</div>';
-                    }
-                },
-                create: function (input) {
-                    return doozy.parseTag(input);
-                }
-            });
-
-            // populate existing tag options
-            var selectize = $(this.refs.tags.getDOMNode())[0].selectize;
-            this.setTagOptions(selectize);
-
-            // set current value
-            selectize.setValue(this.state.tags);
-        },
-        setTagOptions: function (selectize) {
-            // clear previously set options
-            selectize.clearOptions();
-
-            // get distinct tags user has assigned to other actions
-            var actions = actionStore.getCache();
-            var distinctTags = [];
-            actions.map(function (item) {
-                distinctTags = _.union(distinctTags, item.tags);
-            });
-            // { kind: 'Tag', name: tag }
-            // add tags that user has assigned to other actions
-            distinctTags.forEach( function (tag) {
-                selectize.addOption(doozy.parseTag(tag));
-            });
-        },
-
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
-        handleLogEntryStoreUpdate: function () {
-            if (this.state.viewMode === ManageAction.VIEW_MODE.HISTORY) {
-                this.setState({logEntriesLastUpdated: new Date().toISOString()});
-            }
-        },
-        handleTagStoreUpdate: function () {
-            this.setState({
-                lastUpdate: new Date().toISOString()
-            });
-        },
-
         handleChange: function (event) {
+            debugger;
             var state = {};
             if (event.target === this.refs.name.getDOMNode()) {
                 state.name = event.target.value;
@@ -183,6 +92,8 @@
                 state.duration = duration;
                 state.durationInput = this.refs.duration.getDOMNode().value;
                 state.durationDisplay = durationDisplay;
+
+
             }
             else if (event.target === this.refs.repeat.getDOMNode()) {
                 state.repeat = event.target.value;
@@ -375,7 +286,7 @@
 
             host.go('/doozy/actions');
         },
-        handleStoreUpdate: function (model) {
+        handleModelUpdate: function (model) {
             var date, durationInput;
 
             // create a copy of the action for editing
@@ -426,7 +337,8 @@
                 repeatWed: false,
                 repeatThu: false,
                 repeatFri: false,
-                repeatSat: false
+                repeatSat: false,
+                tags: editableCopy.tags
             };
 
             if (model.recurrenceRules && model.recurrenceRules.length) {
@@ -549,107 +461,8 @@
                 return null;
             }
         },
-        renderGeneralView: function () {
 
-            /**
-             * State and Prop Dependencies
-             */
-            var durationInput = this.state.durationInput;
-            var dateInput = this.state.dateInput;
-
-            /**
-             * Sub Renders
-             */
-            var repeatOptions = this.renderRepeatOptions();
-
-            /**
-             * Render
-             */
-            return (
-                <form role="form">
-                    <div className="form-group">
-                        <label htmlFor="action-name">Name</label>
-                        <input id="action-name" ref="name" type="text" className="form-control" placeholder="Name of action" value={this.state.name} onChange={this.handleChange} />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="action-tags">Tags</label>
-                        <input id="action-tags" ref="tags" type="text" />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="action-duration">How long do you think it will take?</label>
-                        <input id="action-duration" ref="duration" type="text" className="form-control" value={durationInput} onChange={this.handleChange} />
-                        <span>{this.state.durationDisplay}</span>
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="action-repeat">How often will you do this?</label>
-                        <select id="action-repeat" ref="repeat" className="form-control" value={this.state.repeat} onChange={this.handleChange}>
-                            <option value="o">Once</option>
-                            <option value="d">Daily</option>
-                            <option value="w">Weekly</option>
-                            <option value="m">Monthly</option>
-                            <option value="y">Yearly</option>
-                        </select>
-                    </div>
-                    {repeatOptions}
-                    <div className="form-group">
-                        <label htmlFor="action-content">Please add details here</label>
-                        <textarea id="action-content" ref="content" type="text" className="form-control" value={this.state.content} onChange={this.handleChange} />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="action-nextdate">Hold off on this until</label>
-                        <input id="action-nextdate" ref="nextdate" type="datetime" className="form-control" value={dateInput} onChange={this.handleChange} />
-                        <span>{this.state.dateDisplay}</span>
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="action-ordinal">What ordinal?</label>
-                        <input id="action-ordinal" ref="ordinal" type="number" className="form-control" value={this.state.ordinal} onChange={this.handleChange} />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="action-ispublic">Allow others to see this action?</label>
-                        <input id="action-ispublic" ref="ispublic" type="checkbox" className="form-control" checked={this.state.isPublic} onChange={this.handleChange} />
-                    </div>
-                </form>
-            );
-        },
-        renderHistoryView: function () {
-            var actionId = this.state.id;
-            var logEntries = logEntryStore.getCache().filter(function (item) {
-                return item.actionId === actionId;
-            });
-
-            logEntries = _.sortBy(logEntries, function (item) { return item.date.split('T')[0] + '-' + (['performed','skipped'].indexOf(item.entry) > -1 ? '1' : '0'); });
-            logEntries.reverse();
-
-            return (
-                <div>
-                    <h2 style={{ margin: '0 0 5px 5px'}}>Action History Log</h2>
-                    <div className={this.props.hidden ? 'hidden' : ''} style={{backgroundColor: '#444', padding: '5px', marginLeft: '-5px', marginRight: '-5px'}}>
-                        {logEntries.map(
-                            function (item) {
-                                return (<LogEntryBox data={item} />);
-                            }
-                        )}
-                    </div>
-                </div>
-            );
-        },
         render: function () {
-
-            /**
-             * Render view based on the current view mode
-             */
-            var currentView = null;
-            var toggleTitle = null;
-
-            if (this.state.viewMode === ManageAction.VIEW_MODE.GENERAL) {
-                currentView = this.renderGeneralView();
-                toggleTitle = 'View Action Log';
-            }
-            else if (this.state.viewMode === ManageAction.VIEW_MODE.HISTORY) {
-                currentView = this.renderHistoryView();
-                toggleTitle = 'View General';
-            }
-
             /**
              * Buttons array to pass to Modal component
              */
@@ -677,11 +490,7 @@
                            ];
             }
             else {
-                buttons = [{type: 'default',
-                            text: toggleTitle,
-                            handler: this.handleToggleViewModeClick,
-                            buttonStyle: buttonStyle},
-                           {type: 'primary',
+                buttons = [{type: 'primary',
                             text: 'Save Changes',
                             handler: this.handleSaveClick,
                             buttonStyle: buttonStyle},
@@ -701,12 +510,65 @@
             });
 
             /**
+             * State and Prop Dependencies
+             */
+            var durationInput = this.state.durationInput;
+            var dateInput = this.state.dateInput;
+
+            /**
+             * Sub Renders
+             */
+            var repeatOptions = this.renderRepeatOptions();
+
+            /**
              * Render
              */
             return (
                 <div style={styles.main}>
                     <h2 style={{marginTop: '0.2rem', marginBottom: '0.2rem'}}>{this.props.mode === 'Edit' ? this.state.name : 'New Action'}</h2>
-                    {currentView}
+                    <form role="form">
+                        <div className="form-group">
+                            <label htmlFor="action-name">Name</label>
+                            <input id="action-name" ref="name" type="text" className="form-control" placeholder="Name of action" value={this.state.name} onChange={this.handleChange} />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="action-tags">Tags</label>
+                            <input id="action-tags" ref="tags" type="text" />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="action-duration">How long do you think it will take?</label>
+                            <input id="action-duration" ref="duration" type="text" className="form-control" value={durationInput} onChange={this.handleChange} />
+                            <span>{this.state.durationDisplay}</span>
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="action-repeat">How often will you do this?</label>
+                            <select id="action-repeat" ref="repeat" className="form-control" value={this.state.repeat} onChange={this.handleChange}>
+                                <option value="o">Once</option>
+                                <option value="d">Daily</option>
+                                <option value="w">Weekly</option>
+                                <option value="m">Monthly</option>
+                                <option value="y">Yearly</option>
+                            </select>
+                        </div>
+                        {repeatOptions}
+                        <div className="form-group">
+                            <label htmlFor="action-content">Please add details here</label>
+                            <textarea id="action-content" ref="content" type="text" className="form-control" value={this.state.content} onChange={this.handleChange} />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="action-nextdate">Hold off on this until</label>
+                            <input id="action-nextdate" ref="nextdate" type="datetime" className="form-control" value={dateInput} onChange={this.handleChange} />
+                            <span>{this.state.dateDisplay}</span>
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="action-ordinal">What ordinal?</label>
+                            <input id="action-ordinal" ref="ordinal" type="number" className="form-control" value={this.state.ordinal} onChange={this.handleChange} />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="action-ispublic">Allow others to see this action?</label>
+                            <input id="action-ispublic" ref="ispublic" type="checkbox" className="form-control" checked={this.state.isPublic} onChange={this.handleChange} />
+                        </div>
+                    </form>
                     {buttonsDom}
                 </div>
             );

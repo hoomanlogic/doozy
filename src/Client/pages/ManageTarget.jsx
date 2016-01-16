@@ -7,15 +7,15 @@
         require('stores/target-store'),
         require('stores/action-store'),
         require('stores/tag-store'),
-        require('mixins/SubscriberMixin')
+        require('mixins/ModelMixin')
     );
-}(function (React, _, doozy, host, targetStore, actionStore, tagStore, SubscriberMixin) {
+}(function (React, _, doozy, host, targetStore, actionStore, tagStore, ModelMixin) {
     /* globals $ */
     var ManageTarget = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
-        mixins: [SubscriberMixin(targetStore)],
+        mixins: [ModelMixin(targetStore)],
         propTypes: {
             id: React.PropTypes.string,
         },
@@ -112,14 +112,8 @@
             }
             host.go('/doozy/targets');
         },
-        handleStoreUpdate: function (model) {
+        handleModelUpdate: function (model) {
             this.setState(model);
-        },
-        handleActionStoreUpdate: function () {
-            this.setState({lastUpdate: new Date().toISOString()});
-        },
-        handleTagStoreUpdate: function () {
-            this.setState({lastUpdate: new Date().toISOString()});
         },
 
         /*************************************************************

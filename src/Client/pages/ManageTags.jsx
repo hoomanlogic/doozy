@@ -4,19 +4,14 @@
         require('lodash'),
         require('stores/host'),
         require('stores/tag-store'),
-        require('mixins/SubscriberMixin')
+        require('mixins/StoresMixin')
     );
-}(function (React, _, host, tagStore, SubscriberMixin) {
+}(function (React, _, host, tagStore, StoresMixin) {
     var ManageTags = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
-        mixins: [SubscriberMixin(tagStore)],
-        getDefaultProps: function () {
-            return {
-                globalSubscriberContext: true // SubscriberMixin behavior property
-            };
-        },
+        mixins: [StoresMixin([tagStore])],
 
         /*************************************************************
          * EVENT HANDLING

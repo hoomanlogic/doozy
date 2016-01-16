@@ -4,19 +4,14 @@
         require('stores/host'),
         require('lodash'),
         require('stores/focus-store'),
-        require('mixins/SubscriberMixin')
+        require('mixins/StoresMixin')
     );
-}(function (React, host, _, focusStore, SubscriberMixin) {
+}(function (React, host, _, focusStore, StoresMixin) {
     var ManageFocuses = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
-        mixins: [SubscriberMixin(focusStore)],
-        getDefaultProps: function () {
-            return {
-                globalSubscriberContext: true // SubscriberMixin behavior property
-            };
-        },
+        mixins: [StoresMixin([focusStore])],
 
         /*************************************************************
          * COMPONENT LIFECYCLE

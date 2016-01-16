@@ -4,19 +4,14 @@
         require('lodash'),
         require('stores/host'),
         require('stores/plan-store'),
-        require('mixins/SubscriberMixin')
+        require('mixins/StoresMixin')
     );
-}(function (React, _, host, planStore, SubscriberMixin) {
+}(function (React, _, host, planStore, StoresMixin) {
     var ManagePlans = React.createClass({
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
-        mixins: [SubscriberMixin(planStore)],
-        getDefaultProps: function () {
-            return {
-                globalSubscriberContext: true // SubscriberMixin behavior property
-            };
-        },
+        mixins: [StoresMixin([planStore])],
 
         /*************************************************************
          * EVENT HANDLING

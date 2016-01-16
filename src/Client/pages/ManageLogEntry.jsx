@@ -7,15 +7,19 @@
         require('babble'),
         require('stores/action-store'),
         require('stores/logentry-store'),
-        require('mixins/SubscriberMixin')
+        require('stores/tag-store'),
+        require('mixins/ModelMixin'),
+        require('mixins/StoresMixin'),
+        require('mixins/SelectActionMixin'),
+        require('mixins/SelectTagsMixin')
     );
-}(function (React, _, doozy, host, babble, actionStore, logEntryStore, SubscriberMixin) {
+}(function (React, _, doozy, host, babble, actionStore, logEntryStore, tagStore, ModelMixin, StoresMixin, SelectActionMixin, SelectTagsMixin) {
     /* globals $ */
     var ManageLogEntry = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
-        mixins: [SubscriberMixin(logEntryStore)],
+        mixins: [ModelMixin(logEntryStore), StoresMixin([actionStore, tagStore]), SelectActionMixin, SelectTagsMixin],
         propTypes: {
             id: React.PropTypes.string
         },
@@ -44,7 +48,6 @@
          *************************************************************/
         componentWillMount: function () {
             host.setTitle('Log Entry');
-            actionStore.subscribe(this.handleActionStoreUpdate, {});
         },
         componentDidMount: function () {
             // If we're still loading, then abort
@@ -73,9 +76,6 @@
             else {
                 $(this.refs.name.getDOMNode())[0].selectize.focus();
             }
-        },
-        componentWilUnmount: function () {
-            actionStore.unsubscribe(this.handleActionStoreUpdate, {});
         },
 
         /*************************************************************
@@ -159,7 +159,7 @@
                 host.go('/doozy/actions');
             });
         },
-        handleStoreUpdate: function (model) {
+        handleModelUpdate: function (model) {
 
             // create a copy of the action for editing
             var state = {};
@@ -181,149 +181,6 @@
             state.dateFeedback = '';
 
             this.setState(state);
-        },
-        handleActionStoreUpdate: function () {
-            this.setState({
-                lastUpdate: new Date().toISOString()
-            });
-        },
-
-        /*************************************************************
-         * MISC
-         *************************************************************/
-        setOptionsAction: function (selectActions) {
-            if (!actionStore.context({}) || !actionStore.context({}).value) {
-                return;
-            }
-
-            // clear previously set options
-            selectActions.clearOptions();
-
-            // get actions sorted by name
-            var actions = _.sortBy(actionStore.context({}).value, function (action) {
-                return action.name;
-            });
-
-            // add actions to selection control
-            actions.forEach( function (action) {
-                selectActions.addOption({
-                    value: action.id,
-                    text: action.name
-                });
-            });
-        },
-        setOptionsTag: function (selectize) {
-            if (!actionStore.context({}) || !actionStore.context({}).value) {
-                return;
-            }
-
-            // clear previously set options
-            selectize.clearOptions();
-
-            // get distinct tags user has assigned to other actions
-            var actions = actionStore.context({}).value;
-            var distinctTags = [];
-            actions.map(function (item) {
-                distinctTags = _.union(distinctTags, item.tags);
-            });
-            // { kind: 'Tag', name: tag }
-            // add tags that user has assigned to other actions
-            distinctTags.forEach( function (tag) {
-                selectize.addOption(doozy.parseTag(tag));
-            });
-        },
-        setupActionsControl: function () {
-            if (!this.refs.name) {
-                return;
-            }
-
-            $(this.refs.name.getDOMNode()).selectize({
-                delimiter: '|',
-                persist: true,
-                create: function (input) {
-                    return {
-                        value: input,
-                        text: input
-                    };
-                },
-                maxItems: 1,
-                openOnFocus: false,
-                onChange: function (value) {
-                    var state = {};
-
-                    // Get action from cache (if it isn't a new action)
-                    var existingAction = actionStore.get(value);
-                    if (existingAction) {
-                        state.actionId = existingAction.id;
-
-                        // Default the action's duration if duration isn't already set
-                        if (!this.state.duration) {
-                            // set default duration if it is not already set
-                            var duration = new babble.Duration(existingAction.duration * 60000);
-                            if (duration.toMinutes() > 0) {
-                                Object.assign(state, {
-                                    duration: duration.toMinutes(),
-                                    durationInput: duration.toString(),
-                                    durationFeedback: duration.toString()
-                                });
-                            }
-                        }
-
-                        // display action tags
-                        state.actionTags = [].concat(existingAction.tags);
-                    }
-
-                    if (state.actionId || state.duration) {
-                        this.setState(state);
-                    }
-
-                }.bind(this)
-            });
-        },
-        setupTagsControl: function () {
-            if (!this.refs.tags) {
-                return;
-            }
-
-            // initialize control for tags functionality
-            $(this.refs.tags.getDOMNode()).selectize({
-                delimiter: ',',
-                persist: true,
-                valueField: 'value',
-                labelField: 'name',
-                searchField: ['name', 'kind'],
-                onChange: function (value) {
-                    // get tags from control
-                    var tags = value.split(',');
-                    this.setState({
-                        tags: tags
-                    });
-
-                }.bind(this),
-                render: {
-                    item: function (item, escape) {
-                        return '<div class="item"><i class="fa ' + item.className + '"></i> ' + escape(item.name) + '</div>';
-                    },
-                    option: function (item, escape) {
-                        var label = item.name || item.kind;
-                        var caption = item.kind ? item.kind : null;
-                        return '<div>' +
-                            '<span class="label">' + escape(label) + '</span>' +
-                            (caption ? '<span class="caption">' + escape(caption) + '</span>' : '') +
-                        '</div>';
-                    }
-                },
-                create: function (input) {
-                    return doozy.parseTag(input);
-                }
-            });
-
-            // populate existing tag options
-            var selectize = $(this.refs.tags.getDOMNode())[0].selectize;
-            this.setOptionsTag(selectize);
-
-            // Set value from state
-            selectize.setValue(this.state.tags);
         },
 
         /*************************************************************
@@ -351,29 +208,24 @@
                 );
             });
 
-            var slot1, slot2, action, log;
+            var slot1, slot2, log;
 
+            // Entry input
             log = (
                 <div className="form-group">
                     <label htmlFor="logentry-details">Entry</label>
                     <textarea id="logentry-details" ref="details" type="text" className="form-control" onChange={this.handleChange} value={this.state.details} />
                 </div>
             );
-            action = (
-                <div className="form-group">
-                    <label htmlFor="f1">Action</label>
-                    <input id="f1" ref="name" type="text" />
-                    <span>{(this.state.actionTags || []).join(',')}</span>
-                </div>
-            );
 
+            // Layout order of Entry input and Action input
             if (this.props.action || this.props.actionName || (this.props.logEntry && this.props.logEntry.actionId)) {
-                slot1 = action;
+                slot1 = this.renderActionInput();
                 slot2 = log;
             }
             else {
                 slot1 = log;
-                slot2 = action;
+                slot2 = this.renderActionInput();
             }
 
             return (
@@ -382,10 +234,7 @@
                     <form role="form">
                         {slot1}
                         {slot2}
-                        <div className="form-group">
-                            <label htmlFor="action-tags">Tags</label>
-                            <input id="action-tags" ref="tags" type="text" />
-                        </div>
+                        {this.renderTagsInput()}
                         <div className="form-group">
                             <label htmlFor="logentry-kind">Kind</label>
                             <select id="logentry-kind" ref="kind" className="form-control" value={this.state.kind} onChange={this.handleChange}>

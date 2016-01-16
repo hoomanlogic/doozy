@@ -3,7 +3,7 @@
         require('stores/store')
     );
 }(function (storeClass) {
-    var SubscriberMixin = function (store, propName, pathArg) {
+    var ModelMixin = function (store, propName, pathArg) {
 
         var mixinObj;
         var path = pathArg || 'props';
@@ -35,10 +35,6 @@
                         // Subscribe to one
                         thisStore.subscribe(this[handleStoreUpdateName], { id: this[path][thisProp] });
                     }
-                    else if (this.props.globalSubscriberContext) {
-                        // Subscribe to all
-                        thisStore.subscribe(this[handleStoreUpdateName], {});
-                    }
                 },
 
                 componentWillReceiveProps: function (nextProps) {
@@ -56,10 +52,6 @@
                     if (this[path][thisProp]) {
                         thisStore.unsubscribe(this[handleStoreUpdateName], { id: this[path][thisProp] });
                     }
-                    else if (this.props.globalSubscriberContext) {
-                        // Subscribe to all
-                        thisStore.unsubscribe(this[handleStoreUpdateName], {});
-                    }
                 },
             };
         }
@@ -71,12 +63,12 @@
          * EVENT HANDLING
          *************************************************************/
         mixinObj[handleStoreUpdateName] = function (result) {
-            if (this.handleStoreUpdate) {
-                this.handleStoreUpdate(result);
+            if (this.handleModelUpdate) {
+                this.handleModelUpdate(result);
             }
             else {
                 this.setState({
-                    lastStoreNotify: (new Date()).toISOString()
+                    lastModelUpdate: (new Date()).toISOString()
                 });
             }
         };
@@ -84,5 +76,5 @@
         return mixinObj;
     };
 
-    return SubscriberMixin;
+    return ModelMixin;
 }));
