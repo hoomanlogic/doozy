@@ -148,6 +148,7 @@
                 return null;
             }
 
+            var data = this.props.data;
             var options = [];
 
             options.push((
@@ -156,7 +157,7 @@
             options.push((
                 <li><a className="clickable hoverable" style={styles.userOptionsItem} onClick={this.handleEditLogEntryClick}><i className="fa fa-pencil"></i> Edit Entry</a></li>
             ));
-            if (this.props.data.actionId !== null) {
+            if (data.actionId !== null) {
                 options.push((
                     <li><a className="clickable hoverable" style={styles.userOptionsItem} onClick={this.handleEditActionClick}><i className="fa fa-pencil"></i> Edit Action</a></li>
                 ));
@@ -167,13 +168,7 @@
             options.push((
                 <li><a className="clickable hoverable" style={styles.userOptionsItem} onClick={this.handleEditDurationClick}><i className="fa fa-pencil"></i> Edit Duration</a></li>
             ));
-
-
-            if (options.length === 0) {
-                return null;
-            }
-            var data = this.props.data;
-
+            
             return (
                 <div id={'dropdown-' + data.id} style={styles.userOptionsDropdown(this)}>
                     <ul style={styles.userOptionsList}>
@@ -183,11 +178,11 @@
             );
         },
         render: function () {
-            var data = this.props.data;
-
             var duration, typeOfLogEntry;
-
-
+            var data = this.props.data;
+            var knownAs = 'You'; // data.knownAs
+            // var profilePic = <div style={{minWidth: '45px', paddingRight: '5px'}}><img style={{maxHeight: '45px', padding: '2px'}} src={this.props.data.profileUri} /></div>;
+            
             if (data.duration) {
                 duration = new babble.Duration(data.duration * 60000).toString();
             }
@@ -195,7 +190,7 @@
             if (data.actionName && data.actionName.length > 0) {
                 typeOfLogEntry = ([
                     <span style={{fontWeight: 'bold'}}>
-                        {this.props.data.knownAs}
+                        {knownAs}
                     </span>,
                     <span>
                         {' ' + data.entry + ' '}
@@ -207,7 +202,7 @@
             }
             else {
                 typeOfLogEntry = ([
-                    <span style={{fontWeight: 'bold'}}>{this.props.data.knownAs}</span>,
+                    <span style={{fontWeight: 'bold'}}>{knownAs}</span>,
                     <span>{' logged an entry'}</span>
                 ]);
             }
@@ -215,7 +210,6 @@
                 <article key={data.id} style={styles.logEntryBox}>
                     <div>
                         <header style={{display: 'flex', flexDirection: 'row'}}>
-                            <div style={{minWidth: '45px', paddingRight: '5px'}}><img style={{maxHeight: '45px', padding: '2px'}} src={this.props.data.profileUri} /></div>
                             <div style={{flexGrow: '1'}}>
                                 <div>
                                     {typeOfLogEntry}

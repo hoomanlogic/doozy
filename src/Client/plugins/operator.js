@@ -466,6 +466,7 @@
                 var actionGnapse = gnode.siblings('doozy.action').first();
                 if (actionGnapse) {
                     strap.actionId = actionGnapse.target.tag;
+                    strap.actionName = actionGnapse.target.state.name;
                 }
                 return strap;
             },
