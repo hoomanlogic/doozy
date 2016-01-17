@@ -568,18 +568,13 @@
             operator.getDb(function (db) {
                 var gnode = db.find(req.params.id, 'doozy.' + kind).first();
                 if (gnode) {
-                    // TODO: DELETE A GNODE
-                    // gnode.setState(state);
-
-                    // db.commitChanges();
-
+                    db.remove(gnode);
+                    db.commitChanges();
                     res.end();
                 }
                 else {
                     res.end(JSON.stringify({ error: 'Gnode not found'}));
                 }
-
-
             });
         };
 
@@ -691,7 +686,7 @@
         });
 
         operator.express.delete('/doozy/api/focus/:id', operator.authenticate, jsonResponse, function (req, res) {
-            delete('focus', req, res);
+            remove('focus', req, res);
         });
 
         /*****************************************************
@@ -714,7 +709,7 @@
         });
 
         operator.express.delete('/doozy/api/tag/:id', operator.authenticate, jsonResponse, function (req, res) {
-            delete('tag', req, res);
+            remove('tag', req, res);
         });
 
         /*****************************************************
@@ -737,7 +732,7 @@
         });
 
         operator.express.delete('/doozy/api/target/:id', operator.authenticate, jsonResponse, function (req, res) {
-            delete('target', req, res);
+            remove('target', req, res);
         });
 
         /*****************************************************
@@ -760,7 +755,7 @@
         });
 
         operator.express.delete('/doozy/api/plan/:id', operator.authenticate, jsonResponse, function (req, res) {
-            delete('plan', req, res);
+            remove('plan', req, res);
         });
 
         /*****************************************************
@@ -798,7 +793,7 @@
         });
 
         operator.express.delete('/doozy/api/planstep/:id', operator.authenticate, jsonResponse, function (req, res) {
-            delete('planstep', req, res)
+            remove('planstep', req, res)
         });
 
         /*****************************************************
@@ -891,7 +886,7 @@
         });
 
         operator.express.delete('/doozy/api/logentry/:id', operator.authenticate, jsonResponse, function (req, res) {
-            delete('logentry', req, res);
+            remove('logentry', req, res);
         });
 
         /**
