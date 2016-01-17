@@ -61,6 +61,10 @@
             host.go('/doozy/tags');
         },
         handleModelUpdate: function (model) {
+            if (!model) {
+                this.setState(this.getInitialState());    
+                return;
+            }
             this.setState(model);
         },
 

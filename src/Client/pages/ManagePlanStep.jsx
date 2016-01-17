@@ -88,6 +88,10 @@
             host.go('/doozy/plansteps/' + this.props.planId);
         },
         handleModelUpdate: function (model) {
+            if (!model) {
+                this.setState(this.getInitialState());    
+                return;
+            }
             // Generate duration input from numeric value
             var durationParse = babble.get('durations').translate((model.duration || 0) + ' min');
             var durationInput = null;

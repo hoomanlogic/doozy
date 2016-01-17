@@ -163,7 +163,11 @@
             });
         },
         handleModelUpdate: function (model) {
-
+            if (!model) {
+                this.setState(this.getInitialState());    
+                return;
+            }
+            
             // create a copy of the action for editing
             var state = {};
             Object.assign(state, model);
