@@ -52,17 +52,24 @@
         /*************************************************************
          * COMPONENT LIFECYCLE
          *************************************************************/
+        componentWillMount: function () {
+            host.setTitle('Action');
+        },
         componentDidMount: function () {
-            this.setupTagsControl();
+            this.setupTagsInput();
 
+            // Size text area to the scrollheight
+            // and continue resizing on change
             var resizeTextArea = function () {
                 if (Math.abs($(this).height() - this.scrollHeight) > 16) {
                     $(this).height(0).height(this.scrollHeight);
                 }
             };
-
             $(this.refs.content.getDOMNode()).on( 'change keyup keydown paste cut', resizeTextArea).change();
 
+            /**
+             * Set focus to the name control
+             */
             if (this.props.mode === 'Add') {
                 $(this.refs.name.getDOMNode()).focus();
             }
@@ -164,21 +171,15 @@
             this.setState(state);
         },
         handleCancelClick: function () {
-            // ui.goBack();
             host.go('/doozy/actions');
         },
         handleDeleteClick: function () {
-            actionStore.destroy(this.state.id);
-            // ui.goBack();
-            host.go('/doozy/actions');
-        },
-        handleToggleViewModeClick: function () {
-            if (this.state.viewMode === 'general') {
-                this.setState({ viewMode: 'history' });
-            }
-            else {
-                this.setState({ viewMode: 'general' });
-            }
+            host.prompt('Are you sure you want to delete this action?\n\nIf so, type DELETE and hit enter', function (response) {
+                if ((response || '').toLowerCase() === 'delete') {
+                    actionStore.destroy(this.props.id);
+                    host.go('/doozy/actions');
+                }
+            }.bind(this));
         },
         handleSaveClick: function () {
 
@@ -460,51 +461,7 @@
         },
 
         render: function () {
-            /**
-             * Buttons array to pass to Modal component
-             */
-            var buttons;
-            var buttonStyle = {
-                display: 'block',
-                width: '100%',
-                marginBottom: '5px',
-                fontSize: '1.1rem'
-            };
 
-            var deleteButtonStyle = Object.assign({}, buttonStyle, {
-                marginTop: '3rem'
-            });
-
-            if (this.props.mode === 'Add') {
-                buttons = [{type: 'primary',
-                            text: 'Save Action',
-                            handler: this.handleSaveClick,
-                            buttonStyle: buttonStyle},
-                           {type: 'default',
-                            text: 'Cancel',
-                            handler: this.handleCancelClick,
-                            buttonStyle: buttonStyle},
-                           ];
-            }
-            else {
-                buttons = [{type: 'primary',
-                            text: 'Save Changes',
-                            handler: this.handleSaveClick,
-                            buttonStyle: buttonStyle},
-                           {type: 'default',
-                            text: 'Cancel',
-                            handler: this.handleCancelClick,
-                            buttonStyle: buttonStyle},
-                           {type: 'danger',
-                            text: 'Delete',
-                            handler: this.handleDeleteClick,
-                            buttonStyle: deleteButtonStyle}
-                           ];
-            }
-
-            var buttonsDom = buttons.map(function (button, index) {
-                return (<button key={index} style={button.buttonStyle} type="button" className={'btn btn-' + button.type} onClick={button.handler}>{button.text}</button>);
-            });
 
             /**
              * State and Prop Dependencies
@@ -566,7 +523,7 @@
                             <input id="action-ispublic" ref="ispublic" type="checkbox" className="form-control" checked={this.state.isPublic} onChange={this.handleChange} />
                         </div>
                     </form>
-                    {buttonsDom}
+                    {this.renderButtons()}
                 </div>
             );
         },

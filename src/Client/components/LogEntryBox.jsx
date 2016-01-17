@@ -168,7 +168,7 @@
             options.push((
                 <li><a className="clickable hoverable" style={styles.userOptionsItem} onClick={this.handleEditDurationClick}><i className="fa fa-pencil"></i> Edit Duration</a></li>
             ));
-            
+
             return (
                 <div id={'dropdown-' + data.id} style={styles.userOptionsDropdown(this)}>
                     <ul style={styles.userOptionsList}>
@@ -182,7 +182,7 @@
             var data = this.props.data;
             var knownAs = 'You'; // data.knownAs
             // var profilePic = <div style={{minWidth: '45px', paddingRight: '5px'}}><img style={{maxHeight: '45px', padding: '2px'}} src={this.props.data.profileUri} /></div>;
-            
+
             if (data.duration) {
                 duration = new babble.Duration(data.duration * 60000).toString();
             }

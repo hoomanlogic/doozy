@@ -22,7 +22,7 @@
                 selectize.addOption(doozy.parseTag(doozy.getTagValue(tag)));
             });
         },
-        setupTagsControl: function () {
+        setupTagsInput: function () {
             if (!this.refs.tags) {
                 return;
             }

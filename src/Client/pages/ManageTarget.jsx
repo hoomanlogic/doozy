@@ -7,15 +7,17 @@
         require('stores/target-store'),
         require('stores/action-store'),
         require('stores/tag-store'),
-        require('mixins/ModelMixin')
+        require('mixins/ModelMixin'),
+        require('mixins/StoresMixin'),
+        require('mixins/SelectActionMixin'),
+        require('mixins/SelectTagsMixin')
     );
-}(function (React, _, doozy, host, targetStore, actionStore, tagStore, ModelMixin) {
-    /* globals $ */
+}(function (React, _, doozy, host, targetStore, actionStore, tagStore, ModelMixin, StoresMixin, SelectActionMixin, SelectTagsMixin) {
     var ManageTarget = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
-        mixins: [ModelMixin(targetStore)],
+        mixins: [ModelMixin(targetStore), StoresMixin([actionStore, tagStore]), SelectActionMixin, SelectTagsMixin],
         propTypes: {
             id: React.PropTypes.string,
         },
@@ -29,18 +31,16 @@
          *************************************************************/
         componentWillMount: function () {
             host.setTitle('Target');
-            actionStore.subscribe(this.handleActionStoreUpdate, {});
-            tagStore.subscribe(this.handleTagStoreUpdate, {});
         },
         componentDidMount: function () {
             if (!this.refs.entity) {
                 return;
             }
             if (this.state.entityType === 'Tag') {
-                this.setupTagsControl();
+                this.setupTagsInput();
             }
             else if (this.state.entityType === 'Action') {
-                this.setupActionsControl();
+                this.setupActionInput();
             }
         },
         componentDidUpdate: function () {
@@ -48,15 +48,11 @@
                 return;
             }
             if (this.state.entityType === 'Tag') {
-                this.setupTagsControl();
+                this.setupTagsInput();
             }
             else if (this.state.entityType === 'Action') {
-                this.setupActionsControl();
+                this.setupActionInput();
             }
-        },
-        componentWillUnmount: function () {
-            actionStore.unsubscribe(this.handleActionStoreUpdate, {});
-            tagStore.unsubscribe(this.handleTagStoreUpdate, {});
         },
 
         /*************************************************************
@@ -86,8 +82,12 @@
             }
         },
         handleDeleteClick: function () {
-            targetStore.destroy(this.props.id);
-            host.go('/doozy/targets');
+            host.prompt('Are you sure you want to delete this target?\n\nIf so, type DELETE and hit enter', function (response) {
+                if ((response || '').toLowerCase() === 'delete') {
+                    targetStore.destroy(this.props.id);
+                    host.go('/doozy/targets');
+                }
+            }.bind(this));
         },
         handleSaveClick: function () {
             var entity = this.refs.entity.getDOMNode().value;
@@ -117,120 +117,6 @@
         },
 
         /*************************************************************
-         * MISC
-         *************************************************************/
-        setOptionsAction: function (selectize) {
-            // clear previously set options
-            selectize.clearOptions();
-
-            // get actions sorted by name
-            var actions = actionStore.context({}).value;
-            actions = _.sortBy(actions, function (action) {
-                return action.name;
-            });
-
-            // add actions
-            actions.forEach( function (action) {
-                selectize.addOption({
-                    id: action.id,
-                    value: action.name,
-                    name: action.name
-                });
-            });
-
-            // set current value
-            if (this.state.entityId) {
-                var action = actionStore.get(this.state.entityId);
-                if (action) {
-                    selectize.setValue(action.name);
-                }
-            }
-        },
-        setOptionsTag: function (selectize) {
-            // clear previously set options
-            selectize.clearOptions();
-
-            // get distinct tags user has assigned to other actions
-            var tags = tagStore.context({}).value;
-            tags = _.sortBy(tags, function (tag) {
-                return tag.name;
-            });
-
-            // add tags that user has assigned to other actions
-            tags.forEach(function (tag) {
-                selectize.addOption({
-                    id: tag.id,
-                    name: tag.name,
-                    kind: tag.kind,
-                    value: doozy.getTagValue(tag),
-                });
-            });
-
-            // set current value
-            if (this.state.entityId) {
-                var tag = tagStore.get(this.state.entityId);
-                if (tag) {
-                    selectize.setValue(doozy.getTagValue(tag));
-                }
-            }
-        },
-        setupActionsControl: function () {
-            $(this.refs.entity.getDOMNode()).selectize({
-                delimiter: '|',
-                persist: true,
-                maxItems: 1,
-                openOnFocus: false,
-                valueField: 'value',
-                labelField: 'name',
-                searchField: ['name'],
-                render: {
-                    item: function (item, escape) {
-                        return '<div class="item">' + escape(item.value) + '</div>';
-                    },
-                    option: function (item, escape) {
-                        var label = item.name;
-                        return '<div>' +
-                            '<span class="label">' + escape(label) + '</span>' +
-                        '</div>';
-                    }
-                },
-            });
-
-            // populate existing action options
-            var selectize = $(this.refs.entity.getDOMNode())[0].selectize;
-            this.setOptionsAction(selectize);
-        },
-        setupTagsControl: function () {
-            // initialize control for tags functionality
-            $(this.refs.entity.getDOMNode()).selectize({
-                delimiter: ',',
-                persist: true,
-                maxItems: 1,
-                openOnFocus: false,
-                valueField: 'value',
-                labelField: 'name',
-                searchField: ['name', 'kind'],
-                render: {
-                    item: function (item, escape) {
-                        return '<div class="item">' + escape(item.value) + '</div>';
-                    },
-                    option: function (item, escape) {
-                        var label = item.name || item.kind;
-                        var caption = item.kind ? item.kind : null;
-                        return '<div>' +
-                            '<span class="label">' + escape(label) + '</span>' +
-                            (caption ? '<span class="caption">' + escape(caption) + '</span>' : '') +
-                        '</div>';
-                    }
-                }
-            });
-
-            // populate existing tag options
-            var selectize = $(this.refs.entity.getDOMNode())[0].selectize;
-            this.setOptionsTag(selectize);
-        },
-
-        /*************************************************************
          * RENDERING
          *************************************************************/
         render: function () {
@@ -238,25 +124,6 @@
             if (this.props.id && this.state.isNew) {
                 return <div>Loading...</div>;
             }
-
-            var buttons = [
-                {type: 'primary',
-                 text: 'Save Changes',
-                 handler: this.handleSaveClick,
-                 buttonStyle: buttonStyle},
-                {type: 'default',
-                 text: 'Cancel',
-                 handler: this.handleCancelClick,
-                 buttonStyle: buttonStyle},
-                {type: 'danger',
-                 text: 'Delete',
-                 handler: this.handleDeleteClick,
-                 buttonStyle: deleteButtonStyle}
-            ];
-
-            var buttonsDom = buttons.map(function (button, index) {
-                return (<button key={index} style={button.buttonStyle} type="button" className={'btn btn-' + button.type} onClick={button.handler}>{button.text}</button>);
-            });
 
             var selectorDom;
             if (this.state.entityType === 'Tag') {
@@ -319,7 +186,7 @@
                             <input id="target-number" ref="number" type="number" className="form-control" value={this.state.number} onChange={this.handleChange} />
                         </div>
                     </form>
-                    {buttonsDom}
+                    {this.renderButtons()}
                 </div>
             );
         }
@@ -332,17 +199,6 @@
             maxWidth: '40rem'
         }
     };
-
-    var buttonStyle = {
-        display: 'block',
-        width: '100%',
-        marginBottom: '5px',
-        fontSize: '1.1rem'
-    };
-
-    var deleteButtonStyle = Object.assign({}, buttonStyle, {
-        marginTop: '3rem'
-    });
 
     return ManageTarget;
 }));

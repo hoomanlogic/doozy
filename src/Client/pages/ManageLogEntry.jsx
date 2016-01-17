@@ -58,14 +58,8 @@
             /**
              * Setup Action and Tags selector
              */
-            this.setupActionsControl();
-            this.setupTagsControl();
-
-            // This must be done AFTER setupTagsControls because
-            // action selectize onChange event uses the tags selectize
-            var selectActions = $(this.refs.name.getDOMNode())[0].selectize;
-            this.setOptionsAction(selectActions);
-            selectActions.setValue(this.state.actionId || this.state.actionName || null);
+            this.setupActionInput();
+            this.setupTagsInput();
 
             /**
              * Set focus to control
@@ -81,8 +75,17 @@
         /*************************************************************
          * EVENT HANDLING
          *************************************************************/
-        handleCancel: function () {
+        handleCancelClick: function () {
             host.go('/doozy/actions');
+        },
+        handleDeleteClick: function () {
+            host.prompt('Are you sure you want to delete this log entry?\n\nIf so, type DELETE and hit enter', function (response) {
+                if ((response || '').toLowerCase() === 'delete') {
+                    logEntryStore.destroy(this.props.id, function () {
+                        host.go('/doozy/actions');    
+                    });
+                }
+            }.bind(this));
         },
         handleChange: function (event) {
             if (event.target === this.refs.performedat.getDOMNode()) {
@@ -140,7 +143,7 @@
                 });
             }
         },
-        handleSave: function () {
+        handleSaveClick: function () {
             var validationApology = 'Sorry, we don\'t have enough information yet.\n\n';
             if (!this.state.date) {
                 host.notify(validationApology + 'When did you do this?', 'error');
@@ -192,22 +195,6 @@
                 return <div>Loading...</div>;
             }
 
-            var buttons = [{type: 'primary',
-                            text: 'Save Changes',
-                            handler: this.handleSave},
-                           {type: 'default',
-                            text: 'Cancel',
-                            handler: this.handleCancel}
-                           ];
-
-            var buttonsDom = buttons.map(function (button, index) {
-                return (
-                  <button key={index} style={buttonStyle} type="button"
-                    className={'btn btn-' + button.type}
-                    onClick={button.handler}>{button.text}</button>
-                );
-            });
-
             var slot1, slot2, log;
 
             // Entry input
@@ -253,7 +240,7 @@
                             <span style={feedbackStyle}>{this.state.durationFeedback}</span>
                         </div>
                     </form>
-                    {buttonsDom}
+                    {this.renderButtons()}
                 </div>
             );
         },
@@ -265,13 +252,6 @@
             margin: 'auto',
             maxWidth: '40rem'
         }
-    };
-
-    var buttonStyle = {
-        display: 'block',
-        width: '100%',
-        marginBottom: '5px',
-        fontSize: '1.1rem'
     };
 
     var forceHeightStyle = {

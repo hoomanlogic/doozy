@@ -42,8 +42,12 @@
             }
         },
         handleDeleteClick: function () {
-            planStore.destroy(this.props.id);
-            host.go('/doozy/plans');
+            host.prompt('Are you sure you want to delete this plan?\n\nIf so, type DELETE and hit enter', function (response) {
+                if ((response || '').toLowerCase() === 'delete') {
+                    planStore.destroy(this.props.id);
+                    host.go('/doozy/plans');
+                }
+            }.bind(this));
         },
         handleSaveClick: function () {
             if (this.props.id) {
@@ -66,36 +70,6 @@
             if (this.props.id && this.state.isNew) {
                 return <div>Loading...</div>;
             }
-
-            var buttonStyle = {
-                display: 'block',
-                width: '100%',
-                marginBottom: '5px',
-                fontSize: '1.1rem'
-            };
-
-            var deleteButtonStyle = Object.assign({}, buttonStyle, {
-                marginTop: '3rem'
-            });
-
-            var buttons = [
-                {type: 'primary',
-                 text: 'Save Changes',
-                 handler: this.handleSaveClick,
-                 buttonStyle: buttonStyle},
-                {type: 'default',
-                 text: 'Cancel',
-                 handler: this.handleCancelClick,
-                 buttonStyle: buttonStyle},
-                {type: 'danger',
-                 text: 'Delete',
-                 handler: this.handleDeleteClick,
-                 buttonStyle: deleteButtonStyle}
-            ];
-
-            var buttonsDom = buttons.map(function (button, index) {
-                return (<button key={index} style={button.buttonStyle} type="button" className={'btn btn-' + button.type} onClick={button.handler}>{button.text}</button>);
-            });
 
             // html
             return (
@@ -124,7 +98,7 @@
                             <input id="f3" ref="content" type="text" className="form-control" value={this.state.content} onChange={this.handleChange} />
                         </div>
                     </form>
-                    {buttonsDom}
+                    {this.renderButtons()}
                 </div>
             );
         }

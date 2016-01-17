@@ -73,17 +73,12 @@
         },
         handleDeleteClick: function () {
             host.prompt('Are you sure you want to delete this focus?\n\nIf so, type DELETE and hit enter', function (response) {
-                if (response === 'DELETE') {
+                if ((response || '').toLowerCase() === 'delete') {
                     focusStore.destroy(this.props.id);
                     host.go('/doozy/focuses');
                 }
-            });
+            }.bind(this));
         },
-        // handleOnFileChange: function (filesSelected) {
-        //     this.setState({
-        //         filesSelected: filesSelected
-        //     });
-        // },
         handleSaveClick: function () {
             if (this.props.id) {
                 focusStore.update(this.state);
@@ -137,10 +132,8 @@
                             <label htmlFor="f3">What tag-word should be connected to this focus?</label>
                             <input id="f3" ref="tagname" type="text" className="form-control" value={this.state.tagName} onChange={this.handleChange} />
                         </div>
-                        <button style={buttonStyle} type="button" className="btn btn-primary" onClick={this.handleSaveClick}>Save Changes</button>
-                        <button style={buttonStyle} type="button" className="btn btn-default" onClick={this.handleCancelClick}>Cancel</button>
-
                     </form>
+                    {this.renderButtons()}
                 </div>
             );
         }
@@ -152,13 +145,6 @@
             margin: 'auto',
             maxWidth: '40rem'
         }
-    };
-
-    var buttonStyle = {
-        display: 'block',
-        width: '100%',
-        marginBottom: '5px',
-        fontSize: '1.1rem'
     };
 
     return ManageFocus;

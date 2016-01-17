@@ -1,8 +1,9 @@
 (function (factory) {
     module.exports = exports = factory(
+        require('react'),
         require('stores/store')
     );
-}(function (storeClass) {
+}(function (React, storeClass) {
     var ModelMixin = function (store, propName, pathArg) {
 
         var mixinObj;
@@ -73,8 +74,66 @@
             }
         };
 
+        /*************************************************************
+         * EVENT HANDLING
+         *************************************************************/
+        mixinObj.renderButtons = function () {
+            /**
+             * Buttons array to pass to Modal component
+             */
+            var buttons;
+
+            if (this.props.mode === 'Add') {
+                buttons = [{type: 'primary',
+                            text: 'Save Action',
+                            handler: this.handleSaveClick,
+                            buttonStyle: buttonStyle},
+                           {type: 'default',
+                            text: 'Cancel',
+                            handler: this.handleCancelClick,
+                            buttonStyle: buttonStyle},
+                           ];
+            }
+            else {
+                buttons = [{type: 'primary',
+                            text: 'Save Changes',
+                            handler: this.handleSaveClick,
+                            buttonStyle: buttonStyle},
+                           {type: 'default',
+                            text: 'Cancel',
+                            handler: this.handleCancelClick,
+                            buttonStyle: buttonStyle},
+                           {type: 'danger',
+                            text: 'Delete',
+                            handler: this.handleDeleteClick,
+                            buttonStyle: deleteButtonStyle}
+                           ];
+            }
+
+            var buttonsDom = buttons.map(function (button, index) {
+                return (<button key={index} style={button.buttonStyle} type="button" className={'btn btn-' + button.type} onClick={button.handler}>{button.text}</button>);
+            });
+
+            return buttonsDom;
+        };
+
         return mixinObj;
     };
+
+
+    /*************************************************************
+     * STYLES
+     *************************************************************/
+    var buttonStyle = {
+        display: 'block',
+        width: '100%',
+        marginBottom: '5px',
+        fontSize: '1.1rem'
+    };
+
+    var deleteButtonStyle = Object.assign({}, buttonStyle, {
+        marginTop: '3rem'
+    });
 
     return ModelMixin;
 }));

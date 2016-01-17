@@ -9,7 +9,7 @@
 }(function (React, _, babble, doozy, actionStore) {
     /* globals $ */
     var SelectActionMixin = {
-        setupActionsControl: function () {
+        setupActionInput: function () {
             if (!this.refs.name) {
                 return;
             }

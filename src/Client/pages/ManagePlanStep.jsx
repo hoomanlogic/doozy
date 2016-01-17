@@ -71,8 +71,12 @@
             }
         },
         handleDeleteClick: function () {
-            planStepStore.destroy(this.props.planStepId);
-            host.go('/doozy/plansteps/' + this.props.planId);
+            host.prompt('Are you sure you want to delete this plan step?\n\nIf so, type DELETE and hit enter', function (response) {
+                if ((response || '').toLowerCase() === 'delete') {
+                    planStepStore.destroy(this.props.planStepId);
+                    host.go('/doozy/plansteps/' + this.props.planId);
+                }
+            }.bind(this));
         },
         handleSaveClick: function () {
             if (this.props.isNew) {
@@ -115,35 +119,6 @@
          * RENDERING
          *************************************************************/
         render: function () {
-            var buttonStyle = {
-                display: 'block',
-                width: '100%',
-                marginBottom: '5px',
-                fontSize: '1.1rem'
-            };
-
-            var deleteButtonStyle = Object.assign({}, buttonStyle, {
-                marginTop: '3rem'
-            });
-
-            var buttons = [
-                {type: 'primary',
-                 text: 'Save Changes',
-                 handler: this.handleSaveClick,
-                 buttonStyle: buttonStyle},
-                {type: 'default',
-                 text: 'Cancel',
-                 handler: this.handleCancelClick,
-                 buttonStyle: buttonStyle},
-                {type: 'danger',
-                 text: 'Delete',
-                 handler: this.handleDeleteClick,
-                 buttonStyle: deleteButtonStyle}
-            ];
-
-            var buttonsDom = buttons.map(function (button, index) {
-                return <button key={index} style={button.buttonStyle} type="button" className={'btn btn-' + button.type} onClick={button.handler}>{button.text}</button>;
-            });
 
             // html
             return (
@@ -188,7 +163,7 @@
                             <input id="planstep-content" ref="content" type="textarea" className="form-control" value={this.state.content} onChange={this.handleChange} />
                         </div>
                     </form>
-                    {buttonsDom}
+                    {this.renderButtons()}
                 </div>
             );
         }
