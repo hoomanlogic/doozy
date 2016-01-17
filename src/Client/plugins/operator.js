@@ -646,9 +646,10 @@
                     }
                 });
 
-                // TODO: Delete gnapses
-                console.log('Need to remove ' + removeConnections.length + ' gnapse(s)');
-                // removeConnections.
+                // Remove tags
+                removeConnections.forEach(function (gnapse) {
+                   gnode.disconnect(gnapse);
+                });
 
                 // add tag connections that do not already exist
                 if (model.tags && model.tags.length) {
@@ -850,13 +851,27 @@
             update('logentry', req, res,
             // Update Connections
             function (gnode, db, model) {
-                // TODO: tag is no longer connected
-                // var removeTags = [];
-                // gnode.siblings('doozy.tag').forEach(function (tagGnapse) {
-                //     if (those(model.tags).first(tag) === null) {
-                //         removeTags.push(tag);
-                //     }
-                // });
+                // remove old connections
+                var removeConnections = [];
+                gnode.related('doozy.tag').forEach(function (tagGnapse) {
+                    var isInState = false;
+                    if (model.tags && model.tags.length) {
+                        for (var i = 0; i < model.tags.length; i++) {
+                            if (removePrefix(model.tags[i]) === tagGnapse.getTarget().tag) {
+                                isInState = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!isInState) {
+                        removeConnections.push(tagGnapse);
+                    }
+                });
+
+                // Remove tags
+                removeConnections.forEach(function (gnapse) {
+                   gnode.disconnect(gnapse); 
+                });
 
                 // Create tag connections
                 if (model.tags && model.tags.length) {
@@ -870,10 +885,20 @@
 
                 }
 
-                // TODO: action is no longer connected
-                // if (gnode.state.actionId && (model.state.actionId !== gnode.state.actionId)) {
-
-                // }
+                // action is no longer connected
+                removeConnections = [];
+                gnode.related('doozy.action').forEach(function (actionGnapse) {
+                    var isInState = false;
+                    if (model.actionId === actionGnapse.getTarget().tag) {
+                        isInState = true;
+                    }
+                    if (!isInState) {
+                        removeConnections.push(actionGnapse);
+                    }
+                });
+                removeConnections.forEach(function (gnapse) {
+                   gnode.disconnect(gnapse); 
+                });
 
                 // action is now connected
                 if (model.actionId && model.actionId !== gnode.state.actionId) {
