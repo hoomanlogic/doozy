@@ -189,8 +189,7 @@
                     context: me,
                     url: baseUrl + '/api/' + me.storeName.toLowerCase() + '/' + id,
                     dataType: 'json',
-                    type: 'DELETE',
-                    contentType: 'application/json'
+                    type: 'DELETE'
                 });
             }
         };
@@ -318,7 +317,7 @@
 
         this.destroy = function (id, done, fail) {
             _api.destroy(id)
-            .done( function () {
+            .done(function () {
                 // Update the local stash of gnodes
                 _cacheApi.destroy(me.storeName, id);
 

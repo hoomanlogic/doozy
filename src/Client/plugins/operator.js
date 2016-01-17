@@ -570,7 +570,7 @@
                 if (gnode) {
                     db.remove(gnode);
                     db.commitChanges();
-                    res.end();
+                    res.end(JSON.stringify({ error: null}));
                 }
                 else {
                     res.end(JSON.stringify({ error: 'Gnode not found'}));
