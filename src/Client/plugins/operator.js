@@ -1,4 +1,4 @@
-﻿(function (factory) {
+(function (factory) {
     module.exports = exports = factory(
         require('../app/doozy'),
         require('../app/data'),
@@ -564,10 +564,13 @@
             });
         };
 
-        var remove = function (kind, req, res) {
+        var remove = function (kind, req, res, beforeRemove) {
             operator.getDb(function (db) {
                 var gnode = db.find(req.params.id, 'doozy.' + kind).first();
                 if (gnode) {
+                    if (beforeRemove) {
+                        beforeRemove(gnode, db);
+                    }
                     db.remove(gnode);
                     db.commitChanges();
                     res.end(JSON.stringify({ error: null}));
@@ -664,7 +667,41 @@
         });
 
         operator.express.delete('/doozy/api/action/:id', operator.authenticate, jsonResponse, function (req, res) {
-            remove('action', req, res);
+            remove('action', req, res, function (gnode, db) {
+                gnode.related('doozy.logentry').forEach(function (logGnapse) {
+                    var logGnode = logGnapse.getTarget();
+                    if (logGnode) {
+                        // Merge name / content / details
+                        var details = gnode.state.name || '';
+                        if (gnode.state.content && gnode.state.content.length > 0) {
+                            details += '\n\n' + gnode.state.content;
+                        }
+                        if (logGnode.state.details) {
+                            details += '\n\n' + logGnode.state.details;
+                        }
+                        logGnode.setState({
+                            details: details
+                        });
+                        
+                        // Merge tags
+                        gnode.related('doozy.tag').forEach(function (tagGnapse) {
+                            var tagGnode = tagGnapse.getTarget();
+                            if (tagGnode) {
+                                var existsInLog = false;
+                                logGnode.related('doozy.tag').forEach(function (ltagGnapse) {
+                                    var ltagGnode = ltagGnapse.getTarget();
+                                    if (ltagGnode && ltagGnode.state.tag === tagGnode.state.tag) {
+                                        existsInLog = true;
+                                    }
+                                });
+                                if (!existsInLog) {
+                                    logGnode.connect(tagGnode, db.RELATION.ASSOCIATE);
+                                }
+                            }
+                        });
+                    }
+                });
+            });
         });
 
         /*****************************************************
