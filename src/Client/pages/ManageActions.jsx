@@ -69,7 +69,7 @@
             /**
              * Update globally accessible default tags
              */
-            host.setContext({
+            host.context.set({
                 tags: tagFilter
             });
         },
