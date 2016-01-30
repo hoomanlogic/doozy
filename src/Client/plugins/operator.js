@@ -1,4 +1,4 @@
-(function (factory) {
+﻿(function (factory) {
     module.exports = exports = factory(
         require('../app/doozy'),
         require('../app/data'),
@@ -876,6 +876,11 @@
                     if (actionNode) {
                         what = actionNode.tag;
                     }
+                }
+                else if (model.tags && model.tags.length) {
+                    what = model.tags.map(function (tag) {
+                        return removePrefix(tag);
+                    }).join('_');
                 }
                 else {
                     what = model.details;
