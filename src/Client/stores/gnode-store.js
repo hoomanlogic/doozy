@@ -19,14 +19,22 @@
 
     var _cacheApi = {
 
-        destroy: function (storeName, id) {
+        destroy: function (storeName, id, persist = true) {
+            var result = false;
             for (var i = 0; i < cache[storeName].gnodes.length; i++) {
                 if (cache[storeName].gnodes[i].id === id) {
                     cache[storeName].gnodes.splice(i, 1);
-                    return true;
+                    result = true;
+                    break;
                 }
             }
-            return false;
+            
+            // persist now
+            if (persist && result) {
+                _cacheApi.save();
+            }
+
+            return result;
         },
 
         /**
