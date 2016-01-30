@@ -56,6 +56,13 @@
 
                 }.bind(this)
             });
+            
+            // populate existing action option
+            var selectize = $(this.refs.name.getDOMNode())[0].selectize;
+            this.setOptionsAction(selectize);
+
+            // Set value from state
+            selectize.setValue(this.state.actionId || this.state.actionName);
         },
         setOptionsAction: function (selectActions) {
             if (!actionStore.context({}) || !actionStore.context({}).value) {
