@@ -71,6 +71,13 @@
                 $(this.refs.name.getDOMNode())[0].selectize.focus();
             }
         },
+        // handleStoresMixinUpdate: function () {
+        //     /**
+        //      * Setup Action and Tags selector
+        //      */
+        //     this.setupActionInput();
+        //     this.setupTagsInput();
+        // },
 
         /*************************************************************
          * EVENT HANDLING
