@@ -398,7 +398,12 @@
 
             // this.setState(state);
         },
-
+        handleStoresMixinUpdate: function (storeName) {
+            if (storeName === 'Tag') {
+                this.setupTagsInput();    
+            }
+        },
+        
         /*************************************************************
          * RENDERING
          *************************************************************/

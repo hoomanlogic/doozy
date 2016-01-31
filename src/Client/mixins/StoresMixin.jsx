@@ -25,17 +25,17 @@
 
                 this.stores.forEach(function (s) {
                     if (s instanceof gnodeStore.GnodeStore) {
-                        s.subscribe(this.handleStoreListUpdate, {});
+                        s.subscribe(this.handleStoreListUpdate.bind(null, s), {});
                     }
                     else if (s instanceof hlstore.Store || s instanceof store.Store) {
-                        s.subscribe(this.handleStoreListUpdate);
+                        s.subscribe(this.handleStoreListUpdate.bind(null, s));
                     }
                     else { // old style Rx Stores
                         this.observers.push(s.updates
                             .filter(function (result) {
                                 return result.length > 0;
                             })
-                            .subscribe(this.handleStoreListUpdate));
+                            .subscribe(this.handleStoreListUpdate.bind(null, s)));
                     }
                 }.bind(this));
             },
@@ -43,13 +43,13 @@
             componentWillUnmount: function () {
                 this.stores.forEach(function (s) {
                     if (s instanceof gnodeStore.GnodeStore) {
-                        s.unsubscribe(this.handleStoreListUpdate, {});
+                        s.unsubscribe(this.handleStoreListUpdate.bind(null, s), {});
                     }
                     else if (s instanceof hlstore.Store) {
-                        s.dispose(this.handleStoreListUpdate);
+                        s.dispose(this.handleStoreListUpdate.bind(null, s));
                     }
                     else if (s instanceof store.Store) {
-                        s.unsubscribe(this.handleStoreListUpdate);
+                        s.unsubscribe(this.handleStoreListUpdate.bind(null, s));
                     }
                     else {
                         this.observers.forEach(function (observer) {
@@ -60,9 +60,9 @@
                 }.bind(this));
             },
 
-            handleStoreListUpdate: function () {
+            handleStoreListUpdate: function (store) {
                 if (this.handleStoresMixinUpdate) {
-                    this.handleStoresMixinUpdate();
+                    this.handleStoresMixinUpdate(store ? store.storeName : undefined);
                 }
                 else {
                     this.setState({

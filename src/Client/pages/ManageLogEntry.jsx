@@ -50,11 +50,6 @@
             host.setTitle('Log Entry');
         },
         componentDidMount: function () {
-            // If we're still loading, then abort
-            if (!this.refs.name) {
-                return;
-            }
-
             /**
              * Setup Action and Tags selector
              */
@@ -71,13 +66,6 @@
                 $(this.refs.name.getDOMNode())[0].selectize.focus();
             }
         },
-        // handleStoresMixinUpdate: function () {
-        //     /**
-        //      * Setup Action and Tags selector
-        //      */
-        //     this.setupActionInput();
-        //     this.setupTagsInput();
-        // },
 
         /*************************************************************
          * EVENT HANDLING
@@ -196,16 +184,22 @@
 
             this.setState(state);
         },
-
+        handleStoresMixinUpdate: function (storeName) {
+            /**
+             * Setup Action and Tags selector
+             */
+            if (storeName === 'Action') {
+                this.setupActionInput();
+            }
+            else if (storeName === 'Tag') {
+                this.setupTagsInput();    
+            }
+        },
+        
         /*************************************************************
          * RENDERING
          *************************************************************/
         render: function () {
-            // Waiting on store
-            if (this.props.id && this.state.isNew) {
-                return <div>Loading...</div>;
-            }
-
             var slot1, slot2, log;
 
             // Entry input
@@ -218,12 +212,24 @@
 
             // Layout order of Entry input and Action input
             if (this.props.action || this.props.actionName || (this.props.logEntry && this.props.logEntry.actionId)) {
-                slot1 = this.renderActionInput();
+                slot1 = (
+                    <div className="form-group">
+                        <label htmlFor="f1">Action</label>
+                        <input id="f1" ref="name" type="text" />
+                        <span>{(this.state.actionTags || []).join(',')}</span>
+                    </div>
+                );
                 slot2 = log;
             }
             else {
                 slot1 = log;
-                slot2 = this.renderActionInput();
+                slot2 = (
+                    <div className="form-group">
+                        <label htmlFor="f1">Action</label>
+                        <input id="f1" ref="name" type="text" />
+                        <span>{(this.state.actionTags || []).join(',')}</span>
+                    </div>
+                );
             }
 
             return (
@@ -232,7 +238,10 @@
                     <form role="form">
                         {slot1}
                         {slot2}
-                        {this.renderTagsInput()}
+                        <div className="form-group">
+                            <label htmlFor="action-tags">Tags</label>
+                            <input id="action-tags" ref="tags" type="text" />
+                        </div>
                         <div className="form-group">
                             <label htmlFor="logentry-kind">Kind</label>
                             <select id="logentry-kind" ref="kind" className="form-control" value={this.state.kind} onChange={this.handleChange}>
