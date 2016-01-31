@@ -93,7 +93,8 @@
          * encryption key unique to the user.
          */
         save: function () {
-            hlio.saveLocal('gnodeCache', cache, 'k001k4t');
+            // DISABLE PERSISTENT CACHE UNTIL IT CAN BE STABILIZED
+            // hlio.saveLocal('gnodeCache', cache, 'k001k4t');
         },
 
         /**
@@ -102,10 +103,11 @@
          * then the cache will be set to an empty object.
          */
         init: function () {
-            cache = hlio.loadLocal('gnodeCache', 'k001k4t');
-            if (cache === undefined || typeof cache === 'string' || cache === null) {
-                cache = {};
-            }
+            // DISABLE PERSISTENT CACHE UNTIL IT CAN BE STABALIZED
+            //cache = hlio.loadLocal('gnodeCache', 'k001k4t');
+            //if (cache === undefined || typeof cache === 'string' || cache === null) {
+            cache = {};
+            //}
         },
 
         /**
