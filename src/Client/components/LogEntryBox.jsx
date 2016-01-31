@@ -157,7 +157,7 @@
             options.push((
                 <li><a className="clickable hoverable" style={styles.userOptionsItem} onClick={this.handleEditLogEntryClick}><i className="fa fa-pencil"></i> Edit Entry</a></li>
             ));
-            if (data.actionId !== null) {
+            if (data.actionId) {
                 options.push((
                     <li><a className="clickable hoverable" style={styles.userOptionsItem} onClick={this.handleEditActionClick}><i className="fa fa-pencil"></i> Edit Action</a></li>
                 ));
