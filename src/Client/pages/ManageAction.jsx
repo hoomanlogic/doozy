@@ -495,8 +495,8 @@
                             <input id="action-name" ref="name" type="text" className="form-control" placeholder="Name of action" value={this.state.name} onChange={this.handleChange} />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="action-tags">Tags</label>
-                            <input id="action-tags" ref="tags" type="text" />
+                            <label htmlFor="tags">Tags</label>
+                            <input id="tags" ref="tags" type="text" />
                         </div>
                         <div className="form-group">
                             <label htmlFor="action-duration">How long do you think it will take?</label>

@@ -10,14 +10,14 @@
         require('mixins/ModelMixin'),
         require('mixins/StoresMixin'),
         require('mixins/SelectActionMixin'),
-        require('mixins/SelectTagsMixin')
+        require('mixins/SelectTagMixin')
     );
-}(function (React, _, doozy, host, targetStore, actionStore, tagStore, ModelMixin, StoresMixin, SelectActionMixin, SelectTagsMixin) {
+}(function (React, _, doozy, host, targetStore, actionStore, tagStore, ModelMixin, StoresMixin, SelectActionMixin, SelectTagMixin) {
     var ManageTarget = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
-        mixins: [ModelMixin(targetStore), StoresMixin([actionStore, tagStore]), SelectActionMixin, SelectTagsMixin],
+        mixins: [ModelMixin(targetStore), StoresMixin([actionStore, tagStore]), SelectActionMixin, SelectTagMixin],
         propTypes: {
             id: React.PropTypes.string,
         },
@@ -48,7 +48,7 @@
                 return;
             }
             if (this.state.entityType === 'Tag') {
-                this.setupTagsInput();
+                this.setupTagInput();
             }
             else if (this.state.entityType === 'Action') {
                 this.setupActionInput();
@@ -66,6 +66,7 @@
                 this.setState({name: event.target.value});
             }
             else if (event.target === this.refs.entityType.getDOMNode()) {
+                
                 this.setState({entityType: event.target.value, entityId: null});
             }
             else if (event.target === this.refs.measure.getDOMNode()) {
@@ -90,13 +91,15 @@
             }.bind(this));
         },
         handleSaveClick: function () {
-            var entity = this.refs.entity.getDOMNode().value;
+            var entity;
             if (this.state.entityType === 'Tag') {
+                entity = this.refs.tag.getDOMNode().value;
                 entity = _.find(tagStore.updates.value, function (tag) {
                     return doozy.getTagValue(tag) === entity;
                 });
             }
             else if (this.state.entityType === 'Action') {
+                entity = this.refs.action.getDOMNode().value;
                 entity = actionStore.getActionByName(entity);
             }
             if (!entity) {
@@ -119,30 +122,32 @@
             }
             this.setState(model);
         },
-
+        handleStoresMixinUpdate: function (storeName) {
+            if (this.state.entityType === 'Tag' && storeName === 'Tag') {
+                this.setupTagInput();
+            }
+            else if (this.state.entityType === 'Action' && storeName === 'Action') {
+                this.setupActionInput();
+            }  
+        },
         /*************************************************************
          * RENDERING
          *************************************************************/
         render: function () {
-            // Waiting on store
-            if (this.props.id && this.state.isNew) {
-                return <div>Loading...</div>;
-            }
-
             var selectorDom;
             if (this.state.entityType === 'Tag') {
                 selectorDom = (
                     <div className="form-group">
-                        <label htmlFor="target-entity">Tag</label>
-                        <input id="target-entity" ref="entity" type="text" />
+                        <label htmlFor="tag">Tag</label>
+                        <input id="tag" ref="tag" type="text" />
                     </div>
                 );
             }
             else if (this.state.entityType === 'Action') {
                 selectorDom = (
                     <div className="form-group">
-                        <label htmlFor="target-entity">Action</label>
-                        <input id="target-entity" ref="entity" type="text" />
+                        <label htmlFor="action">Action</label>
+                        <input id="action" ref="action" type="text" />
                     </div>
                 );
             }

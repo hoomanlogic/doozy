@@ -214,8 +214,8 @@
             if (this.props.action || this.props.actionName || (this.props.logEntry && this.props.logEntry.actionId)) {
                 slot1 = (
                     <div className="form-group">
-                        <label htmlFor="f1">Action</label>
-                        <input id="f1" ref="name" type="text" />
+                        <label htmlFor="action">Action</label>
+                        <input id="action" ref="action" type="text" />
                         <span>{(this.state.actionTags || []).join(',')}</span>
                     </div>
                 );
@@ -225,8 +225,8 @@
                 slot1 = log;
                 slot2 = (
                     <div className="form-group">
-                        <label htmlFor="f1">Action</label>
-                        <input id="f1" ref="name" type="text" />
+                        <label htmlFor="action">Action</label>
+                        <input id="action" ref="action" type="text" />
                         <span>{(this.state.actionTags || []).join(',')}</span>
                     </div>
                 );
@@ -239,8 +239,8 @@
                         {slot1}
                         {slot2}
                         <div className="form-group">
-                            <label htmlFor="action-tags">Tags</label>
-                            <input id="action-tags" ref="tags" type="text" />
+                            <label htmlFor="tags">Tags</label>
+                            <input id="tags" ref="tags" type="text" />
                         </div>
                         <div className="form-group">
                             <label htmlFor="logentry-kind">Kind</label>

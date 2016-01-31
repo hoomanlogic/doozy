@@ -10,11 +10,11 @@
     /* globals $ */
     var SelectActionMixin = {
         setupActionInput: function () {
-            if (!this.refs.name) {
+            if (!this.refs.action) {
                 return;
             }
 
-            $(this.refs.name.getDOMNode()).selectize({
+            $(this.refs.action.getDOMNode()).selectize({
                 delimiter: '|',
                 persist: true,
                 create: function (input) {
@@ -58,11 +58,11 @@
             });
             
             // populate existing action option
-            var selectize = $(this.refs.name.getDOMNode())[0].selectize;
+            var selectize = $(this.refs.action.getDOMNode())[0].selectize;
             this.setOptionsAction(selectize);
 
             // Set value from state
-            selectize.setValue(this.state.actionId || this.state.actionName);
+            selectize.setValue(this.state.actionId || this.state.actionName || this.state.entityId);
         },
         setOptionsAction: function (selectActions) {
             if (!actionStore.context({}) || !actionStore.context({}).value) {
@@ -90,7 +90,7 @@
             return (
                 <div className="form-group">
                     <label htmlFor="f1">Action</label>
-                    <input id="f1" ref="name" type="text" />
+                    <input id="f1" ref="action" type="text" />
                     <span>{(this.state.actionTags || []).join(',')}</span>
                 </div>
             );

@@ -7,7 +7,7 @@
     );
 }(function (React, _, doozy, tagStore) {
     /* globals $ */
-    var SelectTagsMixin = {
+    var SelectTagMixin = {
         setOptionsTag: function (selectize) {
             if (!tagStore.context({}) || !tagStore.context({}).value) {
                 return;
@@ -19,18 +19,21 @@
             // add tags that user has assigned to other actions
             var tags = tagStore.context({}).value;
             tags.forEach( function (tag) {
-                selectize.addOption(doozy.parseTag(doozy.getTagValue(tag)));
+                var parsed = doozy.parseTag(doozy.getTagValue(tag));
+                parsed.value = parsed.name;
+                selectize.addOption(parsed);
             });
         },
-        setupTagsInput: function () {
-            if (!this.refs.tags) {
+        setupTagInput: function () {
+            if (!this.refs.tag) {
                 return;
             }
 
             // initialize control for tags functionality
-            $(this.refs.tags.getDOMNode()).selectize({
+            $(this.refs.tag.getDOMNode()).selectize({
                 delimiter: ',',
                 persist: true,
+                maxItems: 1,
                 valueField: 'value',
                 labelField: 'name',
                 searchField: ['name', 'kind'],
@@ -61,21 +64,21 @@
             });
 
             // populate existing tag options
-            var selectize = $(this.refs.tags.getDOMNode())[0].selectize;
+            var selectize = $(this.refs.tag.getDOMNode())[0].selectize;
             this.setOptionsTag(selectize);
 
             // Set value from state
-            selectize.setValue(this.state.tags);
+            selectize.setValue(this.state.tag || this.state.entityId);
         },
 
-        renderTagsInput: function () {
+        renderTagInput: function () {
             return (
                 <div className="form-group">
-                    <label htmlFor="tags">Tags</label>
-                    <input id="tags" ref="tags" type="text" />
+                    <label htmlFor="tag">Tags</label>
+                    <input id="tag" ref="tag" type="text" />
                 </div>
             );
         }
     };
-    return SelectTagsMixin;
+    return SelectTagMixin;
 }));
