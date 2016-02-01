@@ -33,7 +33,8 @@
                 durationFeedback: '',
             });
 
-            if (this.props.actionId) { // Log Action
+            if (this.props.actionId) {
+                // Log Action
                 state.actionId = this.props.actionId;
             }
             else if (this.props.actionName) { // Log New Action
@@ -55,16 +56,26 @@
              */
             this.setupActionInput();
             this.setupTagsInput();
+            
+            // Attach listener to 
+            var textArea = this.refs.details.getDOMNode();
+            textArea.addEventListener('input', autoGrow.bind(null, textArea));
+            autoGrow(textArea);
 
             /**
              * Set focus to control
              */
-            if (this.props.action && this.props.action.name && this.props.action.name.length > 0) {
-                $(this.refs.actualduration.getDOMNode()).focus();
-            }
-            else {
-                $(this.refs.name.getDOMNode())[0].selectize.focus();
-            }
+            $(this.refs.performedat.getDOMNode()).focus();
+        },
+        componentDidUpdate: function () {
+            // Attach listener to 
+            var textArea = this.refs.details.getDOMNode();
+            autoGrow(textArea);  
+        },
+        componentWillUnmount: function () {
+            // Attach listener to 
+            var textArea = this.refs.details.getDOMNode();
+            textArea.removeEventListener('input', autoGrow.bind(null, textArea));
         },
 
         /*************************************************************
@@ -148,7 +159,7 @@
             // Get model state from form state
             var logEntry = doozy.extrude(doozy.logEntry(), Object.assign({
                 // include action name if action id is not set
-                actionName: !this.state.actionId ? this.refs.name.getDOMNode().value : null
+                actionName: !this.state.actionId ? this.refs.action.getDOMNode().value : null
             }, this.state));
 
             // Save the logentry
@@ -200,47 +211,32 @@
          * RENDERING
          *************************************************************/
         render: function () {
-            var slot1, slot2, log;
-
-            // Entry input
-            log = (
-                <div className="form-group">
-                    <label htmlFor="logentry-details">Entry</label>
-                    <textarea id="logentry-details" ref="details" type="text" className="form-control" onChange={this.handleChange} value={this.state.details} />
-                </div>
-            );
-
-            // Layout order of Entry input and Action input
-            if (this.props.action || this.props.actionName || (this.props.logEntry && this.props.logEntry.actionId)) {
-                slot1 = (
-                    <div className="form-group">
-                        <label htmlFor="action">Action</label>
-                        <input id="action" ref="action" type="text" />
-                        <span>{(this.state.actionTags || []).join(',')}</span>
-                    </div>
-                );
-                slot2 = log;
-            }
-            else {
-                slot1 = log;
-                slot2 = (
-                    <div className="form-group">
-                        <label htmlFor="action">Action</label>
-                        <input id="action" ref="action" type="text" />
-                        <span>{(this.state.actionTags || []).join(',')}</span>
-                    </div>
-                );
-            }
-
             return (
                 <div style={styles.main}>
                     <h2>{this.state.isNew ? 'New Activity Log' : 'Update Activity Log'}</h2>
                     <form role="form">
-                        {slot1}
-                        {slot2}
+                        <div style={forceHeightStyle} className="form-group">
+                            <label htmlFor="logentry-date">When</label>
+                            <input id="logentry-date" ref="performedat" type="text" className="form-control" onChange={this.handleChange} value={this.state.dateInput} />
+                            <span style={feedbackStyle}>{this.state.dateFeedback}</span>
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="logentry-details">Entry</label>
+                            <textarea id="logentry-details" ref="details" type="text" className="form-control" onChange={this.handleChange} value={this.state.details} />
+                        </div>
                         <div className="form-group">
                             <label htmlFor="tags">Tags</label>
                             <input id="tags" ref="tags" type="text" />
+                        </div>
+                        <div style={forceHeightStyle} className="form-group">
+                            <label htmlFor="logentry-duration">Duration</label>
+                            <input id="logentry-duration" ref="actualduration" type="text" className="form-control" onChange={this.handleChange} value={this.state.durationInput} />
+                            <span style={feedbackStyle}>{this.state.durationFeedback}</span>
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="action">Action</label>
+                            <input id="action" ref="action" type="text" />
+                            <span>{(this.state.actionTags || []).join(',')}</span>
                         </div>
                         <div className="form-group">
                             <label htmlFor="logentry-kind">Kind</label>
@@ -248,16 +244,6 @@
                                 <option value="performed">Performed</option>
                                 <option value="skipped">Skipped</option>
                             </select>
-                        </div>
-                        <div style={forceHeightStyle} className="form-group">
-                            <label htmlFor="logentry-date">When</label>
-                            <input id="logentry-date" ref="performedat" type="text" className="form-control" onChange={this.handleChange} value={this.state.dateInput} />
-                            <span style={feedbackStyle}>{this.state.dateFeedback}</span>
-                        </div>
-                        <div style={forceHeightStyle} className="form-group">
-                            <label htmlFor="logentry-duration">Duration</label>
-                            <input id="logentry-duration" ref="actualduration" type="text" className="form-control" onChange={this.handleChange} value={this.state.durationInput} />
-                            <span style={feedbackStyle}>{this.state.durationFeedback}</span>
                         </div>
                     </form>
                     {this.renderButtons()}
@@ -283,6 +269,12 @@
         top: '-28px',
         left: '285px'
     };
+    
+    function autoGrow (textArea) {
+        textArea.style.overflowY = 'hidden';
+        textArea.style.height = 'auto';
+        textArea.style.height = textArea.scrollHeight + 'px';
+    }
 
     return ManageLogEntry;
 }));
