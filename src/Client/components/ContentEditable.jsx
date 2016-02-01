@@ -19,10 +19,11 @@
         emitChange: function () {
             var html = this.getDOMNode().innerHTML;
             if (this.props.onChange && html !== this.lastHtml) {
+                var brPattern = /<br\/>|<br>/g;
                 this.props.onChange({
                     target: {
                         id: this.props.id || null,
-                        value: html
+                        value: (html || '').replace(brPattern, '\n')
                     }
                 });
             }
@@ -33,13 +34,15 @@
         * RENDERING
         ***********************************/
         render: function () {
+            var newlinePattern = /\n/g;
+            var value = (this.props.html || '').replace(newlinePattern, '<br/>');
             return (
                 <div
                     style={Object.assign({display: 'inline'}, this.props.style)}
                     onInput={this.emitChange}
                     onBlur={this.emitChange}
                     contentEditable
-                    dangerouslySetInnerHTML={{__html: this.props.html}}></div>
+                    dangerouslySetInnerHTML={{__html: value}}></div>
             );
         }
     });
