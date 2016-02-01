@@ -57,9 +57,8 @@
             this.setupActionInput();
             this.setupTagsInput();
             
-            // Attach listener to 
+            // Set size of text area
             var textArea = this.refs.details.getDOMNode();
-            textArea.addEventListener('input', autoGrow.bind(null, textArea));
             autoGrow(textArea);
 
             /**
@@ -68,14 +67,9 @@
             $(this.refs.performedat.getDOMNode()).focus();
         },
         componentDidUpdate: function () {
-            // Attach listener to 
+            // Set size of text area
             var textArea = this.refs.details.getDOMNode();
-            autoGrow(textArea);  
-        },
-        componentWillUnmount: function () {
-            // Attach listener to 
-            var textArea = this.refs.details.getDOMNode();
-            textArea.removeEventListener('input', autoGrow.bind(null, textArea));
+            autoGrow(textArea);
         },
 
         /*************************************************************
