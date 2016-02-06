@@ -1,4 +1,4 @@
-﻿(function (factory) {
+(function (factory) {
     module.exports = exports = factory(
         require('../app/doozy'),
         require('../app/data'),
@@ -140,6 +140,30 @@
         // ACTION EDIT
         operator.express.get('/doozy/action/:id', operator.authenticate, function (req, res) {
             editUI('action', req, res);
+        });
+
+        // LOG ENTRIES VIEW
+        operator.express.get('/doozy/logs', operator.authenticate, function (req, res) {
+            operator.renderer.renderHtml(
+                defaultHtmlTemplate
+                    .replace('SCRIPT_URL', operator.stats.publicPath + 'doozy/logentry-list.js')
+                    .replace('SELECTIZE_URL', operator.stats.publicPath + 'doozy-global-libs.js')
+                    .replace('SELECTIZE_CSS_1', operator.stats.publicPath + 'selectize.css')
+                    .replace('SELECTIZE_CSS_2', operator.stats.publicPath + 'selectize.default.css')
+                    .replace('INTERFACE_PROPS', JSON.stringify({})),
+                req.path,
+                null,
+                function (err, html) {
+                    if (err) {
+                        res.statusCode = 500;
+                        res.contentType = 'text; charset=utf8';
+                        res.end(err.message);
+                        return;
+                    }
+                    res.contentType = 'text/html; charset=utf8';
+                    res.end(html);
+                }
+            );
         });
 
         // LOG ENTRY ADD

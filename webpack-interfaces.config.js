@@ -5,6 +5,7 @@ module.exports = {
         // MAIN INTERFACES
         'action-list': path.resolve(__dirname, 'src/Client/interfaces/mount/mount.actions.js'),
         'focus-list': path.resolve(__dirname, 'src/Client/interfaces/mount/mount.focuses.js'),
+        'logentry-list': path.resolve(__dirname, 'src/Client/interfaces/mount/mount.logentries.js'),
         'plan-list': path.resolve(__dirname, 'src/Client/interfaces/mount/mount.plans.js'),
         'planstep-list': path.resolve(__dirname, 'src/Client/interfaces/mount/mount.plan-steps.js'),
         'tag-list': path.resolve(__dirname, 'src/Client/interfaces/mount/mount.tags.js'),
