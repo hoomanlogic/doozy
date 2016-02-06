@@ -32,8 +32,8 @@
             return Object.assign(doozy.action(), {
                 durationInput: null,
                 durationDisplay: null,
-                dateInput: null,
-                dateDisplay: null,
+                nextDateInput: null,
+                nextDateDisplay: null,
                 logEntriesLastUpdated: new Date().toISOString(),
                 ordinal: null,
                 repeat: 'o',
@@ -104,34 +104,63 @@
             else if (event.target === this.refs.repeat.getDOMNode()) {
                 state.repeat = event.target.value;
             }
-            else if (event.target === this.refs.nextdate.getDOMNode()) {
+            else if (event.target === this.refs.begindate.getDOMNode()) {
 
-                var dateValue = Date.create(event.target.value);
-                var dateDisplay = '';
+                var beginDateValue = Date.create(event.target.value);
+                var beginDateDisplay = '';
                 try {
-                    dateDisplay = dateValue.toISOString();
+                    beginDateDisplay = beginDateValue.toISOString();
                 }
                 catch (e) {
                     if (e instanceof RangeError) {
-                        dateValue = null;
+                        beginDateValue = null;
                     }
                     else {
                         throw e;
                     }
                 }
 
-                if (dateValue !== null) {
-                    if (dateValue.getHours() === 0 && dateValue.getMinutes() === 0) {
-                        dateDisplay = dateValue.toLocaleDateString();
+                if (beginDateValue !== null) {
+                    if (beginDateValue.getHours() === 0 && beginDateValue.getMinutes() === 0) {
+                        beginDateDisplay = beginDateValue.toLocaleDateString();
                     }
                     else {
-                        dateDisplay = dateValue.toLocaleDateString() + ' ' + dateValue.toLocaleTimeString();
+                        beginDateDisplay = beginDateValue.toLocaleDateString() + ' ' + beginDateValue.toLocaleTimeString();
                     }
                 }
 
-                state.nextDate = dateValue;
-                state.dateInput = event.target.value;
-                state.dateDisplay = dateDisplay;
+                state.beginDate = beginDateValue;
+                state.beginDateInput = event.target.value;
+                state.beginDateDisplay = beginDateDisplay;
+            }
+            else if (event.target === this.refs.nextdate.getDOMNode()) {
+
+                var nextDateValue = Date.create(event.target.value);
+                var nextDateDisplay = '';
+                try {
+                    nextDateDisplay = nextDateValue.toISOString();
+                }
+                catch (e) {
+                    if (e instanceof RangeError) {
+                        nextDateValue = null;
+                    }
+                    else {
+                        throw e;
+                    }
+                }
+
+                if (nextDateValue !== null) {
+                    if (nextDateValue.getHours() === 0 && nextDateValue.getMinutes() === 0) {
+                        nextDateDisplay = nextDateValue.toLocaleDateString();
+                    }
+                    else {
+                        nextDateDisplay = nextDateValue.toLocaleDateString() + ' ' + nextDateValue.toLocaleTimeString();
+                    }
+                }
+
+                state.nextDate = nextDateValue;
+                state.nextDateInput = event.target.value;
+                state.nextDateDisplay = nextDateDisplay;
             }
             else if (this.refs.repeatInterval && event.target === this.refs.repeatInterval.getDOMNode()) {
                 state.repeatInterval = parseInt(event.target.value, 10);
@@ -272,6 +301,7 @@
             action.ordinal = this.state.ordinal;
 
             // build next date
+            action.beginDate = this.state.beginDate;
             action.nextDate = this.state.nextDate;
 
             // call method to save the action
@@ -289,7 +319,7 @@
                 this.setState(this.getInitialState());    
                 return;
             }
-            var date, durationInput;
+            var beginDateInput, nextDateInput, durationInput;
 
             // create a copy of the action for editing
             var editableCopy = {};
@@ -314,12 +344,19 @@
             }
 
             if (model.nextDate === null || String(model.nextDate) === 'NaN') {
-                date = null;
+                nextDateInput = null;
             }
             else {
-                date = (new Date(model.nextDate)).toLocaleDateString();
+                nextDateInput = (new Date(model.nextDate)).toLocaleDateString();
             }
 
+            if (model.beginDate === null || String(model.beginDate) === 'NaN') {
+                beginDateInput = null;
+            }
+            else {
+                beginDateInput = (new Date(Date.parse(model.beginDate))).toLocaleDateString();
+            }
+            
             // build state
             var state = {
                 id: id,
@@ -327,8 +364,12 @@
                 content: content,
                 durationInput: durationInput,
                 durationDisplay: null,
-                dateInput: date,
-                dateDisplay: null,
+                beginDate: editableCopy.beginDate,
+                beginDateInput: beginDateInput,
+                beginDateDisplay: null,
+                nextDate: editableCopy.nextDate,
+                nextDateInput: nextDateInput,
+                nextDateDisplay: null,
                 ordinal: editableCopy.ordinal,
                 mode: 'Edit',
                 repeat: 'o',
@@ -343,8 +384,8 @@
                 tags: editableCopy.tags
             };
 
-            if (model.recurrenceRules && model.recurrenceRules.length) {
-                var recurrenceObj = doozy.parseRecurrenceRule(model.recurrenceRules[0]);
+            if (editableCopy.recurrenceRules && editableCopy.recurrenceRules.length) {
+                var recurrenceObj = doozy.parseRecurrenceRule(editableCopy.recurrenceRules[0]);
                 state.repeat = recurrenceObj.freq.slice(0,1).toLowerCase();
                 state.repeatInterval = recurrenceObj.interval;
                 if (recurrenceObj.byday) {
@@ -393,7 +434,7 @@
             // }
 
             // state.durationInput = durationInput;
-            // state.dateInput = Date.create(model.date).toLocaleDateString();
+            // state.nextDateInput = Date.create(model.date).toLocaleDateString();
             // state.dateFeedback = '';
 
             // this.setState(state);
@@ -427,7 +468,8 @@
         },
         renderRepeatOptions: function () {
             var repeat = this.state.repeat;
-
+            var beginDateInput = this.state.beginDateInput;
+            
             if (repeat === 'w') {
 
                 /**
@@ -452,17 +494,27 @@
                     </div>,
                     <div className="form-group">
                         {daysOfWeek}
+                    </div>,
+                    <div className="form-group">
+                        <label htmlFor="action-begindate">Beginning on</label>
+                        <input id="action-begindate" ref="begindate" type="datetime" className="form-control" value={beginDateInput} onChange={this.handleChange} />
+                        <span>{this.state.beginDateDisplay}</span>
                     </div>
                 ]);
             }
             else if (repeat === 'd' || repeat === 'm' || repeat === 'y') {
-                return (
+                return ([
                     <div className="form-group">
                         <label htmlFor="action-repeat-interval">Every</label>
                         <input id="action-repeat-interval" ref="repeatInterval" type="number" className="form-control" value={this.state.repeatInterval} onChange={this.handleChange} />
                         <label>{doozy.getFrequencyName(this.state.repeat) + '(s)'}</label>
+                    </div>,
+                    <div className="form-group">
+                        <label htmlFor="action-begindate">Beginning on</label>
+                        <input id="action-begindate" ref="begindate" type="datetime" className="form-control" value={beginDateInput} onChange={this.handleChange} />
+                        <span>{this.state.beginDateDisplay}</span>
                     </div>
-                );
+                ]);
             }
             else {
                 return null;
@@ -476,7 +528,7 @@
              * State and Prop Dependencies
              */
             var durationInput = this.state.durationInput;
-            var dateInput = this.state.dateInput;
+            var nextDateInput = this.state.nextDateInput;
 
             /**
              * Sub Renders
@@ -520,8 +572,8 @@
                         </div>
                         <div className="form-group">
                             <label htmlFor="action-nextdate">Hold off on this until</label>
-                            <input id="action-nextdate" ref="nextdate" type="datetime" className="form-control" value={dateInput} onChange={this.handleChange} />
-                            <span>{this.state.dateDisplay}</span>
+                            <input id="action-nextdate" ref="nextdate" type="datetime" className="form-control" value={nextDateInput} onChange={this.handleChange} />
+                            <span>{this.state.nextDateDisplay}</span>
                         </div>
                         <div className="form-group">
                             <label htmlFor="action-ordinal">What ordinal?</label>

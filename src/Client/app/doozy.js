@@ -103,11 +103,139 @@
                 rule[keyval[0].toLowerCase()] = parseInt(keyval[1], 10);
             }
             else {
+                // freq and the rest of the props
                 rule[keyval[0].toLowerCase()] = keyval[1];
             }
         }
 
         return rule;
+    };
+    
+    var processRecurrence = function (today, enlist, rule) {
+        if (['RDATE', 'EXDATE'].indexOf(rule.kind) > -1) {
+            return rule.dates.indexOf(today.getTime()) > -1;
+        }
+
+        if (rule.interval === 1 && rule.byday === null && rule.count === 365000) {
+            // simple comparison, daily is always true
+            switch (rule.freq) {
+                case ('DAILY'):
+                    // DO NOTHING - RETURN TRUE BELOW
+                    break;
+                case ('WEEKLY'):
+                    if (today.getDay() !== enlist.getDay()) {
+                        return false;
+                    }
+                    break;
+                case ('MONTHLY'):
+                    if (today.getDate() !== enlist.getDate()) {
+                        return false;
+                    }
+                    break;
+                case ('YEARLY'):
+                    if (today.getMonth() !== enlist.getMonth() || today.getDate() !== enlist.getDate()) {
+                        return false;
+                    }
+                    break;
+                default:
+                    throw new Error('Unrecognized frequency');
+            }
+        }
+        else if ((rule.interval > 1 || rule.count < 365000) && rule.byday === null) {
+            // we have an interval or a count, so we need to step through each date the rule falls on
+            var counter = 1;
+            var matched = false;
+            switch (rule.freq) {
+                case ('DAILY'):
+                    // daily
+                    while (enlist.toISOString().split('T')[0] <= today.toISOString().split('T')[0] && counter <= rule.count)
+                    {
+                        // check for match
+                        if (enlist.toISOString().split('T')[0] === today.toISOString().split('T')[0])
+                        {
+                            matched = true;
+                            break;
+                        }
+
+                        // continue with interval
+                        enlist.setDate(enlist.getDate() + rule.interval);
+                        counter++;
+                    }
+                    break;
+                case ('WEEKLY'):
+                    // weekly
+                    while (enlist.toISOString().split('T')[0] <= today.toISOString().split('T')[0] && counter <= rule.count)
+                    {
+                        // check for match
+                        if (enlist.toISOString().split('T')[0] === today.toISOString().split('T')[0])
+                        {
+                            matched = true;
+                            break;
+                        }
+
+                        // continue with interval
+                        enlist.setDate(enlist.getDate() + (7 * rule.interval));
+                        counter++;
+                    }
+                    break;
+                case ('MONTHLY'):
+                    // monthly
+                    while (enlist.toISOString().split('T')[0] <= today.toISOString().split('T')[0] && counter <= rule.count)
+                    {
+                        // check for match
+                        if (enlist.toISOString().split('T')[0] === today.toISOString().split('T')[0])
+                        {
+                            matched = true;
+                            break;
+                        }
+
+                        // continue with interval
+                        enlist.setMonth(enlist.getMonth() + rule.interval);
+                        counter++;
+                    }
+                    break;
+                case ('YEARLY'):
+                    // yearly
+                    while (enlist.toISOString().split('T')[0] <= today.toISOString().split('T')[0] && counter <= rule.count)
+                    {
+                        // check for match
+                        if (enlist.toISOString().split('T')[0] === today.toISOString().split('T')[0])
+                        {
+                            matched = true;
+                            break;
+                        }
+
+                        // continue with interval
+                        enlist.setYear(enlist.getYear() + rule.interval);
+                        counter++;
+                    }
+                    break;
+            }
+
+            // we didn"t match the date
+            if (matched === false) {
+                return false;
+            }
+        }
+        else {
+            debugger;
+            // complex stepping 
+            // var thisday = today.ToString("ddd").Substring(0, 2).ToUpper();
+            // if (rule.ByDay.Count() == rule.ByDay.Where(a => a.Digit == 0).Count())
+            // {
+            //     // simple byday
+            //     var days = rule.ByDay.Select(a => a.Day);
+            //     if (days.Contains(thisday) == false) {
+            //         return false;
+            //     }
+            // } else {
+            //     // oh shit, we have some thinking to do
+            //     // if yearly, then it would be the nth day of the week of the year
+            //     return false;
+            // }            
+        }
+        
+        return true;
     };
 
     var getTagValue = function (tag) {
@@ -150,6 +278,40 @@
         getFrequencyName: getFrequencyName,
 
         parseRecurrenceRule: parseRecurrenceRule,
+        
+        getNextOccurrence: function (recurrenceRules, startFrom, latestOccurrence) {
+            var nextDate = null;
+            if (recurrenceRules.length) {
+                var date = latestOccurrence || startFrom;
+                date = new Date(date.getTime());
+                date.setDate(date.getDate() + 1);
+                
+                while (nextDate === null) {
+                    var occursToday = false;
+                    for (var i = 0; i < recurrenceRules.length; i++) {
+                        var recur = parseRecurrenceRule(recurrenceRules[i]);
+                        var match = processRecurrence(date, startFrom, recur);
+                        if (match && (recur.kind === 'RRULE' || recur.kind === 'RDATE')) {
+                            // might occur unless an exception overrides it
+                            occursToday = true;
+                        }
+                        else if (match && (recur.kind === 'EXRULE' || recur.kind === 'EXDATE')) {
+                            // only takes on exception match to rule it out
+                            occursToday = false;
+                            break;
+                        }
+                    }
+                    
+                    if (occursToday) {
+                        nextDate = new Date(date.getTime());
+                    }
+                    
+                    // iterate another day
+                    date.setDate(date.getDate() + 1);
+                }
+            }
+            return nextDate;
+        },
 
         getRecurrenceSummary: function (recurrenceRules) {
             if (!recurrenceRules || recurrenceRules.length === 0) {
@@ -241,6 +403,7 @@
                     created: new Date().toISOString(),
                     duration: 0,
                     content: null,
+                    beginDate: null,
                     nextDate: null,
                     isPublic: false,
                     lastPerformed: null,

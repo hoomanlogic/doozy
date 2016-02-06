@@ -858,11 +858,31 @@
                         }
                     });
                 }
-                // Create action connection
+                
                 if (model.actionId) {
+                    // Create action connection
                     var actionNode = db.find(model.actionId, 'doozy.action').first();
                     if (actionNode) {
                         gnode.connect(actionNode, db.RELATION.ASSOCIATE);
+                    }
+                    
+                    if (actionNode.state.recurrenceRules && actionNode.state.recurrenceRules.length) {
+                        // Recalculate Next Date for Action
+                        var latestPerformance = those(actionNode.related('doozy.logentry').map(function (gnapse) { return gnapse.getTarget().state; })).max('date');
+                        var latestDate;
+                        if (latestPerformance && latestPerformance > model.date) {
+                            latestDate = latestPerformance.date;
+                        }
+                        else {
+                            latestDate = model.date;
+                        }
+                        var recurrenceBegin = actionNode.state.beginDate || actionNode.state.created || actionNode.born.toISOString();  
+                        var nextOccur = doozy.getNextOccurrence(actionNode.state.recurrenceRules, new Date(Date.parse(recurrenceBegin)), new Date(Date.parse(latestDate)));
+                        if (nextOccur && nextOccur !== actionNode.state.nextDate) {
+                            actionNode.setState({
+                                nextDate: nextOccur
+                            });
+                        }
                     }
                 }
             },
