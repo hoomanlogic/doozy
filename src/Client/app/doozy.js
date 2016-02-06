@@ -560,6 +560,22 @@
                 className: className
             };
         },
+        classNameFromTagKind: function (kind) {
+            switch (kind) {
+                case ('Focus'): // part of (relevant to)
+                    return 'fa-eye';
+                case ('Place'): // where
+                    return 'fa-anchor';
+                case ('Goal'): // to what end
+                    return 'fa-trophy';
+                case ('Need'): // why
+                    return 'fa-recycle';
+                case ('Box'): // when
+                    return 'fa-cube';
+                default:
+                    return 'fa-tag';
+            }
+        },
 
         /**
          * Get raw tag value from a tag object

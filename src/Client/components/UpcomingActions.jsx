@@ -13,7 +13,7 @@
             /**
              * Exclude boxed actions
              */
-            var boxTags = item.tags.filter(function (tag) { return tag.slice(0,1) === '#'; });
+            var boxTags = item.tags.filter(function (tag) { return tag.kind === 'Box'; });
             if (boxTags.length > 0) {
                 return false;
             }

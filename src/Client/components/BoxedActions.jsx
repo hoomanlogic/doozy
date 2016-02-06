@@ -2,9 +2,10 @@
     module.exports = exports = factory(
         require('react'),
         require('./ActionRow'),
-        require('lodash')
+        require('lodash'),
+        require('hl-common-js/src/those')
     );
-}(function (React, ActionRow, _) {
+}(function (React, ActionRow, _, those) {
     var BoxedActions = React.createClass({
         /*************************************************************
          * DEFINITIONS
@@ -41,13 +42,16 @@
             // get distinct list of box tags
             var boxTags = [];
             actions.map(function (action) {
-                boxTags = _.union(boxTags, _.filter(action.tags, function (tag) { return tag.slice(0,1) === '#'; }));
+                boxTags = _.union(boxTags, _.filter(action.tags, function (tag) { return tag.kind === 'Box'; }));
             });
             return boxTags;
         },
         getBoxes: function (boxTags, actions) {
             return boxTags.map( function (boxTag) {
-                var boxActions = _.filter(actions, function (action) { return action.tags.indexOf(boxTag) > -1 && action.lastPerformed === null; });
+                var boxActions = _.filter(actions, function (action) { 
+                    var box = those(action.tags).first({ kind: 'Box' });
+                    return box !== null && action.lastPerformed === null; 
+                });
                 boxActions = _.sortBy(boxActions, function (action) { return action.name.toLowerCase(); });
                 return {
                     box: boxTag,
@@ -118,12 +122,12 @@
                 }
 
                 return (
-                    <div key={box.box.substring(1)} style={box.expanded ? { display: 'block', marginTop: '5px' } : {display: 'inline', marginTop: '5px'}}>
+                    <div key={box.box.name} style={box.expanded ? { display: 'block', marginTop: '5px' } : {display: 'inline', marginTop: '5px'}}>
                         <div className="clickable"
                             style={headerStyle}
                             onClick={this.handleBoxTitleClick.bind(null, box)}>
                             <i className={box.expanded ? 'fa fa-dropbox' : 'fa fa-cube'}></i>
-                            <span>{box.box.substring(1) + nextInQueue}</span>
+                            <span>{box.box.name + nextInQueue}</span>
                         </div>
                         {list}
                     </div>

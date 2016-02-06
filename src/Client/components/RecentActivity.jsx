@@ -34,14 +34,14 @@
             });
         },
         componentWillReceiveProps: function (nextProps) {
-            if (nextProps.actions &&
-                nextProps.actions.length &&
-                this.props.actions.length &&
-                nextProps.actions[0].tags.length &&
-                this.props.actions[0].tags.length &&
-                nextProps.actions[0].tags[0] !== this.props.actions[0].tags[0]) {
+            // Reset the max return to 5
+            // when the tag filter changes
+            if (nextProps.tags &&
+                nextProps.tags.length &&
+                this.props.tags.length &&
+                !those(nextProps.tags).hasAll(this.props.tags)) {
                 this.setState({
-                    maxReturn: 5
+                    maxReturn: 10
                 });
             }
         },
@@ -57,32 +57,40 @@
          * RENDERING
          *************************************************************/
         render: function () {
-
+            
             if (!logEntryStore.context({}) || !logEntryStore.context({}).value) {
                 return null;
             }
 
-            var actionIds = those(this.props.actions).pluck('id');
+            var tags = this.props.tags || [];
 
             /**
-             * Get all distinct tags of all this focus'
-             * actions except for the box tags
+             * Get all log entries, optionally filtering by tags
              */
-            var excludePrefixes = ['#'];
-            var distinctTags = [];
-            this.props.actions.map(function (action) {
-                distinctTags = _.union(distinctTags, _.reject(action.tags, function (tag) {
-                    return excludePrefixes.indexOf(tag.slice(0,1)) > -1;
-                }));
-            });
+            var logEntries = logEntryStore.context({}).value.slice();
+            if (tags.length) {
+                // Filter log entries
+                logEntries = logEntries.filter( function (log) {
+                    
+                    var outerMatch = those(log.tags).first(function (logTag) {
+                        
+                        var innerMatch = those(tags).first(function (matchTag) {
+                            return logTag.name === matchTag.name;
+                        });
+                        
+                        // Found a matching tag?
+                        return innerMatch !== null;
+                    });
+                    
+                    return outerMatch !== null;
+                });
+            }
 
-            var logEntries = logEntryStore.context({}).value.filter( function (item) {
-                return item.entry !== 'created' && (actionIds.indexOf(item.actionId) > -1 || _.intersection(item.tags, distinctTags).length > 0);
-            });
-
+            // Sort in reverse chronological order
             logEntries = _.sortBy(logEntries, function (item) { return item.date.split('T')[0] + '-' + (['performed','skipped'].indexOf(item.entry) ? '1' : '0'); });
             logEntries.reverse();
-
+            
+            // Limit returned values
             logEntries = logEntries.slice(0, this.state.maxReturn);
 
             // html

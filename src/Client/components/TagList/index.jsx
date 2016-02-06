@@ -9,13 +9,6 @@
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
-        getDefaultProps: function () {
-            return {
-                canAdd: false,
-                canEdit: false,
-                canRemove: false
-            };
-        },
 
         /*************************************************************
          * RENDERING
@@ -26,12 +19,10 @@
             var domTags = tags.map(
                 function (tag) {
                     return (
-                        <TagListItem key={tag}
+                        <TagListItem key={tag.id}
                             tag={tag}
-                            canEdit={this.props.canEdit}
-                            canRemove={this.props.canRemove}
                             isSelected={those(this.props.selectedTags).has(tag)}
-                            handleClick={this.props.selectionChanged.bind(null,tag)}
+                            handleClick={this.props.selectionChanged ? this.props.selectionChanged.bind(null,tag) : undefined}
                             onTagUpdated={this.props.onTagUpdated} />
                     );
                 }.bind(this)
@@ -41,10 +32,8 @@
                 domTags.push(
                     <TagListItem key="newtag"
                          tag=""
-                         canEdit={true}
-                         canRemove={false}
                          isSelected={false}
-                         handleClick={this.props.selectionChanged.bind(null,'')}
+                         handleClick={this.props.selectionChanged ? this.props.selectionChanged.bind(null,'') : undefined}
                          onTagUpdated={this.props.onTagUpdated}/>
                 );
             }

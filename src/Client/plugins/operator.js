@@ -1,4 +1,4 @@
-(function (factory) {
+﻿(function (factory) {
     module.exports = exports = factory(
         require('../app/doozy'),
         require('../app/data'),
@@ -141,7 +141,7 @@
         operator.express.get('/doozy/action/:id', operator.authenticate, function (req, res) {
             editUI('action', req, res);
         });
-
+        
         // LOG ENTRIES VIEW
         operator.express.get('/doozy/logs', operator.authenticate, function (req, res) {
             operator.renderer.renderHtml(
@@ -461,7 +461,7 @@
                 // calc tags data
                 var tags = [];
                 gnode.siblings('doozy.tag').forEach(function (gnapse) {
-                    tags.push(doozy.TAG_KIND[gnapse.target.state.kind.toUpperCase()] + gnapse.target.state.name);
+                    tags.push(gnapse.target.state);
                 });
                 strap.tags = tags;
 
@@ -483,14 +483,19 @@
                 // calc tags data
                 var tags = [];
                 gnode.siblings('doozy.tag').forEach(function (gnapse) {
-                    tags.push(doozy.TAG_KIND[gnapse.target.state.kind.toUpperCase()] + gnapse.target.state.name);
+                    tags.push(gnapse.target.state);
                 });
                 strap.tags = tags;
 
                 var actionGnapse = gnode.siblings('doozy.action').first();
                 if (actionGnapse) {
-                    strap.actionId = actionGnapse.target.tag;
-                    strap.actionName = actionGnapse.target.state.name;
+                    var actionGnode = actionGnapse.getTarget();
+                      
+                    strap.actionId = actionGnode.tag;
+                    strap.actionName = actionGnode.state.name;
+                    actionGnode.siblings('doozy.tag').forEach(function (gnapse) {
+                        tags.push(gnapse.target.state);
+                    });
                 }
                 return strap;
             },

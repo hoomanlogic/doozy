@@ -4,6 +4,7 @@
         require('lodash'),
         require('hl-common-js/src/those'),
         require('stores/action-store'),
+        require('stores/tag-store'),
         require('stores/host'),
         require('components/TagList'),
         require('components/ActivePlans'),
@@ -13,13 +14,13 @@
         require('components/BoxedActions'),
         require('mixins/StoresMixin')
     );
-}(function (React, _, those, actionStore, host, TagList, ActivePlans, NextActions,
+}(function (React, _, those, actionStore, tagStore, host, TagList, ActivePlans, NextActions,
             UpcomingActions, RecentActivity, BoxedActions, StoresMixin) {
     var ManageActions = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
-        mixins: [StoresMixin([actionStore])],
+        mixins: [StoresMixin([actionStore, tagStore])],
         getInitialState: function () {
             return {
                 focusActions: [],
@@ -89,17 +90,19 @@
              * Get all distinct tags of all this focus'
              * actions except for the special tags
              */
-            var specialPrefixes = ['!','#'];
             focusActions.map(function (action) {
-                distinctTags = _.union(distinctTags, _.reject(action.tags, function (tag) {
-                    return specialPrefixes.indexOf(tag.slice(0,1)) > -1;
-                }));
+                action.tags.forEach(function (tag) {
+                    if (['Box', 'Focus'].indexOf(tag.kind) === -1 &&
+                        those(distinctTags).first({ name: tag.name }) === null) {
+                        distinctTags.push(tag);
+                    }
+                });
             });
 
             /**
              * Return sorted tags
              */
-            return distinctTags.sort();
+            return those(distinctTags).order('name');
         },
         filterActionsByTag: function (actions, tags, filterJoin) {
             // no filter, return all
@@ -191,7 +194,7 @@
                     <ActivePlans focusTag={this.props.focusTag} />
                     <UpcomingActions actions={tagsFilteredFocusActions} />
                     <BoxedActions actions={tagsFilteredFocusActions} />
-                    <RecentActivity actions={tagsFilteredFocusActions} />
+                    <RecentActivity tags={this.state.tagFilter} />
                 </div>
             );
         }

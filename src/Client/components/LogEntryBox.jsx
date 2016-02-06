@@ -9,9 +9,10 @@
         require('app/doozy'),
         require('babble'),
         require('hl-common-js/src/EventHandler'),
-        require('jquery')
+        require('jquery'),
+        require('components/TagList')
     );
-}(function (React, LayeredComponentMixin, RelativeTime, ContentEditable, host, logEntryStore, doozy, babble, EventHandler, $) {
+}(function (React, LayeredComponentMixin, RelativeTime, ContentEditable, host, logEntryStore, doozy, babble, EventHandler, $, TagList) {
     /* globals window */
     var LogEntryBox = React.createClass({
         /*************************************************************
@@ -220,6 +221,8 @@
                                     <ContentEditable ref="logduration" html={duration} onChange={this.handlers.durationChange} />
                                 </small>
                             </div>
+                            <TagList tags={data.tags}
+                                selectedTags={data.tags} />
                             <i ref="dropDown" style={{ color: '#b2b2b2' }} className="fa fa-chevron-down" onClick={this.handleDropDownClick}></i>
                         </header>
                         <div>
