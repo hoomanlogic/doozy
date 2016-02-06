@@ -20,10 +20,11 @@
             var html = this.getDOMNode().innerHTML;
             if (this.props.onChange && html !== this.lastHtml) {
                 var brPattern = /<br\/>|<br>/g;
+                var spPattern = /&nbsp;/g; // Non-breaking space
                 this.props.onChange({
                     target: {
                         id: this.props.id || null,
-                        value: (html || '').replace(brPattern, '\n')
+                        value: (html || '').replace(brPattern, '\n').replace(spPattern, ' ')
                     }
                 });
             }
