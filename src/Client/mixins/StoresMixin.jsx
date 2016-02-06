@@ -60,9 +60,9 @@
                 }.bind(this));
             },
 
-            handleStoreListUpdate: function (store) {
+            handleStoreListUpdate: function (s) {
                 if (this.handleStoresMixinUpdate) {
-                    this.handleStoresMixinUpdate(store ? store.storeName : undefined);
+                    this.handleStoresMixinUpdate(s ? s.storeName : undefined);
                 }
                 else {
                     this.setState({

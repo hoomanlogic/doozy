@@ -77,11 +77,13 @@
             this.setState({ tags: this.getTags(this.props.focusTag) });
         },
         
+        /* eslint-disable no-unused-vars */
         getTags: function (focusTag) {
             var tags = tagStore.context({}).value.slice();
             // TODO: Filter by focus tag (is it a descendant of or associated with focus?)
             return tags;
         },
+        /* eslint-enable no-unused-vars */
 
         /*************************************************************
          * RENDERING

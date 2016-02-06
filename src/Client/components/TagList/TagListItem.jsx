@@ -1,10 +1,9 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
-        require('app/doozy'),
-        require('components/ContentEditable')
+        require('app/doozy')
     );
-}(function (React, doozy, ContentEditable) {
+}(function (React, doozy) {
     var TagListItem = React.createClass({
         /*************************************************************
          * DEFINITIONS

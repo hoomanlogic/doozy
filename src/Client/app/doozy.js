@@ -148,11 +148,9 @@
             switch (rule.freq) {
                 case ('DAILY'):
                     // daily
-                    while (enlist.toISOString().split('T')[0] <= today.toISOString().split('T')[0] && counter <= rule.count)
-                    {
+                    while (enlist.toISOString().split('T')[0] <= today.toISOString().split('T')[0] && counter <= rule.count) {
                         // check for match
-                        if (enlist.toISOString().split('T')[0] === today.toISOString().split('T')[0])
-                        {
+                        if (enlist.toISOString().split('T')[0] === today.toISOString().split('T')[0]) {
                             matched = true;
                             break;
                         }
@@ -164,11 +162,9 @@
                     break;
                 case ('WEEKLY'):
                     // weekly
-                    while (enlist.toISOString().split('T')[0] <= today.toISOString().split('T')[0] && counter <= rule.count)
-                    {
+                    while (enlist.toISOString().split('T')[0] <= today.toISOString().split('T')[0] && counter <= rule.count) {
                         // check for match
-                        if (enlist.toISOString().split('T')[0] === today.toISOString().split('T')[0])
-                        {
+                        if (enlist.toISOString().split('T')[0] === today.toISOString().split('T')[0]) {
                             matched = true;
                             break;
                         }
@@ -180,11 +176,9 @@
                     break;
                 case ('MONTHLY'):
                     // monthly
-                    while (enlist.toISOString().split('T')[0] <= today.toISOString().split('T')[0] && counter <= rule.count)
-                    {
+                    while (enlist.toISOString().split('T')[0] <= today.toISOString().split('T')[0] && counter <= rule.count) {
                         // check for match
-                        if (enlist.toISOString().split('T')[0] === today.toISOString().split('T')[0])
-                        {
+                        if (enlist.toISOString().split('T')[0] === today.toISOString().split('T')[0]) {
                             matched = true;
                             break;
                         }
@@ -196,11 +190,9 @@
                     break;
                 case ('YEARLY'):
                     // yearly
-                    while (enlist.toISOString().split('T')[0] <= today.toISOString().split('T')[0] && counter <= rule.count)
-                    {
+                    while (enlist.toISOString().split('T')[0] <= today.toISOString().split('T')[0] && counter <= rule.count) {
                         // check for match
-                        if (enlist.toISOString().split('T')[0] === today.toISOString().split('T')[0])
-                        {
+                        if (enlist.toISOString().split('T')[0] === today.toISOString().split('T')[0]) {
                             matched = true;
                             break;
                         }

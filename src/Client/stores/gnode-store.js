@@ -5,10 +5,9 @@
  */
 (function (factory) {
     module.exports = exports = factory(
-        require('./context-store'),
-        require('hl-common-js/src/io')
+        require('./context-store')
     );
-}(function (contextStore, hlio) {
+}(function (contextStore) {
     /* global $ */
     /**
      * Cache & Local Storage
@@ -104,10 +103,10 @@
          */
         init: function () {
             // DISABLE PERSISTENT CACHE UNTIL IT CAN BE STABALIZED
-            //cache = hlio.loadLocal('gnodeCache', 'k001k4t');
-            //if (cache === undefined || typeof cache === 'string' || cache === null) {
+            // cache = hlio.loadLocal('gnodeCache', 'k001k4t');
+            // if (cache === undefined || typeof cache === 'string' || cache === null) {
             cache = {};
-            //}
+            // }
         },
 
         /**
