@@ -92,7 +92,7 @@
              */
             focusActions.map(function (action) {
                 action.tags.forEach(function (tag) {
-                    if (['Box', 'Focus'].indexOf(tag.kind) === -1 &&
+                    if (['Box'].indexOf(tag.kind) === -1 &&
                         those(distinctTags).first({ name: tag.name }) === null) {
                         distinctTags.push(tag);
                     }
@@ -122,11 +122,11 @@
             // get actions that match at least one of the filter tags
             switch (filterJoin) {
                 case 'any':
-                    return actions.filter(function (item) { return _.intersection(tags, item.tags).length > 0; });
+                    return actions.filter(function (item) { return _.intersectionObjects(tags, item.tags).length > 0; });
                 case 'all':
-                    return actions.filter(function (item) { return _.intersection(tags, item.tags).length === tags.length; });
+                    return actions.filter(function (item) { return _.intersectionObjects(tags, item.tags).length === tags.length; });
                 case 'not':
-                    return actions.filter(function (item) { return _.intersection(tags, item.tags).length === 0; });
+                    return actions.filter(function (item) { return _.intersectionObjects(tags, item.tags).length === 0; });
                 default:
                     throw new Error('filterJoin must be \'any\', \'all\' or \'not\'.');
             }
@@ -150,7 +150,7 @@
         updateActions: function (focusTag) {
             var focusActions = this.filterActionsByFocus(focusTag);
             var tags = this.getFocusTags(focusActions, focusTag);
-            var tagFilter = _.intersection(this.state.tagFilter, tags);
+            var tagFilter = _.intersectionObjects(this.state.tagFilter, tags);
             this.setState({
                 focusActions: focusActions,
                 tags: tags,
@@ -199,5 +199,17 @@
             );
         }
     });
+    
+    _.intersectionObjects = function(array) {
+        var slice = Array.prototype.slice; // added this line as a utility
+        var rest = slice.call(arguments, 1);
+        return _.filter(_.uniq(array), function(item) {
+            return _.every(rest, function(other) {
+                //return _.indexOf(other, item) >= 0;
+                return _.any(other, function(element) { return _.isEqual(element, item); });
+            });
+        });
+    };
+    
     return ManageActions;
 }));
