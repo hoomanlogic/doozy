@@ -568,6 +568,26 @@
                     return 'fa-tag';
             }
         },
+        distinctTags: function (actions) {
+            var distinctTags = [];
+
+            /**
+             * Get all distinct tags of all this focus'
+             * actions except for the special tags
+             */
+            actions.map(function (action) {
+                action.tags.forEach(function (tag) {
+                    if (those(distinctTags).first({ name: tag.name }) === null) {
+                        distinctTags.push(tag);
+                    }
+                });
+            });
+
+            /**
+             * Return sorted tags
+             */
+            return those(distinctTags).order('name');
+        },
 
         /**
          * Get raw tag value from a tag object
