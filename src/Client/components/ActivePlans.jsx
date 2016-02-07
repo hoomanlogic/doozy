@@ -2,16 +2,16 @@
     module.exports = exports = factory(
         require('react'),
         require('hl-common-js/src/those'),
-        require('stores/focus-store'),
+        require('stores/tag-store'),
         require('stores/plan-store'),
         require('mixins/StoresMixin')
     );
-}(function (React, those, focusStore, planStore, StoresMixin) {
+}(function (React, those, tagStore, planStore, StoresMixin) {
     var ActivePlans = React.createClass({
         /*************************************************************
          * DEFINITIONS
          *************************************************************/
-        mixins: [StoresMixin([focusStore, planStore])],
+        mixins: [StoresMixin([tagStore, planStore])],
 
         /*************************************************************
          * EVENT HANDLING
@@ -33,13 +33,9 @@
             }
 
             // If we have a focus, assigned, then filter
-            var focusTag = this.props.focusTag ? this.props.focusTag.slice(1) : undefined;
+            var focusTag = this.props.focusTag;
             if (focusTag) {
-                var focuses = focusStore.context({}) ? (focusStore.context({}).value ? focusStore.context({}).value : []) : [];
-                focus = those(focuses).first({tagName: focusTag});
-                if (focus) {
-                    plans = those(plans).like({ focusId: focus.id });
-                }
+                plans = those(plans).like({ focusId: focusTag.id });
             }
 
             return plans;

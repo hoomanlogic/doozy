@@ -18,18 +18,19 @@
         /*************************************************************
          * RENDERING HELPERS
          *************************************************************/
-        calcFocusTitle: function (focus) {
-            if (focus.kind === 'Role') {
-                if (doozy.hasPossessiveNoun(focus.name)) {
-                    return 'You\'re ' + focus.name;
-                }
-                else {
-                    return 'You\'re ' + (doozy.startsWithAVowel(focus.name) ? 'an' : 'a') + ' ' + focus.name;
-                }
-            }
-            else if (focus.kind === 'Path') {
-                return 'You\'re on a path of ' + focus.name;
-            }
+        calcFocusTitle: function (tag) {
+            // if (tag.focusKind === 'Role') {
+            //     if (doozy.hasPossessiveNoun(tag.name)) {
+            //         return 'You\'re ' + tag.name;
+            //     }
+            //     else {
+            //         return 'You\'re ' + (doozy.startsWithAVowel(tag.name) ? 'an' : 'a') + ' ' + focus.name;
+            //     }
+            // }
+            // else if (tag.focusKind === 'Path') {
+            //     return 'You\'re on a path of ' + tag.name;
+            // }
+            return tag.name;
         },
 
         /*************************************************************
@@ -63,7 +64,7 @@
                 <li key={data.id}>
                     <a onClick={this.handleFocusClick.bind(null, data)} style={menuItemStyle}>
                         <div>
-                            <img style={imageStyle} src={data.iconUri} />
+                            <img style={imageStyle} src={'/my/doozy/tag/' + data.name + '/icon.png'} />
                             <div style={{display: 'inline-block', verticalAlign: 'top'}}>
                                 <div>{this.calcFocusTitle(data)}</div>
                                 <div style={{fontSize: '14px'}}>{'last acted '}<RelativeTime accuracy="d" isoTime={latestDate} /></div>

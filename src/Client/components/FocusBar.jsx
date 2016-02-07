@@ -1,15 +1,16 @@
 (function (factory) {
     module.exports = exports = factory(
         require('react'),
+        require('hl-common-js/src/those'),
         require('app/doozy'),
-        require('stores/focus-store'),
+        require('stores/tag-store'),
         require('components/FocusListItem'),
         require('components/DropdownMenu'),
         require('components/Microphone'),
         require('components/NotificationDropdown'),
         require('components/Timer')
     );
-}(function (React, doozy, focusStore,
+}(function (React, those, doozy, tagStore,
     FocusListItem, DropdownMenu, Microphone, NotificationDropdown, Timer) {
 
     var FocusBar = React.createClass({
@@ -31,10 +32,10 @@
         },
 
         componentWillMount: function () {
-            focusStore.subscribe(this.handleStoreUpdate, {});
+            tagStore.subscribe(this.handleStoreUpdate, {});
         },
         componentWillUnmount: function () {
-            focusStore.unsubscribe(this.handleStoreUpdate, {});
+            tagStore.unsubscribe(this.handleStoreUpdate, {});
         },
 
         /*************************************************************
@@ -57,13 +58,13 @@
             var currentFocus = this.props.currentFocus;
 
             /**
-             * Add a focus list item for each item in the list
+             * Add a tag list item for each item in the list
              */
-            if (!focusStore.context({}) || !focusStore.context({}).value) {
+            if (!tagStore.context({}) || !tagStore.context({}).value) {
                 return <div>Loading...</div>;
             }
 
-            var menuItems = focusStore.context({}).value.map(function (item) {
+            var menuItems = those(tagStore.context({}).value).like({ kind: 'Focus' }).map(function (item) {
                 return (
                     <FocusListItem
                         key={item.id}
@@ -76,9 +77,8 @@
             /**
              * Add additional menu item when in Focus Management
              */
-            var f = doozy.focus();
-            f.name = null;
-            f.tagName = 'nofocus';
+            var f = doozy.tag();
+            f.name = 'nofocus';
             menuItems.push((
                 <li key="nofocus" >
                     <a onClick={this.handleFocusClick.bind(null, f)} style={styles.menuItem}>
@@ -93,7 +93,7 @@
             ));
 
             var button = null;
-            if (currentFocus && currentFocus.tagName !== 'nofocus') {
+            if (currentFocus && currentFocus.name !== 'nofocus') {
 
                 var imageStyle = {
                     width: '50px',
@@ -102,7 +102,7 @@
                 };
 
                 button = (
-                    <div><img style={imageStyle} src={currentFocus.iconUri} title={currentFocus.kind + ': ' + currentFocus.name} /></div>
+                    <div><img style={imageStyle} src={'/my/doozy/tag/' + currentFocus.name + '/icon.png'} title={currentFocus.kind + ': ' + currentFocus.name} /></div>
                 );
             }
             else {
@@ -127,7 +127,7 @@
                 <div className="navbar navbar-hl-theme">
                     <ul className="nav navbar-nav">
                         {focusesDropDownMenu}
-                        <Microphone focusTag={this.props.currentFocus ? '!' + this.props.currentFocus.tagName : ''} />
+                        <Microphone focusTag={this.props.currentFocus ? this.props.currentFocus.name : ''} />
                         <Timer />
                     </ul>
                 </div>

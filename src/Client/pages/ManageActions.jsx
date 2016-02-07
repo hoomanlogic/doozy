@@ -3,6 +3,7 @@
         require('react'),
         require('lodash'),
         require('hl-common-js/src/those'),
+        require('app/doozy'),
         require('stores/action-store'),
         require('stores/tag-store'),
         require('stores/host'),
@@ -14,7 +15,7 @@
         require('components/BoxedActions'),
         require('mixins/StoresMixin')
     );
-}(function (React, _, those, actionStore, tagStore, host, TagList, ActivePlans, NextActions,
+}(function (React, _, those, doozy, actionStore, tagStore, host, TagList, ActivePlans, NextActions,
             UpcomingActions, RecentActivity, BoxedActions, StoresMixin) {
     var ManageActions = React.createClass({
         /*************************************************************
@@ -83,26 +84,8 @@
          * HELPERS
          *************************************************************/
         getFocusTags: function (focusActions) {
-
-            var distinctTags = [];
-
-            /**
-             * Get all distinct tags of all this focus'
-             * actions except for the special tags
-             */
-            focusActions.map(function (action) {
-                action.tags.forEach(function (tag) {
-                    if (['Box'].indexOf(tag.kind) === -1 &&
-                        those(distinctTags).first({ name: tag.name }) === null) {
-                        distinctTags.push(tag);
-                    }
-                });
-            });
-
-            /**
-             * Return sorted tags
-             */
-            return those(distinctTags).order('name');
+            var tags = doozy.distinctTags(focusActions);
+            return tags.filter(function (tag) { return tag.kind !== 'Box'; });
         },
         filterActionsByTag: function (actions, tags, filterJoin) {
             // no filter, return all
@@ -134,7 +117,7 @@
         filterActionsByFocus: function (focusTag) {
             if (focusTag) {
                 return actionStore.getCache().filter(function (action) {
-                    if (action.tags.indexOf(focusTag) > -1) {
+                    if (those(action.tags).first({ name: focusTag.name}) !== null) {
                         return true;
                     }
                     else {
@@ -186,7 +169,10 @@
              * Filter focus actions by the tags filter to pass filtered list to children
              */
             var tagsFilteredFocusActions = this.filterActionsByTag(this.state.focusActions, this.state.tagFilter, this.state.tagFilterJoin);
-
+            var tagFilter = this.state.tagFilter.slice();
+            if (this.props.focusTag) {
+                tagFilter.push(this.props.focusTag);
+            }
             return (
                 <div className={this.props.hidden ? 'hidden' : ''}>
                     {this.renderTagFilter()}
@@ -194,7 +180,7 @@
                     <ActivePlans focusTag={this.props.focusTag} />
                     <UpcomingActions actions={tagsFilteredFocusActions} />
                     <BoxedActions actions={tagsFilteredFocusActions} />
-                    <RecentActivity tags={this.state.tagFilter} />
+                    <RecentActivity tags={tagFilter} />
                 </div>
             );
         }
