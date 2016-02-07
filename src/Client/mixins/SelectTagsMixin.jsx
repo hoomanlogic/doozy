@@ -65,7 +65,7 @@
             this.setOptionsTag(selectize);
 
             // Set value from state
-            selectize.setValue(this.state.tags);
+            selectize.setValue(this.state.tags.map(function (tag) { return typeof tag === 'string' ? tag : tag.name; }));
         },
 
         renderTagsInput: function () {

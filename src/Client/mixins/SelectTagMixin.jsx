@@ -68,7 +68,7 @@
             this.setOptionsTag(selectize);
 
             // Set value from state
-            selectize.setValue(this.state.tag || this.state.entityId);
+            selectize.setValue(this.state.tag.name || this.state.entityId);
         },
 
         renderTagInput: function () {
