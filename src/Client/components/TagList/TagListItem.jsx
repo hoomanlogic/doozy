@@ -12,9 +12,9 @@
         propTypes: {
             // required
             tag: React.PropTypes.object.isRequired,
-            handleClick: React.PropTypes.func.isRequired,
-
+            
             // optional
+            handleClick: React.PropTypes.func,
             isSelected: React.PropTypes.bool,
         },
 

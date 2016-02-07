@@ -3,13 +3,14 @@
         require('react'),
         require('jquery'),
         require('lodash'),
+        require('app/doozy'),
         require('stores/host'),
         require('hl-common-js/src/those'),
         require('stores/logentry-store'),
         require('mixins/StoresMixin'),
         require('./LogEntryBox')
     );
-}(function (React, $, _, host, those, logEntryStore, StoresMixin, LogEntryBox) {
+}(function (React, $, _, doozy, host, those, logEntryStore, StoresMixin, LogEntryBox) {
     var RecentActivity = React.createClass({
         /*************************************************************
          * DEFINITIONS
@@ -73,9 +74,8 @@
                 logEntries = logEntries.filter( function (log) {
                     
                     var outerMatch = those(log.tags).first(function (logTag) {
-                        
                         var innerMatch = those(tags).first(function (matchTag) {
-                            return logTag.name === matchTag.name;
+                            return doozy.isTagRelated(matchTag, logTag);
                         });
                         
                         // Found a matching tag?

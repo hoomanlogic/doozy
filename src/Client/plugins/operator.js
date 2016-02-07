@@ -442,7 +442,7 @@
             logentry: ['id', 'version', 'isNew','actionId','actionName','tags'],
             plan: ['id', 'version', 'isNew'],
             planstep: ['id', 'version', 'isNew','planId','parentId'],
-            tag: ['id', 'version', 'isNew'],
+            tag: ['id', 'version', 'isNew', 'descendantOf'],
             target: ['id', 'version', 'isNew']
         };
 
@@ -461,7 +461,7 @@
                 // calc tags data
                 var tags = [];
                 gnode.siblings('doozy.tag').forEach(function (gnapse) {
-                    tags.push(gnapse.target.state);
+                    tags.push(getModel(gnapse.getTarget(), db, 'tag'));
                 });
                 strap.tags = tags;
 
@@ -483,7 +483,7 @@
                 // calc tags data
                 var tags = [];
                 gnode.siblings('doozy.tag').forEach(function (gnapse) {
-                    tags.push(gnapse.target.state);
+                    tags.push(getModel(gnapse.getTarget(), db, 'tag'));
                 });
                 strap.tags = tags;
 
@@ -494,7 +494,7 @@
                     strap.actionId = actionGnode.tag;
                     strap.actionName = actionGnode.state.name;
                     actionGnode.siblings('doozy.tag').forEach(function (gnapse) {
-                        tags.push(gnapse.target.state);
+                        tags.push(getModel(gnapse.getTarget(), db, 'tag'));
                     });
                 }
                 return strap;
@@ -514,6 +514,18 @@
                 else {
                     strap.parentId = null;
                 }
+                return strap;
+            },
+            tag: function (gnode, db) {
+                var strap = {};
+                // calc tags data
+                var tags = [];
+                var getAllParents = function (gnapse) {
+                    tags.push(gnapse.target.state);
+                    gnapse.getTarget().parents('doozy.tag').forEach(getAllParents);
+                };
+                gnode.parents('doozy.tag').forEach(getAllParents);
+                strap.descendantOf = tags;
                 return strap;
             }
         }

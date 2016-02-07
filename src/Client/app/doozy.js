@@ -471,7 +471,9 @@
                 id: hlcommon.uuid(),
                 kind: 'Tag',
                 name: name || '',
-                content: null
+                content: null,
+                path: null,
+                descendantOf: []
             };
         },
 
@@ -593,6 +595,14 @@
          * Get raw tag value from a tag object
          */
         getTagValue: getTagValue,
+        
+        isTagRelated: function (matchTag, tag) {
+            var matches = matchTag.name === tag.name;
+            if (!matches && tag.descendantOf && tag.descendantOf.length && those(tag.descendantOf).first({ name: matchTag.name }) !== null) {
+                matches = true;
+            }
+            return matches;
+        },
 
         filterChildren: function (nodes, parentId) {
             return those(nodes).like({ parentId: parentId });
