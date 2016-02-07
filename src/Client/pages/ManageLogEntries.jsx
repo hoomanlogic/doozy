@@ -114,10 +114,14 @@
             return tagFilter;
         },
         render: function () {
+            var tagFilter = this.state.tagFilter.slice();
+            if (this.props.focusTag) {
+                tagFilter.push(this.props.focusTag);
+            }
             return (
                 <div className={this.props.hidden ? 'hidden' : ''}>
                     {this.renderTagFilter()}
-                    <RecentActivity tags={this.state.tagFilter} />
+                    <RecentActivity tags={tagFilter} />
                 </div>
             );
         }

@@ -32,7 +32,7 @@
                     <FocusBar currentFocus={context.focus || undefined}
                         handleFocusClick={this.handleFocusClick} />
                     <TimerBar />
-                    <ManageLogEntries focusTag={context.focus && context.focus.tagName !== 'nofocus' ? '!' + context.focus.tagName : undefined} />
+                    <ManageLogEntries focusTag={context.focus && context.focus.name !== 'nofocus' ? context.focus : undefined} />
                 </div>
             );
         },

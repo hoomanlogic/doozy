@@ -664,10 +664,12 @@
                 // remove old connections
                 var removeConnections = [];
                 gnode.related('doozy.tag').forEach(function (tagGnapse) {
-                    var isInState = false;
+                    var isInState = false
                     if (model.tags && model.tags.length) {
                         for (var i = 0; i < model.tags.length; i++) {
-                            if (removePrefix(model.tags[i]) === tagGnapse.getTarget().tag) {
+                            var thisTagName = typeof model.tags[i] === 'string' ? model.tags[i] : model.tags[i].name;
+                            
+                            if (thisTagName === tagGnapse.getTarget().tag) {
                                 isInState = true;
                                 break;
                             }
@@ -680,14 +682,22 @@
 
                 // Remove tags
                 removeConnections.forEach(function (gnapse) {
-                   gnode.disconnect(gnapse);
+                   gnode.disconnect(gnapse); 
                 });
 
-                // add tag connections that do not already exist
+                // Create tag connections
                 if (model.tags && model.tags.length) {
                     model.tags.forEach(function (tag) {
-                        var tagNode = db.find(removePrefix(tag), 'doozy.tag').first();
-                        if (tagNode && !tagNode.isRelated(gnode.path())) {
+                        var exists, tagNode, tagName;
+                        if (typeof tag === 'string') {
+                            tagName = tag;
+                        }
+                        else {
+                            tagName = tag.name;
+                        }
+                        exists = those(gnode.related('doozy.tag').map(function (gnapse) { return gnapse.getTarget().state; })).first({ name: tagName });
+                        tagNode = db.find(tagName, 'doozy.tag').first(); 
+                        if (!exists && tagNode) {
                             gnode.connect(tagNode, db.RELATION.ASSOCIATE);
                         }
                     });
@@ -948,7 +958,7 @@
                     var isInState = false;
                     if (model.tags && model.tags.length) {
                         for (var i = 0; i < model.tags.length; i++) {
-                            if (removePrefix(model.tags[i]) === tagGnapse.getTarget().tag) {
+                            if (model.tags[i].name === tagGnapse.getTarget().tag) {
                                 isInState = true;
                                 break;
                             }
@@ -967,13 +977,19 @@
                 // Create tag connections
                 if (model.tags && model.tags.length) {
                     model.tags.forEach(function (tag) {
-                        var tagNode = db.find(removePrefix(tag), 'doozy.tag').first();
-                        if (tagNode) {
+                        var exists, tagNode, tagName;
+                        if (typeof tag === 'string') {
+                            tagName = tag;
+                        }
+                        else {
+                            tagName = tag.name;
+                        }
+                        exists = those(gnode.related('doozy.tag').map(function (gnapse) { return gnapse.getTarget().state; })).first({ name: tagName });
+                        tagNode = db.find(tagName, 'doozy.tag').first(); 
+                        if (!exists && tagNode) {
                             gnode.connect(tagNode, db.RELATION.ASSOCIATE);
                         }
                     });
-
-
                 }
 
                 // action is no longer connected
