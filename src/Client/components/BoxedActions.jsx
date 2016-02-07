@@ -3,9 +3,10 @@
         require('react'),
         require('./ActionRow'),
         require('lodash'),
+        require('app/doozy'),
         require('hl-common-js/src/those')
     );
-}(function (React, ActionRow, _, those) {
+}(function (React, ActionRow, _, doozy, those) {
     var BoxedActions = React.createClass({
         /*************************************************************
          * DEFINITIONS
@@ -40,16 +41,13 @@
          *************************************************************/
         getBoxTags: function (actions) {
             // get distinct list of box tags
-            var boxTags = [];
-            actions.map(function (action) {
-                boxTags = _.union(boxTags, _.filter(action.tags, function (tag) { return tag.kind === 'Box'; }));
-            });
+            var boxTags = those(doozy.distinctTags(actions)).like({ kind: 'Box' });
             return boxTags;
         },
         getBoxes: function (boxTags, actions) {
             return boxTags.map( function (boxTag) {
                 var boxActions = _.filter(actions, function (action) { 
-                    var box = those(action.tags).first({ kind: 'Box' });
+                    var box = those(action.tags).first({ kind: 'Box', name: boxTag.name });
                     return box !== null && action.lastPerformed === null; 
                 });
                 boxActions = _.sortBy(boxActions, function (action) { return action.name.toLowerCase(); });
