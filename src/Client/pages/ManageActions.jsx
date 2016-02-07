@@ -116,8 +116,11 @@
         },
         filterActionsByFocus: function (focusTag) {
             if (focusTag) {
+                var related = function (tag) {
+                    return doozy.isTagRelated(focusTag, tag);
+                };
                 return actionStore.getCache().filter(function (action) {
-                    if (those(action.tags).first({ name: focusTag.name}) !== null) {
+                    if (those(action.tags).first(related) !== null) {
                         return true;
                     }
                     else {
