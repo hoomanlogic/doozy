@@ -143,7 +143,7 @@
         });
         
         // LOG ENTRIES VIEW
-        operator.express.get('/doozy/logs', operator.authenticate, function (req, res) {
+        operator.express.get(['/doozy/logs', '/doozy/logentries'], operator.authenticate, function (req, res) {
             operator.renderer.renderHtml(
                 defaultHtmlTemplate
                     .replace('SCRIPT_URL', operator.stats.publicPath + 'doozy/logentry-list.js')
