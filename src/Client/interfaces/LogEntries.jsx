@@ -28,7 +28,7 @@
         render: function () {
             var context = host.context.get();
             return (
-                <div>
+                <div style={styles.main}>
                     <FocusBar currentFocus={context.focus || undefined}
                         handleFocusClick={this.handleFocusClick} />
                     <TimerBar />
@@ -37,6 +37,14 @@
             );
         },
     });
+        
+    var styles = {
+        main: {
+            backgroundColor: '#fff',
+            maxWidth: '60rem',
+            margin: 'auto'
+        }
+    };
 
     return LogEntriesInterface;
 }));
