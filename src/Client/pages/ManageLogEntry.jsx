@@ -138,6 +138,7 @@
                 });
             }
             else if (event.target === this.refs.details.getDOMNode()) {
+                this.parseTags(event.target.value);
                 this.setState({
                     details: event.target.value
                 });
@@ -199,6 +200,29 @@
             else if (storeName === 'Tag') {
                 this.setupTagsInput();    
             }
+        },
+        parseTags: function (details) {
+            var match, innerMatch;
+            var pattern = /^#(.*)$/gm;
+            var inner = /((\w)+)(\s*,\s+|\s*;\s+|\s*,\s*and\s+|$)?/gm;
+            
+            //var re = new RegExp('(\\b|\\d)(' + names.join('|') + ')\.?(?![a-zA-Z])', 'gi');
+            while ((match = pattern.exec(details)) !== null) {
+                if (match && match[0]) {
+                    while ((innerMatch = inner.exec(match[0])) !== null) {
+                        console.log(innerMatch);        
+                    }
+                }
+                // var truePos = match.index + (match[1] || '').length;
+                // core.insertToken(matches, {
+                //     kind: 'duration.name',
+                //     pos: truePos,
+                //     text: match[2],
+                //     value: getValue(match[2], locale)
+                // });
+                
+            }
+            
         },
         
         /*************************************************************
