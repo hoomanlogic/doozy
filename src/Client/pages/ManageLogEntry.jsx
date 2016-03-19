@@ -206,7 +206,7 @@
             var pattern = /^#(.*)$/gm;
             var inner = /((\w)+)(\s*,\s+|\s*;\s+|\s*,\s*and\s+|$)?/gm;
             
-            //var re = new RegExp('(\\b|\\d)(' + names.join('|') + ')\.?(?![a-zA-Z])', 'gi');
+            // var re = new RegExp('(\\b|\\d)(' + names.join('|') + ')\.?(?![a-zA-Z])', 'gi');
             while ((match = pattern.exec(details)) !== null) {
                 if (match && match[0]) {
                     while ((innerMatch = inner.exec(match[0])) !== null) {

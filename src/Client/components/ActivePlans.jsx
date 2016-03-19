@@ -24,7 +24,7 @@
          * RENDERING HELPERS
          *************************************************************/
         getActivePlans: function () {
-            var focus, plans;
+            var plans;
 
             // Get plans
             plans = planStore.context({}) ? (planStore.context({}).value ? planStore.context({}).value : []) : [];
