@@ -1,8 +1,9 @@
 (function (factory) {
     module.exports = exports = factory(
-        require('react')
+        require('react'),
+        require('react-dom')
     );
-}(function (React) {
+}(function (React, ReactDOM) {
 
     var LayeredComponentMixin = {
         componentDidMount: function () {
@@ -30,15 +31,15 @@
             // entirely different part of the page.
 
             var layerElement = this.renderLayer();
-            // Renders can return null, but React.render() doesn't like being asked
+            // Renders can return null, but ReactDOM.render() doesn't like being asked
             // to render null. If we get null back from renderLayer(), just render
             // a noscript element, like React does when an element's render returns
             // null.
             if (layerElement === null) {
-                React.render(<noscript />, this._layer);
+                ReactDOM.render(<noscript />, this._layer);
             }
             else {
-                React.render(layerElement, this._layer);
+                ReactDOM.render(layerElement, this._layer);
             }
 
             if (this.layerDidMount) {

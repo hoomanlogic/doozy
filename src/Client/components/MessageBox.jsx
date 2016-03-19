@@ -1,8 +1,9 @@
 (function (factory) {
     module.exports = exports = factory(
-        require('react')
+        require('react'),
+        require('react-dom')
     );
-}(function (React) {
+}(function (React, ReactDOM) {
 
     var promptCallback = null;
 
@@ -20,7 +21,7 @@
                 var div = document.createElement('div');
                 div.setAttribute('id', 'msg-box');
                 document.body.appendChild(div);
-                React.render(React.createElement(MessageBox, { msg: msg, kind: 'show' }), div);
+                ReactDOM.render(React.createElement(MessageBox, { msg: msg, kind: 'show' }), div);
             },
             prompt: function (msg, callback) {
                 var element = document.getElementById('msg-box');
@@ -31,7 +32,7 @@
                 var div = document.createElement('div');
                 div.setAttribute('id', 'msg-box');
                 document.body.appendChild(div);
-                React.render(React.createElement(MessageBox, { msg: msg, kind: 'prompt' }), div);
+                ReactDOM.render(React.createElement(MessageBox, { msg: msg, kind: 'prompt' }), div);
             },
             notify: function (msg) {
                 MessageBox.show(msg);

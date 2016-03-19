@@ -36,7 +36,7 @@
                         'Authorization': 'Bearer ' + clientApp.getAccessToken()
                     },
                     success: function (data) {
-                        React.render(React.createElement(DoozyApp, { settings: data }), document.getElementById('doozy'));
+                        ReactDOM.render(React.createElement(DoozyApp, { settings: data }), document.getElementById('doozy'));
                     }.bind(this),
                     error: function (xhr, status, err) {
                         console.error('settings.json', status, err.toString());
